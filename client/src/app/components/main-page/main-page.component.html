@@ -5,12 +5,15 @@
         <p>Petit message du serveur : {{ message | async }}</p>
         <button class="button" (click)="getMessagesFromServer()">Récuper un message du serveur</button>
         <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
+        <button class="button">Créer un nouveau dessin</button>
+        <button class="button">Ouvrir le carrousel de dessins</button>
+        <button class="button" *ngIf="verifDessinExistant()">Continuer un dessin.</button>
     </div>
 
     <button class="button" routerLink="/editor">Ouvir Éditeur</button>
 
     <div class="footer-item">
         <h4 class="team-name">Équipe Poly</h4>
-        <p>Coequipier #1, Coequipier #2, Coequipier #3, Coequipier #4, Coequipier #5, Coequipier #6</p>
+        <p>Nicholas Legrand #1, Benjamin Regazzoni #2, Félix Boudreau #3, Kervin Prinville #4, Sanmar SImon #5</p>
     </div>
 </div>

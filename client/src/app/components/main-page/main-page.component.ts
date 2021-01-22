@@ -35,4 +35,7 @@ export class MainPageComponent {
             )
             .subscribe(this.message);
     }
+    verifDessinExistant(): boolean {
+        return false;
+    }
 }
