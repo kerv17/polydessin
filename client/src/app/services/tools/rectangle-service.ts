@@ -82,7 +82,7 @@ export class RectangleService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = sessionStorage.getItem("color") || "black";
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
