@@ -1,16 +1,8 @@
 import {
   AfterViewInit, Component,
-
   ElementRef,
-
-
-
-
-
   EventEmitter,
   HostListener, Input,
-
-
   OnChanges, Output,
   SimpleChanges, ViewChild
 } from '@angular/core'
@@ -18,7 +10,7 @@ import {
 @Component({
   selector: 'app-color-palette',
   templateUrl: './color-palette.component.html',
-  styleUrls: ['./color-palette.component.css'],
+  styleUrls: ['./color-palette.component.scss'],
 })
 export class ColorPaletteComponent implements AfterViewInit, OnChanges {
   @Input()
@@ -42,7 +34,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
   draw() {
     if (!this.ctx) {
-      this.ctx = this.canvas.nativeElement.getContext('2d')
+      this.ctx = this.canvas.nativeElement.getContext('2d') as unknown as CanvasRenderingContext2D;
     }
     const width = this.canvas.nativeElement.width
     const height = this.canvas.nativeElement.height

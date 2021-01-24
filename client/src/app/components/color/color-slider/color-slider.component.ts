@@ -7,7 +7,7 @@ import {
 @Component({
   selector: 'app-color-slider',
   templateUrl: './color-slider.component.html',
-  styleUrls: ['./color-slider.component.css'],
+  styleUrls: ['./color-slider.component.scss'],
 })
 export class ColorSliderComponent implements AfterViewInit {
   @ViewChild('canvas')
@@ -26,7 +26,7 @@ export class ColorSliderComponent implements AfterViewInit {
 
   draw() {
     if (!this.ctx) {
-      this.ctx = this.canvas.nativeElement.getContext('2d')
+      this.ctx = this.canvas.nativeElement.getContext("2d") as unknown as CanvasRenderingContext2D;
     }
     const width = this.canvas.nativeElement.width
     const height = this.canvas.nativeElement.height
