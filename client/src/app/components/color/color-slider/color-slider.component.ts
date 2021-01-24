@@ -26,7 +26,7 @@ export class ColorSliderComponent implements AfterViewInit {
 
   draw() {
     if (!this.ctx) {
-      this.ctx = this.canvas.nativeElement.getContext("2d") as unknown as CanvasRenderingContext2D;
+      this.ctx = this.canvas.nativeElement.getContext("2d") as CanvasRenderingContext2D;
     }
     const width = this.canvas.nativeElement.width
     const height = this.canvas.nativeElement.height
@@ -81,6 +81,7 @@ export class ColorSliderComponent implements AfterViewInit {
 
   emitColor(x: number, y: number) {
     const rgbaColor = this.getColorAtPosition(x, y)
+    sessionStorage.setItem("color",rgbaColor);
     this.color.emit(rgbaColor)
   }
 

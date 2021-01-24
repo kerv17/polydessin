@@ -12,6 +12,7 @@ export class ColorComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
 }
