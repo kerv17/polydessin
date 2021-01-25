@@ -21,7 +21,6 @@ export enum MouseButton {
 })
 export class LineService extends Tool {
     private pathData: Vec2[];
-    private dbClicked:boolean = false;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -68,7 +67,6 @@ export class LineService extends Tool {
       this.drawingService.baseCtx.strokeStyle = sessionStorage.getItem("color") || "black";
       this.drawLine(this.drawingService.baseCtx, this.pathData);
       this.clearPath();
-      this.dbClicked = true;
 
     }
 
