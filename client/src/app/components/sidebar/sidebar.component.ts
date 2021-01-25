@@ -7,9 +7,11 @@ import { Component } from '@angular/core';
 })
 export class SidebarComponent {
     public visible = false;
-
-    openColor(){
-       this.visible = true;
+    public crayon: boolean = false;
+    openColor() {
+        this.visible = true;
     }
-
+    openCrayon() {
+        this.crayon = true;
+    }
 }

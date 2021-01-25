@@ -1,12 +1,14 @@
 <div class="container">
     <p>Barre latérale pour vos outils!</p>
     <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br /> L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br /> Vous êtes encouragés de modifier et compléter le code.<br /> N'oubliez
-        pas de regarder les tests dans les fichiers spec.ts aussi!
-
+        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
+        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
+        Vous êtes encouragés de modifier et compléter le code.<br />
+        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
     </p>
-    <input type="button" value="Go back!" onclick="history.back()">
+    <input type="button" value="Go back!" onclick="history.back()" />
     <button (click)="openColor()">Couleur</button>
+    <button (click)="openCrayon()">Crayon</button>
     <div *ngIf="visible">
         <app-color></app-color>
     </div>
