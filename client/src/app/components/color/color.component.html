@@ -1,8 +1,36 @@
 <div class="color-wrapper">
-    <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
-    <app-color-slider (color)="hue=$event" style="margin-left:16px"></app-color-slider>
+    <app-color-palette [hue]="hue" (primaryColor)="primaryColor = $event" (secondaryColor)="secondaryColor = $event" (click)="updateColor()"></app-color-palette>
+    <app-color-slider (primaryColor)="hue=$event" (secondaryColor)="hue=$event" style="margin-left:16px" (click)="updateColor()"></app-color-slider>
 </div>
+
+<p>Couleur Principale :</p>
 <div class="input-wrapper">
-    <span class="text">{{color}}</span>
-    <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
+    <span class="text">{{primaryColor}}</span>
+    <div class="color-div" [ngStyle]="{'background-color': primaryColor || 'white'}"></div>
 </div>
+
+<p>R :</p>
+<input type="text" id="RP" (change)="setColor()">
+<p>V :</p>
+<input type="text" id="VP" (change)="setColor()">
+<p>B :</p>
+<input type="text" id="BP" (change)="setColor()">
+<p>Opacité :</p>
+<input type="text" id="opacityP" (change)="setColor()">
+
+<button (click)="invert()">Inverser Couleurs Principale et Secondaire</button>
+
+<p>Couleur Secondaire :</p>
+<div class="input-wrapper">
+    <span class="text">{{secondaryColor}}</span>
+    <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'white'}"></div>
+</div>
+
+<p>R :</p>
+<input type="text" id="RS" (change)="setColor()">
+<p>V :</p>
+<input type="text" id="VS" (change)="setColor()">
+<p>B :</p>
+<input type="text" id="BS" (change)="setColor()">
+<p>Opacité :</p>
+<input type="text" id="opacityS" (change)="setColor()">

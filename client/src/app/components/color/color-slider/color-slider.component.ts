@@ -2,7 +2,17 @@ import {
   AfterViewInit, Component,
   ElementRef,
   EventEmitter, HostListener, Output, ViewChild
-} from '@angular/core'
+} from '@angular/core';
+
+// TODO : Déplacer ça dans un fichier séparé accessible par tous
+export enum MouseButton {
+  Left = 0,
+  Middle = 1,
+  Right = 2,
+  Back = 3,
+  Forward = 4,
+}
+
 
 @Component({
   selector: 'app-color-slider',
@@ -14,7 +24,10 @@ export class ColorSliderComponent implements AfterViewInit {
   canvas: ElementRef<HTMLCanvasElement>
 
   @Output()
-  color: EventEmitter<string> = new EventEmitter()
+    primaryColor: EventEmitter<string> = new EventEmitter(true);
+
+    @Output()
+    secondaryColor: EventEmitter<string> = new EventEmitter(true);
 
   private ctx: CanvasRenderingContext2D
   private mousedown: boolean = false
@@ -68,21 +81,39 @@ export class ColorSliderComponent implements AfterViewInit {
     this.mousedown = true
     this.selectedHeight = evt.offsetY
     this.draw()
-    this.emitColor(evt.offsetX, evt.offsetY)
+    if (evt.button === MouseButton.Left){
+      this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
+    }
+    else if (evt.button === MouseButton.Right){
+      this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right)
+    }
+    
   }
 
   onMouseMove(evt: MouseEvent) {
     if (this.mousedown) {
       this.selectedHeight = evt.offsetY
       this.draw()
-      this.emitColor(evt.offsetX, evt.offsetY)
+      if (evt.button === MouseButton.Left){
+        this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
+      }
+      else if (evt.button === MouseButton.Right){
+        this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
+      }
+      
     }
   }
 
-  emitColor(x: number, y: number) {
+  emitColor(x: number, y: number, side : number) {
     const rgbaColor = this.getColorAtPosition(x, y)
-    sessionStorage.setItem("color",rgbaColor);
-    this.color.emit(rgbaColor)
+    if(side == MouseButton.Left){
+      sessionStorage.setItem('primaryColor', rgbaColor);
+      this.primaryColor.emit(rgbaColor);
+    }
+    else if(side == MouseButton.Right){
+      sessionStorage.setItem('secondaryColor', rgbaColor);
+      this.secondaryColor.emit(rgbaColor);
+    }
   }
 
   getColorAtPosition(x: number, y: number) {

@@ -1,5 +1,14 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
+// TODO : Déplacer ça dans un fichier séparé accessible par tous
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+}
+
 @Component({
     selector: 'app-color-palette',
     templateUrl: './color-palette.component.html',
@@ -10,7 +19,10 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     hue: string;
 
     @Output()
-    color: EventEmitter<string> = new EventEmitter(true);
+    primaryColor: EventEmitter<string> = new EventEmitter(true);
+
+    @Output()
+    secondaryColor: EventEmitter<string> = new EventEmitter(true);
 
     @ViewChild('canvas')
     canvas: ElementRef<HTMLCanvasElement>;
@@ -64,7 +76,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.draw();
             const pos = this.selectedPosition;
             if (pos) {
-                this.color.emit(this.getColorAtPosition(pos.x, pos.y));
+                this.primaryColor.emit(this.getColorAtPosition(pos.x, pos.y));
             }
         }
     }
@@ -72,29 +84,56 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     @HostListener('window:mouseup', ['$event'])
     onMouseUp(evt: MouseEvent) {
         this.mousedown = false;
+        if(evt.button === MouseButton.Left){
+
+        } 
+        else if(evt.button === MouseButton.Right){
+            
+        }
     }
 
     onMouseDown(evt: MouseEvent) {
         this.mousedown = true;
         this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
         this.draw();
-        this.color.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
-        //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
-        this.emitColor(evt.offsetX, evt.offsetY);
+        if(evt.button === MouseButton.Left){
+            this.primaryColor.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
+            //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
+            this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left);
+        }
+        else if (evt.button === MouseButton.Right){
+            this.secondaryColor.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
+            //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
+            this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right);
+        }
+        
     }
 
     onMouseMove(evt: MouseEvent) {
         if (this.mousedown) {
             this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
             this.draw();
-            this.emitColor(evt.offsetX, evt.offsetY);
+            if (evt.button === MouseButton.Left){
+                this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left);
+            }
+            else if (evt.button === MouseButton.Right){
+                this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right);
+            }
+    
         }
     }
 
-    emitColor(x: number, y: number) {
+    emitColor(x: number, y: number, side : number) {
         const rgbaColor = this.getColorAtPosition(x, y);
-        sessionStorage.setItem('color', rgbaColor);
-        this.color.emit(rgbaColor);
+        
+        if (side == MouseButton.Left){
+            sessionStorage.setItem('primaryColor', rgbaColor);
+            this.primaryColor.emit(rgbaColor);
+        }
+        else if (side == MouseButton.Right){
+            sessionStorage.setItem('secondaryColor', rgbaColor);
+            this.secondaryColor.emit(rgbaColor);
+        }
     }
 
     getColorAtPosition(x: number, y: number) {
