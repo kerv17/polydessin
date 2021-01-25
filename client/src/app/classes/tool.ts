@@ -17,6 +17,8 @@ export abstract class Tool {
 
     onClick(event:MouseEvent):void {}
 
+    ondbClick(event:MouseEvent):void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

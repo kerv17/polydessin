@@ -21,6 +21,7 @@ export enum MouseButton {
 })
 export class LineService extends Tool {
     private pathData: Vec2[];
+    private dbClicked:boolean = false;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -45,28 +46,35 @@ export class LineService extends Tool {
     }
 
     onClick(event:MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
-        if(this.pathData[0] == undefined || this.distanceBewteenPoints(this.pathData[0],mousePosition)>20){
-          this.pathData.push(mousePosition)
-          // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.pathData.push(mousePosition);
-          this.drawLine(this.drawingService.previewCtx, this.pathData);
-        }
-        else{
-          this.pathData.push(this.pathData[0]);
-          this.drawingService.clearCanvas(this.drawingService.previewCtx);
-          this.drawLine(this.drawingService.baseCtx, this.pathData);
-          this.clearPath();
+      const mousePosition = this.getPositionFromMouse(event);
+      this.pathData.push(mousePosition)
+      // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.pathData.push(mousePosition);
+      this.drawLine(this.drawingService.previewCtx, this.pathData);
 
-        }
+    }
 
+    ondbClick(event:MouseEvent):void{
+      const mousePosition = this.getPositionFromMouse(event);
+      if(this.distanceBewteenPoints(this.pathData[0],mousePosition)<20){
+        this.pathData.push(this.pathData[0]);
+      }
+      else{
+        this.pathData.push(mousePosition);
+      }
+
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+      this.drawingService.baseCtx.strokeStyle = sessionStorage.getItem("color") || "black";
+      this.drawLine(this.drawingService.baseCtx, this.pathData);
+      this.clearPath();
+      this.dbClicked = true;
 
     }
 
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = sessionStorage.getItem("color") || "black";
+        //ctx.strokeStyle = sessionStorage.getItem("color") || "black";
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

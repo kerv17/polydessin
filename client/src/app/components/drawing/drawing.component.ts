@@ -60,6 +60,11 @@ export class DrawingComponent implements AfterViewInit {
         this.currentTool.onClick(event);
     }
 
+    @HostListener('dblclick',['$event'])
+    ondbClick(event:MouseEvent):void{
+        this.currentTool.ondbClick(event);
+    }
+
     get width(): number {
         return this.canvasSize.x;
     }
