@@ -1,6 +1,6 @@
 <div class="color-wrapper">
-    <app-color-palette [hue]="hue" (primaryColor)="primaryColor = $event" (secondaryColor)="secondaryColor = $event" (click)="updateColor()"></app-color-palette>
-    <app-color-slider (primaryColor)="hue=$event" (secondaryColor)="hue=$event" style="margin-left:16px" (click)="updateColor()"></app-color-slider>
+    <app-color-palette [hue]="hue" (primaryColor)="primaryColor = $event" (secondaryColor)="secondaryColor = $event" (click)="updateColor()" (contextmenu)="updateColor()"></app-color-palette>
+    <app-color-slider (primaryColor)="hue=$event" (secondaryColor)="hue=$event" style="margin-left:16px" (click)="updateColor()" (contextmenu)="updateColor()"></app-color-slider>
 </div>
 
 <p>Couleur Principale :</p>
