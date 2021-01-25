@@ -9,9 +9,8 @@ import { PencilService } from '../pencil-service';
 })
 export class ToolControllerService {
     public currentTool: Tool;
-    constructor() {
-        this.setTool();
-    }
+    constructor() {}
+
     public setTool(): Tool {
         this.currentTool = AppModule.injector.get(PencilService);
 

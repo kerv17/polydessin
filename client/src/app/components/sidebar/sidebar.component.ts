@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -8,10 +9,12 @@ import { Component } from '@angular/core';
 export class SidebarComponent {
     public visible = false;
     public crayon: boolean = false;
+    constructor(private service: ToolControllerService) {}
     openColor() {
         this.visible = true;
     }
+
     openCrayon() {
-        this.crayon = true;
+        this.service.setTool();
     }
 }

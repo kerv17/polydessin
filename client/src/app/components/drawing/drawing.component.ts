@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/pencil-service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
 // TODO : Avoir un fichier séparé pour les constantes ?
@@ -26,8 +25,8 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, controller: ToolControllerService, pencil: PencilService) {
-        this.currentTool = controller.currentTool;
+    constructor(private drawingService: DrawingService, private controller: ToolControllerService) {
+        //this.currentTool = controller.currentTool;
     }
 
     ngAfterViewInit(): void {
@@ -40,17 +39,17 @@ export class DrawingComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.currentTool.onMouseMove(event);
+        this.controller.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.currentTool.onMouseDown(event);
+        this.controller.currentTool.onMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.currentTool.onMouseUp(event);
+        this.controller.currentTool.onMouseUp(event);
     }
 
     get width(): number {
