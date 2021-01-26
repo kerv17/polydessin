@@ -33,21 +33,21 @@ export class ColorComponent implements AfterViewInit {
   }
 
   updateColor():void{
-    let subPrimary:string = this.primaryColor.substring(5,this.primaryColor.length - 2);
+    let subPrimary:string = this.primaryColor.substring(5,this.primaryColor.length - 1);
     let splitPrimary:string[] = subPrimary.split(",");
 
-    let subSecondary:string = this.secondaryColor.substring(5,this.secondaryColor.length - 2);
+    let subSecondary:string = this.secondaryColor.substring(5,this.secondaryColor.length - 1);
     let splitSecondary:string[] = subSecondary.split(",");
     
 
     (<HTMLInputElement>document.getElementById("RP")).value = splitPrimary[0];
     (<HTMLInputElement>document.getElementById("VP")).value = splitPrimary[1];
     (<HTMLInputElement>document.getElementById("BP")).value = splitPrimary[2];
-    (<HTMLInputElement>document.getElementById("opacityP")).value = this.primaryColor[this.primaryColor.length - 2];
+    (<HTMLInputElement>document.getElementById("opacityP")).value = splitPrimary[3];
     (<HTMLInputElement>document.getElementById("RS")).value = splitSecondary[0];
     (<HTMLInputElement>document.getElementById("VS")).value = splitSecondary[1];
     (<HTMLInputElement>document.getElementById("BS")).value = splitSecondary[2];
-    (<HTMLInputElement>document.getElementById("opacityS")).value = this.secondaryColor[this.secondaryColor.length - 2];
+    (<HTMLInputElement>document.getElementById("opacityS")).value = splitSecondary[3];
   }
 
   setColor(): void {

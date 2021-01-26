@@ -4,33 +4,49 @@
 </div>
 
 <p>Couleur Principale :</p>
-<div class="input-wrapper">
-    <span class="text">{{primaryColor}}</span>
-    <div class="color-div" [ngStyle]="{'background-color': primaryColor || 'white'}"></div>
-</div>
+<div class="color-div" [ngStyle]="{'background-color': primaryColor || 'white'}"></div>
 
-<p>R :</p>
-<input type="text" id="RP" (change)="setColor()">
-<p>V :</p>
-<input type="text" id="VP" (change)="setColor()">
-<p>B :</p>
-<input type="text" id="BP" (change)="setColor()">
-<p>Opacité :</p>
-<input type="text" id="opacityP" (change)="setColor()">
+<form>
+    <label>R : </label>
+    <input type="text" id="RP" (change)="setColor()" size="2"><br>
+    <label>V : </label>
+    <input type="text" id="VP" (change)="setColor()" size="2"><br>
+    <label>B : </label>
+    <input type="text" id="BP" (change)="setColor()" size="2"><br>
+    <label>Opacité : </label>
+    <input type="text" id="opacityP" (change)="setColor()" size="2"><br>
+</form>
 
 <button (click)="invert()">Inverser Couleurs Principale et Secondaire</button>
 
 <p>Couleur Secondaire :</p>
-<div class="input-wrapper">
-    <span class="text">{{secondaryColor}}</span>
-    <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'white'}"></div>
-</div>
+<div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'white'}"></div>
 
-<p>R :</p>
-<input type="text" id="RS" (change)="setColor()">
-<p>V :</p>
-<input type="text" id="VS" (change)="setColor()">
-<p>B :</p>
-<input type="text" id="BS" (change)="setColor()">
-<p>Opacité :</p>
-<input type="text" id="opacityS" (change)="setColor()">
+<form>
+    <label>R : </label>
+    <input type="text" id="RS" (change)="setColor()" size="2"><br>
+    <label>V : </label>
+    <input type="text" id="VS" (change)="setColor()" size="2"><br>
+    <label>B : </label>
+    <input type="text" id="BS" (change)="setColor()" size="2"><br>
+    <label>Opacité : </label>
+    <input type="text" id="opacityS" (change)="setColor()" size="2"><br>
+</form>
+
+
+
+<div>
+    <p>10 dernières couleurs utilisées :</p>
+    <!-- 
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
+    -->
+</div>
