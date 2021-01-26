@@ -31,6 +31,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
     private mousedown: boolean = false;
 
+    private mouseSide: number;
+
     public selectedPosition: { x: number; y: number };
 
     ngAfterViewInit() {
@@ -100,11 +102,13 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.primaryColor.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
             //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
             this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left);
+            this.mouseSide = MouseButton.Left;
         }
         else if (evt.button === MouseButton.Right){
             this.secondaryColor.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
             //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
             this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right);
+            this.mouseSide = MouseButton.Right;
         }
         
     }
@@ -113,10 +117,10 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
         if (this.mousedown) {
             this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
             this.draw();
-            if (evt.button === MouseButton.Left){
+            if (this.mouseSide === MouseButton.Left){
                 this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left);
             }
-            else if (evt.button === MouseButton.Right){
+            else if (this.mouseSide === MouseButton.Right){
                 this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right);
             }
     

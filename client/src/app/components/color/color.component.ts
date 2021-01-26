@@ -24,6 +24,12 @@ export class ColorComponent implements AfterViewInit {
     this.primaryColor = this.secondaryColor;
     this.secondaryColor = tempColor;
     this.updateColor();
+    this.updateDrawingColor();
+  }
+
+  updateDrawingColor(){
+    sessionStorage.setItem("primaryColor", this.primaryColor);
+    sessionStorage.setItem("secondaryColor", this.secondaryColor);
   }
 
   updateColor():void{
@@ -32,6 +38,7 @@ export class ColorComponent implements AfterViewInit {
 
     let subSecondary:string = this.secondaryColor.substring(5,this.secondaryColor.length - 2);
     let splitSecondary:string[] = subSecondary.split(",");
+    
 
     (<HTMLInputElement>document.getElementById("RP")).value = splitPrimary[0];
     (<HTMLInputElement>document.getElementById("VP")).value = splitPrimary[1];
@@ -72,6 +79,9 @@ export class ColorComponent implements AfterViewInit {
       }
       
     }
+    this.updateDrawingColor();
+    this.updateColor();
+    
   }
 
 }
