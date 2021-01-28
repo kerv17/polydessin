@@ -10,9 +10,10 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ColorSliderComponent } from './components/color/color-slider/color-slider.component';
 import { ColorPaletteComponent } from './components/color/color-palette/color-palette.component';
 import { ColorComponent } from './components/color/color.component';
+import { ColorModalComponent } from './components/color/color-modal/color-modal.component';
 
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColorSliderComponent, ColorPaletteComponent, ColorComponent],
+    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColorSliderComponent, ColorPaletteComponent, ColorComponent, ColorModalComponent],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule],
     providers: [],
     bootstrap: [AppComponent],

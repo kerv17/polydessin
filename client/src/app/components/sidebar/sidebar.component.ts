@@ -6,10 +6,5 @@ import { Component } from '@angular/core';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    public visible = false;
-
-    openColor(){
-       this.visible = true;
-    }
-
+    
 }

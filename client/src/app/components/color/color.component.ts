@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { ColorService } from '@app/services/color/color.service';
 
 @Component({
   selector: 'app-color',
@@ -6,31 +7,38 @@ import { AfterViewInit, Component } from '@angular/core';
   styleUrls: ['./color.component.scss']
 })
 export class ColorComponent implements AfterViewInit {
-  public hue: string
+
   public primaryColor: string
   public secondaryColor: string
+  public visibility : boolean;
 
-  constructor() {
-    this.primaryColor = sessionStorage.getItem("primaryColor") || "rgba(1,1,1,1)";
-    this.secondaryColor = sessionStorage.getItem("secondaryColor") || "rgba(1,1,1,1)";
+  constructor(private colorService : ColorService) {
+    
   }
 
   ngAfterViewInit(): void {
-    this.updateColor();
+    this.primaryColor = this.colorService.primaryColor;
+    this.secondaryColor = this.colorService.secondaryColor;
+    this.visibility = this.colorService.modalVisibility; //trouver alternative
   }
 
   invert(){
     let tempColor:string = this.primaryColor;
     this.primaryColor = this.secondaryColor;
     this.secondaryColor = tempColor;
-    this.updateColor();
-    this.updateDrawingColor();
   }
 
-  updateDrawingColor(){
-    sessionStorage.setItem("primaryColor", this.primaryColor);
-    sessionStorage.setItem("secondaryColor", this.secondaryColor);
+  openModal(color : string) : void {
+    this.colorService.modalVisibility = true;
+    this.colorService.currentColor = color;
+    this.visibility = this.colorService.modalVisibility; //trouver alternative (2-way binding)
   }
+
+
+
+  
+
+  /*
 
   updateColor():void{
     let subPrimary:string = this.primaryColor.substring(5,this.primaryColor.length - 1);
@@ -82,6 +90,6 @@ export class ColorComponent implements AfterViewInit {
     this.updateDrawingColor();
     this.updateColor();
     
-  }
+  }*/
 
 }

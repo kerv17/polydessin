@@ -59,7 +59,7 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = sessionStorage.getItem("primaryColor") || "rgba(1,1,1,1)";
+        //ctx.strokeStyle = sessionStorage.getItem("primaryColor") || "rgba(1,1,1,1)";
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

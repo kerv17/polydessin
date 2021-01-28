@@ -1,0 +1,17 @@
+.color-wrapper {
+    display: flex;
+    height: 250px;
+}
+
+.color-div {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgb(220, 220, 220);
+}
+
+.text {
+    flex: 1;
+    font-family: 'Helvetica';
+    line-height: 32px;
+}
