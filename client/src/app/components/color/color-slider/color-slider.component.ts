@@ -24,10 +24,7 @@ export class ColorSliderComponent implements AfterViewInit {
   canvas: ElementRef<HTMLCanvasElement>
 
   @Output()
-    primaryColor: EventEmitter<string> = new EventEmitter(true);
-
-    @Output()
-    secondaryColor: EventEmitter<string> = new EventEmitter(true);
+  color: EventEmitter<string> = new EventEmitter(true);
 
   private ctx: CanvasRenderingContext2D
   private mousedown: boolean = false
@@ -81,39 +78,20 @@ export class ColorSliderComponent implements AfterViewInit {
     this.mousedown = true
     this.selectedHeight = evt.offsetY
     this.draw()
-    if (evt.button === MouseButton.Left){
-      this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
-    }
-    else if (evt.button === MouseButton.Right){
-      this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Right)
-    }
-    
+    this.emitColor(evt.offsetX, evt.offsetY);
   }
 
   onMouseMove(evt: MouseEvent) {
     if (this.mousedown) {
       this.selectedHeight = evt.offsetY
       this.draw()
-      if (evt.button === MouseButton.Left){
-        this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
-      }
-      else if (evt.button === MouseButton.Right){
-        this.emitColor(evt.offsetX, evt.offsetY, MouseButton.Left)
-      }
-      
+      this.emitColor(evt.offsetX, evt.offsetY);
     }
   }
 
-  emitColor(x: number, y: number, side : number) {
+  emitColor(x: number, y: number) {
     const rgbaColor = this.getColorAtPosition(x, y)
-    if(side == MouseButton.Left){
-      sessionStorage.setItem('primaryColor', rgbaColor);
-      this.primaryColor.emit(rgbaColor);
-    }
-    else if(side == MouseButton.Right){
-      sessionStorage.setItem('secondaryColor', rgbaColor);
-      this.secondaryColor.emit(rgbaColor);
-    }
+    this.color.emit(rgbaColor);
   }
 
   getColorAtPosition(x: number, y: number) {

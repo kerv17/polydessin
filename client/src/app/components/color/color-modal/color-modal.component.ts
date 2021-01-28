@@ -25,7 +25,13 @@ export class ColorModalComponent implements OnInit {
   }
 
   confirmColor() : void {
-    //update la couleur
+    if (this.colorService.currentColor == "primary"){
+      this.colorService.primaryColor = this.color;
+    } 
+    else if (this.colorService.currentColor == "secondary"){
+      this.colorService.secondaryColor = this.color;
+    }
+
     this.colorService.modalVisibility = false;
   }
 
