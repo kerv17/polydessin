@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
 @Component({
@@ -14,8 +14,17 @@ export class SidebarComponent {
     openCrayon() {
         this.service.setTool();
     }
+    openRectangle(){
+      this.service.setRectangle();
+    }
+
+    openLine(){
+      this.service.setLine();
+    }
     openWidth() {
         this.width = true;
         this.visible = false;
     }
+
+
 }

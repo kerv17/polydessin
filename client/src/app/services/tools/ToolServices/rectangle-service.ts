@@ -22,6 +22,10 @@ export enum MouseButton {
 export class RectangleService extends Tool {
     private pathData: Vec2[];
 
+    public getPath():Vec2[]{
+        return this.pathData;
+    }
+
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
@@ -53,7 +57,7 @@ export class RectangleService extends Tool {
             this.pathData.push(d);
             this.pathData.push(a);
 
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawRectangle(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -75,18 +79,34 @@ export class RectangleService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.drawRectangle(this.drawingService.previewCtx, this.pathData);
             this.clearPath();
             this.pathData.push(a);
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = sessionStorage.getItem("color") || "black";
+
+
+
+
+
+    private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
+
+        //Determiner si on doit fill le rectangle
+        let widhtHeight:Vec2 = {x:path[2].x-path[0].x , y: path[2].y-path[0].y};
+        ctx.fillStyle= this.color2 || "black";
+        ctx.fillRect(path[0].x,path[0].y,widhtHeight.x, widhtHeight.y);
+
+
+       //Determiner si on doit faire la bordure
+        ctx.strokeStyle = this.color || "black";
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
+        ctx.closePath();
+
         ctx.stroke();
     }
 

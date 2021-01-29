@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
-describe('RectangleService', () => {
+fdescribe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -26,7 +26,7 @@ describe('RectangleService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(RectangleService);
-        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawLineSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -65,15 +65,16 @@ describe('RectangleService', () => {
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
+        //Put down mouse
+        service.onMouseDown(mouseEvent);
+        //Rise it back up
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseUp should not call drawLine if mouse was not already down', () => {
+    it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
 
@@ -81,16 +82,19 @@ describe('RectangleService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call drawLine if mouse was already down', () => {
+    it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
+        service.onMouseDown(mouseEvent);
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(service.getPath().length==5)
     });
 
-    it(' onMouseMove should not call drawLine if mouse was not already down', () => {
+
+
+    it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
 
@@ -100,18 +104,26 @@ describe('RectangleService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
+    fit(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
-        service.onMouseUp(mouseEvent);
+        let mouseEvent1 = mouseEvent;
+        service.onMouseDown(mouseEvent1);
+        mouseEvent = { offsetX: 3, offsetY: 3, button: 0 } as MouseEvent;
+        let mouseEvent2 = mouseEvent;
+        service.onMouseUp(mouseEvent2);
 
         // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+        for (var _i = mouseEvent1.offsetX; _i <= mouseEvent2.offsetX, _i++;){
+          for (var _j = mouseEvent1.offsetY; _j <= mouseEvent2.offsetY, _j++;){
+            let imageData: ImageData = baseCtxStub.getImageData(_i, _j, 1, 1);
+
+
+            expect(imageData.data[0]).toEqual(0); // R
+            expect(imageData.data[1]).toEqual(0); // G
+            expect(imageData.data[2]).toEqual(0); // B
+            // tslint:disable-next-line:no-magic-numbers
+            expect(imageData.data[3]).not.toEqual(0); // A
+          }
+        }
     });
 });
