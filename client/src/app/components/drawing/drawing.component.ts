@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 
@@ -25,7 +26,7 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, pencilService: PencilService) {
+    constructor(private drawingService: DrawingService, private pencilService: PencilService, private colorService:ColorService) {
         this.tools = [pencilService];
         this.currentTool = this.tools[0];
     }
@@ -36,20 +37,24 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.pencilService.color = this.colorService.primaryColor;
     }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
+        this.pencilService.color = this.colorService.primaryColor;
         this.currentTool.onMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
+        this.pencilService.color = this.colorService.primaryColor;
         this.currentTool.onMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
+        this.pencilService.color = this.colorService.primaryColor;
         this.currentTool.onMouseUp(event);
     }
 

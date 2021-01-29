@@ -21,6 +21,7 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
+    public color : string;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -59,7 +60,7 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        //ctx.strokeStyle = sessionStorage.getItem("primaryColor") || "rgba(1,1,1,1)";
+        ctx.strokeStyle = this.color; 
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

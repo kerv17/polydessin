@@ -7,19 +7,10 @@
 <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'white'}" (click)="openModal('Secondary')"></div>
 
 <div>
-    <p>10 dernières couleurs utilisées :</p>
-    <!-- 
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    <div class="color-div" [ngStyle]="{'background-color':  || 'white'}"></div>
-    -->
+    <p>Couleurs récemment utilisées :</p>
+    <div *ngFor="let colors of recentColors">
+        <div class="color-div" [ngStyle]="{'background-color': colors || 'white'}"></div>
+    </div>
 </div>
 
-<app-color-modal *ngIf="visibility == true"></app-color-modal>
+<app-color-modal (isVisible)="closeModal()" (colorModified)="updateColor()" *ngIf="visibility == true"></app-color-modal>
