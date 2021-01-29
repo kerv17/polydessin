@@ -8,7 +8,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     public visible = false;
-    public crayon: boolean = false;
+    public width: boolean = false;
     constructor(private service: ToolControllerService) {}
     openColor() {
         this.visible = true;
@@ -16,5 +16,8 @@ export class SidebarComponent {
 
     openCrayon() {
         this.service.setTool();
+    }
+    openWidth() {
+        this.width = true;
     }
 }

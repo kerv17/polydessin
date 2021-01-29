@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Injector, NgModule } from '@angular/core';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
@@ -10,6 +11,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { WidthSliderComponent } from './components/WidthModifier/width-slider/width-slider.component';
 
 @NgModule({
     declarations: [
@@ -21,8 +23,9 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
         ColorSliderComponent,
         ColorPaletteComponent,
         ColorComponent,
+        WidthSliderComponent,
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule],
     providers: [],
     bootstrap: [AppComponent],
 })

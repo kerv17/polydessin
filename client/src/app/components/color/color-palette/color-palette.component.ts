@@ -79,7 +79,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
         this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
         this.draw();
         this.color.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
-        //J'ai rajouté la ligne suivante parce que sino la couleur se fait juste update sur la pallete on mouse move
+        //J'ai rajouté la ligne suivante parce que sinon la couleur se fait juste update sur la pallete on mouse move
         this.emitColor(evt.offsetX, evt.offsetY);
     }
 
