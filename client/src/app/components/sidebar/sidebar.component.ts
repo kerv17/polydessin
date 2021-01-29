@@ -10,10 +10,6 @@ export class SidebarComponent {
     public visible = false;
     public width: boolean = false;
     constructor(private service: ToolControllerService) {}
-    openColor() {
-        this.visible = true;
-        this.width = false;
-    }
 
     openCrayon() {
         this.service.setTool();

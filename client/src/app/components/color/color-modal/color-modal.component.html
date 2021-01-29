@@ -1,0 +1,20 @@
+<div class="color-wrapper">
+    <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColor()"></app-color-palette>
+    <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColor()"></app-color-slider>
+</div>
+
+<div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
+
+<form>
+    <label>R : </label>
+    <input type="text" id="R" size="2" (change)="updateColor()"><br>
+    <label>V : </label>
+    <input type="text" id="G" size="2" (change)="updateColor()"><br>
+    <label>B : </label>
+    <input type="text" id="B" size="2" (change)="updateColor()"><br>
+    <label>Opacité (en %) : </label>
+    <input type="text" id="A" size="2" (change)="updateColor()"><br>
+</form>
+
+<button (click)="confirmColor()"> OK </button>
+<button (click)="cancel()"> Annuler </button>

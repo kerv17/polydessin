@@ -8,12 +8,12 @@
     </p>
 
     <input type="button" value="Go back!" onclick="history.back()" />
-    <button (click)="openColor()">Couleur</button>
+
     <button (click)="openCrayon()">Crayon</button>
     <button (click)="openWidth()">Width</button>
-    <div *ngIf="visible">
-        <app-color></app-color>
-    </div>
+
+    <app-color></app-color>
+
     <div *ngIf="width">
         <app-width-slider></app-width-slider>
     </div>

@@ -14,8 +14,8 @@ export class MainPageComponent {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
     constructor(private basicService: IndexService) {
-        sessionStorage.setItem("primaryColor","rgba(1,1,1,1)");
-        sessionStorage.setItem("secondaryColor","rgba(1,1,1,1)");
+        //sessionStorage.setItem("primaryColor","rgba(1,1,1,1)");
+        //sessionStorage.setItem("secondaryColor","rgba(1,1,1,1)");
     }
 
     sendTimeToServer(): void {
