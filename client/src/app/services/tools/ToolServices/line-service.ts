@@ -19,10 +19,11 @@ export enum MouseButton {
 @Injectable({
     providedIn: 'root',
 })
-export class LineService extends Tool {
+export class LineService extends Tool
+{
     private pathData: Vec2[];
 
-    constructor(drawingService: DrawingService) {
+    constructor(public drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
     }
