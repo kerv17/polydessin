@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,8 +34,5 @@ import { ColorService } from './services/color/color.service';
     bootstrap: [AppComponent],
 })
 export class AppModule {
-    static injector: Injector;
-    constructor(injector: Injector) {
-        AppModule.injector = injector;
-    }
+    constructor() {}
 }

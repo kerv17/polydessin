@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppModule } from '@app/app.module';
 import { Tool } from '@app/classes/tool';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '../ToolServices/pencil-service';
 
 @Injectable({
@@ -9,11 +7,9 @@ import { PencilService } from '../ToolServices/pencil-service';
 })
 export class ToolControllerService {
     public currentTool: Tool;
-    constructor() {}
+    constructor(private pencilService: PencilService) {}
 
-    public setTool(): Tool {
-        this.currentTool = AppModule.injector.get(PencilService);
-
-        return new PencilService(new DrawingService());
+    public setTool(): void {
+        this.currentTool = this.pencilService;
     }
 }
