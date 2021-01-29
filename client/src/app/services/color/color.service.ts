@@ -5,15 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class ColorService {
 
-  public primaryColor : string;
-  public secondaryColor : string;
+  public primaryColor : string = 'rgba(0,0,0,1)';
+  public secondaryColor : string = 'rgba(0,0,0,1)';
   public currentColor : string;
   public modalVisibility : boolean;
   public recentColors : string[] = new Array();
 
   constructor() { 
-    this.primaryColor = "rgba(0,0,0,1)";
-    this.secondaryColor = "rgba(0,0,0,1)";
     this.modalVisibility = false;
   }
 

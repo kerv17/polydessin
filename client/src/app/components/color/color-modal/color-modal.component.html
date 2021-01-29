@@ -3,7 +3,7 @@
     <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColor()"></app-color-slider>
 </div>
 
-<div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
+<div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
 
 <form>
     <label>R : </label>

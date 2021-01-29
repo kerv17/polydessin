@@ -49,12 +49,14 @@ export class ColorModalComponent implements OnInit {
   }
 
   setColor() : void {
-    let subColor:string = this.color.substring(5,this.color.length - 1);
-    let splitColor:string[] = subColor.split(",");
-
-    (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16); //à changer avec ngClass
-    (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16); //à changer avec ngClass
-    (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16); //à changer avec ngClass
+    if (this.color != undefined){
+      let subColor:string = this.color.substring(5,this.color.length - 1);
+      let splitColor:string[] = subColor.split(",");
+      
+      (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16); //à changer avec ngClass
+      (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16); //à changer avec ngClass
+      (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16); //à changer avec ngClass
+    }
   }
 
   updateColor() : void {
