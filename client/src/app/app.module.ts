@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Injector, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -25,7 +26,7 @@ import { WidthSliderComponent } from './components/WidthModifier/width-slider/wi
         ColorComponent,
         WidthSliderComponent,
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

@@ -12,6 +12,7 @@ export class SidebarComponent {
     constructor(private service: ToolControllerService) {}
     openColor() {
         this.visible = true;
+        this.width = false;
     }
 
     openCrayon() {
@@ -19,5 +20,6 @@ export class SidebarComponent {
     }
     openWidth() {
         this.width = true;
+        this.visible = false;
     }
 }
