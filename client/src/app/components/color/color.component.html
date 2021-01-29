@@ -9,7 +9,7 @@
 <div>
     <p>Couleurs récemment utilisées :</p>
     <div *ngFor="let colors of recentColors">
-        <div class="color-div" [ngStyle]="{'background-color': colors || 'white'}"></div>
+        <div class="color-div" [ngStyle]="{'background-color': colors || 'white'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors)"></div>
     </div>
 </div>
 

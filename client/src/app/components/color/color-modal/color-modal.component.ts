@@ -52,18 +52,18 @@ export class ColorModalComponent implements OnInit {
     let subColor:string = this.color.substring(5,this.color.length - 1);
     let splitColor:string[] = subColor.split(",");
 
-    (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16);
-    (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16);
-    (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16);
-    (<HTMLInputElement>document.getElementById("A")).value = String(parseFloat(splitColor[3])*100);
+    (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16); //à changer avec ngClass
+    (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16); //à changer avec ngClass
+    (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16); //à changer avec ngClass
+    (<HTMLInputElement>document.getElementById("A")).value = String(parseFloat(splitColor[3])*100); //à changer avec ngClass
   }
 
   updateColor() : void {
     //récupérer valeur input
-    let R:string = (<HTMLInputElement>document.getElementById("R")).value;
-    let G:string = (<HTMLInputElement>document.getElementById("G")).value;
-    let B:string = (<HTMLInputElement>document.getElementById("B")).value;
-    let A:string = (<HTMLInputElement>document.getElementById("A")).value;
+    let R:string = (<HTMLInputElement>document.getElementById("R")).value; //à changer avec ngClass
+    let G:string = (<HTMLInputElement>document.getElementById("G")).value; //à changer avec ngClass
+    let B:string = (<HTMLInputElement>document.getElementById("B")).value; //à changer avec ngClass
+    let A:string = (<HTMLInputElement>document.getElementById("A")).value; //à changer avec ngClass
 
     //vérifie si hexadécimal
     //update la couleur rgba
@@ -73,7 +73,7 @@ export class ColorModalComponent implements OnInit {
         
       }
       else if (Number(A) > 100){
-        (<HTMLInputElement>document.getElementById("A")).value = "100";
+        (<HTMLInputElement>document.getElementById("A")).value = "100"; //à changer avec ngClass
       }
       else {
         this.color = 'rgba(' + parseInt(R, 16) + ',' + parseInt(G, 16) + ',' + parseInt(B, 16) + ',1)';
