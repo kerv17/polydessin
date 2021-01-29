@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppModule } from '@app/app.module';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '../pencil-service';
+import { PencilService } from '../ToolServices/pencil-service';
 
 @Injectable({
     providedIn: 'root',
