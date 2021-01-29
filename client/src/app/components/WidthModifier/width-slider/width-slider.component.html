@@ -1,0 +1,8 @@
+<h2>Veuiller entrez la largeur de l'outil en Pixel</h2>
+<mat-slider min="1" [(ngModel)]="width" (change)="getSliderValue($event)"></mat-slider>
+<!-- Cette ligne en dessous a l'air weird mais c'est juste pour empêcher la page de reload si qqun appuye enter dans la boite-->
+
+<form onSubmit="return false">
+    <label>Width : </label>
+    <input type="number" id="width" (change)="setWidth()" size="2" min="1" max="100" /><br />
+</form>

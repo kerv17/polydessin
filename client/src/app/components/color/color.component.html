@@ -1,8 +1,16 @@
-<div class="color-wrapper">
-    <app-color-palette [hue]="hue" (color)="color = $event"></app-color-palette>
-    <app-color-slider (color)="hue=$event" style="margin-left:16px"></app-color-slider>
+<p>Couleur Principale :</p>
+<div class="color-div" [ngStyle]="{'background-color': primaryColor || 'white'}" (click)="openModal('Primary')"></div>
+
+<button (click)="invert()">Inverser Couleurs Principale et Secondaire</button>
+
+<p>Couleur Secondaire :</p>
+<div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'white'}" (click)="openModal('Secondary')"></div>
+
+<div>
+    <p>Couleurs récemment utilisées :</p>
+    <div *ngFor="let colors of recentColors">
+        <div class="color-div" [ngStyle]="{'background-color': colors || 'white'}"></div>
+    </div>
 </div>
-<div class="input-wrapper">
-    <span class="text">{{color}}</span>
-    <div class="color-div" [ngStyle]="{'background-color': color || 'white'}"></div>
-</div>
+
+<app-color-modal (isVisible)="closeModal()" (colorModified)="updateColor()" *ngIf="visibility == true"></app-color-modal>

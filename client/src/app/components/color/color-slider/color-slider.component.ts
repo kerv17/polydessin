@@ -2,7 +2,17 @@ import {
   AfterViewInit, Component,
   ElementRef,
   EventEmitter, HostListener, Output, ViewChild
-} from '@angular/core'
+} from '@angular/core';
+
+// TODO : Déplacer ça dans un fichier séparé accessible par tous
+export enum MouseButton {
+  Left = 0,
+  Middle = 1,
+  Right = 2,
+  Back = 3,
+  Forward = 4,
+}
+
 
 @Component({
   selector: 'app-color-slider',
@@ -14,7 +24,7 @@ export class ColorSliderComponent implements AfterViewInit {
   canvas: ElementRef<HTMLCanvasElement>
 
   @Output()
-  color: EventEmitter<string> = new EventEmitter()
+  color: EventEmitter<string> = new EventEmitter(true);
 
   private ctx: CanvasRenderingContext2D
   private mousedown: boolean = false
@@ -68,21 +78,20 @@ export class ColorSliderComponent implements AfterViewInit {
     this.mousedown = true
     this.selectedHeight = evt.offsetY
     this.draw()
-    this.emitColor(evt.offsetX, evt.offsetY)
+    this.emitColor(evt.offsetX, evt.offsetY);
   }
 
   onMouseMove(evt: MouseEvent) {
     if (this.mousedown) {
       this.selectedHeight = evt.offsetY
       this.draw()
-      this.emitColor(evt.offsetX, evt.offsetY)
+      this.emitColor(evt.offsetX, evt.offsetY);
     }
   }
 
   emitColor(x: number, y: number) {
     const rgbaColor = this.getColorAtPosition(x, y)
-    sessionStorage.setItem("color",rgbaColor);
-    this.color.emit(rgbaColor)
+    this.color.emit(rgbaColor);
   }
 
   getColorAtPosition(x: number, y: number) {
