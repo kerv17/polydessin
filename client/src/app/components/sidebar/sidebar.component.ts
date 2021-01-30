@@ -13,6 +13,7 @@ export class SidebarComponent {
 
     openCrayon() {
         this.service.setTool();
+        this.openWidth();
     }
     openWidth() {
         this.width = true;

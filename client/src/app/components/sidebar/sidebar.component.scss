@@ -1,12 +1,28 @@
 .container {
+    display: flex;
     height: auto;
     min-height: 98vh;
     border: 1px solid black;
     padding: 0 5px 0 5px;
     margin-right: 5px;
 }
-
+//J'utilise ca pour faire la rangé de bouton a gauche
 .sidebar-container {
     display: flex;
+    //flex: 1;
     flex-direction: column;
+
+    width: 25%;
+    background-color: black;
+    justify-content: start;
+}
+.services {
+    flex-direction: column;
+}
+.function {
+    display: flex;
+    width: 90%;
+    flex: 0.1;
+    align-self: center;
+    margin: 0.5em;
 }

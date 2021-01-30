@@ -1,20 +1,18 @@
 <div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
-
-    <input type="button" value="Go back!" onclick="history.back()" />
-
-    <button (click)="openCrayon()">Crayon</button>
-    <button (click)="openWidth()">Width</button>
-
-    <app-color></app-color>
-
-    <div *ngIf="width">
-        <app-width-slider></app-width-slider>
+    <div class="sidebar-container">
+        <button class="function" onclick="history.back()">Go back!</button>
+        <button class="function" (click)="openCrayon()">Crayon</button>
+        <button class="function">Ligne</button>
+        <button class="function">Rectangle</button>
+        <button class="function">Ellipse</button>
+        <!--<button (click)="openWidth()">Width</button>-->
+    </div>
+    <div class="services">
+        <div>
+            <app-color></app-color>
+        </div>
+        <div *ngIf="width">
+            <app-width-slider></app-width-slider>
+        </div>
     </div>
 </div>

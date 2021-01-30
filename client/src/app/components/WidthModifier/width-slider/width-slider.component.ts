@@ -10,8 +10,8 @@ export class WidthSliderComponent implements OnInit {
     @Input() width: number = 1;
     constructor() {}
     getSliderValue(evt: MatSliderChange) {
-        sessionStorage.setItem('width', String(evt.value) || '1');
-        this.width = evt.value || 4;
+        sessionStorage.setItem('width', String(evt.value));
+        this.width = evt.value || 1;
         this.updateWidth();
     }
     ngAfterViewInit(): void {
@@ -19,15 +19,16 @@ export class WidthSliderComponent implements OnInit {
     }
     updateWidth() {
         (<HTMLInputElement>document.getElementById('width')).value = this.width.toString();
-        this.updateSlider();
     }
-    updateSlider() {}
+
     setWidth() {
         let placeholder: string = (<HTMLInputElement>document.getElementById('width')).value;
-        this.width = parseInt(placeholder);
-        sessionStorage.setItem('width', String(this.width) || '1');
+        let verifier = parseInt(placeholder);
+
+        this.width = verifier;
+        sessionStorage.setItem('width', String(this.width));
+
         //window.alert(this.width);
-        this.updateWidth();
     }
     ngOnInit(): void {}
 }
