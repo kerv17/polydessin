@@ -8,7 +8,7 @@ export abstract class Tool {
     mouseDown: boolean = false;
     public color: string;
     public color2:string;
-    public toolMode:string = "fill";
+    public toolMode:string = "border";
     shift:boolean =false;
 
     constructor(protected drawingService: DrawingService) {}

@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { PencilService } from '../ToolServices/pencil-service';
 import { RectangleService} from "../ToolServices/rectangle-service";
 import { LineService} from "../ToolServices/line-service";
+import { EllipsisService} from "../ToolServices/ellipsis-service";
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,8 @@ export class ToolControllerService {
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
-        private lineService:LineService) {
+        private lineService:LineService,
+        private ellipsisService:EllipsisService) {
       document.addEventListener('keydown', (event:KeyboardEvent) => {
         this.checkKeyDown(event);
 
@@ -30,6 +32,10 @@ export class ToolControllerService {
 
     public setRectangle():void{
       this.currentTool = this.rectangleService;
+    }
+
+    public setEllipse():void{
+      this.currentTool = this.ellipsisService;
     }
 
     public setLine():void{

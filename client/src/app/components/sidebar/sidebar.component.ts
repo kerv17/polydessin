@@ -21,6 +21,10 @@ export class SidebarComponent {
     openLine(){
       this.service.setLine();
     }
+
+    openEllipsis(){
+      this.service.setEllipse();
+    }
     openWidth() {
         this.width = true;
         this.visible = false;
