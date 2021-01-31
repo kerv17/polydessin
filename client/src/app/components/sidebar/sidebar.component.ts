@@ -26,5 +26,9 @@ export class SidebarComponent {
         this.visible = false;
     }
 
+    setMode(mode:string){
+
+    }
+
 
 }

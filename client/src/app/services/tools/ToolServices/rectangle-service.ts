@@ -21,7 +21,6 @@ export enum MouseButton {
 })
 export class RectangleService extends Tool {
     private pathData: Vec2[];
-
     public getPath():Vec2[]{
         return this.pathData;
     }
@@ -94,21 +93,35 @@ export class RectangleService extends Tool {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
 
         //Determiner si on doit fill le rectangle
-        let widhtHeight:Vec2 = {x:path[2].x-path[0].x , y: path[2].y-path[0].y};
-        ctx.fillStyle= this.color2 || "black";
-        ctx.fillRect(path[0].x,path[0].y,widhtHeight.x, widhtHeight.y);
+        if (this.toolMode == "fill" || this.toolMode == "fillBorder"){
+          this.fill(ctx,path);
+        }
+
 
 
        //Determiner si on doit faire la bordure
-        ctx.strokeStyle = this.color || "black";
-        ctx.beginPath();
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.closePath();
+       if (this.toolMode == "border" || this.toolMode == "fillBorder"){
+         this.drawBorder(ctx,path);
+       }
 
         ctx.stroke();
     }
+
+    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
+      ctx.strokeStyle = this.color2 || "black";
+      ctx.beginPath();
+      for (const point of path) {
+          ctx.lineTo(point.x, point.y);
+      }
+      ctx.closePath();
+    }
+
+    private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+      let widhtHeight:Vec2 = {x:path[2].x-path[0].x , y: path[2].y-path[0].y};
+      ctx.fillStyle= this.color || "black";
+      ctx.fillRect(path[0].x,path[0].y,widhtHeight.x, widhtHeight.y);
+    }
+
 
     private clearPath(): void {
         this.pathData = [];

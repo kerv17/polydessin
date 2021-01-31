@@ -8,6 +8,7 @@ export abstract class Tool {
     mouseDown: boolean = false;
     public color: string;
     public color2:string;
+    public toolMode:string = "fill";
     constructor(protected drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}

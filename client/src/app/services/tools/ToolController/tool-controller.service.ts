@@ -37,7 +37,7 @@ export class ToolControllerService {
         case "c":
           this.setTool();
           break;
-        case "f":
+        case "1":
           this.setRectangle();
           break;
         case "l":
