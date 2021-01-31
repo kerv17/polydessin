@@ -18,6 +18,10 @@ export class ToolControllerService {
         this.checkKeyDown(event);
 
       });
+      document.addEventListener('keyup', (event:KeyboardEvent) => {
+        this.checkKeyUp(event);
+
+      });
     }
 
     public setTool(): void {
@@ -31,6 +35,9 @@ export class ToolControllerService {
     public setLine():void{
       this.currentTool = this.lineService;
     }
+    public shift(shift:boolean){
+      this.currentTool.onShift(shift);
+    }
 
     private checkKeyDown(event:KeyboardEvent):void{
       switch(event.key){
@@ -43,6 +50,7 @@ export class ToolControllerService {
         case "l":
           this.setLine();
         case "Shift":
+          this.shift(true);
           break;
         default:
           break;
@@ -51,6 +59,15 @@ export class ToolControllerService {
     }
 
 
-
+    private checkKeyUp(event:KeyboardEvent):void{
+      switch(event.key){
+        case "Shift":
+          this.shift(false);
+          break;
+        default:
+          break;
+      }
+      return;
+    }
 
 }

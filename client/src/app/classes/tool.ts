@@ -9,6 +9,8 @@ export abstract class Tool {
     public color: string;
     public color2:string;
     public toolMode:string = "fill";
+    shift:boolean =false;
+
     constructor(protected drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}
@@ -20,6 +22,8 @@ export abstract class Tool {
     onClick(event:MouseEvent):void {}
 
     ondbClick(event:MouseEvent):void {}
+
+    onShift(shift:boolean){}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };

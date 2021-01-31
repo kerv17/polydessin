@@ -24,6 +24,7 @@ export class RectangleService extends Tool {
     public getPath():Vec2[]{
         return this.pathData;
     }
+    public lastMoveEvent:MouseEvent;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -64,13 +65,16 @@ export class RectangleService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
+            this.lastMoveEvent = event;
             const mousePosition = this.getPositionFromMouse(event);
-
             let a: Vec2 = this.pathData[this.pathData.length - 1];
             let b: Vec2 = { x: a.x, y: mousePosition.y };
             let c: Vec2 = mousePosition;
             let d: Vec2 = { x: mousePosition.x, y: a.y };
-
+            if (this.shift){
+              c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
+              d = {x:(a.x+ b.y-a.y),y:a.y };
+            }
             this.pathData.push(b);
             this.pathData.push(c);
             this.pathData.push(d);
@@ -84,8 +88,10 @@ export class RectangleService extends Tool {
         }
     }
 
-
-
+    onShift(shifted:boolean){
+      this.shift = shifted;
+      this.onMouseMove(this.lastMoveEvent);
+    }
 
 
 
