@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
 @Component({
@@ -6,10 +6,15 @@ import { ColorService } from '@app/services/color/color.service';
   templateUrl: './color-modal.component.html',
   styleUrls: ['./color-modal.component.scss']
 })
-export class ColorModalComponent implements OnInit {
+export class ColorModalComponent implements AfterViewInit {
 
   public hue : string;
   public color : string;
+  
+  @ViewChild('R')  rValue:ElementRef;
+  @ViewChild('G')  gValue:ElementRef;
+  @ViewChild('B')  bValue:ElementRef;
+  
 
   @Output()
   isVisible: EventEmitter<boolean> = new EventEmitter(true);
@@ -18,17 +23,17 @@ export class ColorModalComponent implements OnInit {
   colorModified: EventEmitter<string> = new EventEmitter(true);
 
   constructor(private colorService : ColorService) {
-
+    
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     if (this.colorService.currentColor == 'Primary'){
       this.color = this.colorService.primaryColor;
     }
     else if (this.colorService.currentColor == 'Secondary'){
       this.color = this.colorService.secondaryColor;
     }
-    this.setColor();
+    this.setColorInputValue();
   }
 
   confirmColor() : void {
@@ -48,21 +53,30 @@ export class ColorModalComponent implements OnInit {
     this.isVisible.emit(false);
   }
 
-  setColor() : void {
-    if (this.color != undefined){
+  //affiche la valeur rgb de la couleur sélectionnée par la palette de couleur
+  setColorInputValue() : void {
+    if (this.color != undefined) {
       let subColor:string = this.color.substring(5,this.color.length - 1);
       let splitColor:string[] = subColor.split(",");
       
-      (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16); //à changer avec ngClass
-      (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16); //à changer avec ngClass
-      (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16); //à changer avec ngClass
+      this.rValue.nativeElement.value = parseInt(splitColor[0]).toString(16);
+      this.gValue.nativeElement.value = parseInt(splitColor[1]).toString(16);
+      this.bValue.nativeElement.value = parseInt(splitColor[2]).toString(16);
+    } 
+    else {
+      this.rValue.nativeElement.value = '00';
+      this.gValue.nativeElement.value = '00';
+      this.bValue.nativeElement.value = '00';
     }
+    
   }
 
-  updateColor() : void {
-    let R:string = (<HTMLInputElement>document.getElementById("R")).value; //à changer avec ngClass
-    let G:string = (<HTMLInputElement>document.getElementById("G")).value; //à changer avec ngClass
-    let B:string = (<HTMLInputElement>document.getElementById("B")).value; //à changer avec ngClass
+  //met à jour la couleur lorsqu'on entre manuellement des valeurs rgb
+  updateColorFromInput() : void {
+
+    let R:string = this.rValue.nativeElement.value; 
+    let G:string = this.gValue.nativeElement.value; 
+    let B:string = this.bValue.nativeElement.value; 
 
     if (this.colorService.isHexadecimal(R) && this.colorService.isHexadecimal(G) && this.colorService.isHexadecimal(B)){
       
@@ -71,7 +85,7 @@ export class ColorModalComponent implements OnInit {
         
     } 
     else {
-      this.setColor();
+      this.setColorInputValue();
     }
   }
   

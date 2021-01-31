@@ -40,5 +40,4 @@ export class ColorService {
       this.recentColors.push(color);
     }
   }
-
 }

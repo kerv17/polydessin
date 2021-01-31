@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -14,7 +14,15 @@ export enum MouseButton {
     templateUrl: './color-palette.component.html',
     styleUrls: ['./color-palette.component.scss'],
 })
-export class ColorPaletteComponent implements AfterViewInit, OnChanges {
+
+/*
+    RÉFÉRENCES POUR LE CODE DU COMPONENT COLOR-PALETTE:
+    Le présent code est tiré du tutoriel "Creating a Color Picker Component with Angular" de Lukas Marx, publié le 18 septembre 2018
+    disponible à l'adresse suivante : "https://malcoded.com/posts/angular-color-picker/"
+    Quelques modifications y ont été apportées
+*/
+
+export class ColorPaletteComponent implements AfterViewInit {
     @Input()
     hue: string;
 
@@ -24,10 +32,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     @ViewChild('canvas')
     canvas: ElementRef<HTMLCanvasElement>;
 
-    private ctx: CanvasRenderingContext2D;
-
-    private mousedown: boolean = false;
-
+    public ctx: CanvasRenderingContext2D;
+    public mousedown: boolean = false;
     public selectedPosition: { x: number; y: number };
 
     ngAfterViewInit() {
@@ -106,6 +112,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
     getColorAtPosition(x: number, y: number) {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        return ('rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)');
     }
 }

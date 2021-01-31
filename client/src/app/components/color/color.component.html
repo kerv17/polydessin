@@ -2,21 +2,28 @@
 <div class="color-div" [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Primary')"></div>
 
 <label>Opacité (en %) : </label>
-<input type="text" id="OP" size="2" (change)="updateOpacityPrimary()">
+<input type="text" #OP size="2" (change)="updateOpacityPrimary()">
 
-<button (click)="invert()">Inverser Couleurs Principale et Secondaire</button>
+
+<br><br><button (click)="invert()">Inverser Couleurs Principale et Secondaire</button>
 
 <p>Couleur Secondaire :</p>
 <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Secondary')"></div>
 
 <label>Opacité (en %) : </label>
-<input type="text" id="OS" size="2" (change)="updateOpacitySecondary()">
+<input type="text" #OS size="2" (change)="updateOpacitySecondary()">
 
 <div>
     <p>Couleurs récemment utilisées :</p>
-    <div *ngFor="let colors of recentColors">
+    <div class='recentColors' *ngFor="let colors of recentColors">
         <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors)"></div>
     </div>
 </div>
+
+
+
+
+
+
 
 <app-color-modal (isVisible)="closeModal()" (colorModified)="updateColor()" *ngIf="visibility == true"></app-color-modal>

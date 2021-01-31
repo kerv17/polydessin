@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ColorModalComponent } from './color-modal.component';
+
 
 describe('ColorModalComponent', () => {
   let component: ColorModalComponent;

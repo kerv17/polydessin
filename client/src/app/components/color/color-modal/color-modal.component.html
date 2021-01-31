@@ -1,17 +1,17 @@
 <div class="color-wrapper">
-    <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColor()"></app-color-palette>
-    <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColor()"></app-color-slider>
+    <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
+    <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColorInputValue()"></app-color-slider>
 </div>
 
 <div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
 
 <form>
     <label>R : </label>
-    <input type="text" id="R" size="2" (change)="updateColor()"><br>
+    <input type="text" #R size="2" (change)="updateColorFromInput()"><br>
     <label>V : </label>
-    <input type="text" id="G" size="2" (change)="updateColor()"><br>
+    <input type="text" #G size="2" (change)="updateColorFromInput()"><br>
     <label>B : </label>
-    <input type="text" id="B" size="2" (change)="updateColor()"><br>
+    <input type="text" #B size="2" (change)="updateColorFromInput()"><br>
 </form>
 
 <button (click)="confirmColor()"> OK </button>
