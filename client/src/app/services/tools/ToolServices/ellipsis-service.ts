@@ -47,6 +47,7 @@ export class EllipsisService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
+            this.getRectanglePoints(mousePosition);
             this.getPathForEllipsis(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -122,7 +123,7 @@ export class EllipsisService extends Tool {
       let a: Vec2 = this.pathData[0];
             let c: Vec2 = mousePosition;
             if (this.shift){
-              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
+              c = this.perimerterPathData[2];
             }
             let bx:number = a.x+ (c.x-a.x)/2;
             let by:number = a.y+ (c.y-a.y)/2;
@@ -133,6 +134,7 @@ export class EllipsisService extends Tool {
 
     private drawPerimeter(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
       ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
       ctx.beginPath();
       for (const point of path) {
           ctx.lineTo(point.x, point.y);
