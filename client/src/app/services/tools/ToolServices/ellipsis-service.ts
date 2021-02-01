@@ -46,17 +46,16 @@ export class EllipsisService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
 
             //Va chercher les 4 coins du rectangle
-            let a: Vec2 = this.pathData[this.pathData.length - 1];
-            let b: Vec2 = { x: a.x, y: mousePosition.y };
+            let a: Vec2 = this.pathData[0];
             let c: Vec2 = mousePosition;
-            let d: Vec2 = { x: mousePosition.x, y: a.y };
-
-            //Les ajoute au dessin
+            if (this.shift){
+              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
+            }
+            let bx:number = a.x+ (c.x-a.x)/2;
+            let by:number = a.y+ (c.y-a.y)/2;
+            let b: Vec2 = {x:bx,y:by};
             this.pathData.push(b);
             this.pathData.push(c);
-            this.pathData.push(d);
-            this.pathData.push(a);
-
             this.drawRectangle(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -67,23 +66,21 @@ export class EllipsisService extends Tool {
         if (this.mouseDown) {
             this.lastMoveEvent = event;
             const mousePosition = this.getPositionFromMouse(event);
-            let a: Vec2 = this.pathData[this.pathData.length - 1];
-            let b: Vec2 = { x: a.x, y: mousePosition.y };
+            let a: Vec2 = this.pathData[0];
             let c: Vec2 = mousePosition;
-            let d: Vec2 = { x: mousePosition.x, y: a.y };
             if (this.shift){
-              c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
-              d = {x:(a.x+ b.y-a.y),y:a.y };
+              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
             }
+            let bx:number = a.x+ (c.x-a.x)/2;
+            let by:number = a.y+ (c.y-a.y)/2;
+            let b: Vec2 = {x:bx,y:by};
             this.pathData.push(b);
             this.pathData.push(c);
-            this.pathData.push(d);
-            this.pathData.push(a);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawRectangle(this.drawingService.previewCtx, this.pathData);
-            this.drawingService.previewCtx.clearRect(0,0,1000,1000);
+            this.clearPath();
             this.pathData.push(a);
         }
     }
@@ -98,10 +95,7 @@ export class EllipsisService extends Tool {
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
 
-        //Determiner si on doit fill le rectangle
-        if (this.toolMode == "fill" || this.toolMode == "fillBorder"){
-          this.fill(ctx,path);
-        }
+
 
 
 
@@ -110,20 +104,25 @@ export class EllipsisService extends Tool {
          this.drawBorder(ctx,path);
        }
 
+       //Determiner si on doit fill le rectangle
+       if (this.toolMode == "fill" || this.toolMode == "fillBorder"){
+        this.fill(ctx,path);
+      }
+
         ctx.stroke();
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
       ctx.strokeStyle = this.color2 || "black";
-      let a:Vec2  = path[0];
+      let a:Vec2  = path[1];
       let c:Vec2 = path[2];
-      ctx.ellipse(a.x,a.y,(c.x)-(a.x),(c.y)-(a.y),1,0,2*Math.PI);
+      ctx.beginPath();
+      ctx.ellipse(a.x,a.y,Math.abs((c.x)-(a.x)),Math.abs((c.y)-(a.y)),0,0,2*Math.PI);
     }
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-      let widhtHeight:Vec2 = {x:path[2].x-path[0].x , y: path[2].y-path[0].y};
-      ctx.fillStyle= this.color || "black";
-      ctx.fillRect(path[0].x,path[0].y,widhtHeight.x, widhtHeight.y);
+        ctx.fillStyle = this.color || "black";
+        ctx.fill();
     }
 
 
