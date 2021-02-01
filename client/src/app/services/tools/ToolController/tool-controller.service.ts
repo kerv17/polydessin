@@ -53,8 +53,12 @@ export class ToolControllerService {
         case "1":
           this.setRectangle();
           break;
+        case "2":
+          this.setEllipse();
+          break;2
         case "l":
           this.setLine();
+          break;
         case "Shift":
           this.shift(true);
           break;

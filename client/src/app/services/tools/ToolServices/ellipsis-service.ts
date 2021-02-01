@@ -21,6 +21,8 @@ export enum MouseButton {
 })
 export class EllipsisService extends Tool {
     private pathData: Vec2[];
+    private perimerterPathData:Vec2[];
+
     public getPath():Vec2[]{
         return this.pathData;
     }
@@ -38,25 +40,16 @@ export class EllipsisService extends Tool {
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.perimerterPathData.push(this.mouseDownCoord);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-
-            //Va chercher les 4 coins du rectangle
-            let a: Vec2 = this.pathData[0];
-            let c: Vec2 = mousePosition;
-            if (this.shift){
-              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
-            }
-            let bx:number = a.x+ (c.x-a.x)/2;
-            let by:number = a.y+ (c.y-a.y)/2;
-            let b: Vec2 = {x:bx,y:by};
-            this.pathData.push(b);
-            this.pathData.push(c);
-            this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+            this.getPathForEllipsis(mousePosition);
+            this.drawEllipse(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -66,22 +59,18 @@ export class EllipsisService extends Tool {
         if (this.mouseDown) {
             this.lastMoveEvent = event;
             const mousePosition = this.getPositionFromMouse(event);
-            let a: Vec2 = this.pathData[0];
-            let c: Vec2 = mousePosition;
-            if (this.shift){
-              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
-            }
-            let bx:number = a.x+ (c.x-a.x)/2;
-            let by:number = a.y+ (c.y-a.y)/2;
-            let b: Vec2 = {x:bx,y:by};
-            this.pathData.push(b);
-            this.pathData.push(c);
+            this.getRectanglePoints(mousePosition);
+            this.getPathForEllipsis(mousePosition);
 
+            let a = this.pathData[0];
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawRectangle(this.drawingService.previewCtx, this.pathData);
+
+
+            this.drawEllipse(this.drawingService.previewCtx, this.pathData);
             this.clearPath();
             this.pathData.push(a);
+            this.perimerterPathData.push(a);
         }
     }
 
@@ -92,13 +81,9 @@ export class EllipsisService extends Tool {
 
 
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
-
-
-
-
-
+2
        //Determiner si on doit faire la bordure
        if (this.toolMode == "border" || this.toolMode == "fillBorder"){
          this.drawBorder(ctx,path);
@@ -108,7 +93,8 @@ export class EllipsisService extends Tool {
        if (this.toolMode == "fill" || this.toolMode == "fillBorder"){
         this.fill(ctx,path);
       }
-
+        ctx.stroke();
+      this.drawPerimeter(this.drawingService.previewCtx,this.perimerterPathData);
         ctx.stroke();
     }
 
@@ -128,5 +114,55 @@ export class EllipsisService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+        this.perimerterPathData = [];
     }
+
+
+    private getPathForEllipsis(mousePosition:Vec2){
+      let a: Vec2 = this.pathData[0];
+            let c: Vec2 = mousePosition;
+            if (this.shift){
+              c = {x:(a.x+ mousePosition.y-a.y),y:mousePosition.y };
+            }
+            let bx:number = a.x+ (c.x-a.x)/2;
+            let by:number = a.y+ (c.y-a.y)/2;
+            let b: Vec2 = {x:bx,y:by};
+            this.pathData.push(b);
+            this.pathData.push(c);
+    }
+
+    private drawPerimeter(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
+      ctx.strokeStyle = "black";
+      ctx.beginPath();
+      for (const point of path) {
+          ctx.lineTo(point.x, point.y);
+      }
+      ctx.closePath();
+    }
+
+    private getRectanglePoints(mousePosition:Vec2){
+      let list:Vec2[] = [];
+
+      let a: Vec2 = this.perimerterPathData[0];
+      let b: Vec2 = { x: a.x, y: mousePosition.y};
+      let c: Vec2 = mousePosition;
+      let d: Vec2 = { x: mousePosition.x, y: a.y };
+
+      if (this.shift){
+        if (mousePosition.x < a.x !=  mousePosition.y < a.y){
+          c = {x:(a.x+ -(b.y-a.y)),y:mousePosition.y };
+          d = {x:(a.x+ -(b.y-a.y)),y:a.y };
+        }
+
+        else{
+          c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
+          d = {x:(a.x+ b.y-a.y),y:a.y };
+        }
+      }
+
+      list.push(a,b,c,d);
+      this.perimerterPathData = list;
+
+    }
+
 }

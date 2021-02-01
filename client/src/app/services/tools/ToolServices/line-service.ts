@@ -75,6 +75,7 @@ export class LineService extends Tool
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
         ctx.strokeStyle = this.color || "black";
+        ctx.lineCap = "round";
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

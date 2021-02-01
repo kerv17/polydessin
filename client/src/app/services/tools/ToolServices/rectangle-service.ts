@@ -46,28 +46,8 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
 
             //Va chercher les 4 coins du rectangle
-            let a: Vec2 = this.pathData[this.pathData.length - 1];
-            let b: Vec2 = { x: a.x, y: mousePosition.y };
-            let c: Vec2 = mousePosition;
-            let d: Vec2 = { x: mousePosition.x, y: a.y };
-            if (this.shift){
-              if (mousePosition.x < a.x != mousePosition.y < a.y){
-                c = {x:(a.x+ -(b.y-a.y)),y:mousePosition.y };
-                d = {x:(a.x+ -(b.y-a.y)),y:a.y };
-              }
-
-              else{
-                c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
-                d = {x:(a.x+ b.y-a.y),y:a.y };
-              }
-            }
-            //Les ajoute au dessin
-            this.pathData.push(b);
-            this.pathData.push(c);
-            this.pathData.push(d);
-            this.pathData.push(a);
-
-            this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+            let vec:Vec2[] = this.getRectanglePoints(mousePosition);
+            this.drawRectangle(this.drawingService.baseCtx, vec);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -77,31 +57,14 @@ export class RectangleService extends Tool {
         if (this.mouseDown) {
             this.lastMoveEvent = event;
             const mousePosition = this.getPositionFromMouse(event);
-            let a: Vec2 = this.pathData[this.pathData.length - 1];
-            let b: Vec2 = { x: a.x, y: mousePosition.y };
-            let c: Vec2 = mousePosition;
-            let d: Vec2 = { x: mousePosition.x, y: a.y };
-            if (this.shift){
-              if (mousePosition.x < a.x !=  mousePosition.y < a.y){
-                c = {x:(a.x+ -(b.y-a.y)),y:mousePosition.y };
-                d = {x:(a.x+ -(b.y-a.y)),y:a.y };
-              }
+            let vec:Vec2[] = this.getRectanglePoints(mousePosition);
 
-              else{
-                c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
-                d = {x:(a.x+ b.y-a.y),y:a.y };
-              }
-            }
-            this.pathData.push(b);
-            this.pathData.push(c);
-            this.pathData.push(d);
-            this.pathData.push(a);
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawRectangle(this.drawingService.previewCtx, this.pathData);
+            this.drawRectangle(this.drawingService.previewCtx, vec);
             this.clearPath();
-            this.pathData.push(a);
+            this.pathData.push(vec[0]);
         }
     }
 
@@ -148,5 +111,27 @@ export class RectangleService extends Tool {
 
     private clearPath(): void {
         this.pathData = [];
+    }
+
+    private getRectanglePoints(mousePosition:Vec2):Vec2[]{
+      let list:Vec2[] = [];
+      let a: Vec2 = this.pathData[this.pathData.length - 1];
+      let b: Vec2 = { x: a.x, y: mousePosition.y };
+      let c: Vec2 = mousePosition;
+      let d: Vec2 = { x: mousePosition.x, y: a.y };
+      if (this.shift){
+        if (mousePosition.x < a.x !=  mousePosition.y < a.y){
+          c = {x:(a.x+ -(b.y-a.y)),y:mousePosition.y };
+          d = {x:(a.x+ -(b.y-a.y)),y:a.y };
+        }
+
+        else{
+          c = {x:(a.x+ b.y-a.y),y:mousePosition.y };
+          d = {x:(a.x+ b.y-a.y),y:a.y };
+        }
+      }
+      list.push(a,b,c,d);
+
+      return list;
     }
 }
