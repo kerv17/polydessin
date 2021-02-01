@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 @Component({
@@ -32,5 +32,10 @@ export class SidebarComponent {
 
     notWhite(element: number): boolean {
         return element == 255;
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyPress($event: KeyboardEvent) {
+        if (($event.ctrlKey || $event.metaKey) && $event.key == '0') this.nouveauDessin();
     }
 }
