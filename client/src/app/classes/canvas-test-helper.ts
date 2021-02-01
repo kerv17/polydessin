@@ -16,7 +16,7 @@ export class CanvasTestHelper {
         this.drawCanvas = this.createCanvas(WIDTH, HEIGHT);
         this.selectionCanvas = this.createCanvas(WIDTH, HEIGHT);
     }
-
+    
     private createCanvas(width: number, height: number): HTMLCanvasElement {
         const canvas: HTMLCanvasElement = document.createElement('canvas');
         canvas.width = width;

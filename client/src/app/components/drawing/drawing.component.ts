@@ -17,11 +17,11 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-
+    
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-
+    private canvasSize: Vec2; // = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {}
@@ -29,11 +29,20 @@ export class DrawingComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        //met la surface en blanc mais c aussi fait sans ce code 
+        //this.baseCtx.fillStyle = "white";
+        //this.baseCtx.fillRect(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT);
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
+        //need to find where to put this
+        //document.documentElement.clientHeight;
+        //document.documentElement.clientHeight;
+        //ne fait rien
+        //this.setDrawingSurface();
+        
     }
 
     @HostListener('mousemove', ['$event'])
@@ -65,6 +74,23 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('dblclick',['$event'])
     ondbClick(event:MouseEvent):void{
         this.controller.currentTool.ondbClick(event);
+    }
+
+    setDrawingSurface():void{
+        let halfWindowHeight:number = document.documentElement.clientHeight/2;
+        let halfWindowidth:number = document.documentElement.clientWidth/2;
+        let minSize:number = 250;
+        if(halfWindowHeight < minSize){
+            this.canvasSize.y = minSize;
+        }
+        else if(halfWindowidth < minSize){
+            this.canvasSize.x = minSize;
+        }
+        else{
+            this.canvasSize = { x: halfWindowidth, y: halfWindowHeight };
+        }
+
+
     }
 
 
