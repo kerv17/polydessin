@@ -22,7 +22,8 @@ export class SidebarComponent {
     nouveauDessin() {
         //Doit vérifier si la surface est vide ou non
         let image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
-        if (image.data.find(this.notWhite) != undefined) {
+        if (this.notWhiter(image)) {
+            window.alert(image.data.find(this.notWhite));
             if (confirm('Are you sure you want to discard your current drawing?')) {
                 this.drawing.clearCanvas(this.drawing.baseCtx);
                 this.drawing.clearCanvas(this.drawing.previewCtx);
@@ -30,7 +31,24 @@ export class SidebarComponent {
         }
     }
 
-    notWhite(element: number): boolean {
-        return element == 255;
+    notWhite(element: number, index: number): boolean {
+        if (index % 3 != 0) {
+            //if (element != 255) window.alert(element);
+            return element != 255 && element != 0;
+        }
+        return false;
+    }
+
+    notWhiter(image: ImageData): boolean {
+        window.alert(image.data[0]);
+        if (image.data[0] != undefined) {
+            for (let i = 0; i < image.data.length; i += 4) {
+                window.alert(i);
+                if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
