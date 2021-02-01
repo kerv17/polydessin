@@ -113,7 +113,7 @@ export class RectangleService extends Tool {
         this.pathData = [];
     }
 
-    private getRectanglePoints(mousePosition:Vec2):Vec2[]{
+    public getRectanglePoints(mousePosition:Vec2):Vec2[]{
       let list:Vec2[] = [];
       let a: Vec2 = this.pathData[this.pathData.length - 1];
       let b: Vec2 = { x: a.x, y: mousePosition.y };

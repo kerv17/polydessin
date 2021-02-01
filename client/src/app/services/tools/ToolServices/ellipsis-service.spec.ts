@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipsisService } from './ellipsis-service';
 
 // tslint:disable:no-any
-fdescribe('RectangleService', () => {
+describe('EllipsisService', () => {
     let service: EllipsisService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -104,7 +104,7 @@ fdescribe('RectangleService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    fit(' should change the pixel of the canvas ', () => {
+    it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         let mouseEvent1 = mouseEvent;
         service.onMouseDown(mouseEvent1);
