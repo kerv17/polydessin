@@ -35,11 +35,11 @@ describe('ColorPaletteComponent', () => {
   });
 
   it(' ngOnChanges calls draw function if changes [hue] is true', () => {
-    
+  
   });
 
   it(' ngOnChanges doesn\'t call draw function if changes [hue] is false', () => {
-    
+  
   });
 
   it(' ngOnChanges calls getColorAtPosition function if changes [hue] is true', () => {

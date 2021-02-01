@@ -5,14 +5,14 @@
 
 <div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
 
-<form>
-    <label>R : </label>
-    <input type="text" #R size="2" (change)="updateColorFromInput()"><br>
-    <label>V : </label>
-    <input type="text" #G size="2" (change)="updateColorFromInput()"><br>
-    <label>B : </label>
-    <input type="text" #B size="2" (change)="updateColorFromInput()"><br>
-</form>
+
+<label>R : </label>
+<input [(ngModel)]='rValue' size="2" (change)="updateColorFromInput()"><br>
+<label>V : </label>
+<input [(ngModel)]='gValue' size="2" (change)="updateColorFromInput()"><br>
+<label>B : </label>
+<input [(ngModel)]='bValue' size="2" (change)="updateColorFromInput()"><br>
+
 
 <button (click)="confirmColor()"> OK </button>
 <button (click)="cancel()"> Annuler </button>

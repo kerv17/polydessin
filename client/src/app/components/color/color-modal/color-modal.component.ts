@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
 @Component({
@@ -10,10 +10,9 @@ export class ColorModalComponent implements AfterViewInit {
 
   public hue : string;
   public color : string;
-  
-  @ViewChild('R')  rValue:ElementRef;
-  @ViewChild('G')  gValue:ElementRef;
-  @ViewChild('B')  bValue:ElementRef;
+  public rValue : string = '00';
+  public gValue : string = '00';
+  public bValue : string = '00';
   
 
   @Output()
@@ -38,12 +37,16 @@ export class ColorModalComponent implements AfterViewInit {
 
   confirmColor() : void {
     if (this.colorService.currentColor == 'Primary'){
-      this.colorService.saveColor(this.colorService.primaryColor);
-      this.colorService.primaryColor = this.color;
+      if (this.color != this.colorService.primaryColor) {
+        this.colorService.saveColor(this.colorService.primaryColor);
+        this.colorService.primaryColor = this.color;
+      }
     } 
     else if (this.colorService.currentColor == 'Secondary'){
-      this.colorService.saveColor(this.colorService.secondaryColor);
-      this.colorService.secondaryColor = this.color;
+      if (this.color != this.colorService.secondaryColor){
+        this.colorService.saveColor(this.colorService.secondaryColor);
+        this.colorService.secondaryColor = this.color;
+      }
     }
     this.colorModified.emit(this.color);
     this.isVisible.emit(false);
@@ -59,14 +62,14 @@ export class ColorModalComponent implements AfterViewInit {
       let subColor:string = this.color.substring(5,this.color.length - 1);
       let splitColor:string[] = subColor.split(",");
       
-      this.rValue.nativeElement.value = parseInt(splitColor[0]).toString(16);
-      this.gValue.nativeElement.value = parseInt(splitColor[1]).toString(16);
-      this.bValue.nativeElement.value = parseInt(splitColor[2]).toString(16);
+      this.rValue = parseInt(splitColor[0]).toString(16);
+      this.gValue = parseInt(splitColor[1]).toString(16);
+      this.bValue = parseInt(splitColor[2]).toString(16);
     } 
     else {
-      this.rValue.nativeElement.value = '00';
-      this.gValue.nativeElement.value = '00';
-      this.bValue.nativeElement.value = '00';
+      this.rValue = '00';
+      this.gValue = '00';
+      this.bValue = '00';
     }
     
   }
@@ -74,13 +77,9 @@ export class ColorModalComponent implements AfterViewInit {
   //met à jour la couleur lorsqu'on entre manuellement des valeurs rgb
   updateColorFromInput() : void {
 
-    let R:string = this.rValue.nativeElement.value; 
-    let G:string = this.gValue.nativeElement.value; 
-    let B:string = this.bValue.nativeElement.value; 
-
-    if (this.colorService.isHexadecimal(R) && this.colorService.isHexadecimal(G) && this.colorService.isHexadecimal(B)){
+    if (this.colorService.isHexadecimal(this.rValue) && this.colorService.isHexadecimal(this.gValue) && this.colorService.isHexadecimal(this.bValue)){
       
-      this.color = 'rgba(' + parseInt(R, 16) + ',' + parseInt(G, 16) + ',' + parseInt(B, 16) + ',1)';
+      this.color = 'rgba(' + parseInt(this.rValue, 16) + ',' + parseInt(this.gValue, 16) + ',' + parseInt(this.bValue, 16) + ',1)';
       this.hue = this.color;
         
     } 
