@@ -8,12 +8,12 @@ import { ColorService } from '@app/services/color/color.service';
 })
 export class ColorModalComponent implements AfterViewInit {
 
-  public hue : string;
-  public color : string;
-  public rValue : string = '00';
-  public gValue : string = '00';
-  public bValue : string = '00';
-  
+  public hue: string;
+  public color: string;
+  public rValue: string = '00';
+  public gValue: string = '00';
+  public bValue: string = '00';
+
 
   @Output()
   isVisible: EventEmitter<boolean> = new EventEmitter(true);
@@ -21,29 +21,29 @@ export class ColorModalComponent implements AfterViewInit {
   @Output()
   colorModified: EventEmitter<string> = new EventEmitter(true);
 
-  constructor(private colorService : ColorService) {
-    
+  constructor(private colorService: ColorService) {
+
   }
 
   ngAfterViewInit(): void {
-    if (this.colorService.currentColor == 'Primary'){
+    if (this.colorService.currentColor == 'Primary') {
       this.color = this.colorService.primaryColor;
     }
-    else if (this.colorService.currentColor == 'Secondary'){
+    else if (this.colorService.currentColor == 'Secondary') {
       this.color = this.colorService.secondaryColor;
     }
     this.setColorInputValue();
   }
 
-  confirmColor() : void {
-    if (this.colorService.currentColor == 'Primary'){
+  confirmColor(): void {
+    if (this.colorService.currentColor == 'Primary') {
       if (this.color != this.colorService.primaryColor) {
         this.colorService.saveColor(this.colorService.primaryColor);
         this.colorService.primaryColor = this.color;
       }
-    } 
-    else if (this.colorService.currentColor == 'Secondary'){
-      if (this.color != this.colorService.secondaryColor){
+    }
+    else if (this.colorService.currentColor == 'Secondary') {
+      if (this.color != this.colorService.secondaryColor) {
         this.colorService.saveColor(this.colorService.secondaryColor);
         this.colorService.secondaryColor = this.color;
       }
@@ -52,40 +52,40 @@ export class ColorModalComponent implements AfterViewInit {
     this.isVisible.emit(false);
   }
 
-  cancel() : void {
+  cancel(): void {
     this.isVisible.emit(false);
   }
 
   //affiche la valeur rgb de la couleur sélectionnée par la palette de couleur
-  setColorInputValue() : void {
+  setColorInputValue(): void {
     if (this.color != undefined) {
-      let subColor:string = this.color.substring(5,this.color.length - 1);
-      let splitColor:string[] = subColor.split(",");
-      
+      let subColor: string = this.color.substring(5, this.color.length - 1);
+      let splitColor: string[] = subColor.split(",");
+
       this.rValue = parseInt(splitColor[0]).toString(16);
       this.gValue = parseInt(splitColor[1]).toString(16);
       this.bValue = parseInt(splitColor[2]).toString(16);
-    } 
+    }
     else {
       this.rValue = '00';
       this.gValue = '00';
       this.bValue = '00';
     }
-    
+
   }
 
   //met à jour la couleur lorsqu'on entre manuellement des valeurs rgb
-  updateColorFromInput() : void {
+  updateColorFromInput(): void {
 
-    if (this.colorService.isHexadecimal(this.rValue) && this.colorService.isHexadecimal(this.gValue) && this.colorService.isHexadecimal(this.bValue)){
-      
+    if (this.colorService.isHexadecimal(this.rValue) && this.colorService.isHexadecimal(this.gValue) && this.colorService.isHexadecimal(this.bValue)) {
+
       this.color = 'rgba(' + parseInt(this.rValue, 16) + ',' + parseInt(this.gValue, 16) + ',' + parseInt(this.bValue, 16) + ',1)';
       this.hue = this.color;
-        
-    } 
+
+    }
     else {
       this.setColorInputValue();
     }
   }
-  
+
 }

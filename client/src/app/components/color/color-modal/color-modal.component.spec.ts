@@ -9,18 +9,18 @@ describe('ColorModalComponent', () => {
   let colorService: ColorService;
   let saveSpy: jasmine.Spy<any>;
   let updateSpy: jasmine.Spy<any>;
-  let setColorSpy:jasmine.Spy<any>;
+  let setColorSpy: jasmine.Spy<any>;
 
   beforeEach(async(() => {
     colorService = new ColorService();
     TestBed.configureTestingModule({
-      declarations: [ ColorModalComponent ],
+      declarations: [ColorModalComponent],
       providers: [
         { provide: ColorService, useValue: colorService },
-    ],
+      ],
     })
-    .compileComponents();
-    
+      .compileComponents();
+
   }));
 
   beforeEach(() => {
@@ -92,9 +92,9 @@ describe('ColorModalComponent', () => {
 
   it(' setColorInputValue should set the rgb values to the correct value of color', () => {
     component.color = 'rgba(125,43,200,1)';
-    let r:number = 125;
-    let g:number = 43;
-    let b:number = 200;
+    let r: number = 125;
+    let g: number = 43;
+    let b: number = 200;
     component.setColorInputValue();
     expect(component.rValue).toEqual(r.toString(16));
     expect(component.gValue).toEqual(g.toString(16));
@@ -118,10 +118,10 @@ describe('ColorModalComponent', () => {
     component.updateColorFromInput();
     expect(setColorSpy).toHaveBeenCalled();
   });
-  
+
 
   it(' updateColorFromInput should update color & hue to correct rgba value if all values provided are hexadecimal ', () => {
-    let expectedResult:string = 'rgba(' + parseInt('72', 16) + ',' + parseInt('fb', 16) + ',' + parseInt('aa', 16) + ',1)';
+    let expectedResult: string = 'rgba(' + parseInt('72', 16) + ',' + parseInt('fb', 16) + ',' + parseInt('aa', 16) + ',1)';
     component.rValue = '72';
     component.gValue = 'fb';
     component.bValue = 'aa';

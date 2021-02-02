@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorPaletteComponent } from './color-palette.component';
 
@@ -13,15 +14,16 @@ describe('ColorPaletteComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ ColorPaletteComponent ]
+      declarations: [ColorPaletteComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     mouseEvent = {
       offsetX: 25,
       offsetY: 25,
       button: 0,
-  } as MouseEvent;
+    } as MouseEvent;
+
   }));
 
   beforeEach(() => {
@@ -34,44 +36,69 @@ describe('ColorPaletteComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(' ngOnChanges calls draw function if changes [hue] is true', () => {
-  
+  it(' ngOnChanges calls draw function if hue changed ', () => {
+    component.hue = 'rgba(23,fc,a4,1)';
+    drawSpy = spyOn<any>(component, 'draw');
+
+    //directly call ngOnChanges
+    component.ngOnChanges({
+      hue: new SimpleChange(null, component.hue, true)
+    });
+    fixture.detectChanges();
+
+    expect(drawSpy).toHaveBeenCalled();
   });
 
-  it(' ngOnChanges doesn\'t call draw function if changes [hue] is false', () => {
-  
+  it(' ngOnChanges does not call draw function if hue did not change ', () => {
+    drawSpy = spyOn<any>(component, 'draw');
+
+
+    component.ngOnChanges({
+    });
+    fixture.detectChanges();
+
+    expect(drawSpy).not.toHaveBeenCalled();
   });
 
-  it(' ngOnChanges calls getColorAtPosition function if changes [hue] is true', () => {
-    
+  it(' ngOnChanges calls emit color if position != 0', () => {
+    emitColorSpy = spyOn<any>(component, 'emitColor');
+    component.onMouseDown(mouseEvent);
+    component.hue = 'rgba(23,fc,a4,1)';
+
+    component.ngOnChanges({
+      hue: new SimpleChange(null, component.hue, true)
+    });
+    fixture.detectChanges();
+
+    expect(emitColorSpy).toHaveBeenCalled();
   });
 
-  it(' ngOnChanges doesn\'t call getColorAtPosition function if changes [hue] is false', () => {
-    
-  });
+  it(' ngOnChanges does not call emit color if position == 0', () => {
+    emitColorSpy = spyOn<any>(component, 'emitColor');
+    component.hue = 'rgba(23,fc,a4,1)';
 
-  it(' ngOnChanges calls getColorAtPosition function if changes [hue] is true and selectedPosition != 0', () => {
-    
-  });
+    component.ngOnChanges({
+      hue: new SimpleChange(null, component.hue, true)
+    });
+    fixture.detectChanges();
 
-  it(' ngOnChanges doesn\'t call getColorAtPosition function if changes [hue] is true and selectedPosition = 0', () => {
-    
+    expect(emitColorSpy).not.toHaveBeenCalled();
   });
 
   it(' MouseUp shoud set MouseDown to false when palette is unclicked', () => {
-    const expectedValue:boolean = false;
+    const expectedValue: boolean = false;
     component.onMouseUp(mouseEvent);
     expect(component.mousedown).toEqual(expectedValue);
   });
 
   it(' MouseDown sets mouseDown to true when palette is clicked', () => {
-    const expectedValue:boolean = true;
+    const expectedValue: boolean = true;
     component.onMouseDown(mouseEvent);
     expect(component.mousedown).toEqual(expectedValue);
   });
-  
+
   it(' MouseDown sets selectedPosition to offset values when palette is clicked', () => {
-    const expectedValue:{ x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY};
+    const expectedValue: { x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
     component.onMouseDown(mouseEvent);
     expect(component.selectedPosition).toEqual(expectedValue);
   });
@@ -96,7 +123,7 @@ describe('ColorPaletteComponent', () => {
 
   it(' MouseMove sets selectedPosition to offset values if MouseDown is true', () => {
     component.mousedown = true;
-    const expectedValue:{ x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY};
+    const expectedValue: { x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
     component.onMouseMove(mouseEvent);
     expect(component.selectedPosition).toEqual(expectedValue);
   });
@@ -117,7 +144,7 @@ describe('ColorPaletteComponent', () => {
 
   it(' MouseMove doesn\'t sets selectedPosition to offset values if MouseDown is false', () => {
     component.mousedown = false;
-    const expectedValue:{ x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY};
+    const expectedValue: { x: number; y: number } = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
     component.onMouseMove(mouseEvent);
     expect(component.selectedPosition).not.toEqual(expectedValue);
   });
@@ -138,17 +165,17 @@ describe('ColorPaletteComponent', () => {
 
   it(' emitColor calls getColorAtPosition ', () => {
     getColorSpy = spyOn<any>(component, 'getColorAtPosition');
-    component.emitColor(5,5);
+    component.emitColor(5, 5);
     expect(getColorSpy).toHaveBeenCalled();
   });
 
   it(' getColorAtPosition returns correct rgba string ', () => {
     component.draw();
-    const x:number = 5;
-    const y:number = 5;
+    const x: number = 5;
+    const y: number = 5;
     const imageData = component.ctx.getImageData(x, y, 1, 1).data;
-    const expectedResult:string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
-    expect(component.getColorAtPosition(x,y)).toEqual(expectedResult);
+    const expectedResult: string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    expect(component.getColorAtPosition(x, y)).toEqual(expectedResult);
   });
 
 });

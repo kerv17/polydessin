@@ -23,8 +23,19 @@ export enum MouseButton {
 */
 
 export class ColorPaletteComponent implements AfterViewInit {
+
     @Input()
-    hue: string;
+    hue: string
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['hue']) {
+            this.draw()
+            const pos = this.selectedPosition
+            if (pos) {
+                this.color.emit(this.getColorAtPosition(pos.x, pos.y))
+            }
+        }
+    }
 
     @Output()
     color: EventEmitter<string> = new EventEmitter(true);
@@ -71,16 +82,6 @@ export class ColorPaletteComponent implements AfterViewInit {
             this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, 10, 0, 2 * Math.PI);
             this.ctx.lineWidth = 5;
             this.ctx.stroke();
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['hue']) {
-            this.draw();
-            const pos = this.selectedPosition;
-            if (pos) {
-                this.color.emit(this.getColorAtPosition(pos.x, pos.y));
-            }
         }
     }
 

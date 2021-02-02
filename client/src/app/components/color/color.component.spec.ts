@@ -7,22 +7,22 @@ describe('ColorComponent', () => {
   let component: ColorComponent;
   let fixture: ComponentFixture<ColorComponent>;
   let colorService: ColorService;
-  let setOpacitySpy:jasmine.Spy<any>;
-  let saveColorSpy:jasmine.Spy<any>;
+  let setOpacitySpy: jasmine.Spy<any>;
+  let saveColorSpy: jasmine.Spy<any>;
 
   beforeEach(async(() => {
     colorService = new ColorService();
     TestBed.configureTestingModule({
-      declarations: [ ColorComponent ],
+      declarations: [ColorComponent],
       providers: [
         { provide: ColorService, useValue: colorService },
-    ],
+      ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    
+
     fixture = TestBed.createComponent(ColorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -55,13 +55,13 @@ describe('ColorComponent', () => {
   });
 
   it(' openModal should toggle visibility attribute to true ', () => {
-    let colorType:string = 'Primary';
+    let colorType: string = 'Primary';
     component.openModal(colorType);
     expect(colorService.modalVisibility).toEqual(true);
   });
 
   it(' openModal should retrieve which color was clicked ', () => {
-    let colorType:string = 'Primary';
+    let colorType: string = 'Primary';
     component.openModal(colorType);
     expect(colorService.currentColor).toEqual(colorType);
   });

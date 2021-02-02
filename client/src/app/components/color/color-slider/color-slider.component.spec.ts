@@ -12,15 +12,15 @@ describe('ColorSliderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ColorSliderComponent ]
+      declarations: [ColorSliderComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     mouseEvent = {
       offsetX: 25,
       offsetY: 25,
       button: 0,
-  } as MouseEvent;
+    } as MouseEvent;
   }));
 
   beforeEach(() => {
@@ -34,19 +34,19 @@ describe('ColorSliderComponent', () => {
   });
 
   it(' MouseUp shoud set MouseDown to false when palette is unclicked', () => {
-    const expectedValue:boolean = false;
+    const expectedValue: boolean = false;
     component.onMouseUp(mouseEvent);
     expect(component.mousedown).toEqual(expectedValue);
   });
 
   it(' MouseDown sets mouseDown to true when palette is clicked', () => {
-    const expectedValue:boolean = true;
+    const expectedValue: boolean = true;
     component.onMouseDown(mouseEvent);
     expect(component.mousedown).toEqual(expectedValue);
   });
-  
+
   it(' MouseDown sets selectedHeigth to offset values when palette is clicked', () => {
-    const expectedValue:number = mouseEvent.offsetY;
+    const expectedValue: number = mouseEvent.offsetY;
     component.onMouseDown(mouseEvent);
     expect(component.selectedHeight).toEqual(expectedValue);
   });
@@ -71,7 +71,7 @@ describe('ColorSliderComponent', () => {
 
   it(' MouseMove sets selectedHeight to offset values if MouseDown is true', () => {
     component.mousedown = true;
-    const expectedValue:number = mouseEvent.offsetY;
+    const expectedValue: number = mouseEvent.offsetY;
     component.onMouseMove(mouseEvent);
     expect(component.selectedHeight).toEqual(expectedValue);
   });
@@ -92,7 +92,7 @@ describe('ColorSliderComponent', () => {
 
   it(' MouseMove doesn\'t sets selectedHeight to offset values if MouseDown is false', () => {
     component.mousedown = false;
-    const expectedValue:number = mouseEvent.offsetY;
+    const expectedValue: number = mouseEvent.offsetY;
     component.onMouseMove(mouseEvent);
     expect(component.selectedHeight).not.toEqual(expectedValue);
   });
@@ -113,17 +113,17 @@ describe('ColorSliderComponent', () => {
 
   it(' emitColor calls getColorAtPosition ', () => {
     getColorSpy = spyOn<any>(component, 'getColorAtPosition');
-    component.emitColor(5,5);
+    component.emitColor(5, 5);
     expect(getColorSpy).toHaveBeenCalled();
   });
 
   it(' getColorAtPosition returns correct rgba string ', () => {
     component.draw();
-    const x:number = 5;
-    const y:number = 5;
+    const x: number = 5;
+    const y: number = 5;
     const imageData = component.ctx.getImageData(x, y, 1, 1).data;
-    const expectedResult:string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
-    expect(component.getColorAtPosition(x,y)).toEqual(expectedResult);
+    const expectedResult: string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    expect(component.getColorAtPosition(x, y)).toEqual(expectedResult);
   });
 
 });
