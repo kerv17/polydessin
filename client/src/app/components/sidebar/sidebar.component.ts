@@ -15,6 +15,17 @@ export class SidebarComponent {
         this.service.setTool();
         this.openWidth();
     }
+    openRectangle() {
+        this.service.setRectangle();
+    }
+
+    openLine() {
+        this.service.setLine();
+    }
+
+    openEllipsis() {
+        this.service.setEllipse();
+    }
     openWidth() {
         this.width = true;
         this.visible = false;
@@ -38,4 +49,6 @@ export class SidebarComponent {
     onKeyPress($event: KeyboardEvent) {
         if (($event.ctrlKey || $event.metaKey) && $event.key == '0') this.nouveauDessin();
     }
+
+    setMode(mode: string) {}
 }

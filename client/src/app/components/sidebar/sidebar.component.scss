@@ -28,5 +28,27 @@
     margin: 0.5em;
 }
 .function:focus {
-    background-color: green;
+    background-color: gainsboro;
+}
+.function .infobulle {
+    visibility: hidden;
+    display: none;
+    width: 120px;
+    background-color: white;
+    color: black;
+    text-align: center;
+    position: relative;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: sticky;
+    z-index: 1;
+    bottom: 150%;
+    // left: 50%;
+    //margin-left: -60px;
+}
+
+.function:hover .infobulle {
+    visibility: visible;
+    display: block;
+    // background-color: hotpink;
 }
