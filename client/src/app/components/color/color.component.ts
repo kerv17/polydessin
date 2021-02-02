@@ -56,12 +56,14 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.saveColor(this.primaryColor);
         this.primaryColor = color;
         this.colorService.primaryColor = this.primaryColor;
+        this.setOpacityValue();
     }
 
     selectSecondaryColor(color: string): void {
         this.colorService.saveColor(this.secondaryColor);
         this.secondaryColor = color;
         this.colorService.secondaryColor = this.secondaryColor;
+        this.setOpacityValue();
     }
 
     updateOpacityPrimary(): void {
