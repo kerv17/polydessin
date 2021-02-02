@@ -1,18 +1,21 @@
-<div class="color-wrapper">
-    <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
-    <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColorInputValue()"></app-color-slider>
-</div>
+<main class='table'>
+    <div class="color-wrapper">
+        <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
+        <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColorInputValue()"></app-color-slider>
+    </div>
 
-<div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
+    <div class='input-wrapper'>
+        <p>Sélection couleur :</p>
+        <div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
+        <br><br><br>
+        <label>R : </label>
+        <input [(ngModel)]='rValue' size="2" (change)="updateColorFromInput()"><br>
+        <label>V : </label>
+        <input [(ngModel)]='gValue' size="2" (change)="updateColorFromInput()"><br>
+        <label>B : </label>
+        <input [(ngModel)]='bValue' size="2" (change)="updateColorFromInput()"><br><br>
 
-
-<label>R : </label>
-<input [(ngModel)]='rValue' size="2" (change)="updateColorFromInput()"><br>
-<label>V : </label>
-<input [(ngModel)]='gValue' size="2" (change)="updateColorFromInput()"><br>
-<label>B : </label>
-<input [(ngModel)]='bValue' size="2" (change)="updateColorFromInput()"><br>
-
-
-<button (click)="confirmColor()"> OK </button>
-<button (click)="cancel()"> Annuler </button>
+        <button (click)="confirmColor()"> OK </button>
+        <button (click)="cancel()"> Annuler </button>
+    </div>
+</main>

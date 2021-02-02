@@ -1,23 +1,29 @@
-<p>Couleur Principale :</p>
-<div class='color-div' [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'></div>
+<main class='table'>
+    <div class='cells'>
+        <p>Couleur Principale :</p>
+        <div class='color-div' [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'></div>
 
-<label>Opacité (en %) : </label>
-<input [(ngModel)]='OP' size='2' (change)="updateOpacityPrimary()">
+        <label>Opacité (en %) : </label>
+        <input [(ngModel)]='OP' size='2' (change)="updateOpacityPrimary()">
+    </div>
+    <div class='cells'>
+        <p>Couleur Secondaire :</p>
+        <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Secondary')"></div>
 
+        <label>Opacité (en %) : </label>
+        <input [(ngModel)]='OS' size='2' (change)="updateOpacitySecondary()">
+    </div>
+</main>
 
-<br><br><button (click)='invert()'>Inverser Couleurs Principale et Secondaire</button>
-
-<p>Couleur Secondaire :</p>
-<div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Secondary')"></div>
-
-<label>Opacité (en %) : </label>
-<input [(ngModel)]='OS' size='2' (change)="updateOpacitySecondary()">
+<br><button class='boutton' (click)='invert()'>Inverser couleurs primaire et secondaire</button>
 
 <div>
     <p>Couleurs récemment utilisées :</p>
-    <div class='recentColors' *ngFor="let colors of recentColors">
-        <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors)"></div>
-    </div>
+    <main class='table'>
+        <div class='recentColors' *ngFor="let colors of recentColors">
+            <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors)"></div>
+        </div>
+    </main>
 </div>
 
 

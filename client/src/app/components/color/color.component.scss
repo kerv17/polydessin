@@ -11,4 +11,15 @@
     line-height: 32px;
 }
 
-// Solution : Table, table cell
+.table {
+    display: table;
+}
+
+.recentColors {
+    float: left;
+}
+
+.cells {
+    float: left;
+    padding-right: 25px;
+}
