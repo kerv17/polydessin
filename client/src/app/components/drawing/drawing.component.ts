@@ -26,7 +26,7 @@ export class DrawingComponent implements AfterViewInit {
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
     private tools: Tool[];
     currentTool: Tool;
-    constructor(private drawingService: DrawingService, private pencilService: PencilService, private colorService:ColorService) {
+    constructor(private drawingService: DrawingService, private pencilService: PencilService, private colorService: ColorService) {
         this.tools = [pencilService];
         this.currentTool = this.tools[0];
     }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -8,6 +8,9 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
+
+const lineWidth = 5;
+const lineHeigth = 10;
 
 @Component({
     selector: 'app-color-palette',
@@ -21,21 +24,9 @@ export enum MouseButton {
     disponible à l'adresse suivante : "https://malcoded.com/posts/angular-color-picker/"
     Quelques modifications y ont été apportées
 */
-
-export class ColorPaletteComponent implements AfterViewInit {
-
+export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     @Input()
-    hue: string
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['hue']) {
-            this.draw()
-            const pos = this.selectedPosition
-            if (pos) {
-                this.color.emit(this.getColorAtPosition(pos.x, pos.y))
-            }
-        }
-    }
+    hue: string;
 
     @Output()
     color: EventEmitter<string> = new EventEmitter(true);
@@ -43,15 +34,25 @@ export class ColorPaletteComponent implements AfterViewInit {
     @ViewChild('canvas')
     canvas: ElementRef<HTMLCanvasElement>;
 
-    public ctx: CanvasRenderingContext2D;
-    public mousedown: boolean = false;
-    public selectedPosition: { x: number; y: number };
+    ctx: CanvasRenderingContext2D;
+    mousedown: boolean = false;
+    selectedPosition: { x: number; y: number };
 
-    ngAfterViewInit() {
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.hue) {
+            this.draw();
+            const pos = this.selectedPosition;
+            if (pos) {
+                this.color.emit(this.getColorAtPosition(pos.x, pos.y));
+            }
+        }
+    }
+
+    ngAfterViewInit(): void {
         this.draw();
     }
 
-    draw() {
+    draw(): void {
         if (!this.ctx) {
             this.ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         }
@@ -79,18 +80,18 @@ export class ColorPaletteComponent implements AfterViewInit {
             this.ctx.strokeStyle = 'white';
             this.ctx.fillStyle = 'white';
             this.ctx.beginPath();
-            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, 10, 0, 2 * Math.PI);
-            this.ctx.lineWidth = 5;
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, lineHeigth, 0, 2 * Math.PI);
+            this.ctx.lineWidth = lineWidth;
             this.ctx.stroke();
         }
     }
 
     @HostListener('window:mouseup', ['$event'])
-    onMouseUp(evt: MouseEvent) {
+    onMouseUp(evt: MouseEvent): void {
         this.mousedown = false;
     }
 
-    onMouseDown(evt: MouseEvent) {
+    onMouseDown(evt: MouseEvent): void {
         this.mousedown = true;
         this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
         this.draw();
@@ -98,7 +99,7 @@ export class ColorPaletteComponent implements AfterViewInit {
         this.emitColor(evt.offsetX, evt.offsetY);
     }
 
-    onMouseMove(evt: MouseEvent) {
+    onMouseMove(evt: MouseEvent): void {
         if (this.mousedown) {
             this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
             this.draw();
@@ -106,13 +107,13 @@ export class ColorPaletteComponent implements AfterViewInit {
         }
     }
 
-    emitColor(x: number, y: number) {
+    emitColor(x: number, y: number): void {
         const rgbaColor = this.getColorAtPosition(x, y);
         this.color.emit(rgbaColor);
     }
 
-    getColorAtPosition(x: number, y: number) {
+    getColorAtPosition(x: number, y: number): string {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return ('rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)');
+        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
     }
 }

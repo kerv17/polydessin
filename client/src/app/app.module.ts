@@ -14,7 +14,17 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ColorService } from './services/color/color.service';
 @NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, ColorSliderComponent, ColorPaletteComponent, ColorComponent, ColorModalComponent],
+    declarations: [
+        AppComponent,
+        EditorComponent,
+        SidebarComponent,
+        DrawingComponent,
+        MainPageComponent,
+        ColorSliderComponent,
+        ColorPaletteComponent,
+        ColorComponent,
+        ColorModalComponent,
+    ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, FormsModule],
     providers: [ColorService],
     bootstrap: [AppComponent],

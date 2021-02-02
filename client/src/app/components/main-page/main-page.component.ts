@@ -13,9 +13,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService) {
-        
-    }
+    constructor(private basicService: IndexService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
