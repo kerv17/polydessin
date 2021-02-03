@@ -26,29 +26,26 @@
     flex: 0.1;
     align-self: center;
     margin: 0.5em;
+    flex-grow: 0.1;
 }
 .function:focus {
     background-color: gainsboro;
 }
 .function .infobulle {
     visibility: hidden;
-    display: none;
     width: 120px;
-    background-color: white;
-    color: black;
+    background-color: black;
+    color: #fff;
     text-align: center;
-    position: relative;
-    border-radius: 6px;
     padding: 5px 0;
-    position: sticky;
-    z-index: 1;
-    bottom: 150%;
-    // left: 50%;
-    //margin-left: -60px;
+    border-radius: 6px;
+    left: 100px;
+
+    position: absolute;
 }
 
 .function:hover .infobulle {
     visibility: visible;
     display: block;
-    // background-color: hotpink;
+    background-color: gainsboro;
 }

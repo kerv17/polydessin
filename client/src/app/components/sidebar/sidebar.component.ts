@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -15,15 +16,26 @@ export class SidebarComponent {
         this.service.setTool();
         this.openWidth();
     }
+    openRectangle() {
+        this.service.setRectangle();
+    }
+
+    openLine() {
+        this.service.setLine();
+    }
+
+    openEllipsis() {
+        this.service.setEllipse();
+    }
     openWidth() {
         this.width = true;
         this.visible = false;
     }
+    //TODO à modifier
     nouveauDessin() {
         //Doit vérifier si la surface est vide ou non
         let image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
         if (this.notWhiter(image)) {
-            // window.alert(image.data.find(this.notWhite));
             if (confirm('Are you sure you want to discard your current drawing?')) {
                 this.drawing.clearCanvas(this.drawing.baseCtx);
                 this.drawing.clearCanvas(this.drawing.previewCtx);
@@ -39,8 +51,10 @@ export class SidebarComponent {
         return false;
     }
 
+    // TODO à transférer
     notWhiter(image: ImageData): boolean {
-        window.alert(image.data[0]);
+        //window.alert(image.data[image.data.length - 3]);
+
         if (image.data[1] != undefined) {
             for (let i = 0; i < image.data.length; i += 4) {
                 if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
@@ -50,4 +64,11 @@ export class SidebarComponent {
         }
         return false;
     }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyPress($event: KeyboardEvent) {
+        if (($event.ctrlKey || $event.metaKey) && $event.key == '0') this.nouveauDessin();
+    }
+
+    setMode(mode: string) {}
 }

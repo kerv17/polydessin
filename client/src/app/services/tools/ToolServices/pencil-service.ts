@@ -60,7 +60,7 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
+        ctx.lineWidth = this.drawingService.width;
 
         ctx.strokeStyle = this.color;
         ctx.beginPath();

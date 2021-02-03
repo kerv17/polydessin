@@ -7,6 +7,10 @@ export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
     public color: string;
+    public color2:string;
+    public toolMode:string = "border";
+    shift:boolean =false;
+
     constructor(protected drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}
@@ -14,6 +18,12 @@ export abstract class Tool {
     onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {}
+
+    onClick(event:MouseEvent):void {}
+
+    ondbClick(event:MouseEvent):void {}
+
+    onShift(shift:boolean){}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
