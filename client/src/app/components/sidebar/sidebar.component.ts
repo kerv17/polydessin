@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
 @Component({
