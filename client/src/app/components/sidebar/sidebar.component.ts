@@ -13,20 +13,61 @@ export class SidebarComponent {
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
     openCrayon() {
+        this.setBackgroundColor('crayon');
         this.service.setTool();
         this.openWidth();
     }
     openRectangle() {
         this.service.setRectangle();
+        this.setBackgroundColor('rectangle');
     }
 
     openLine() {
         this.service.setLine();
+        this.setBackgroundColor('line');
     }
 
     openEllipsis() {
         this.service.setEllipse();
+        this.setBackgroundColor('ellipsis');
     }
+    setBackgroundColor(name: string): void {
+        let crayon: HTMLElement | null = document.getElementById('CrayonButton');
+        let rectangle: HTMLElement | null = document.getElementById('RectangleButton');
+        let line: HTMLElement | null = document.getElementById('LineButton');
+        let ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
+
+        if (crayon != undefined && rectangle != undefined && line != undefined && ellipsis != undefined) {
+            this.resetButtonColor(crayon, rectangle, line, ellipsis);
+            switch (name) {
+                case 'crayon':
+                    crayon.style.backgroundColor = 'gainsboro';
+
+                    break;
+                case 'rectangle':
+                    rectangle.style.backgroundColor = 'gainsboro';
+
+                    break;
+                case 'line':
+                    line.style.backgroundColor = 'gainsboro';
+
+                    break;
+                case 'ellipsis':
+                    ellipsis.style.backgroundColor = 'gainsboro';
+
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    resetButtonColor(crayon: HTMLElement, rectangle: HTMLElement, line: HTMLElement, ellipsis: HTMLElement): void {
+        crayon.style.backgroundColor = 'none';
+        rectangle.style.backgroundColor = 'none';
+        ellipsis.style.backgroundColor = 'none';
+        line.style.backgroundColor = 'none';
+    }
+
     openWidth() {
         this.width = true;
         this.visible = false;
