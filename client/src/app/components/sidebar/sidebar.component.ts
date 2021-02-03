@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -52,10 +53,6 @@ export class SidebarComponent {
         if (image.data[1] != undefined) {
             for (let i = 0; i < image.data.length; i += 4) {
                 if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
-                    window.alert(image.data[i]);
-                    window.alert(image.data[i + 1]);
-                    window.alert(image.data[i + 2]);
-                    window.alert(image.data[i + 3]);
                     return true;
                 }
             }
