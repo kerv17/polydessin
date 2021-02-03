@@ -61,7 +61,7 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
-
+        ctx.lineCap = 'round';
         ctx.strokeStyle = this.color;
         ctx.beginPath();
         for (const point of path) {
