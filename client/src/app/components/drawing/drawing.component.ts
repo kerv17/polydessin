@@ -50,11 +50,21 @@ export class DrawingComponent implements AfterViewInit {
         this.controller.currentTool.onMouseDown(event);
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.controller.currentTool.onMouseUp(event);
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
+    }
+
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.controller.currentTool.onMouseLeave(event);
+    }
+
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.controller.currentTool.onMouseEnter(event);
     }
 
     @HostListener('click',['$event'])
@@ -66,9 +76,6 @@ export class DrawingComponent implements AfterViewInit {
     ondbClick(event:MouseEvent):void{
         this.controller.currentTool.ondbClick(event);
     }
-
-
-
 
     get width(): number {
         return this.canvasSize.x;
