@@ -30,10 +30,11 @@ export class SidebarComponent {
         this.width = true;
         this.visible = false;
     }
+    //TODO à modifier
     nouveauDessin() {
         //Doit vérifier si la surface est vide ou non
         let image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
-        if (image.data.find(this.notWhite) != undefined) {
+        if (this.notWhiter(image)) {
             if (confirm('Are you sure you want to discard your current drawing?')) {
                 this.drawing.clearCanvas(this.drawing.baseCtx);
                 this.drawing.clearCanvas(this.drawing.previewCtx);
@@ -43,6 +44,23 @@ export class SidebarComponent {
 
     notWhite(element: number): boolean {
         return element == 255;
+    }
+    // TODO à transférer
+    notWhiter(image: ImageData): boolean {
+        //window.alert(image.data[image.data.length - 3]);
+
+        if (image.data[1] != undefined) {
+            for (let i = 0; i < image.data.length; i += 4) {
+                if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
+                    window.alert(image.data[i]);
+                    window.alert(image.data[i + 1]);
+                    window.alert(image.data[i + 2]);
+                    window.alert(image.data[i + 3]);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @HostListener('window:keydown', ['$event'])
