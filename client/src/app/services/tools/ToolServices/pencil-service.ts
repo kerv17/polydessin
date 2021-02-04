@@ -12,10 +12,6 @@ export enum MouseButton {
     Forward = 4,
 }
 
-// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
-// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
-// Vous êtes encouragés de modifier et compléter le code.
-// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 @Injectable({
     providedIn: 'root',
 })
@@ -39,6 +35,7 @@ export class PencilService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        
         if (this.outOfBounds){
             this.mouseDown = false;
             this.clearPath();
@@ -48,11 +45,13 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-             if(this.pathData[0].x - this.pathData[1].x === 0 
+
+            if(this.pathData[0].x - this.pathData[1].x === 0 
                 && this.pathData[0].y - this.pathData[1].y === 0){
                 this.drawPixel(this.drawingService.baseCtx, this.pathData);
             }
-             this.drawLine(this.drawingService.baseCtx, this.pathData);
+
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -83,7 +82,7 @@ export class PencilService extends Tool {
         this.outOfBounds = false;
     }
 
-    private drawPixel (ctx: CanvasRenderingContext2D, path: Vec2[]):void {
+    private drawPixel (ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.applyAttributes(ctx);
         if(ctx.lineWidth === 1){
             ctx.fillStyle = this.color;
