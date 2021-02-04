@@ -1,33 +1,36 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
     selector: 'app-width-slider',
     templateUrl: './width-slider.component.html',
     styleUrls: ['./width-slider.component.scss'],
 })
-export class WidthSliderComponent implements OnInit {
+export class WidthSliderComponent implements AfterViewInit {
     @Input() width: number = 1;
-    constructor() {}
-    getSliderValue(evt: MatSliderChange) {
-        sessionStorage.setItem('width', String(evt.value) || '1');
-        this.width = evt.value || 4;
+
+    constructor(private drawingService: DrawingService) {}
+
+    getSliderValue(evt: MatSliderChange): void {
+        this.drawingService.width = evt.value || 1;
+        this.width = this.drawingService.width;
         this.updateWidth();
     }
+
     ngAfterViewInit(): void {
         this.updateWidth();
     }
-    updateWidth() {
-        (<HTMLInputElement>document.getElementById('width')).value = this.width.toString();
-        this.updateSlider();
+
+    updateWidth(): void {
+        (document.getElementById('width') as HTMLInputElement).value = this.drawingService.width.toString();
+        this.width = this.drawingService.width;
     }
-    updateSlider() {}
-    setWidth() {
-        let placeholder: string = (<HTMLInputElement>document.getElementById('width')).value;
-        this.width = parseInt(placeholder);
-        sessionStorage.setItem('width', String(this.width) || '1');
-        //window.alert(this.width);
-        this.updateWidth();
+
+    setWidth(): void {
+        const placeholder: string = (document.getElementById('width') as HTMLInputElement).value;
+        const verifier = parseInt(placeholder, 10);
+        this.drawingService.width = verifier;
+        this.width = this.drawingService.width;
     }
-    ngOnInit(): void {}
 }
