@@ -37,7 +37,7 @@ export class SidebarComponent {
         let line: HTMLElement | null = document.getElementById('LineButton');
         let ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
 
-        if (crayon != undefined && rectangle != undefined && line != undefined && ellipsis != undefined) {
+        if (crayon != null && rectangle != null && line != null && ellipsis != null) {
             this.resetButtonColor(crayon, rectangle, line, ellipsis);
             switch (name) {
                 case 'crayon':
@@ -61,11 +61,12 @@ export class SidebarComponent {
             }
         }
     }
+
     resetButtonColor(crayon: HTMLElement, rectangle: HTMLElement, line: HTMLElement, ellipsis: HTMLElement): void {
-        crayon.style.backgroundColor = 'none';
-        rectangle.style.backgroundColor = 'none';
-        ellipsis.style.backgroundColor = 'none';
-        line.style.backgroundColor = 'none';
+        crayon.style.backgroundColor = 'white';
+        rectangle.style.backgroundColor = 'white';
+        ellipsis.style.backgroundColor = 'white';
+        line.style.backgroundColor = 'white';
     }
 
     openWidth() {

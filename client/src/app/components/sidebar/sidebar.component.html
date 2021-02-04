@@ -2,27 +2,27 @@
     <div class="sidebar-container">
         <button class="function" onclick="history.back()">
             Go back!
-            <div class="infobulle">This button sends you back to the front page</div>
+            <div class="infobulle">Ce bouton te ramène à la page principale</div>
         </button>
         <button id="CrayonButton" class="function" (click)="openCrayon()">
             Crayon
-            <div class="infobulle">This button sends you back to the front page</div>
+            <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
         </button>
-        <button id="LineButton" class="function">
+        <button id="LineButton" class="function" (click)="openLine()">
             Ligne
-            <div class="infobulle">This button sends you back to the front page</div>
+            <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
         </button>
-        <button id="RectangleButton" class="function">
+        <button id="RectangleButton" class="function" (click)="openRectangle()">
             Rectangle
-            <div class="infobulle">This button sends you back to the front page</div>
+            <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
         </button>
-        <button id="EllipsisButton" class="function">
+        <button id="EllipsisButton" class="function" (click)="openEllipsis()">
             Ellipse
-            <div class="infobulle">This button sends you back to the front page</div>
+            <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
         </button>
         <button id="NouveauBouton" (click)="nouveauDessin()" class="function">
-            Nouveau Dession
-            <div class="infobulle">This button sends you back to the front page</div>
+            Nouveau Dessin
+            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+0'</div>
         </button>
     </div>
     <div class="services">
