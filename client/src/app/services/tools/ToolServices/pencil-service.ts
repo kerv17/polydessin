@@ -107,7 +107,7 @@ export class PencilService extends Tool {
     //fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
     private applyAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
-        const width = parseInt(sessionStorage.getItem('width') || '1');
+        const width = this.drawingService.width;
         
         if (width !== undefined && width > 0) {
             ctx.lineWidth = width;
