@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -28,10 +29,10 @@ export class EllipsisService extends Tool {
     }
     public lastMoveEvent:MouseEvent;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
-        this.clearPath();
-    }
+    constructor(drawingService: DrawingService, colorService:ColorService) {
+      super(drawingService,colorService);
+      this.clearPath();
+  }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
@@ -100,7 +101,7 @@ export class EllipsisService extends Tool {
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
-      ctx.strokeStyle = this.color2 || "black";
+      ctx.strokeStyle = this.colorService.secondaryColor || "black";
       let a:Vec2  = path[1];
       let c:Vec2 = path[2];
       ctx.beginPath();
@@ -108,7 +109,7 @@ export class EllipsisService extends Tool {
     }
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.fillStyle = this.color || "black";
+        ctx.fillStyle = this.colorService.primaryColor || "black";
         ctx.fill();
     }
 

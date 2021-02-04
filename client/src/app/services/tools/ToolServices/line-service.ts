@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -23,10 +24,10 @@ export class LineService extends Tool
 {
     private pathData: Vec2[];
 
-    constructor(public drawingService: DrawingService) {
-        super(drawingService);
-        this.clearPath();
-    }
+    constructor(drawingService: DrawingService, colorService:ColorService) {
+      super(drawingService,colorService);
+      this.clearPath();
+  }
 
 
 
@@ -74,7 +75,7 @@ export class LineService extends Tool
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
-        ctx.strokeStyle = this.color || "black";
+        ctx.strokeStyle = this.colorService.primaryColor || "black";
         ctx.lineCap = "round";
         ctx.beginPath();
         for (const point of path) {

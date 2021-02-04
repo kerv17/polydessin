@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -26,8 +27,8 @@ export class RectangleService extends Tool {
     }
     public lastMoveEvent:MouseEvent;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
+    constructor(drawingService: DrawingService, colorService:ColorService) {
+        super(drawingService,colorService);
         this.clearPath();
     }
 
@@ -94,7 +95,7 @@ export class RectangleService extends Tool {
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]):void {
-      ctx.strokeStyle = this.color2 || "black";
+      ctx.strokeStyle = this.colorService.secondaryColor || "black";
       ctx.beginPath();
       for (const point of path) {
           ctx.lineTo(point.x, point.y);
@@ -104,7 +105,7 @@ export class RectangleService extends Tool {
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
       let widhtHeight:Vec2 = {x:path[2].x-path[0].x , y: path[2].y-path[0].y};
-      ctx.fillStyle= this.color || "black";
+      ctx.fillStyle= this.colorService.primaryColor || "black";
       ctx.fillRect(path[0].x,path[0].y,widhtHeight.x, widhtHeight.y);
     }
 
