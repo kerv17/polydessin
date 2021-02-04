@@ -29,7 +29,7 @@ export class WidthSliderComponent implements AfterViewInit {
 
     setWidth(): void {
         const placeholder: string = (document.getElementById('width') as HTMLInputElement).value;
-        const verifier = parseInt(placeholder,10);
+        const verifier = parseInt(placeholder, 10);
         this.drawingService.width = verifier;
         this.width = this.drawingService.width;
     }

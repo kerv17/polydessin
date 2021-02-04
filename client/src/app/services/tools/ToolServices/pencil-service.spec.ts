@@ -5,9 +5,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
-describe('PencilService', () => {
+fdescribe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
+    let mouseEventRClick: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -38,13 +39,25 @@ describe('PencilService', () => {
             offsetY: 25,
             button: 0,
         } as MouseEvent;
+
+        mouseEventRClick = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 1,
+        } as MouseEvent;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoord to correct position ', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        service.onMouseDown(mouseEvent);
+        expect(service.mouseDownCoord).toEqual(expectedResult);
+    });
+
+    it(' mouseDown should not set mouseDownCoord to correct position ', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
@@ -56,14 +69,21 @@ describe('PencilService', () => {
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
-        } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
+
+    it(' mouseDown should clearPath on left click', () => {});
+
+    it(' mouseDown should not call clearPath on right click', () => {});
+
+    it(' onMouseUp should clear canvas & path if mouse click was released out of the canvas limits', () => {});
+
+    it(' onMouseUp should not clear canvas & path if mouse click was released inside the canvas limits', () => {});
+
+    it(' onMouseUp should call drawPixel if mouse was clicked and released at the same position without movement', () => {});
+
+    it(' onMouseUp should not call drawPixel if mouse was not clicked and released at the same position without movement', () => {});
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -90,6 +110,8 @@ describe('PencilService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
+    it(' onMouseMove should push correct mouseDownCoord if mouse was already down', () => {});
+
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = false;
@@ -98,6 +120,32 @@ describe('PencilService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
+
+    it(' onMouseMove should not push mouseDownCoord if mouse was not already down', () => {});
+
+    it(' onMouseLeave shoud call drawLine if mouse was down while leaving canvas surface', () => {});
+
+    it(' onMouseLeave shoud clear path & canvas if mouse was down while leaving canvas surface', () => {});
+
+    it(' onMouseLeave shoud set outOfbounds to true if mouse was down while leaving canvas surface', () => {});
+
+    it(' onMouseEnter should set outOfBounds to false if mouse reenters the canvas surface', () => {});
+
+    it(' drawPixel should call applyAttibutes', () => {
+        // private
+    });
+
+    it(' drawPixel should draw a single pixel at the last mouseCoord of the path if the width is 1 pixel', () => {
+        // private
+    });
+
+    it(' applyAttributes should set the pencil width to the correct selected value if the value is valid ', () => {});
+
+    it(' applyAttributes should not set the pencil width if the selected value is not valid', () => {});
+
+    it(' applyAttributes should set the pencil color to the correct selected color if it is valid', () => {});
+
+    it(' applyAttributes should not set the pencil color if the value selected is not valid', () => {});
 
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {

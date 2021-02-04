@@ -14,23 +14,21 @@ export class SidebarComponent {
     openCrayon(): void {
         this.service.setTool();
     }
-    openRectangle(): void  {
+    openRectangle(): void {
         this.service.setRectangle();
     }
 
-    openLine(): void  {
+    openLine(): void {
         this.service.setLine();
     }
 
-    openEllipsis(): void  {
+    openEllipsis(): void {
         this.service.setEllipse();
     }
-    openWidth(): void  {
+    openWidth(): void {
         this.width = true;
         this.visible = false;
     }
 
-    setMode(mode: string): void  {
-        
-    }
+    setMode(mode: string): void {}
 }

@@ -39,7 +39,7 @@ export class ToolControllerService {
     setLine(): void {
         this.currentTool = this.lineService;
     }
-    shift (shift: boolean): void {
+    shift(shift: boolean): void {
         this.currentTool.onShift(shift);
     }
 
@@ -54,7 +54,6 @@ export class ToolControllerService {
             case '2':
                 this.setEllipse();
                 break;
-                //2;
             case 'l':
                 this.setLine();
                 break;
