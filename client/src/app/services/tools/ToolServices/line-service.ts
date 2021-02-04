@@ -19,8 +19,7 @@ export enum MouseButton {
 @Injectable({
     providedIn: 'root',
 })
-export class LineService extends Tool
-{
+export class LineService extends Tool {
     private pathData: Vec2[];
 
     constructor(public drawingService: DrawingService) {
@@ -28,54 +27,44 @@ export class LineService extends Tool
         this.clearPath();
     }
 
-
-
-
     onMouseMove(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
 
-
-
-            this.pathData.push(mousePosition);
-
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
-            this.pathData.pop();
-
-    }
-
-    onClick(event:MouseEvent): void {
-      const mousePosition = this.getPositionFromMouse(event);
-      this.pathData.push(mousePosition)
-      // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-      this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.pathData.push(mousePosition);
-      this.drawLine(this.drawingService.previewCtx, this.pathData);
-
-    }
-
-    ondbClick(event:MouseEvent):void{
-      const mousePosition = this.getPositionFromMouse(event);
-      if(this.distanceBewteenPoints(this.pathData[0],mousePosition)<20){
-        this.pathData.push(this.pathData[0]);
-      }
-      else{
         this.pathData.push(mousePosition);
-      }
 
-      this.drawingService.clearCanvas(this.drawingService.previewCtx);
-      this.drawingService.baseCtx.strokeStyle = sessionStorage.getItem("color") || "black";
-      this.drawLine(this.drawingService.baseCtx, this.pathData);
-      this.clearPath();
-
+        // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
+        this.pathData.pop();
     }
 
+    onClick(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        this.pathData.push(mousePosition);
+        // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.pathData.push(mousePosition);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
+    }
+
+    ondbClick(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
+            this.pathData.push(this.pathData[0]);
+        } else {
+            this.pathData.push(mousePosition);
+        }
+
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.baseCtx.strokeStyle = sessionStorage.getItem('color') || 'black';
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
+    }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
-        ctx.strokeStyle = this.color || "black";
-        ctx.lineCap = "round";
+        ctx.strokeStyle = this.color || 'black';
+        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -87,11 +76,10 @@ export class LineService extends Tool
         this.pathData = [];
     }
 
-
-    private distanceBewteenPoints(a:Vec2, b:Vec2):number{
-       let x = Math.abs(a.x-b.x);
-       let y = Math.abs(a.y-b.y);
-       let distance = Math.sqrt(Math.pow(x,2)+Math.pow(y,2));
-       return distance;
+    private distanceBewteenPoints(a: Vec2, b: Vec2): number {
+        const x = Math.abs(a.x - b.x);
+        const y = Math.abs(a.y - b.y);
+        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        return distance;
     }
 }

@@ -7,32 +7,30 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    public visible = false;
-    public width: boolean = false;
+    visible: boolean = false;
+    width: boolean = false;
     constructor(private service: ToolControllerService) {}
 
-    openCrayon() {
+    openCrayon(): void {
         this.service.setTool();
     }
-    openRectangle(){
-      this.service.setRectangle();
+    openRectangle(): void  {
+        this.service.setRectangle();
     }
 
-    openLine(){
-      this.service.setLine();
+    openLine(): void  {
+        this.service.setLine();
     }
 
-    openEllipsis(){
-      this.service.setEllipse();
+    openEllipsis(): void  {
+        this.service.setEllipse();
     }
-    openWidth() {
+    openWidth(): void  {
         this.width = true;
         this.visible = false;
     }
 
-    setMode(mode:string){
-
+    setMode(mode: string): void  {
+        
     }
-
-
 }

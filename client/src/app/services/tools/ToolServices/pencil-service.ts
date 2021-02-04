@@ -35,19 +35,17 @@ export class PencilService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        
-        if (this.outOfBounds){
+        if (this.outOfBounds) {
             this.mouseDown = false;
             this.clearPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
-    
+
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            if(this.pathData[0].x - this.pathData[1].x === 0 
-                && this.pathData[0].y - this.pathData[1].y === 0){
+            if (this.pathData[0].x - this.pathData[1].x === 0 && this.pathData[0].y - this.pathData[1].y === 0) {
                 this.drawPixel(this.drawingService.baseCtx, this.pathData);
             }
 
@@ -55,7 +53,6 @@ export class PencilService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
-        
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -70,7 +67,7 @@ export class PencilService extends Tool {
     }
 
     onMouseLeave(event: MouseEvent): void {
-        if (this.mouseDown){
+        if (this.mouseDown) {
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             this.clearPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -82,17 +79,17 @@ export class PencilService extends Tool {
         this.outOfBounds = false;
     }
 
-    private drawPixel (ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawPixel(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.applyAttributes(ctx);
-        if(ctx.lineWidth === 1){
+        if (ctx.lineWidth === 1) {
             ctx.fillStyle = this.color;
-            ctx.fillRect( path[path.length -1].x, path[path.length -1].y, 1, 1 );
+            ctx.fillRect(path[path.length - 1].x, path[path.length - 1].y, 1, 1);
         }
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.applyAttributes(ctx);
-        
+
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -104,18 +101,17 @@ export class PencilService extends Tool {
         this.pathData = [];
     }
 
-    //fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
+    // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
     private applyAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
         const width = this.drawingService.width;
-        
+
         if (width !== undefined && width > 0) {
             ctx.lineWidth = width;
         }
 
-        if (this.color !== undefined && this.color != '') {
+        if (this.color !== undefined && this.color !== '') {
             ctx.strokeStyle = this.color;
         }
-        
     }
 }
