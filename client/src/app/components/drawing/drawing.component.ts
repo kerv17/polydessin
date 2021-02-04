@@ -20,7 +20,7 @@ export class DrawingComponent implements AfterViewInit {
     
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2; // = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
     
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
@@ -76,7 +76,7 @@ export class DrawingComponent implements AfterViewInit {
         this.controller.currentTool.ondbClick(event);
     }
 
-    setDrawingSurface():void{
+    /*setDrawingSurface():void{
         let halfWindowHeight:number = document.documentElement.clientHeight/2;
         let halfWindowidth:number = document.documentElement.clientWidth/2;
         let minSize:number = 250;
@@ -91,7 +91,7 @@ export class DrawingComponent implements AfterViewInit {
         }
 
 
-    }
+    }*/
 
 
 
