@@ -1,14 +1,3 @@
-:host {
-    display: block;
-    width: 316px;
-    padding: 16px;
-}
-
-.color-wrapper {
-    display: flex;
-    height: 250px;
-}
-
 .color-div {
     width: 32px;
     height: 32px;
@@ -20,4 +9,17 @@
     flex: 1;
     font-family: 'Helvetica';
     line-height: 32px;
+}
+
+.table {
+    display: table;
+}
+
+.recentColors {
+    float: left;
+}
+
+.cells {
+    float: left;
+    padding-right: 25px;
 }

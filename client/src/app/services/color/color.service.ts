@@ -1,46 +1,45 @@
 import { Injectable } from '@angular/core';
 
+// à mettre dans un fichier de constantes
+const maxSize = 10;
+const maxDecimal = 255;
+const maxSingleDigit = 9;
+
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class ColorService {
+    primaryColor: string = 'rgba(0,0,0,1)';
+    secondaryColor: string = 'rgba(0,0,0,1)';
+    currentColor: string;
+    modalVisibility: boolean;
+    recentColors: string[] = new Array();
 
-  public primaryColor : string;
-  public secondaryColor : string;
-  public currentColor : string;
-  public modalVisibility : boolean;
-  public recentColors : string[] = new Array();
-
-  constructor() { 
-    this.primaryColor = "rgba(0,0,0,1)";
-    this.secondaryColor = "rgba(0,0,0,1)";
-    this.modalVisibility = false;
-  }
-
-  isHexadecimal(value:string) : boolean {
-    if (value.length == 2){
-      let num:number = parseInt(value, 16);
-      if (num >= 10 && num <= 255){
-        return true;
-      }
+    constructor() {
+        this.modalVisibility = false;
     }
-    else if (value.length == 1){
-      let num:number = parseInt(value, 16);
-      if (num >= 0 && num <= 9){
-        return true;
-      }
-    }
-    return false;
-  }
 
-  saveColor(color:string){
-    if (this.recentColors.length < 10){
-      this.recentColors.push(color);
+    isHexadecimal(value: string): boolean {
+        if (value.length === 2) {
+            const num: number = parseInt(value, 16);
+            if (num >= maxSize && num <= maxDecimal) {
+                return true;
+            }
+        } else if (value.length === 1) {
+            const num: number = parseInt(value, 16);
+            if (num >= 0 && num <= maxSingleDigit) {
+                return true;
+            }
+        }
+        return false;
     }
-    else {
-      this.recentColors.shift();
-      this.recentColors.push(color);
-    }
-  }
 
+    saveColor(color: string): void {
+        if (this.recentColors.length < maxSize) {
+            this.recentColors.push(color);
+        } else {
+            this.recentColors.shift();
+            this.recentColors.push(color);
+        }
+    }
 }

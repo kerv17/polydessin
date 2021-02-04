@@ -21,7 +21,7 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    public color: string;
+    color: string;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
