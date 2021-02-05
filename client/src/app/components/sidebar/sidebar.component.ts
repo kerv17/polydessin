@@ -10,28 +10,33 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 export class SidebarComponent {
     public visible = false;
     public width: boolean = false;
+    public fillBorder: boolean = false;
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
     openCrayon() {
         this.setBackgroundColor('crayon');
         this.service.setTool();
+        this.fillBorder = false;
         this.openWidth();
     }
     openRectangle() {
         this.service.setRectangle();
         this.setBackgroundColor('rectangle');
+        this.fillBorder = true;
         this.openWidth();
     }
 
     openLine() {
         this.service.setLine();
         this.setBackgroundColor('line');
+        this.fillBorder = false;
         this.openWidth();
     }
 
     openEllipsis() {
         this.service.setEllipse();
         this.setBackgroundColor('ellipsis');
+        this.fillBorder = true;
         this.openWidth();
     }
     setBackgroundColor(name: string): void {
@@ -40,29 +45,68 @@ export class SidebarComponent {
         let line: HTMLElement | null = document.getElementById('LineButton');
         let ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
 
-        if (crayon != null && rectangle != null && line != null && ellipsis != null) {
-            this.resetButtonColor(crayon, rectangle, line, ellipsis);
-            switch (name) {
-                case 'crayon':
-                    crayon.style.backgroundColor = 'gainsboro';
+        let fill: HTMLElement | null = document.getElementById('fillButton');
+        let border: HTMLElement | null = document.getElementById('borderButton');
+        let fillBorder: HTMLElement | null = document.getElementById('fillBorderButton');
 
-                    break;
-                case 'rectangle':
-                    rectangle.style.backgroundColor = 'gainsboro';
+        if (name == 'crayon' || name == 'rectangle' || name == 'line' || name == 'ellipsis') {
+            if (crayon != null && rectangle != null && line != null && ellipsis != null) {
+                this.resetButtonColor(crayon, rectangle, line, ellipsis);
+                switch (name) {
+                    case 'crayon':
+                        crayon.style.backgroundColor = 'gainsboro';
 
-                    break;
-                case 'line':
-                    line.style.backgroundColor = 'gainsboro';
+                        break;
+                    case 'rectangle':
+                        rectangle.style.backgroundColor = 'gainsboro';
 
-                    break;
-                case 'ellipsis':
-                    ellipsis.style.backgroundColor = 'gainsboro';
+                        break;
+                    case 'line':
+                        line.style.backgroundColor = 'gainsboro';
 
-                    break;
-                default:
-                    break;
+                        break;
+                    case 'ellipsis':
+                        ellipsis.style.backgroundColor = 'gainsboro';
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else if (name == 'fill' || name == 'border' || name == 'fillBorder') {
+            if (fill != null && border != null && fillBorder != null) {
+                fill.style.backgroundColor = 'white';
+                border.style.backgroundColor = 'white';
+                fillBorder.style.backgroundColor = 'white';
+
+                switch (name) {
+                    case 'fill':
+                        fill.style.backgroundColor = 'gainsboro';
+                        break;
+                    case 'border':
+                        border.style.backgroundColor = 'gainsboro';
+                        break;
+                    case 'fillBorder':
+                        fillBorder.style.backgroundColor = 'gainsboro';
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+    }
+
+    setFill() {
+        this.service.setFill();
+        this.setBackgroundColor('fill');
+    }
+    setBorder() {
+        this.service.setBorder();
+        this.setBackgroundColor('border');
+    }
+    setFillBorder() {
+        this.service.setFillBorder();
+        this.setBackgroundColor('fillBorder');
     }
 
     resetButtonColor(crayon: HTMLElement, rectangle: HTMLElement, line: HTMLElement, ellipsis: HTMLElement): void {
