@@ -12,7 +12,7 @@
     //flex: 1;
     flex-direction: column;
 
-    width: 25%;
+    width: min-content;
     background-image: url(../../../assets/c3a1391c57807876a7f3bddaac3ef1eb.jpeg);
     //background-color: black;
     justify-content: start;
@@ -23,7 +23,7 @@
 }
 .function {
     display: flex;
-    width: 90%;
+    width: 100px;
     border-radius: 4px;
     background: white;
     flex: 0.1;
