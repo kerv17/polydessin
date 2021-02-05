@@ -8,6 +8,7 @@ export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
+    //A voir
     width: number = 1;
 
     clearCanvas(context: CanvasRenderingContext2D): void {
@@ -15,17 +16,13 @@ export class DrawingService {
     }
 
     //est public pour etre modifier dans drawing component
-    public canvasSize: Vec2 ={x:0,y:0};
-    setSizeCanva(dimensionPage:Vec2):void{
-       
-        if(dimensionPage.x/2<250){
-            this.canvasSize.x=250;
-
+    public canvasSize: Vec2 = { x: 0, y: 0 };
+    setSizeCanva(dimensionPage: Vec2): void {
+        if (dimensionPage.x / 2 < 250) {
+            this.canvasSize.x = 250;
         }
-        if(dimensionPage.y/2<250){
-            this.canvasSize.y=250;
-
+        if (dimensionPage.y / 2 < 250) {
+            this.canvasSize.y = 250;
         }
-        
     }
 }
