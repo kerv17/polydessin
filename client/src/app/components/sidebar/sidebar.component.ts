@@ -8,8 +8,8 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    public visible = false;
-    public width: boolean = false;
+    visible = false;
+    width: boolean = false;
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
     openCrayon() {
@@ -35,10 +35,10 @@ export class SidebarComponent {
         this.openWidth();
     }
     setBackgroundColor(name: string): void {
-        let crayon: HTMLElement | null = document.getElementById('CrayonButton');
-        let rectangle: HTMLElement | null = document.getElementById('RectangleButton');
-        let line: HTMLElement | null = document.getElementById('LineButton');
-        let ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
+        const crayon: HTMLElement | null = document.getElementById('CrayonButton');
+        const rectangle: HTMLElement | null = document.getElementById('RectangleButton');
+        const line: HTMLElement | null = document.getElementById('LineButton');
+        const ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
 
         if (crayon != null && rectangle != null && line != null && ellipsis != null) {
             this.resetButtonColor(crayon, rectangle, line, ellipsis);
@@ -76,10 +76,10 @@ export class SidebarComponent {
         this.width = true;
         this.visible = false;
     }
-    //TODO à modifier
+    // TODO à modifier
     nouveauDessin() {
-        //Doit vérifier si la surface est vide ou non
-        let image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
+        // Doit vérifier si la surface est vide ou non
+        const image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
         if (this.notWhiter(image)) {
             if (confirm('Are you sure you want to discard your current drawing?')) {
                 this.drawing.clearCanvas(this.drawing.baseCtx);
@@ -88,17 +88,9 @@ export class SidebarComponent {
         }
     }
 
-    notWhite(element: number, index: number): boolean {
-        if (index % 3 != 0) {
-            //if (element != 255) window.alert(element);
-            return element != 255 && element != 0;
-        }
-        return false;
-    }
-
     // TODO à transférer
     notWhiter(image: ImageData): boolean {
-        //window.alert(image.data[image.data.length - 3]);
+        // window.alert(image.data[image.data.length - 3]);
 
         if (image.data[1] != undefined) {
             for (let i = 0; i < image.data.length; i += 4) {
