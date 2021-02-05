@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingComponent } from './drawing.component';
-
 class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
@@ -16,7 +16,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
 
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
+        toolStub = new ToolStub({} as DrawingService, {} as ColorService);
         drawingStub = new DrawingService();
 
         TestBed.configureTestingModule({

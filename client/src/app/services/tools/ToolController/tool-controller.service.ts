@@ -1,79 +1,89 @@
-
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { EllipsisService } from '../ToolServices/ellipsis-service';
+import { LineService } from '../ToolServices/line-service';
 import { PencilService } from '../ToolServices/pencil-service';
-import { RectangleService} from "../ToolServices/rectangle-service";
-import { LineService} from "../ToolServices/line-service";
-import { EllipsisService} from "../ToolServices/ellipsis-service";
+import { RectangleService } from '../ToolServices/rectangle-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ToolControllerService {
-    public currentTool: Tool;
+    currentTool: Tool;
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
-        private lineService:LineService,
-        private ellipsisService:EllipsisService) {
-      document.addEventListener('keydown', (event:KeyboardEvent) => {
-        this.checkKeyDown(event);
-
-      });
-      document.addEventListener('keyup', (event:KeyboardEvent) => {
-        this.checkKeyUp(event);
-
-      });
+        private lineService: LineService,
+        private ellipsisService: EllipsisService,
+    ) {
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            this.checkKeyDown(event);
+        });
+        document.addEventListener('keyup', (event: KeyboardEvent) => {
+            this.checkKeyUp(event);
+        });
     }
 
-    public setTool(): void {
+    setTool(): void {
         this.currentTool = this.pencilService;
     }
 
-    public setRectangle():void{
-      this.currentTool = this.rectangleService;
+    setRectangle(): void {
+        this.currentTool = this.rectangleService;
     }
 
-    public setEllipse():void{
-      this.currentTool = this.ellipsisService;
+    setEllipse(): void {
+        this.currentTool = this.ellipsisService;
     }
 
-    public setLine():void{
-      this.currentTool = this.lineService;
+    setLine(): void {
+        this.currentTool = this.lineService;
     }
-    public shift(shift:boolean){
-      this.currentTool.onShift(shift);
-    }
-
-    private checkKeyDown(event:KeyboardEvent):void{
-      switch(event.key){
-        case "c":
-          this.setTool();
-          break;
-        case "1":
-          this.setRectangle();
-          break;
-        case "l":
-          this.setLine();
-        case "Shift":
-          this.shift(true);
-          break;
-        default:
-          break;
-      }
-      return;
+    shift(shift: boolean): void {
+        this.currentTool.onShift(shift);
     }
 
-
-    private checkKeyUp(event:KeyboardEvent):void{
-      switch(event.key){
-        case "Shift":
-          this.shift(false);
-          break;
-        default:
-          break;
-      }
-      return;
+    setFill() {
+        this.currentTool.toolMode = 'fill';
+    }
+    setBorder() {
+        this.currentTool.toolMode = 'border';
+    }
+    setFillBorder() {
+        this.currentTool.toolMode = 'fillBorder';
     }
 
+    private checkKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'c':
+                this.setTool();
+                break;
+            case '1':
+                this.setRectangle();
+                break;
+            case '2':
+                this.setEllipse();
+                break;
+            case 'l':
+                this.setLine();
+                break;
+            case 'Shift':
+                this.shift(true);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
+
+    private checkKeyUp(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'Shift':
+                this.shift(false);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
 }

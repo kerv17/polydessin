@@ -36,6 +36,7 @@ export class LineService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
         this.pathData.pop();
+<<<<<<< HEAD
     }
 
     onClick(event: MouseEvent): void {
@@ -50,6 +51,27 @@ export class LineService extends Tool {
     ondbClick(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
+=======
+    }
+
+    onClick(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        this.pathData.push(mousePosition);
+        // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.pathData.push(mousePosition);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
+    }
+
+    ondbClick(event: MouseEvent): void {
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
+            this.pathData.pop();
+            this.pathData.pop();
+            this.pathData.pop();
+            this.pathData.pop();
+
+>>>>>>> origin/dev
             this.pathData.push(this.pathData[0]);
         } else {
             this.pathData.push(mousePosition);
@@ -76,9 +98,15 @@ export class LineService extends Tool {
     }
 
     private distanceBewteenPoints(a: Vec2, b: Vec2): number {
+<<<<<<< HEAD
         let x = Math.abs(a.x - b.x);
         let y = Math.abs(a.y - b.y);
         let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+=======
+        const x = Math.abs(a.x - b.x);
+        const y = Math.abs(a.y - b.y);
+        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+>>>>>>> origin/dev
         return distance;
     }
 }

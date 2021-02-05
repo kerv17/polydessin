@@ -1,89 +1,84 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
+const rgbValueStart = 5;
+
 @Component({
-  selector: 'app-color-modal',
-  templateUrl: './color-modal.component.html',
-  styleUrls: ['./color-modal.component.scss']
+    selector: 'app-color-modal',
+    templateUrl: './color-modal.component.html',
+    styleUrls: ['./color-modal.component.scss'],
 })
-export class ColorModalComponent implements OnInit {
+export class ColorModalComponent implements AfterViewInit {
+    hue: string;
+    color: string;
+    rValue: string = '00';
+    gValue: string = '00';
+    bValue: string = '00';
 
-  public hue : string;
-  public color : string;
+    @Output()
+    isVisible: EventEmitter<boolean> = new EventEmitter(true);
 
-  @Output()
-  isVisible: EventEmitter<boolean> = new EventEmitter(true);
+    @Output()
+    colorModified: EventEmitter<string> = new EventEmitter(true);
 
-  @Output()
-  colorModified: EventEmitter<string> = new EventEmitter(true);
+    constructor(private colorService: ColorService) {}
 
-  constructor(private colorService : ColorService) {
-
-  }
-
-  ngOnInit(): void {
-    if (this.colorService.currentColor == 'Primary'){
-      this.color = this.colorService.primaryColor;
+    ngAfterViewInit(): void {
+        if (this.colorService.currentColor === 'Primary') {
+            this.color = this.colorService.primaryColor;
+        } else if (this.colorService.currentColor === 'Secondary') {
+            this.color = this.colorService.secondaryColor;
+        }
+        this.setColorInputValue();
     }
-    else if (this.colorService.currentColor == 'Secondary'){
-      this.color = this.colorService.secondaryColor;
+
+    confirmColor(): void {
+        if (this.colorService.currentColor === 'Primary') {
+            if (this.color !== this.colorService.primaryColor) {
+                this.colorService.saveColor(this.colorService.primaryColor);
+                this.colorService.primaryColor = this.color;
+            }
+        } else if (this.colorService.currentColor === 'Secondary') {
+            if (this.color !== this.colorService.secondaryColor) {
+                this.colorService.saveColor(this.colorService.secondaryColor);
+                this.colorService.secondaryColor = this.color;
+            }
+        }
+        this.colorModified.emit(this.color);
+        this.isVisible.emit(false);
     }
-    this.setColor();
-  }
 
-  confirmColor() : void {
-    if (this.colorService.currentColor == 'Primary'){
-      this.colorService.saveColor(this.colorService.primaryColor);
-      this.colorService.primaryColor = this.color;
-    } 
-    else if (this.colorService.currentColor == 'Secondary'){
-      this.colorService.saveColor(this.colorService.secondaryColor);
-      this.colorService.secondaryColor = this.color;
+    cancel(): void {
+        this.isVisible.emit(false);
     }
-    this.colorModified.emit(this.color);
-    this.isVisible.emit(false);
-  }
 
-  cancel() : void {
-    this.isVisible.emit(false);
-  }
+    // affiche la valeur rgb de la couleur sélectionnée par la palette de couleur
+    setColorInputValue(): void {
+        if (this.color !== undefined) {
+            const subColor: string = this.color.substring(rgbValueStart, this.color.length - 1);
+            const splitColor: string[] = subColor.split(',');
 
-  setColor() : void {
-    let subColor:string = this.color.substring(5,this.color.length - 1);
-    let splitColor:string[] = subColor.split(",");
-
-    (<HTMLInputElement>document.getElementById("R")).value = parseInt(splitColor[0]).toString(16);
-    (<HTMLInputElement>document.getElementById("G")).value = parseInt(splitColor[1]).toString(16);
-    (<HTMLInputElement>document.getElementById("B")).value = parseInt(splitColor[2]).toString(16);
-    (<HTMLInputElement>document.getElementById("A")).value = String(parseFloat(splitColor[3])*100);
-  }
-
-  updateColor() : void {
-    //récupérer valeur input
-    let R:string = (<HTMLInputElement>document.getElementById("R")).value;
-    let G:string = (<HTMLInputElement>document.getElementById("G")).value;
-    let B:string = (<HTMLInputElement>document.getElementById("B")).value;
-    let A:string = (<HTMLInputElement>document.getElementById("A")).value;
-
-    //vérifie si hexadécimal
-    //update la couleur rgba
-    if (this.colorService.isHexadecimal(R) && this.colorService.isHexadecimal(G) && this.colorService.isHexadecimal(B)){
-      if (A != null && Number(A) >= 0 && Number(A) < 100){
-        this.color = 'rgba(' + parseInt(R, 16) + ',' + parseInt(G, 16) + ',' + parseInt(B, 16) + ',' + (Number(A)/100.0) + ')';
-        
-      }
-      else if (Number(A) > 100){
-        (<HTMLInputElement>document.getElementById("A")).value = "100";
-      }
-      else {
-        this.color = 'rgba(' + parseInt(R, 16) + ',' + parseInt(G, 16) + ',' + parseInt(B, 16) + ',1)';
-        this.hue = this.color;
-      }
-      
-    } 
-    else {
-      this.setColor();
+            this.rValue = parseInt(splitColor[0], 10).toString(16);
+            this.gValue = parseInt(splitColor[1], 10).toString(16);
+            this.bValue = parseInt(splitColor[2], 10).toString(16);
+        } else {
+            this.rValue = '00';
+            this.gValue = '00';
+            this.bValue = '00';
+        }
     }
-  }
-  
+
+    // met à jour la couleur lorsqu'on entre manuellement des valeurs rgb
+    updateColorFromInput(): void {
+        if (
+            this.colorService.isHexadecimal(this.rValue) &&
+            this.colorService.isHexadecimal(this.gValue) &&
+            this.colorService.isHexadecimal(this.bValue)
+        ) {
+            this.color = 'rgba(' + parseInt(this.rValue, 16) + ',' + parseInt(this.gValue, 16) + ',' + parseInt(this.bValue, 16) + ',1)';
+            this.hue = this.color;
+        } else {
+            this.setColorInputValue();
+        }
+    }
 }

@@ -1,11 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSliderChange } from '@angular/material/slider/slider';
+//import { MatSliderChange } from '@angular/material/slider/slider';
 import { WidthSliderComponent } from './width-slider.component';
 
-fdescribe('WidthSliderComponent', () => {
+describe('WidthSliderComponent', () => {
     let component: WidthSliderComponent;
     let fixture: ComponentFixture<WidthSliderComponent>;
-    let matSliderChange: MatSliderChange;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -17,10 +16,6 @@ fdescribe('WidthSliderComponent', () => {
         fixture = TestBed.createComponent(WidthSliderComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-
-        matSliderChange = {
-            value: 12,
-        } as MatSliderChange;
     });
 
     it('should create', () => {

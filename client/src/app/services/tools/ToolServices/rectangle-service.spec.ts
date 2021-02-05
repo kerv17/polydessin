@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
-fdescribe('RectangleService', () => {
+describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -67,9 +67,9 @@ fdescribe('RectangleService', () => {
 
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        //Put down mouse
+        // Put down mouse
         service.onMouseDown(mouseEvent);
-        //Rise it back up
+        // Rise it back up
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
@@ -89,10 +89,8 @@ fdescribe('RectangleService', () => {
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
-        expect(service.getPath().length==5)
+        expect(service.getPath().length == 5);
     });
-
-
 
     it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -104,26 +102,48 @@ fdescribe('RectangleService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    fit(' should change the pixel of the canvas ', () => {
+    it(' should change the pixels of the canvas ', () => {
+        service.toolMode = 'fill';
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        let mouseEvent1 = mouseEvent;
+        const mouseEvent1 = mouseEvent;
         service.onMouseDown(mouseEvent1);
         mouseEvent = { offsetX: 3, offsetY: 3, button: 0 } as MouseEvent;
-        let mouseEvent2 = mouseEvent;
+        const mouseEvent2 = mouseEvent;
         service.onMouseUp(mouseEvent2);
 
-        // Premier pixel seulement
-        for (var _i = mouseEvent1.offsetX; _i <= mouseEvent2.offsetX, _i++;){
-          for (var _j = mouseEvent1.offsetY; _j <= mouseEvent2.offsetY, _j++;){
-            let imageData: ImageData = baseCtxStub.getImageData(_i, _j, 1, 1);
-
-
-            expect(imageData.data[0]).toEqual(0); // R
-            expect(imageData.data[1]).toEqual(0); // G
-            expect(imageData.data[2]).toEqual(0); // B
-            // tslint:disable-next-line:no-magic-numbers
-            expect(imageData.data[3]).not.toEqual(0); // A
-          }
+        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.offsetX, mouseEvent1.offsetY, mouseEvent2.offsetX, mouseEvent2.offsetY);
+        const expectedResult = imageData.data.length / 4;
+        let check = true;
+        let a = 0;
+        for (let i = 0; i < imageData.data.length && check; i += 4) {
+            check = imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2] == 0;
+            a++;
         }
+
+        expect(a).toBe(expectedResult);
+    });
+
+    it('Shifting makes a square', () => {
+        service.shift = true;
+        let points: Vec2[] = [];
+        const a: Vec2 = { x: 0, y: 0 };
+        service.getPath().push(a);
+        const b: Vec2 = { x: 6, y: 10 };
+        points = service.getRectanglePoints(b);
+        expect(Math.abs(points[2].x - a.x)).toEqual(Math.abs(points[2].y - a.y));
+
+        service.getPath()[0] = b;
+        const c: Vec2 = { x: 4, y: 12 };
+        points = service.getRectanglePoints(c);
+        expect(Math.abs(points[2].x - b.x)).toEqual(Math.abs(points[2].y - b.y));
+    });
+
+    it('OnShift sets the value of shifted and autoruns move', () => {
+        const spy = spyOn<any>(service, 'onMouseMove').and.callThrough();
+        service.shift = false;
+        service.onShift(true);
+        expect(service.shift).toBe(true);
+
+        expect(spy).toHaveBeenCalled();
     });
 });

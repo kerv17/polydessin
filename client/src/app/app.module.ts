@@ -15,7 +15,6 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WidthSliderComponent } from './components/WidthModifier/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
-
 @NgModule({
     declarations: [
         AppComponent,
