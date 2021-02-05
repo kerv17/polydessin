@@ -9,6 +9,7 @@ export abstract class Tool {
     outOfBounds: boolean = false;
     color: string;
     color2: string;
+    width: number;
     toolMode: string = 'border';
     shift: boolean = false;
 

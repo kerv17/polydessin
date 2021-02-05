@@ -35,7 +35,7 @@
             <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
         </div>
         <div *ngIf="width">
-            <app-width-slider></app-width-slider>
+            <app-width-slider [set]="set"></app-width-slider>
         </div>
     </div>
 </div>

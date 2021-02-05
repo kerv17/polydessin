@@ -79,7 +79,7 @@ export class EllipsisService extends Tool {
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
         2;
         // Determiner si on doit faire la bordure
         if (this.toolMode == 'border' || this.toolMode == 'fillBorder') {

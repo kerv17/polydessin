@@ -9,7 +9,6 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     // A voir
-    width: number = 1;
 
     // est public pour etre modifier dans drawing component
     canvasSize: Vec2 = { x: 0, y: 0 };

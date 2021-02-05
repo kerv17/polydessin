@@ -72,7 +72,7 @@ export class RectangleService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
 
         // Determiner si on doit fill le rectangle
         if (this.toolMode == 'fill' || this.toolMode == 'fillBorder') {

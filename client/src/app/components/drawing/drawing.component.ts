@@ -21,11 +21,6 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
-<<<<<<< HEAD
-
-    // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
-=======
->>>>>>> origin/dev
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {}
 
