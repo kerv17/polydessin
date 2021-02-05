@@ -20,16 +20,19 @@ export class SidebarComponent {
     openRectangle() {
         this.service.setRectangle();
         this.setBackgroundColor('rectangle');
+        this.openWidth();
     }
 
     openLine() {
         this.service.setLine();
         this.setBackgroundColor('line');
+        this.openWidth();
     }
 
     openEllipsis() {
         this.service.setEllipse();
         this.setBackgroundColor('ellipsis');
+        this.openWidth();
     }
     setBackgroundColor(name: string): void {
         let crayon: HTMLElement | null = document.getElementById('CrayonButton');
