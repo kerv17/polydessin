@@ -46,8 +46,8 @@ describe('DrawingComponent', () => {
     });
 
     it('should get stubTool', () => {
-        //const currentTool = component.currentTool;
-        //expect(currentTool).toEqual(toolStub);
+        const currentTool = component.currentTool;
+        expect(currentTool).toEqual(toolStub);
     });
 
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
