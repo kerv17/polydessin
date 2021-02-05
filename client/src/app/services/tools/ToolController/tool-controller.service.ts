@@ -43,6 +43,16 @@ export class ToolControllerService {
         this.currentTool.onShift(shift);
     }
 
+    setFill() {
+        this.currentTool.toolMode = 'fill';
+    }
+    setBorder() {
+        this.currentTool.toolMode = 'border';
+    }
+    setFillBorder() {
+        this.currentTool.toolMode = 'fillBorder';
+    }
+
     private checkKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case 'c':

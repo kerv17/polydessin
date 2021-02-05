@@ -29,6 +29,11 @@
         <div>
             <app-color></app-color>
         </div>
+        <div *ngIf="fillBorder">
+            <button id="fillButton" (click)="setFill()">Remplir</button>
+            <button id="borderButton" (click)="setBorder()">Bordure</button>
+            <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
+        </div>
         <div *ngIf="width">
             <app-width-slider></app-width-slider>
         </div>
