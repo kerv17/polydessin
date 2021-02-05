@@ -33,6 +33,4 @@ import { ColorService } from './services/color/color.service';
     providers: [ColorService],
     bootstrap: [AppComponent],
 })
-export class AppModule {
-    constructor() {}
-}
+export class AppModule {}
