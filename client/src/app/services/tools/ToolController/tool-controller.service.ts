@@ -11,8 +11,6 @@ import { EllipsisService} from "../ToolServices/ellipsis-service";
 })
 export class ToolControllerService {
     public currentTool: Tool;
-    public focused:boolean;
-
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
@@ -26,20 +24,6 @@ export class ToolControllerService {
         this.checkKeyUp(event);
 
       });
-
-      document.addEventListener('focusin', (event:FocusEvent) => {
-        let target:Node = Object(event.target || event.currentTarget);
-        if (target != null){
-        if(target.nodeName == 'INPUT'){
-          this.focused = false;
-        }
-        else{
-          this.focused = true;
-        }
-          }
-      });
-
-      this.focused = true;
     }
 
     public setTool(): void {
@@ -61,9 +45,7 @@ export class ToolControllerService {
       this.currentTool.onShift(shift);
     }
 
-
     private checkKeyDown(event:KeyboardEvent):void{
-      if (this.focused){
       switch(event.key){
         case "c":
           this.setTool();
@@ -83,7 +65,6 @@ export class ToolControllerService {
         default:
           break;
       }
-    }
       return;
     }
 
@@ -98,4 +79,5 @@ export class ToolControllerService {
       }
       return;
     }
+
 }
