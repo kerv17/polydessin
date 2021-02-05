@@ -8,7 +8,6 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    visible = false;
     width: boolean = false;
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
@@ -74,32 +73,9 @@ export class SidebarComponent {
 
     openWidth() {
         this.width = true;
-        this.visible = false;
     }
-    // TODO à modifier
     nouveauDessin() {
-        // Doit vérifier si la surface est vide ou non
-        const image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
-        if (this.notWhiter(image)) {
-            if (confirm('Are you sure you want to discard your current drawing?')) {
-                this.drawing.clearCanvas(this.drawing.baseCtx);
-                this.drawing.clearCanvas(this.drawing.previewCtx);
-            }
-        }
-    }
-
-    // TODO à transférer
-    notWhiter(image: ImageData): boolean {
-        // window.alert(image.data[image.data.length - 3]);
-
-        if (image.data[1] != undefined) {
-            for (let i = 0; i < image.data.length; i += 4) {
-                if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        this.drawing.nouveauDessin();
     }
 
     @HostListener('window:keydown', ['$event'])
