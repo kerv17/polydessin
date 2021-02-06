@@ -20,29 +20,27 @@ export class DrawingComponent implements AfterViewInit {
     
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+
+    private canvasSize: Vec2;
     
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
-    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {}
+    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
+        this.canvasSize = this.drawingService.setSizeCanva();
+    }
    
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        //met la surface en blanc mais c aussi fait sans ce code 
-        //this.baseCtx.fillStyle = "white";
-        //this.baseCtx.fillRect(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT);
+        // met la surface en blanc mais c aussi fait sans ce code 
+        // this.baseCtx.fillStyle = "white";
+        // this.baseCtx.fillRect(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT);
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
-        this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        //need to find where to put this
-        //document.documentElement.clientHeight;
-        //document.documentElement.clientHeight;
-        //ne fait rien
-        //this.setDrawingSurface();
-        
+        this.controller.currentTool.color2 = this.colorService.secondaryColor;        
+        this.canvasSize = this.drawingService.setSizeCanva();
     }
 
     @HostListener('mousemove', ['$event'])
