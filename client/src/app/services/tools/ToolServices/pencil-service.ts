@@ -22,6 +22,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
 
     onMouseDown(event: MouseEvent): void {

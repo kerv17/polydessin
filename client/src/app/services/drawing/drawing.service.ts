@@ -25,10 +25,10 @@ export class DrawingService {
             if (confirm('Are you sure you want to discard your current drawing?')) {
                 this.clearCanvas(this.baseCtx);
                 this.clearCanvas(this.previewCtx);
-                this.baseCtx.fillStyle = 'white';
-                // TODO trouver vrai valeur
-                this.baseCtx.fillRect(0, 0, 1000, 800);
             }
+            this.baseCtx.fillStyle = 'white';
+            // TODO trouver vrai valeur
+            this.baseCtx.fillRect(0, 0, 1000, 800);
         }
     }
 

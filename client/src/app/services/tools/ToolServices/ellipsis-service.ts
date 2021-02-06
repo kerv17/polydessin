@@ -23,6 +23,7 @@ export class EllipsisService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     private perimerterPathData: Vec2[];

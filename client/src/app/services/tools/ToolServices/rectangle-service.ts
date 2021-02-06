@@ -23,6 +23,7 @@ export class RectangleService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     lastMoveEvent: MouseEvent;

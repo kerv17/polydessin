@@ -8,7 +8,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./width-slider.component.scss'],
 })
 export class WidthSliderComponent implements OnChanges {
-    @Input() width: number;
+    @Input() width: number = 1;
     @Input() set: boolean;
 
     constructor(private tool: ToolControllerService) {}

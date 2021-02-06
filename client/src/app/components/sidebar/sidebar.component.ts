@@ -133,7 +133,10 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent) {
-        if (($event.ctrlKey || $event.metaKey) && $event.key == '0') this.nouveauDessin();
+        if (($event.ctrlKey || $event.metaKey) && $event.key == 'o') {
+            $event.preventDefault();
+            this.nouveauDessin();
+        }
     }
 
     setMode(mode: string) {}

@@ -13,7 +13,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { WidthSliderComponent } from './components/sidebar/WidthModifier/width-slider/width-slider.component';
+import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
 @NgModule({
     declarations: [
