@@ -2,6 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
 const rgbValueStart = 5;
+const maxOpacity = 100;
 
 @Component({
     selector: 'app-color-modal',
@@ -14,6 +15,7 @@ export class ColorModalComponent implements AfterViewInit {
     rValue: string = '00';
     gValue: string = '00';
     bValue: string = '00';
+    opacity: string = '100';
 
     @Output()
     isVisible: EventEmitter<boolean> = new EventEmitter(true);
@@ -30,6 +32,7 @@ export class ColorModalComponent implements AfterViewInit {
             this.color = this.colorService.secondaryColor;
         }
         this.setColorInputValue();
+        this.updateOpacity();
     }
 
     confirmColor(): void {
@@ -80,5 +83,29 @@ export class ColorModalComponent implements AfterViewInit {
         } else {
             this.setColorInputValue();
         }
+    }
+
+    updateOpacity(): void {
+        let opacity;
+        if (parseFloat(this.opacity) > maxOpacity) {
+            window.alert('La valeur fournie est invalide! Veuillez entrez une valeur entre 0 et 100.');
+            this.opacity = '100';
+            opacity = '100';
+        } else {
+            opacity = (parseFloat(this.opacity) / 100.0).toString();
+        }
+        const subColor: string = this.color.substring(rgbValueStart, this.color.length - 1);
+        const splitColor: string[] = subColor.split(',');
+        this.color = 'rgba(' + splitColor[0] + ',' + splitColor[1] + ',' + splitColor[2] + ',' + opacity + ')';
+    }
+
+    omitUnwantedChars(event: KeyboardEvent): boolean {
+        const key = event.key.charCodeAt(0);
+        return key >= '0'.charCodeAt(0) && key <= '9'.charCodeAt(0);
+    }
+
+    omitUnwantedColorValue(event: KeyboardEvent): boolean {
+        const key = event.key.charCodeAt(0);
+        return (key >= '0'.charCodeAt(0) && key <= '9'.charCodeAt(0)) || (key >= 'a'.charCodeAt(0) && key <= 'f'.charCodeAt(0));
     }
 }

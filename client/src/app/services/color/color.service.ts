@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 // à mettre dans un fichier de constantes
 const maxSize = 10;
 const maxDecimal = 255;
-const maxSingleDigit = 9;
 
 @Injectable({
     providedIn: 'root',
@@ -20,16 +19,9 @@ export class ColorService {
     }
 
     isHexadecimal(value: string): boolean {
-        if (value.length === 2) {
-            const num: number = parseInt(value, 16);
-            if (num >= maxSize && num <= maxDecimal) {
-                return true;
-            }
-        } else if (value.length === 1) {
-            const num: number = parseInt(value, 16);
-            if (num >= 0 && num <= maxSingleDigit) {
-                return true;
-            }
+        const num: number = parseInt(value, 16);
+        if (num >= 0 && num <= maxDecimal) {
+            return true;
         }
         return false;
     }

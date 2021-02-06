@@ -1,9 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
-const maxOpacity = 100;
-const rgbValueStart = 5;
-
 @Component({
     selector: 'app-color',
     templateUrl: './color.component.html',
@@ -14,8 +11,6 @@ export class ColorComponent implements AfterViewInit {
     secondaryColor: string;
     visibility: boolean;
     recentColors: string[] = new Array();
-    OP: string = '100';
-    OS: string = '100';
 
     constructor(private colorService: ColorService) {}
 
@@ -23,7 +18,6 @@ export class ColorComponent implements AfterViewInit {
         this.updateColor();
         this.visibility = this.colorService.modalVisibility;
         this.recentColors = this.colorService.recentColors;
-        this.setOpacityValue();
     }
 
     invert(): void {
@@ -33,7 +27,6 @@ export class ColorComponent implements AfterViewInit {
 
         this.colorService.primaryColor = this.primaryColor;
         this.colorService.secondaryColor = this.secondaryColor;
-        this.setOpacityValue();
     }
 
     openModal(color: string): void {
@@ -44,7 +37,6 @@ export class ColorComponent implements AfterViewInit {
 
     closeModal(): void {
         this.visibility = false;
-        this.setOpacityValue();
     }
 
     updateColor(): void {
@@ -56,16 +48,15 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.saveColor(this.primaryColor);
         this.primaryColor = color;
         this.colorService.primaryColor = this.primaryColor;
-        this.setOpacityValue();
     }
 
-    selectSecondaryColor(color: string): void {
+    selectSecondaryColor(color: string, event: MouseEvent): boolean {
         this.colorService.saveColor(this.secondaryColor);
         this.secondaryColor = color;
         this.colorService.secondaryColor = this.secondaryColor;
-        this.setOpacityValue();
+        return false;
     }
-
+    /*
     updateOpacityPrimary(): void {
         let opacity: string = this.OP;
         if (parseFloat(opacity) > maxOpacity) {
@@ -102,5 +93,5 @@ export class ColorComponent implements AfterViewInit {
         const subColorS: string = this.secondaryColor.substring(rgbValueStart, this.secondaryColor.length - 1);
         const splitColorS: string[] = subColorS.split(',');
         this.OS = (parseFloat(splitColorS[3]) * 100).toString();
-    }
+    }*/
 }
