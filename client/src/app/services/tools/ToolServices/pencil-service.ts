@@ -88,7 +88,7 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        //TODO TODO check laquelle des lignes suivant est bonne
+        // TODO check laquelle des lignes suivant est bonne
         this.applyAttributes(ctx);
         ctx.lineWidth = this.drawingService.width;
 

@@ -73,21 +73,20 @@ export class EllipsisService extends Tool {
         }
     }
 
-    onShift(shifted: boolean) {
+    onShift(shifted: boolean): void {
         this.shift = shifted;
         this.onMouseMove(this.lastMoveEvent);
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.drawingService.width;
-        2;
         // Determiner si on doit faire la bordure
-        if (this.toolMode == 'border' || this.toolMode == 'fillBorder') {
+        if (this.toolMode === 'border' || this.toolMode === 'fillBorder') {
             this.drawBorder(ctx, path);
         }
 
         // Determiner si on doit fill le rectangle
-        if (this.toolMode == 'fill' || this.toolMode == 'fillBorder') {
+        if (this.toolMode === 'fill' || this.toolMode === 'fillBorder') {
             this.fill(ctx, path);
         }
         ctx.stroke();
@@ -113,7 +112,7 @@ export class EllipsisService extends Tool {
         this.perimerterPathData = [];
     }
 
-    private getPathForEllipsis(mousePosition: Vec2) {
+    private getPathForEllipsis(mousePosition: Vec2): void {
         const a: Vec2 = this.pathData[0];
         let c: Vec2 = mousePosition;
         if (this.shift) {
@@ -136,7 +135,7 @@ export class EllipsisService extends Tool {
         ctx.closePath();
     }
 
-    private getRectanglePoints(mousePosition: Vec2) {
+    private getRectanglePoints(mousePosition: Vec2): void {
         const list: Vec2[] = [];
 
         const a: Vec2 = this.perimerterPathData[0];
@@ -145,7 +144,7 @@ export class EllipsisService extends Tool {
         let d: Vec2 = { x: mousePosition.x, y: a.y };
 
         if (this.shift) {
-            if (mousePosition.x < a.x != mousePosition.y < a.y) {
+            if (mousePosition.x < a.x !== mousePosition.y < a.y) {
                 c = { x: a.x + -(b.y - a.y), y: mousePosition.y };
                 d = { x: a.x + -(b.y - a.y), y: a.y };
             } else {
