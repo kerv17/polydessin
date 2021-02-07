@@ -35,13 +35,13 @@ export class DrawingService {
     notWhiter(image: ImageData): boolean {
         // window.alert(image.data[image.data.length - 3]);
 
-        if (image.data[1] != undefined) {
-            for (let i = 0; i < image.data.length; i += 4) {
-                if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
-                    return true;
-                }
+
+        for (let i = 0; i < image.data.length; i += 4) {
+            if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
+              return true;
             }
         }
+
         return false;
     }
     setSizeCanva(dimensionPage: Vec2): void {
