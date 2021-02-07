@@ -82,30 +82,37 @@ export class EllipsisService extends Tool {
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         // Determiner si on doit faire la bordure
-        if (this.toolMode === 'border' || this.toolMode === 'fillBorder') {
+        if (this.toolMode === 'border') {
             this.drawBorder(ctx, path);
         }
 
         // Determiner si on doit fill le rectangle
-        if (this.toolMode === 'fill' || this.toolMode === 'fillBorder') {
+        if (this.toolMode === 'fill') {
             this.fill(ctx, path);
+        }
+
+        if (this.toolMode === 'fillBorder') {
+            this.fill(ctx, path);
+            this.drawBorder(ctx, path);
         }
         ctx.stroke();
         this.drawPerimeter(this.drawingService.previewCtx, this.perimerterPathData);
         ctx.stroke();
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = this.color2 || 'black';
+    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[], col: string = this.color2 || 'black'): void {
+        ctx.strokeStyle = col;
         ctx.lineWidth = this.width;
         const a: Vec2 = path[1];
         const c: Vec2 = path[2];
         ctx.beginPath();
-        ctx.ellipse(a.x, a.y, Math.abs(c.x - a.x), Math.abs(c.y - a.y), 0, 0, 2 * Math.PI);
+        const ellipseWidth = this.ellipseWidth(a, c);
+        ctx.ellipse(a.x, a.y, ellipseWidth.x, ellipseWidth.y, 0, 0, 2* Math.PI);
     }
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.fillStyle = this.color || 'black';
+        this.drawBorder(ctx, path, this.color);
         ctx.fill();
     }
 
@@ -120,6 +127,7 @@ export class EllipsisService extends Tool {
         if (this.shift) {
             c = this.perimerterPathData[2];
         }
+
         const bx: number = a.x + (c.x - a.x) / 2;
         const by: number = a.y + (c.y - a.y) / 2;
         const b: Vec2 = { x: bx, y: by };
@@ -157,5 +165,26 @@ export class EllipsisService extends Tool {
 
         list.push(a, b, c, d);
         this.perimerterPathData = list;
+    }
+
+    ellipseWidth(a: Vec2, c: Vec2): Vec2 {
+        let x = 0;
+        let y = 0;
+
+        if (a.x > c.x) {
+            x = Math.abs(c.x - a.x + this.width / 2);
+        } else {
+            x = Math.abs(c.x - a.x - this.width / 2);
+        }
+
+        if (a.y > c.y) {
+            y = Math.abs(c.y - a.y + this.width / 2);
+        } else {
+            y = Math.abs(c.y - a.y - this.width / 2);
+        }
+
+        const s: Vec2 = { x, y };
+
+        return s;
     }
 }
