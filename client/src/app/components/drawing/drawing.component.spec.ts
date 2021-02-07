@@ -16,7 +16,7 @@ describe('DrawingComponent', () => {
     let drawingStub: DrawingService;
 
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService, {} as ColorService);
+        toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
 
         TestBed.configureTestingModule({
@@ -46,7 +46,7 @@ describe('DrawingComponent', () => {
     });
 
     it('should get stubTool', () => {
-        const currentTool = component.currentTool;
+        const currentTool = component.getCurrentTool();
         expect(currentTool).toEqual(toolStub);
     });
 
