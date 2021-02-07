@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ColorService } from '@app/services/color/color.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -43,7 +44,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.draw();
             const pos = this.selectedPosition;
             if (pos) {
-                this.color.emit(this.getColorAtPosition(pos.x, pos.y));
+                this.color.emit(this.colorService.getColorAtPosition(pos.x, pos.y, this.ctx));
             }
         }
     }
@@ -51,6 +52,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.draw();
     }
+
+    constructor(private colorService: ColorService) {}
 
     draw(): void {
         if (!this.ctx) {
@@ -95,7 +98,7 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
         this.mousedown = true;
         this.selectedPosition = { x: evt.offsetX, y: evt.offsetY };
         this.draw();
-        this.color.emit(this.getColorAtPosition(evt.offsetX, evt.offsetY));
+        this.color.emit(this.colorService.getColorAtPosition(evt.offsetX, evt.offsetY, this.ctx));
         this.emitColor(evt.offsetX, evt.offsetY);
     }
 
@@ -108,12 +111,6 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     }
 
     emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
-    }
-
-    getColorAtPosition(x: number, y: number): string {
-        const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        this.color.emit(this.colorService.getColorAtPosition(x, y, this.ctx));
     }
 }

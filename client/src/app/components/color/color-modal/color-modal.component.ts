@@ -1,9 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
-const rgbValueStart = 5;
-const maxOpacity = 100;
-
 @Component({
     selector: 'app-color-modal',
     templateUrl: './color-modal.component.html',
@@ -26,27 +23,13 @@ export class ColorModalComponent implements AfterViewInit {
     constructor(private colorService: ColorService) {}
 
     ngAfterViewInit(): void {
-        if (this.colorService.currentColor === 'Primary') {
-            this.color = this.colorService.primaryColor;
-        } else if (this.colorService.currentColor === 'Secondary') {
-            this.color = this.colorService.secondaryColor;
-        }
+        this.color = this.colorService.selectedColor();
         this.setColorInputValue();
         this.updateOpacity();
     }
 
     confirmColor(): void {
-        if (this.colorService.currentColor === 'Primary') {
-            if (this.color !== this.colorService.primaryColor) {
-                this.colorService.saveColor(this.colorService.primaryColor);
-                this.colorService.primaryColor = this.color;
-            }
-        } else if (this.colorService.currentColor === 'Secondary') {
-            if (this.color !== this.colorService.secondaryColor) {
-                this.colorService.saveColor(this.colorService.secondaryColor);
-                this.colorService.secondaryColor = this.color;
-            }
-        }
+        this.colorService.confirmColorSelection(this.color);
         this.colorModified.emit(this.color);
         this.isVisible.emit(false);
     }
@@ -58,9 +41,7 @@ export class ColorModalComponent implements AfterViewInit {
     // affiche la valeur rgb de la couleur sélectionnée par la palette de couleur
     setColorInputValue(): void {
         if (this.color !== undefined) {
-            const subColor: string = this.color.substring(rgbValueStart, this.color.length - 1);
-            const splitColor: string[] = subColor.split(',');
-
+            const splitColor: string[] = this.colorService.readRGBValues(this.color);
             this.rValue = parseInt(splitColor[0], 10).toString(16);
             this.gValue = parseInt(splitColor[1], 10).toString(16);
             this.bValue = parseInt(splitColor[2], 10).toString(16);
@@ -85,25 +66,23 @@ export class ColorModalComponent implements AfterViewInit {
         }
     }
 
+    // met à jour la couleur lorsque l'opacité est changée manuellement
     updateOpacity(): void {
-        let opacity;
-        if (parseFloat(this.opacity) > maxOpacity) {
-            window.alert('La valeur fournie est invalide! Veuillez entrez une valeur entre 0 et 100.');
+        const opacity: string = this.colorService.verifyOpacityInput(this.opacity);
+        if (opacity === '1') {
             this.opacity = '100';
-            opacity = '100';
-        } else {
-            opacity = (parseFloat(this.opacity) / 100.0).toString();
         }
-        const subColor: string = this.color.substring(rgbValueStart, this.color.length - 1);
-        const splitColor: string[] = subColor.split(',');
+        const splitColor: string[] = this.colorService.readRGBValues(this.color);
         this.color = 'rgba(' + splitColor[0] + ',' + splitColor[1] + ',' + splitColor[2] + ',' + opacity + ')';
     }
 
+    // Restreint les caractères pour l'opacité à (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     omitUnwantedChars(event: KeyboardEvent): boolean {
         const key = event.key.charCodeAt(0);
         return key >= '0'.charCodeAt(0) && key <= '9'.charCodeAt(0);
     }
 
+    // Restreint les caractères pour la couleur à (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f)
     omitUnwantedColorValue(event: KeyboardEvent): boolean {
         const key = event.key.charCodeAt(0);
         return (key >= '0'.charCodeAt(0) && key <= '9'.charCodeAt(0)) || (key >= 'a'.charCodeAt(0) && key <= 'f'.charCodeAt(0));

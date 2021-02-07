@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
+import { ColorService } from '@app/services/color/color.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -44,6 +45,8 @@ export class ColorSliderComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.draw();
     }
+
+    constructor(private colorService: ColorService) {}
 
     draw(): void {
         if (!this.ctx) {
@@ -101,12 +104,6 @@ export class ColorSliderComponent implements AfterViewInit {
     }
 
     emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
-    }
-
-    getColorAtPosition(x: number, y: number): string {
-        const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        this.color.emit(this.colorService.getColorAtPosition(x, y, this.ctx));
     }
 }

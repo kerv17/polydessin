@@ -54,44 +54,7 @@ export class ColorComponent implements AfterViewInit {
         this.colorService.saveColor(this.secondaryColor);
         this.secondaryColor = color;
         this.colorService.secondaryColor = this.secondaryColor;
+        // pour prévenir l'ouverture du menu contextuel lorsqu'on clique avec le bouton droit de la souris
         return false;
     }
-    /*
-    updateOpacityPrimary(): void {
-        let opacity: string = this.OP;
-        if (parseFloat(opacity) > maxOpacity) {
-            opacity = '1';
-            this.OP = '100';
-        } else {
-            opacity = (parseFloat(opacity) / 100.0).toString();
-        }
-        const subColor: string = this.primaryColor.substring(rgbValueStart, this.primaryColor.length - 1);
-        const splitColor: string[] = subColor.split(',');
-        this.primaryColor = 'rgba(' + splitColor[0] + ',' + splitColor[1] + ',' + splitColor[2] + ',' + opacity + ')';
-        this.colorService.primaryColor = this.primaryColor;
-    }
-
-    updateOpacitySecondary(): void {
-        let opacity: string = this.OS;
-        if (parseFloat(opacity) > maxOpacity) {
-            opacity = '1';
-            this.OS = '100';
-        } else {
-            opacity = (parseFloat(opacity) / 100.0).toString();
-        }
-        const subColor: string = this.secondaryColor.substring(rgbValueStart, this.secondaryColor.length - 1);
-        const splitColor: string[] = subColor.split(',');
-        this.secondaryColor = 'rgba(' + splitColor[0] + ',' + splitColor[1] + ',' + splitColor[2] + ',' + opacity + ')';
-        this.colorService.secondaryColor = this.secondaryColor;
-    }
-
-    setOpacityValue(): void {
-        const subColorP: string = this.primaryColor.substring(rgbValueStart, this.primaryColor.length - 1);
-        const splitColorP: string[] = subColorP.split(',');
-        this.OP = (parseFloat(splitColorP[3]) * 100).toString();
-
-        const subColorS: string = this.secondaryColor.substring(rgbValueStart, this.secondaryColor.length - 1);
-        const splitColorS: string[] = subColorS.split(',');
-        this.OS = (parseFloat(splitColorS[3]) * 100).toString();
-    }*/
 }
