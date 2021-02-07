@@ -45,9 +45,9 @@ export class SidebarComponent {
         const line: HTMLElement | null = document.getElementById('LineButton');
         const ellipsis: HTMLElement | null = document.getElementById('EllipsisButton');
 
-        let fill: HTMLElement | null = document.getElementById('fillButton');
-        let border: HTMLElement | null = document.getElementById('borderButton');
-        let fillBorder: HTMLElement | null = document.getElementById('fillBorderButton');
+        const fill: HTMLElement | null = document.getElementById('fillButton');
+        const border: HTMLElement | null = document.getElementById('borderButton');
+        const fillBorder: HTMLElement | null = document.getElementById('fillBorderButton');
 
         if (name == 'crayon' || name == 'rectangle' || name == 'line' || name == 'ellipsis') {
             if (crayon != null && rectangle != null && line != null && ellipsis != null) {
@@ -118,32 +118,9 @@ export class SidebarComponent {
 
     openWidth() {
         this.width = true;
-        this.visible = false;
     }
-    // TODO à modifier
     nouveauDessin() {
-        // Doit vérifier si la surface est vide ou non
-        const image: ImageData = this.drawing.baseCtx.getImageData(0, 0, this.drawing.canvas.width, this.drawing.canvas.height);
-        if (this.notWhiter(image)) {
-            if (confirm('Are you sure you want to discard your current drawing?')) {
-                this.drawing.clearCanvas(this.drawing.baseCtx);
-                this.drawing.clearCanvas(this.drawing.previewCtx);
-            }
-        }
-    }
-
-    // TODO à transférer
-    notWhiter(image: ImageData): boolean {
-        // window.alert(image.data[image.data.length - 3]);
-
-        if (image.data[1] != undefined) {
-            for (let i = 0; i < image.data.length; i += 4) {
-                if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        this.drawing.nouveauDessin();
     }
 
     @HostListener('window:keydown', ['$event'])
