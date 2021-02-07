@@ -83,11 +83,9 @@ export class DrawingComponent implements AfterViewInit {
         let minSize:number = 250;
         if(halfWindowHeight < minSize){
             this.canvasSize.y = minSize;
-        }
-        else if(halfWindowidth < minSize){
+        } else if (halfWindowidth < minSize) {
             this.canvasSize.x = minSize;
-        }
-        else{
+        } else {
             this.canvasSize = { x: halfWindowidth, y: halfWindowHeight };
         }
 

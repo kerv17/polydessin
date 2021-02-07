@@ -25,6 +25,7 @@ export class LineService extends Tool {
     constructor(public drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -67,7 +68,7 @@ export class LineService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color || 'black';
         ctx.beginPath();
         for (const point of path) {

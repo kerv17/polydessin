@@ -23,6 +23,7 @@ export class RectangleService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     lastMoveEvent: MouseEvent;
@@ -72,7 +73,7 @@ export class RectangleService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
 
         // Determiner si on doit fill le rectangle
         if (this.toolMode === 'fill' || this.toolMode === 'fillBorder') {

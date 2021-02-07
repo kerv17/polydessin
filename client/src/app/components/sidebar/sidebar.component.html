@@ -1,30 +1,31 @@
 <div class="container">
     <div class="sidebar-container">
-        <button class="function" onclick="history.back()">
-            Go back!
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton te ramène à la page principale</div>
-        </button>
-        <button id="CrayonButton" class="function" (click)="openCrayon()">
-            Crayon
+            <img src="../../../assets/GoBack.png" class="function" onclick="history.back()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
-        </button>
-        <button id="LineButton" class="function" (click)="openLine()">
-            Ligne
+            <img src="../../../assets/pencil.png/" [ngStyle]="crayon" class="function" (click)="openCrayon()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
-        </button>
-        <button id="RectangleButton" class="function" (click)="openRectangle()">
-            Rectangle
+            <img src="../../../assets/line.png" [ngStyle]="line" class="function" (click)="openLine()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
-        </button>
-        <button id="EllipsisButton" class="function" (click)="openEllipsis()">
-            Ellipse
+            <img src="../../../assets/rectangle.png" [ngStyle]="rectangle" class="function" (click)="openRectangle()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
-        </button>
-        <button id="NouveauBouton" (click)="nouveauDessin()" class="function">
-            Nouveau Dessin
-            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+0'</div>
-        </button>
+            <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
+            <img src="../../../assets/New.png" (click)="nouveauDessin()" class="function" tabindex="0" />
+        </div>
     </div>
+
     <div class="services">
         <div>
             <app-color></app-color>
@@ -35,7 +36,7 @@
             <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
         </div>
         <div *ngIf="width">
-            <app-width-slider></app-width-slider>
+            <app-width-slider [set]="set"></app-width-slider>
         </div>
     </div>
 </div>

@@ -23,6 +23,7 @@ export class EllipsisService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     private perimerterPathData: Vec2[];
@@ -79,7 +80,7 @@ export class EllipsisService extends Tool {
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
         // Determiner si on doit faire la bordure
         if (this.toolMode === 'border' || this.toolMode === 'fillBorder') {
             this.drawBorder(ctx, path);
