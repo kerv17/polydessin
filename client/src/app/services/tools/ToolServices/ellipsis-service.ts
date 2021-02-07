@@ -97,6 +97,7 @@ export class EllipsisService extends Tool {
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.strokeStyle = this.color2 || 'black';
+        ctx.lineWidth = this.width;
         const a: Vec2 = path[1];
         const c: Vec2 = path[2];
         ctx.beginPath();
