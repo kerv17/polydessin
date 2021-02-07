@@ -18,7 +18,7 @@ export class DrawingService {
     }
 
     // TODO à modifier
-    nouveauDessin() {
+    nouveauDessin(): void {
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.notWhiter(image)) {

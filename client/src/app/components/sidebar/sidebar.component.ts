@@ -8,27 +8,32 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    visible = false;
+    visible: boolean = false;
     width: boolean = false;
     fillBorder: boolean = false;
     set: boolean = true;
+    crayon: { backgroundColor: string } = { backgroundColor: 'white' };
+    rectangle: { backgroundColor: string } = { backgroundColor: 'white' };
+    line: { backgroundColor: string } = { backgroundColor: 'white' };
+    ellipsis: { backgroundColor: string } = { backgroundColor: 'white' };
 
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
     openCrayon() {
-        this.setBackgroundColor('crayon');
         this.service.setTool();
         this.fillBorder = false;
         this.set = !this.set;
-
         this.openWidth();
+        this.setWhite();
+        this.crayon = { backgroundColor: 'gainsboro' };
     }
     openRectangle() {
         this.service.setRectangle();
-        this.setBackgroundColor('rectangle');
         this.fillBorder = true;
         this.set = !this.set;
         this.openWidth();
+        this.setWhite();
+        this.rectangle = { backgroundColor: 'gainsboro' };
     }
 
     openLine() {
@@ -37,14 +42,17 @@ export class SidebarComponent {
         this.fillBorder = false;
         this.openWidth();
         this.set = !this.set;
+        this.setWhite();
+        this.line = { backgroundColor: 'gainsboro' };
     }
 
     openEllipsis() {
         this.service.setEllipse();
-        this.setBackgroundColor('ellipsis');
         this.fillBorder = true;
         this.openWidth();
         this.set = !this.set;
+        this.setWhite();
+        this.ellipsis = { backgroundColor: 'gainsboro' };
     }
     setBackgroundColor(name: string): void {
         // DOIT ETRE SCRAPPER AU COMPLET!
@@ -95,10 +103,10 @@ export class SidebarComponent {
         line.style.backgroundColor = 'white';
     }
 
-    openWidth() {
+    openWidth(): void {
         this.width = true;
     }
-    nouveauDessin() {
+    nouveauDessin(): void {
         this.drawing.nouveauDessin();
     }
 
@@ -111,4 +119,11 @@ export class SidebarComponent {
     }
 
     setMode(mode: string) {}
+
+    setWhite(): void {
+        this.crayon = { backgroundColor: 'white' };
+        this.rectangle = { backgroundColor: 'white' };
+        this.ellipsis = { backgroundColor: 'white' };
+        this.line = { backgroundColor: 'white' };
+    }
 }
