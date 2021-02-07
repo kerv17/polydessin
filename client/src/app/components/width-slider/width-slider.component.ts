@@ -22,4 +22,7 @@ export class WidthSliderComponent implements OnChanges {
             this.width = this.tool.currentTool.width;
         }
     }
+    showWidth(value: number) {
+        return Math.round(value);
+    }
 }

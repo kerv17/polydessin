@@ -22,7 +22,7 @@ export class DrawingService {
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.notWhiter(image)) {
-            if (confirm('Are you sure you want to discard your current drawing?')) {
+            if (confirm('Êtes vous sur de supprimez votre dessin courant?')) {
                 this.clearCanvas(this.baseCtx);
                 this.clearCanvas(this.previewCtx);
             }
