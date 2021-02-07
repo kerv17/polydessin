@@ -8,14 +8,9 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-<<<<<<< HEAD
-    public visible = false;
-    public width: boolean = false;
-    public fillBorder: boolean = false;
-=======
-    visible = false;
+    visible: boolean = false;
     width: boolean = false;
->>>>>>> 26ab7c6607f7ee737c9a22ec9137d9d8f69d8653
+    fillBorder: boolean = false;
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
     openCrayon() {
