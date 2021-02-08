@@ -30,12 +30,10 @@ describe('PencilService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(PencilService);
-        
+
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         drawPixelSpy = spyOn<any>(service, 'drawPixel').and.callThrough();
-
-
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -64,16 +62,16 @@ describe('PencilService', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position ', () => {
+    it(' mouseDown should set mouseDownCoord to correct position if left button was clicked ', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
 
-    it(' mouseDown should not set mouseDownCoord to correct position ', () => {
+    it(' mouseDown should not set mouseDownCoord to correct position if right button was clicked', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        service.onMouseDown(mouseEventRClick);
+        expect(service.mouseDownCoord).not.toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -199,7 +197,7 @@ describe('PencilService', () => {
     });
 
     it(' drawPixel should draw a single pixel at the last mouseCoord of the path if the width is 1 pixel', () => {
-        const rectSpy = spyOn(drawServiceSpy.previewCtx,'fillRect');
+        const rectSpy = spyOn(drawServiceSpy.previewCtx, 'fillRect');
         drawServiceSpy.previewCtx.lineWidth = 1;
         service.onMouseDown(mouseEvent);
         service['drawPixel'](drawServiceSpy.previewCtx, service['pathData']);
@@ -207,21 +205,37 @@ describe('PencilService', () => {
     });
 
     it(' drawPixel should not draw a single pixel at the last mouseCoord of the path if the width is not 1 pixel', () => {
-        const rectSpy = spyOn(drawServiceSpy.previewCtx,'fillRect');
-        drawServiceSpy.previewCtx.lineWidth = 24;
+        const rectSpy = spyOn(drawServiceSpy.previewCtx, 'fillRect');
+        const validLinewidth = 24;
+        drawServiceSpy.previewCtx.lineWidth = validLinewidth;
         service.onMouseDown(mouseEvent);
         service['drawPixel'](drawServiceSpy.previewCtx, service['pathData']);
         expect(rectSpy).not.toHaveBeenCalled();
     });
 
+    it(' drawLine should call lineTo if path as points', () => {
+        const lineSpy = spyOn(drawServiceSpy.previewCtx, 'lineTo');
+        service.onMouseDown(mouseEvent);
+        service['drawLine'](drawServiceSpy.previewCtx, service['pathData']);
+        expect(lineSpy).toHaveBeenCalled();
+    });
+
+    it(' drawLine should not call lineTo if path as no points', () => {
+        const lineSpy = spyOn(drawServiceSpy.previewCtx, 'lineTo');
+        service['drawLine'](drawServiceSpy.previewCtx, service['pathData']);
+        expect(lineSpy).not.toHaveBeenCalled();
+    });
+
     it(' applyAttributes should set the pencil width to the correct selected value if the value is valid ', () => {
-        drawServiceSpy.width = 20;
+        const validPencilWidth = 20;
+        drawServiceSpy.width = validPencilWidth;
         service.applyAttributes(drawServiceSpy.previewCtx);
         expect(drawServiceSpy.previewCtx.lineWidth).toEqual(drawServiceSpy.width);
     });
 
     it(' applyAttributes should not set the pencil width if the selected value is not valid', () => {
-        drawServiceSpy.width = -10;
+        const invalidPencilWidth = -10;
+        drawServiceSpy.width = invalidPencilWidth;
         service.applyAttributes(drawServiceSpy.previewCtx);
         expect(drawServiceSpy.previewCtx.lineWidth).not.toEqual(drawServiceSpy.width);
     });
