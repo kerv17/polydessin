@@ -1,24 +1,41 @@
 <div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
-
-    <input type="button" value="Go back!" onclick="history.back()" />
-
-    <button (click)="openCrayon()">Crayon</button>
-    <button (click)="openRectangle()">Rectangle</button>
-    <button (click)="openEllipsis()">Ellipse</button>
-    <button (click)="openLine()">Ligne</button>
-    <button (click)="openWidth()">Width</button>
-
-
-    <app-color></app-color>
-
-    <div *ngIf="width">
-        <app-width-slider></app-width-slider>
+    <div class="sidebar-container">
+        <button class="function" onclick="history.back()">
+            Go back!
+            <div class="infobulle">Ce bouton te ramène à la page principale</div>
+        </button>
+        <button id="CrayonButton" class="function" (click)="openCrayon()">
+            Crayon
+            <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
+        </button>
+        <button id="LineButton" class="function" (click)="openLine()">
+            Ligne
+            <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
+        </button>
+        <button id="RectangleButton" class="function" (click)="openRectangle()">
+            Rectangle
+            <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
+        </button>
+        <button id="EllipsisButton" class="function" (click)="openEllipsis()">
+            Ellipse
+            <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
+        </button>
+        <button id="NouveauBouton" (click)="nouveauDessin()" class="function">
+            Nouveau Dessin
+            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+0'</div>
+        </button>
+    </div>
+    <div class="services">
+        <div>
+            <app-color></app-color>
+        </div>
+        <div *ngIf="fillBorder">
+            <button id="fillButton" (click)="setFill()">Remplir</button>
+            <button id="borderButton" (click)="setBorder()">Bordure</button>
+            <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
+        </div>
+        <div *ngIf="width">
+            <app-width-slider></app-width-slider>
+        </div>
     </div>
 </div>

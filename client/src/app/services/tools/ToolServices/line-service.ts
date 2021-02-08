@@ -50,6 +50,11 @@ export class LineService extends Tool {
     ondbClick(event: MouseEvent): void {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
+            this.pathData.pop();
+            this.pathData.pop();
+            this.pathData.pop();
+            this.pathData.pop();
+
             this.pathData.push(this.pathData[0]);
         } else {
             this.pathData.push(mousePosition);
@@ -62,9 +67,8 @@ export class LineService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = parseInt(sessionStorage.getItem('width') || '1');
+        ctx.lineWidth = this.drawingService.width;
         ctx.strokeStyle = this.color || 'black';
-        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
