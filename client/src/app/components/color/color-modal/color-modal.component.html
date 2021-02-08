@@ -1,6 +1,6 @@
 <main class='table'>
     <div class="color-wrapper">
-        <app-color-palette [hue]="hue" (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
+        <app-color-palette [hue]="hue" [opacity]='opacity' (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
         <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColorInputValue()"></app-color-slider>
     </div>
 

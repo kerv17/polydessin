@@ -61,8 +61,11 @@ export class ColorService {
     }
 
     readRGBValues(color: string): string[] {
-        const subColor: string = color.substring(rgbValueStart, color.length - 1);
-        return subColor.split(',');
+        if (color !== '' && color !== undefined) {
+            const subColor: string = color.substring(rgbValueStart, color.length - 1);
+            return subColor.split(',');
+        }
+        return ['00', '00', '00', '1'];
     }
 
     verifyOpacityInput(opacity: string): string {
@@ -70,12 +73,7 @@ export class ColorService {
             window.alert('La valeur fournie est invalide! Veuillez entrez une valeur entre 0 et 100.');
             return '1';
         } else {
-            return (parseFloat(opacity) / 100.0).toString();
+            return (parseInt(opacity, 10) / 100).toString();
         }
-    }
-
-    getColorAtPosition(x: number, y: number, ctx: CanvasRenderingContext2D): string {
-        const imageData = ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
     }
 }

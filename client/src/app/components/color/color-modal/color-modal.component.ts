@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
+// const opacityPosition = 3;
+
 @Component({
     selector: 'app-color-modal',
     templateUrl: './color-modal.component.html',
@@ -9,9 +11,9 @@ import { ColorService } from '@app/services/color/color.service';
 export class ColorModalComponent implements AfterViewInit {
     hue: string;
     color: string;
-    rValue: string = '00';
-    gValue: string = '00';
-    bValue: string = '00';
+    rValue: string = '0';
+    gValue: string = '0';
+    bValue: string = '0';
     opacity: string = '100';
 
     @Output()
@@ -25,7 +27,9 @@ export class ColorModalComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.color = this.colorService.selectedColor();
         this.setColorInputValue();
-        this.updateOpacity();
+        if (this.color !== 'rgba(0,0,0,1)') {
+            this.hue = this.color;
+        }
     }
 
     confirmColor(): void {
@@ -42,13 +46,12 @@ export class ColorModalComponent implements AfterViewInit {
     setColorInputValue(): void {
         if (this.color !== undefined) {
             const splitColor: string[] = this.colorService.readRGBValues(this.color);
-            this.rValue = parseInt(splitColor[0], 10).toString(16);
-            this.gValue = parseInt(splitColor[1], 10).toString(16);
-            this.bValue = parseInt(splitColor[2], 10).toString(16);
-        } else {
-            this.rValue = '00';
-            this.gValue = '00';
-            this.bValue = '00';
+            if (splitColor !== undefined) {
+                this.rValue = parseInt(splitColor[0], 10).toString(16);
+                this.gValue = parseInt(splitColor[1], 10).toString(16);
+                this.bValue = parseInt(splitColor[2], 10).toString(16);
+                this.opacity = Math.round(100 * parseFloat(splitColor[3])).toString();
+            }
         }
     }
 
@@ -59,7 +62,16 @@ export class ColorModalComponent implements AfterViewInit {
             this.colorService.isHexadecimal(this.gValue) &&
             this.colorService.isHexadecimal(this.bValue)
         ) {
-            this.color = 'rgba(' + parseInt(this.rValue, 16) + ',' + parseInt(this.gValue, 16) + ',' + parseInt(this.bValue, 16) + ',1)';
+            this.color =
+                'rgba(' +
+                parseInt(this.rValue, 16) +
+                ',' +
+                parseInt(this.gValue, 16) +
+                ',' +
+                parseInt(this.bValue, 16) +
+                ',' +
+                this.colorService.verifyOpacityInput(this.opacity) +
+                ')';
             this.hue = this.color;
         } else {
             this.setColorInputValue();
@@ -68,12 +80,10 @@ export class ColorModalComponent implements AfterViewInit {
 
     // met à jour la couleur lorsque l'opacité est changée manuellement
     updateOpacity(): void {
-        const opacity: string = this.colorService.verifyOpacityInput(this.opacity);
-        if (opacity === '1') {
+        if (this.colorService.verifyOpacityInput(this.opacity) === '1') {
             this.opacity = '100';
         }
-        const splitColor: string[] = this.colorService.readRGBValues(this.color);
-        this.color = 'rgba(' + splitColor[0] + ',' + splitColor[1] + ',' + splitColor[2] + ',' + opacity + ')';
+        this.updateColorFromInput();
     }
 
     // Restreint les caractères pour l'opacité à (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
