@@ -1,28 +1,43 @@
 .color-wrapper {
     display: flex;
-    height: 250px;
+    height: 200px;
     float: left;
 }
 
 .color-div {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid rgb(220, 220, 220);
+    width: 28px;
+    height: 28px;
+    border: 2px white;
     float: left;
 }
 
 .text {
     flex: 1;
-    font-family: 'Helvetica';
-    line-height: 32px;
+    font-size: small;
+    padding-left: 15px;
 }
 
 .input-wrapper {
     float: left;
     padding-left: 25px;
+    max-height: 100px;
+    font-size: small;
+}
+
+input {
+    width: 25px;
+    height: 15px;
+}
+
+button {
+    font-size: smaller;
 }
 
 .table {
     display: table;
+    background-color: lightblue;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }

@@ -28,6 +28,9 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     @Input()
     hue: string;
 
+    @Input()
+    opacity: string;
+
     @Output()
     color: EventEmitter<string> = new EventEmitter(true);
 
@@ -108,12 +111,11 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     }
 
     emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
+        this.color.emit(this.getColorAtPosition(x, y));
     }
 
     getColorAtPosition(x: number, y: number): string {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',' + (parseInt(this.opacity, 10) / 100).toString() + ')';
     }
 }

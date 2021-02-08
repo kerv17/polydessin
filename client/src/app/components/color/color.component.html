@@ -1,29 +1,24 @@
 <main class='table'>
     <div class='cells'>
-        <p>Couleur Principale :</p>
+        <p class='text'>Couleur Principale :</p>
         <div class='color-div' [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'></div>
-
-        <label>Opacité (en %) : </label>
-        <input [(ngModel)]='OP' size='2' (change)="updateOpacityPrimary()">
     </div>
+    <br>
     <div class='cells'>
-        <p>Couleur Secondaire :</p>
+        <p class='text'>Couleur Secondaire :</p>
         <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Secondary')"></div>
-
-        <label>Opacité (en %) : </label>
-        <input [(ngModel)]='OS' size='2' (change)="updateOpacitySecondary()">
     </div>
 </main>
 
 <br><button class='boutton' (click)='invert()'>Inverser couleurs primaire et secondaire</button>
 
-<div>
-    <p>Couleurs récemment utilisées :</p>
+<div class='recentColorsWrapper'>
+    <p *ngIf='recentColors.length' class='text'>Couleurs récemment utilisées :</p>
     <main class='table'>
         <div class='recentColors' *ngFor="let colors of recentColors">
-            <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors)"></div>
+            <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
         </div>
     </main>
 </div>
-
+<br>
 <app-color-modal (isVisible)="closeModal()" (colorModified)="updateColor()" *ngIf="visibility == true"></app-color-modal>

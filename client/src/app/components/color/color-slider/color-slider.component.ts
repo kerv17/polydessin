@@ -101,8 +101,7 @@ export class ColorSliderComponent implements AfterViewInit {
     }
 
     emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
+        this.color.emit(this.getColorAtPosition(x, y));
     }
 
     getColorAtPosition(x: number, y: number): string {
