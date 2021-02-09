@@ -19,15 +19,15 @@ export class SidebarComponent {
 
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
 
-    openCrayon() {
-        this.service.setTool();
+    openCrayon(): void {
+        this.service.setCrayon();
         this.fillBorder = false;
         this.set = !this.set;
         this.openWidth();
         this.setWhite();
         this.crayon = { backgroundColor: 'gainsboro' };
     }
-    openRectangle() {
+    openRectangle(): void {
         this.service.setRectangle();
         this.fillBorder = true;
         this.set = !this.set;
@@ -36,9 +36,9 @@ export class SidebarComponent {
         this.rectangle = { backgroundColor: 'gainsboro' };
     }
 
-    openLine() {
+    openLine(): void {
         this.service.setLine();
-        this.setBackgroundColor('line');
+
         this.fillBorder = false;
         this.openWidth();
         this.set = !this.set;
@@ -46,7 +46,7 @@ export class SidebarComponent {
         this.line = { backgroundColor: 'gainsboro' };
     }
 
-    openEllipsis() {
+    openEllipsis(): void {
         this.service.setEllipse();
         this.fillBorder = true;
         this.openWidth();
@@ -54,53 +54,15 @@ export class SidebarComponent {
         this.setWhite();
         this.ellipsis = { backgroundColor: 'gainsboro' };
     }
-    setBackgroundColor(name: string): void {
-        // DOIT ETRE SCRAPPER AU COMPLET!
 
-        const fill: HTMLElement | null = document.getElementById('fillButton');
-        const border: HTMLElement | null = document.getElementById('borderButton');
-        const fillBorder: HTMLElement | null = document.getElementById('fillBorderButton');
-        if (name == 'fill' || name == 'border' || name == 'fillBorder') {
-            if (fill != null && border != null && fillBorder != null) {
-                fill.style.backgroundColor = 'white';
-                border.style.backgroundColor = 'white';
-                fillBorder.style.backgroundColor = 'white';
-
-                switch (name) {
-                    case 'fill':
-                        fill.style.backgroundColor = 'gainsboro';
-                        break;
-                    case 'border':
-                        border.style.backgroundColor = 'gainsboro';
-                        break;
-                    case 'fillBorder':
-                        fillBorder.style.backgroundColor = 'gainsboro';
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
-    setFill() {
+    setFill(): void {
         this.service.setFill();
-        this.setBackgroundColor('fill');
     }
-    setBorder() {
+    setBorder(): void {
         this.service.setBorder();
-        this.setBackgroundColor('border');
     }
-    setFillBorder() {
+    setFillBorder(): void {
         this.service.setFillBorder();
-        this.setBackgroundColor('fillBorder');
-    }
-
-    resetButtonColor(crayon: HTMLElement, rectangle: HTMLElement, line: HTMLElement, ellipsis: HTMLElement): void {
-        crayon.style.backgroundColor = 'white';
-        rectangle.style.backgroundColor = 'white';
-        ellipsis.style.backgroundColor = 'white';
-        line.style.backgroundColor = 'white';
     }
 
     openWidth(): void {
@@ -111,14 +73,12 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onKeyPress($event: KeyboardEvent) {
+    onKeyPress($event: KeyboardEvent): void {
         if (($event.ctrlKey || $event.metaKey) && $event.key == 'o') {
             $event.preventDefault();
             this.nouveauDessin();
         }
     }
-
-    setMode(mode: string) {}
 
     setWhite(): void {
         this.crayon = { backgroundColor: 'white' };

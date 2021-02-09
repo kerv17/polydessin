@@ -25,18 +25,19 @@
             <img src="../../../assets/New.png" (click)="nouveauDessin()" class="function" tabindex="0" />
         </div>
     </div>
-
-    <div class="services">
-        <div>
-            <app-color></app-color>
-        </div>
-        <div *ngIf="fillBorder">
-            <button id="fillButton" (click)="setFill()">Remplir</button>
-            <button id="borderButton" (click)="setBorder()">Bordure</button>
-            <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
-        </div>
-        <div *ngIf="width">
-            <app-width-slider [set]="set"></app-width-slider>
+    <div class="BackgroundServices">
+        <div class="services">
+            <div *ngIf="width">
+                <app-width-slider [set]="set"></app-width-slider>
+            </div>
+            <div>
+                <app-color></app-color>
+            </div>
+            <div *ngIf="fillBorder">
+                <button id="fillButton" (click)="setFill()">Remplir</button>
+                <button id="borderButton" (click)="setBorder()">Bordure</button>
+                <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
+            </div>
         </div>
     </div>
 </div>

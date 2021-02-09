@@ -14,15 +14,14 @@ export class WidthSliderComponent implements OnChanges {
     constructor(private tool: ToolControllerService) {}
 
     getSliderValue(evt: MatSliderChange): void {
-        this.tool.currentTool.width = evt.value || 1;
-        this.width = this.tool.currentTool.width;
+        if (evt.value != null) {
+            this.tool.currentTool.width = evt.value;
+            this.width = this.tool.currentTool.width;
+        }
     }
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.set) {
             this.width = this.tool.currentTool.width;
         }
-    }
-    showWidth(value: number) {
-        return Math.round(value);
     }
 }

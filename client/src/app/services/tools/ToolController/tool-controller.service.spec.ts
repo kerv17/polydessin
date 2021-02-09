@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PencilService } from '../ToolServices/pencil-service';
 import { ToolControllerService } from './tool-controller.service';
 // tslint:disable:no-any
-fdescribe('ToolControllerService', () => {
+describe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
 
@@ -20,7 +20,7 @@ fdescribe('ToolControllerService', () => {
     });
 
     it('it should set the right tool', () => {
-        service.setTool();
+        service.setCrayon();
 
         expect(service.currentTool).toEqual(pencilServiceSpy);
     });

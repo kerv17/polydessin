@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { EllipsisService } from '../ToolServices/ellipsis-service';
-import { LineService } from '../ToolServices/line-service';
-import { PencilService } from '../ToolServices/pencil-service';
-import { RectangleService } from '../ToolServices/rectangle-service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LineService } from '@app/services/tools/ToolServices/line-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +24,7 @@ export class ToolControllerService {
         });
     }
 
-    setTool(): void {
+    setCrayon(): void {
         this.currentTool = this.pencilService;
     }
 
@@ -43,20 +43,20 @@ export class ToolControllerService {
         this.currentTool.onShift(shift);
     }
 
-    setFill() {
+    setFill(): void {
         this.currentTool.toolMode = 'fill';
     }
-    setBorder() {
+    setBorder(): void {
         this.currentTool.toolMode = 'border';
     }
-    setFillBorder() {
+    setFillBorder(): void {
         this.currentTool.toolMode = 'fillBorder';
     }
 
     private checkKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case 'c':
-                this.setTool();
+                this.setCrayon();
                 break;
             case '1':
                 this.setRectangle();
