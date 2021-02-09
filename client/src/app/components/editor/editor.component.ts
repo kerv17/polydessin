@@ -23,46 +23,55 @@ export class EditorComponent {
         ['margin-left']: this.convertToStringSideLineX(),
         ['margin-top']: this.convertToStringSideLineY(),
     };
-
-    /*setResizerBottomRight(){
-        this.resizer-bottom-right
-        this.beet
-         'cursor'= 'nwse-resize',
-     
-         this.
-         
-    }*/
-    
-
     convertToStringBottomRightX(): string {
-        const bottomRightX: string = this.drawingService.initialCornerControl().x.toString();
+        const bottomRightX: string = this.drawingService.positionCornerControl().x.toString();
         const retour: string = bottomRightX.concat('px');
         return retour;
-        
     }
     convertToStringBottomRightY(): string {
-        const bottomRightY: string = this.drawingService.initialCornerControl().y.toString();
+        const bottomRightY: string = this.drawingService.positionCornerControl().y.toString();
         const retour: string = bottomRightY.concat('px');
         return retour;
     }
     convertToStringBottomLineX(): string {
-        const bottomLineX: string = this.drawingService.initialBottomControl().x.toString();
+        const bottomLineX: string = this.drawingService.positionBottomControl().x.toString();
         const retour: string = bottomLineX.concat('px');
         return retour;
     }
     convertToStringBottomLineY(): string {
-        const bottomLineY: string = this.drawingService.initialBottomControl().y.toString();
+        const bottomLineY: string = this.drawingService.positionBottomControl().y.toString();
         const retour: string = bottomLineY.concat('px');
         return retour;
     }
     convertToStringSideLineX(): string {
-        const sideLineX: string = this.drawingService.initialSideControl().x.toString();
+        const sideLineX: string = this.drawingService.positionSideControl().x.toString();
         const retour: string = sideLineX.concat('px');
         return retour;
     }
     convertToStringSideLineY(): string {
-        const sideLineY: string = this.drawingService.initialSideControl().y.toString();
+        const sideLineY: string = this.drawingService.positionSideControl().y.toString();
         const retour: string = sideLineY.concat('px');
         return retour;
+    }
+
+    resizeFunct(e: MouseEvent): void {
+        this.drawingService.controlSize.y = e.pageY;
+    }
+    stopResize(e: MouseEvent): void {
+        window.removeEventListener('mousemove', this.resizeFunct);
+        window.removeEventListener('mouseup', this.stopResize);
+
+        this.drawingService.canvasSize = this.drawingService.controlSize;
+    }
+    resizeBottomControl(): void {
+        const resizer = document.getElementById('ResizerBottomLine');
+        if (resizer != null) {
+            resizer.addEventListener('mousedown', (e: MouseEvent): void => {
+                e.preventDefault();
+
+                window.addEventListener('mousemove', this.resizeFunct);
+                window.addEventListener('mouseup', this.stopResize);
+            });
+        }
     }
 }

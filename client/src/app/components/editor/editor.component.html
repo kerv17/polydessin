@@ -7,7 +7,7 @@
         <app-drawing class="drawing" tabindex="0"></app-drawing>
         
         <div class='resizer' [ngStyle]= "ResizerBottomRight"></div>
-        <div class='resizer' [ngStyle]= "ResizerBottomline"></div>
+        <div class='resizer'  id= 'ResizerBottomLine' (click)= "resizeBottomControl()" [ngStyle]= "ResizerBottomline"></div>
         <div class='resizer' [ngStyle]= "ResizerRightLine"></div>
         
         

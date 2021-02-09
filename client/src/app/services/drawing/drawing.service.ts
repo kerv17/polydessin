@@ -36,42 +36,25 @@ export class DrawingService {
         return this.canvasSize;
     }
 
-    // utiliser 3 au lieux de 2 pour un 1080p
-    initialBottomControl(): Vec2 {
-        const currentCanvasSize: Vec2 = this.setSizeCanva();
-        currentCanvasSize.x *= 0.5;
-        currentCanvasSize.y -= 2;
-        return currentCanvasSize;
+    // utiliser -3 au lieux de -2 pour un 1080p
+    positionBottomControl(): Vec2 {
+        const coordonatesBottomControl: Vec2 = this.setSizeCanva();
+        coordonatesBottomControl.x = this.controlSize.x / 2;
+        coordonatesBottomControl.y = this.controlSize.y - 2;
+        return coordonatesBottomControl;
     }
-    initialSideControl(): Vec2 {
-        const currentCanvasSize: Vec2 = this.setSizeCanva();
-        currentCanvasSize.x -= 2;
-        currentCanvasSize.y *= 0.5;
-        return currentCanvasSize;
+    positionSideControl(): Vec2 {
+        const coordonatesSideControl: Vec2 = this.setSizeCanva();
+        coordonatesSideControl.x = this.controlSize.x - 2;
+        coordonatesSideControl.y = this.controlSize.y / 2;
+        return coordonatesSideControl;
     }
-    initialCornerControl(): Vec2 {
-        const currentCanvasSize: Vec2 = this.setSizeCanva();
-        currentCanvasSize.x -= 2;
-        currentCanvasSize.y -= 2;
-        return currentCanvasSize;
+    positionCornerControl(): Vec2 {
+        const coordonatesCornerControl: Vec2 = this.setSizeCanva();
+        coordonatesCornerControl.x = this.controlSize.x - 2;
+        coordonatesCornerControl.y = this.controlSize.y - 2;
+        return coordonatesCornerControl;
     }
 
-    resizeFunct(e: MouseEvent): void {
-        this.controlSize.y = e.pageY;
-    }
-    stopResize(e: MouseEvent): void {
-        window.removeEventListener('mousemove', this.resizeFunct);
-        this.canvasSize = this.controlSize;
-    }
-    resizeBottomControl() {
-        const resizer = document.querySelector('ResizerBottomLine');
-        if (resizer != null) {
-            resizer.addEventListener('mousedown', (e: MouseEvent): void => {
-                e.preventDefault();
-
-                window.addEventListener('mousemove', this.resizeFunct);
-                window.addEventListener('mouseup', this.stopResize);
-            });
-        }
-    }
+    
 }
