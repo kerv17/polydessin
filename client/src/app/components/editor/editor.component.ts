@@ -32,10 +32,13 @@ export class EditorComponent {
          this.
          
     }*/
+    
+
     convertToStringBottomRightX(): string {
         const bottomRightX: string = this.drawingService.initialCornerControl().x.toString();
         const retour: string = bottomRightX.concat('px');
         return retour;
+        
     }
     convertToStringBottomRightY(): string {
         const bottomRightY: string = this.drawingService.initialCornerControl().y.toString();

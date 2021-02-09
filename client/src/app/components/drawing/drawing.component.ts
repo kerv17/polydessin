@@ -17,29 +17,29 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
-    
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
     private canvasSize: Vec2;
-    
+
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
-   
+
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // met la surface en blanc mais c aussi fait sans ce code 
+        // met la surface en blanc mais c aussi fait sans ce code
         // this.baseCtx.fillStyle = "white";
         // this.baseCtx.fillRect(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT);
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
-        this.controller.currentTool.color2 = this.colorService.secondaryColor;        
+        this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.canvasSize = this.drawingService.setSizeCanva();
     }
 
@@ -64,13 +64,13 @@ export class DrawingComponent implements AfterViewInit {
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
     }
 
-    @HostListener('click',['$event'])
-    onClick(event:MouseEvent):void{
+    @HostListener('click', ['$event'])
+    onClick(event: MouseEvent): void {
         this.controller.currentTool.onClick(event);
     }
 
-    @HostListener('dblclick',['$event'])
-    ondbClick(event:MouseEvent):void{
+    @HostListener('dblclick', ['$event'])
+    ondbClick(event: MouseEvent): void {
         this.controller.currentTool.ondbClick(event);
     }
 
@@ -88,11 +88,7 @@ export class DrawingComponent implements AfterViewInit {
             this.canvasSize = { x: halfWindowidth, y: halfWindowHeight };
         }
 
-
     }*/
-
-
-
 
     get width(): number {
         return this.canvasSize.x;

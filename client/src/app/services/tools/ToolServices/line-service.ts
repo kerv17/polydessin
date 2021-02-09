@@ -47,7 +47,7 @@ export class LineService extends Tool
 
     onClick(event:MouseEvent): void {
       const mousePosition = this.getPositionFromMouse(event);
-      this.pathData.push(mousePosition)
+      this.pathData.push(mousePosition);
       // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
       this.drawingService.clearCanvas(this.drawingService.previewCtx);
       this.pathData.push(mousePosition);
