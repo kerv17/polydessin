@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
-describe('RectangleService', () => {
+fdescribe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -123,19 +123,18 @@ describe('RectangleService', () => {
         expect(a).toBe(expectedResult);
     });
 
-    it('Shifting makes a square', () => {
+    it('getRectanglePoints returns a square when shift is true', () => {
         service.shift = true;
         let points: Vec2[] = [];
         const a: Vec2 = { x: 0, y: 0 };
-        service.getPath().push(a);
         const b: Vec2 = { x: 6, y: 10 };
+        const c: Vec2 = { x: -3, y: 10};
+        service.getPath().push(a);
         points = service.getRectanglePoints(b);
         expect(Math.abs(points[2].x - a.x)).toEqual(Math.abs(points[2].y - a.y));
 
-        service.getPath()[0] = b;
-        const c: Vec2 = { x: 4, y: 12 };
         points = service.getRectanglePoints(c);
-        expect(Math.abs(points[2].x - b.x)).toEqual(Math.abs(points[2].y - b.y));
+        expect(Math.abs(points[2].x - a.x)).toEqual(Math.abs(points[2].y - a.y));
     });
 
     it('OnShift sets the value of shifted and autoruns move', () => {
