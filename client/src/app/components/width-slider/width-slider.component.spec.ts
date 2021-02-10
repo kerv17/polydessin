@@ -16,7 +16,7 @@ fdescribe('WidthSliderComponent', () => {
     const defaultToolValue = 5;
 
     beforeEach(async(() => {
-        toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setCrayon']);
+        toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setTool']);
         pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({
             declarations: [WidthSliderComponent],
@@ -32,9 +32,9 @@ fdescribe('WidthSliderComponent', () => {
         matSliderChange = {
             value: matSlidervalue, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
-        pencil = TestBed.inject(PencilService);
+
         pencil.width = defaultToolValue;
-        toolControllerSpy = TestBed.inject(ToolControllerService) as jasmine.SpyObj<ToolControllerService>;
+
         toolControllerSpy.currentTool = pencil;
         fixture = TestBed.createComponent(WidthSliderComponent);
         component = fixture.componentInstance;
@@ -58,6 +58,7 @@ fdescribe('WidthSliderComponent', () => {
 
     it('Verifying that the component sets the right width value', () => {
         component.updateWidthValues(matSliderChange);
+
         expect(component.width).toEqual(matSlidervalue);
     });
 

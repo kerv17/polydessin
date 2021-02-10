@@ -15,6 +15,7 @@ import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -27,6 +28,7 @@ import { ColorService } from './services/color/color.service';
         ColorComponent,
         WidthSliderComponent,
         ColorModalComponent,
+        ShapeOptionsComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
     providers: [ColorService],

@@ -27,16 +27,14 @@
     </div>
     <div class="BackgroundServices">
         <div class="services">
-            <div *ngIf="width">
+            <div *ngIf="showWidth">
                 <app-width-slider [change]="resetSlider"></app-width-slider>
             </div>
             <div>
                 <app-color></app-color>
             </div>
             <div *ngIf="fillBorder">
-                <button id="fillButton" (click)="setFill()">Remplir</button>
-                <button id="borderButton" (click)="setBorder()">Bordure</button>
-                <button id="fillBorderButton" (click)="setFillBorder()">Remplir + Bordure</button>
+                <app-shape-options></app-shape-options>
             </div>
         </div>
     </div>

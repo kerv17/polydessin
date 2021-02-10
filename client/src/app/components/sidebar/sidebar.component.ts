@@ -9,7 +9,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     visible: boolean = false;
-    width: boolean = false;
+    showWidth: boolean = false;
     fillBorder: boolean = true;
     resetSlider: boolean = true;
     crayon: { backgroundColor: string } = { backgroundColor: 'white' };
@@ -21,46 +21,33 @@ export class SidebarComponent {
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
         this.service.setTool(Globals.crayonShortcut);
-        this.openTool(!this.fillBorder, this.width);
+        this.openTool(!this.fillBorder, !this.showWidth);
         this.crayon = Globals.backgroundGainsoboro;
     }
     openRectangle(): void {
         this.service.setTool(Globals.rectangleShortcut);
-        this.openTool(this.fillBorder, this.width);
+        this.openTool(this.fillBorder, !this.showWidth);
         this.rectangle = Globals.backgroundGainsoboro;
     }
 
     openLine(): void {
         this.service.setTool(Globals.lineShortcut);
-        this.openTool(!this.fillBorder, this.width);
+        this.openTool(!this.fillBorder, !this.showWidth);
         this.line = Globals.backgroundGainsoboro;
     }
 
     openEllipsis(): void {
         this.service.setTool(Globals.ellipsisShortcut);
-        this.openTool(this.fillBorder, this.width);
+        this.openTool(this.fillBorder, !this.showWidth);
         this.ellipsis = Globals.backgroundGainsoboro;
     }
-    openTool(fillBorder: boolean, openWidth: boolean): void {
+    openTool(fillBorder: boolean, showWidth: boolean): void {
         this.fillBorder = fillBorder;
-        if (openWidth) this.openWidth();
+        this.showWidth = showWidth;
         this.resetSlider = !this.resetSlider;
         this.setButtonWhite();
     }
 
-    setFill(): void {
-        this.service.setFill();
-    }
-    setBorder(): void {
-        this.service.setBorder();
-    }
-    setFillBorder(): void {
-        this.service.setFillBorder();
-    }
-
-    openWidth(): void {
-        this.width = true;
-    }
     nouveauDessin(): void {
         this.drawing.nouveauDessin();
     }
