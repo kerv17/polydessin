@@ -118,6 +118,15 @@ export class LineService extends Tool {
 
     onShift(shifted: boolean): void {
       this.shift = shifted;
+      console.log(this.shift);
+      this.onMouseMove(this.lastMoveEvent);
+    }
+    onEscape():void{
+      this.pathData = [];
+      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    onBackspace():void{
+      this.pathData.pop();
       this.onMouseMove(this.lastMoveEvent);
     }
 
