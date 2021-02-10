@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
-fdescribe('RectangleService', () => {
+describe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;

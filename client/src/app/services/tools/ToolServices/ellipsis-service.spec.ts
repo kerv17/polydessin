@@ -26,7 +26,7 @@ describe('EllipsisService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(EllipsisService);
-        drawLineSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawLineSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -83,13 +83,14 @@ describe('EllipsisService', () => {
     });
 
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
+        const expectedValue = 1;
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onMouseDown(mouseEvent);
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
-        expect(service.getPath().length === 5);
+        expect(service.getPath().length).toEqual(expectedValue);
     });
 
     it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
@@ -101,26 +102,150 @@ describe('EllipsisService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        const mouseEvent1 = mouseEvent;
-        service.onMouseDown(mouseEvent1);
-        mouseEvent = { offsetX: 3, offsetY: 3, button: 0 } as MouseEvent;
-        const mouseEvent2 = mouseEvent;
-        service.onMouseUp(mouseEvent2);
-
-        // Premier pixel seulement
-        for (let _i = mouseEvent1.offsetX; _i <= mouseEvent2.offsetX, _i++; ) {
-            for (let _j = mouseEvent1.offsetY; _j <= mouseEvent2.offsetY, _j++; ) {
-                const imageData: ImageData = baseCtxStub.getImageData(_i, _j, 1, 1);
-
-                expect(imageData.data[0]).toEqual(0); // R
-                expect(imageData.data[1]).toEqual(0); // G
-                expect(imageData.data[2]).toEqual(0); // B
-                // tslint:disable-next-line:no-magic-numbers
-                expect(imageData.data[3]).not.toEqual(0); // A
-            }
+    it(' EllipseWidth does what its supposed to do ', () => {
+        service.width = 10;
+        const a: Vec2 = { x: 0, y: 0 };
+        // Bottom right
+        {
+            const b: Vec2 = { x: 50, y: 50 };
+            const s = service.ellipseWidth(a, b);
+            const expectedResult: Vec2 = { x: 45, y: 45 };
+            expect(s).toEqual(expectedResult);
         }
+        // Bottom left
+        {
+            const b: Vec2 = { x: -50, y: 50 };
+            const s = service.ellipseWidth(a, b);
+            const expectedResult: Vec2 = { x: 45, y: 45 };
+            console.log(s.x);
+            expect(s).toEqual(expectedResult);
+        }
+        // Top right
+        {
+            const b: Vec2 = { x: 50, y: -50 };
+            const s = service.ellipseWidth(a, b);
+            const expectedResult: Vec2 = { x: 45, y: 45 };
+            expect(s).toEqual(expectedResult);
+        }
+        // Top left
+        {
+            const b: Vec2 = { x: -50, y: -50 };
+            const s = service.ellipseWidth(a, b);
+            const expectedResult: Vec2 = { x: 45, y: 45 };
+            console.log(s.x);
+            expect(s).toEqual(expectedResult);
+        }
+    });
+
+    it('getPathForEllipsis does what its supposed to do ', () => {
+        {
+            service.getPath().push({ x: 0, y: 0 });
+            service.shift = false;
+            const fakeMousePos: Vec2 = { x: 50, y: 50 };
+            (service as any).getPathForEllipsis(fakeMousePos);
+            expect(service.getPath().pop()).toEqual({ x: 50, y: 50 });
+            expect(service.getPath().pop()).toEqual({ x: 25, y: 25 });
+            expect(service.getPath().pop()).toEqual({ x: 0, y: 0 });
+        }
+        (service as any).clearPath();
+        {
+            service.getPath().push({ x: 0, y: 0 });
+            service.shift = true;
+            service.getPerimeterPathData()[2] = { x: 50, y: 50 };
+            const fakeMousePos: Vec2 = { x: 40, y: 50 };
+            (service as any).getPathForEllipsis(fakeMousePos);
+            expect(service.getPath().pop()).toEqual({ x: 50, y: 50 });
+            expect(service.getPath().pop()).toEqual({ x: 25, y: 25 });
+            expect(service.getPath().pop()).toEqual({ x: 0, y: 0 });
+        }
+    });
+
+    it('getRectanglePoints returns a square when shift is true', () => {
+        const tests: Vec2[] = [
+            { x: 6, y: 10 },
+            { x: -3, y: 10 },
+        ];
+        const expectedValues: Vec2[] = [
+            { x: 10, y: 10 },
+            { x: -10, y: 10 },
+        ];
+        const points: Vec2[] = [];
+        const a: Vec2 = { x: 0, y: 0 };
+
+        service.shift = true;
+        {
+            service.getPerimeterPathData().push(a);
+            (service as any).getRectanglePoints(tests[0]);
+            points.push(service.getPerimeterPathData()[2]);
+        }
+
+        {
+            (service as any).perimerterPathData = [a];
+            (service as any).getRectanglePoints(tests[1]);
+            points.push(service.getPerimeterPathData()[2]);
+        }
+
+        expect(points[0]).toEqual(expectedValues[0]);
+        expect(points[1]).toEqual(expectedValues[1]);
+    });
+
+
+    it('Fill changes the center pixels', () => {
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
+        (service as any).toolMode = 'fill';
+        (service as any).drawEllipse(previewCtxStub, path);
+        const pixel = previewCtxStub.getImageData(0, 0, 1, 1).data;
+        expect(pixel.filter((color) => color === 0).length).toEqual(3);
+    });
+
+    it('border changers the border pixels', () => {
+        //(service as any ).width = 10;
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
+        (service as any).toolMode = 'border';
+        (service as any).drawEllipse(previewCtxStub, path);
+        let pixel = previewCtxStub.getImageData(0, 0, 1, 1).data;
+        const pixelIsWhite = pixel.filter((color) => color === 255).length === 3 || pixel[3] === 0;
+        expect(pixelIsWhite).toBeTrue();
+
+        pixel = previewCtxStub.getImageData(0, path[2].y, 1, 1).data;
+        const pixelIsBlack = pixel.filter((color) => color === 0).length === 3 && pixel[3] !== 0;
+        expect(pixelIsBlack).toBeTrue();
+    });
+
+    it('fillBorder changers the border pixels', () => {
+        //(service as any ).width = 10;
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
+        (service as any).toolMode = 'fillBorder';
+        service.color2 = 'rgba(0,255,0,1)';
+        (service as any).drawEllipse(previewCtxStub, path);
+
+        let pixel = previewCtxStub.getImageData(0, path[2].y, 1, 1).data;
+        const pixelIsGreen = pixel[0] === 0 && pixel[1] === 255 && pixel[2] === 0 && pixel[3] !== 0;
+        expect(pixelIsGreen).toBeTrue();
+
+        pixel = previewCtxStub.getImageData(0, 0, 1, 1).data;
+        const pixelIsBlack = pixel.filter((color) => color === 0).length === 3 && pixel[3] !== 0;
+        expect(pixelIsBlack).toBeTrue();
+    });
+
+    it('OnShift sets the value of shifted and autoruns move', () => {
+        const spy = spyOn<any>(service, 'onMouseMove').and.callThrough();
+        service.shift = false;
+        service.onShift(true);
+        expect(service.shift).toBe(true);
+
+        expect(spy).toHaveBeenCalled();
     });
 });
