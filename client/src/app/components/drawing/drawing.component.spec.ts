@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
-// import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
@@ -9,7 +8,7 @@ class ToolStub extends Tool {}
 const DEFAULT_WIDTH = 1000;
 const DEFAULT_HEIGHT = 800;
 
-describe('DrawingComponent', () => {
+xdescribe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;

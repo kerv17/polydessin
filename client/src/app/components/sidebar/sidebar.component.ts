@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -10,97 +10,52 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 export class SidebarComponent {
     visible: boolean = false;
     width: boolean = false;
-    fillBorder: boolean = false;
-    set: boolean = true;
+    fillBorder: boolean = true;
+    resetSlider: boolean = true;
     crayon: { backgroundColor: string } = { backgroundColor: 'white' };
     rectangle: { backgroundColor: string } = { backgroundColor: 'white' };
     line: { backgroundColor: string } = { backgroundColor: 'white' };
     ellipsis: { backgroundColor: string } = { backgroundColor: 'white' };
 
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
-
-    openCrayon() {
-        this.service.setTool();
-        this.fillBorder = false;
-        this.set = !this.set;
-        this.openWidth();
-        this.setWhite();
-        this.crayon = { backgroundColor: 'gainsboro' };
+    // TODO esseyer d'optimiser encore plus
+    openCrayon(): void {
+        this.service.setTool(Globals.crayonShortcut);
+        this.openTool(!this.fillBorder, this.width);
+        this.crayon = Globals.backgroundGainsoboro;
     }
-    openRectangle() {
-        this.service.setRectangle();
-        this.fillBorder = true;
-        this.set = !this.set;
-        this.openWidth();
-        this.setWhite();
-        this.rectangle = { backgroundColor: 'gainsboro' };
+    openRectangle(): void {
+        this.service.setTool(Globals.rectangleShortcut);
+        this.openTool(this.fillBorder, this.width);
+        this.rectangle = Globals.backgroundGainsoboro;
     }
 
-    openLine() {
-        this.service.setLine();
-        this.setBackgroundColor('line');
-        this.fillBorder = false;
-        this.openWidth();
-        this.set = !this.set;
-        this.setWhite();
-        this.line = { backgroundColor: 'gainsboro' };
+    openLine(): void {
+        this.service.setTool(Globals.lineShortcut);
+        this.openTool(!this.fillBorder, this.width);
+        this.line = Globals.backgroundGainsoboro;
     }
 
-    openEllipsis() {
-        this.service.setEllipse();
-        this.fillBorder = true;
-        this.openWidth();
-        this.set = !this.set;
-        this.setWhite();
-        this.ellipsis = { backgroundColor: 'gainsboro' };
+    openEllipsis(): void {
+        this.service.setTool(Globals.ellipsisShortcut);
+        this.openTool(this.fillBorder, this.width);
+        this.ellipsis = Globals.backgroundGainsoboro;
     }
-    setBackgroundColor(name: string): void {
-        // DOIT ETRE SCRAPPER AU COMPLET!
-
-        const fill: HTMLElement | null = document.getElementById('fillButton');
-        const border: HTMLElement | null = document.getElementById('borderButton');
-        const fillBorder: HTMLElement | null = document.getElementById('fillBorderButton');
-        if (name == 'fill' || name == 'border' || name == 'fillBorder') {
-            if (fill != null && border != null && fillBorder != null) {
-                fill.style.backgroundColor = 'white';
-                border.style.backgroundColor = 'white';
-                fillBorder.style.backgroundColor = 'white';
-
-                switch (name) {
-                    case 'fill':
-                        fill.style.backgroundColor = 'gainsboro';
-                        break;
-                    case 'border':
-                        border.style.backgroundColor = 'gainsboro';
-                        break;
-                    case 'fillBorder':
-                        fillBorder.style.backgroundColor = 'gainsboro';
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+    openTool(fillBorder: boolean, openWidth: boolean): void {
+        this.fillBorder = fillBorder;
+        if (openWidth) this.openWidth();
+        this.resetSlider = !this.resetSlider;
+        this.setButtonWhite();
     }
 
-    setFill() {
+    setFill(): void {
         this.service.setFill();
-        this.setBackgroundColor('fill');
     }
-    setBorder() {
+    setBorder(): void {
         this.service.setBorder();
-        this.setBackgroundColor('border');
     }
-    setFillBorder() {
+    setFillBorder(): void {
         this.service.setFillBorder();
-        this.setBackgroundColor('fillBorder');
-    }
-
-    resetButtonColor(crayon: HTMLElement, rectangle: HTMLElement, line: HTMLElement, ellipsis: HTMLElement): void {
-        crayon.style.backgroundColor = 'white';
-        rectangle.style.backgroundColor = 'white';
-        ellipsis.style.backgroundColor = 'white';
-        line.style.backgroundColor = 'white';
     }
 
     openWidth(): void {
@@ -111,19 +66,17 @@ export class SidebarComponent {
     }
 
     @HostListener('window:keydown', ['$event'])
-    onKeyPress($event: KeyboardEvent) {
-        if (($event.ctrlKey || $event.metaKey) && $event.key == 'o') {
+    onKeyPress($event: KeyboardEvent): void {
+        if (($event.ctrlKey || $event.metaKey) && $event.key === Globals.newDrawingEvent) {
             $event.preventDefault();
             this.nouveauDessin();
         }
     }
 
-    setMode(mode: string) {}
-
-    setWhite(): void {
-        this.crayon = { backgroundColor: 'white' };
-        this.rectangle = { backgroundColor: 'white' };
-        this.ellipsis = { backgroundColor: 'white' };
-        this.line = { backgroundColor: 'white' };
+    setButtonWhite(): void {
+        this.crayon = Globals.backgroundWhite;
+        this.rectangle = Globals.backgroundWhite;
+        this.ellipsis = Globals.backgroundWhite;
+        this.line = Globals.backgroundWhite;
     }
 }

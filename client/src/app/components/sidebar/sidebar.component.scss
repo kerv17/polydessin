@@ -3,6 +3,7 @@
     height: auto;
     min-height: 100vh;
     border: 1px solid black;
+    width: 460px;
     //padding: 0 5px 0 5px;
 }
 //J'utilise ca pour faire la rangé de bouton a gauche
@@ -58,4 +59,10 @@
 .ToolContainer {
     align-self: center;
     margin: 0.5em;
+}
+
+.BackgroundServices {
+    background-image: url(../../../assets/bluebackground.jpeg);
+    background-size: cover;
+    border: 1px solid black;
 }
