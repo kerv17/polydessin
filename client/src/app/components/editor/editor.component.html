@@ -4,9 +4,9 @@
     <div class="drawing-container">
         <app-drawing class="drawing" tabindex="0" [widthPrev]='posX' [heightPrev]='posY' [mouseDown]='mouseDown'></app-drawing>
 
-        <div class='resizer' [ngStyle]="ResizerBottomRight" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
-        <div class='resizer' id='ResizerBottomLine' (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' [ngStyle]="ResizerBottomline" (window:mouseup)='mouseUpHandler($event)'></div>
-        <div class='resizer' [ngStyle]="ResizerRightLine" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
+        <div class='resizer' [ngStyle]="resizerBottomRight" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
+        <div class='resizer' [ngStyle]="resizerBottomLine" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
+        <div class='resizer' [ngStyle]="resizerRightLine" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
 
     </div>
 </div>
