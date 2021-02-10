@@ -7,6 +7,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 // TODO : Avoir un fichier séparé pour les constantes ?
 export const DEFAULT_WIDTH = 1000;
 export const DEFAULT_HEIGHT = 800;
+const MIN_SIZE = 250;
 
 @Component({
     selector: 'app-drawing',
@@ -55,10 +56,20 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (this.mouseDown) {
             if (changes.widthPrev) {
-                this.previewCanvas.nativeElement.width = this.widthPrev;
+                if (this.widthPrev >= MIN_SIZE) {
+                    this.previewCanvas.nativeElement.width = this.widthPrev;
+                } else {
+                    this.widthPrev = MIN_SIZE;
+                    this.previewCanvas.nativeElement.width = MIN_SIZE;
+                }
             }
             if (changes.heightPrev) {
-                this.previewCanvas.nativeElement.height = this.heightPrev;
+                if (this.heightPrev >= MIN_SIZE) {
+                    this.previewCanvas.nativeElement.height = this.heightPrev;
+                } else {
+                    this.heightPrev = MIN_SIZE;
+                    this.previewCanvas.nativeElement.height = MIN_SIZE;
+                }
             }
         } else {
             this.baseCanvas.nativeElement.width = this.widthPrev;
