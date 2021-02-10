@@ -61,8 +61,10 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.previewCanvas.nativeElement.height = this.heightPrev;
             }
         } else {
+            const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
             this.baseCanvas.nativeElement.width = this.widthPrev;
             this.baseCanvas.nativeElement.height = this.heightPrev;
+            this.baseCtx.putImageData(dessin, 0, 0);
         }
     }
 
