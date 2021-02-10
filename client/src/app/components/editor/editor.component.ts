@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 @Component({
     selector: 'app-editor',
@@ -56,7 +56,7 @@ export class EditorComponent {
         // window.removeEventListener('mouseup', this.stopResize);
 
         this.drawingService.canvasSize = this.drawingService.controlSize;
-    }*/
+    }
 
     resizeBottomControl(): void {
         const resizer = document.getElementById('ResizerBottomLine');
@@ -69,13 +69,13 @@ export class EditorComponent {
                 // window.addEventListener('mouseup', this.stopResize);
             });
         }
-    }
+    }*/
 
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.mouseDown = true;
         this.position = pos;
     }
-
+    @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
         if (this.position === 0) {
             this.mouseMoveHandlerCorner(event);
@@ -131,7 +131,12 @@ export class EditorComponent {
         }
     }
 
+    @HostListener('mouseup', ['$event'])
     mouseUpHandler(event: MouseEvent): void {
         this.mouseDown = false;
+    }
+
+    hideResizer():boolean{
+        return !this.mouseDown;
     }
 }
