@@ -9,7 +9,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class WidthSliderComponent implements OnChanges {
     @Input() width: number = 1;
-    @Input() set: boolean;
+    @Input() change: boolean;
 
     constructor(private tool: ToolControllerService) {}
 
@@ -20,7 +20,7 @@ export class WidthSliderComponent implements OnChanges {
         }
     }
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.set) {
+        if (changes.change) {
             this.width = this.tool.currentTool.width;
         }
     }

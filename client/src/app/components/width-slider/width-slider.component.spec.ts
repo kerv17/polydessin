@@ -1,6 +1,7 @@
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSliderChange } from '@angular/material/slider/slider';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { WidthSliderComponent } from './width-slider.component';
@@ -10,18 +11,19 @@ fdescribe('WidthSliderComponent', () => {
     let fixture: ComponentFixture<WidthSliderComponent>;
     let matSliderChange: MatSliderChange;
     let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
-    let pencilStub: jasmine.SpyObj<PencilService>;
+    let pencil: PencilService;
     const matSlidervalue = 12;
+    const defaultToolValue = 5;
 
     beforeEach(async(() => {
         toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setCrayon']);
-        pencilStub = jasmine.createSpyObj('PencilService', [onclick]);
+        pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({
             declarations: [WidthSliderComponent],
             providers: [
                 WidthSliderComponent,
                 { provide: ToolControllerService, useValue: toolControllerSpy },
-                { provide: PencilService, useValue: pencilStub },
+                { provide: PencilService, useValue: pencil },
             ],
         }).compileComponents();
     }));
@@ -30,16 +32,16 @@ fdescribe('WidthSliderComponent', () => {
         matSliderChange = {
             value: matSlidervalue, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
-        pencilStub = TestBed.inject(PencilService) as jasmine.SpyObj<PencilService>;
-        pencilStub.width = 5;
+        pencil = TestBed.inject(PencilService);
+        pencil.width = defaultToolValue;
         toolControllerSpy = TestBed.inject(ToolControllerService) as jasmine.SpyObj<ToolControllerService>;
-        toolControllerSpy.currentTool = pencilStub;
+        toolControllerSpy.currentTool = pencil;
         fixture = TestBed.createComponent(WidthSliderComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
     it('should create PencilService', () => {
-        expect(pencilStub).toBeTruthy();
+        expect(pencil).toBeTruthy();
     });
 
     it('should create PencilService and attribute it to toolController', () => {
@@ -55,7 +57,7 @@ fdescribe('WidthSliderComponent', () => {
     });
 
     it('Verifying that the component sets the right width value', () => {
-        component.getSliderValue(matSliderChange);
+        component.updateWidthValues(matSliderChange);
         expect(component.width).toEqual(matSlidervalue);
     });
 
@@ -63,31 +65,35 @@ fdescribe('WidthSliderComponent', () => {
         const previousWidth: number = component.width;
         const previousToolWidth: number = toolControllerSpy.currentTool.width;
         matSliderChange.value = null;
-        component.getSliderValue(matSliderChange);
+        component.updateWidthValues(matSliderChange);
         expect(component.width).toEqual(previousWidth);
         expect(toolControllerSpy.currentTool.width).toEqual(previousToolWidth);
     });
 
     it('Verifying that the component sets the right width value for the tool', () => {
-        component.getSliderValue(matSliderChange);
+        component.updateWidthValues(matSliderChange);
         expect(toolControllerSpy.currentTool.width).toEqual(matSlidervalue);
     });
 
     it('verifying ngOnchanges with the setvalue changing', () => {
-        component.getSliderValue(matSliderChange);
+        component.updateWidthValues(matSliderChange);
+        const newValue = 8;
+        toolControllerSpy.currentTool.width = newValue;
         // On doit faire comme si le form contenait une nouvelle valeur
         const temp = toolControllerSpy.currentTool.width;
-        component.ngOnChanges({ set: new SimpleChange(null, component.width, true) });
+        component.ngOnChanges({ change: new SimpleChange(null, component.width, true) });
         expect(toolControllerSpy.currentTool.width).toEqual(temp);
+        expect(component.width).toEqual(newValue);
     });
 
     it('verifying ngOnchanges with the setvalue not changing', () => {
         // set the value of width to 12
-        component.getSliderValue(matSliderChange);
+        component.updateWidthValues(matSliderChange);
         component.ngOnChanges({});
         // On doit faire comme si le form contenait une nouvelle valeur
 
         // on change pas la valeur de set
         expect(component.width).toEqual(matSlidervalue);
+        expect(toolControllerSpy.currentTool.width).toEqual(matSlidervalue);
     });
 });

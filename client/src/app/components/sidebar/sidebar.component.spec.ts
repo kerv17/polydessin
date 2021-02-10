@@ -4,6 +4,8 @@ import { SidebarComponent } from './sidebar.component';
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
+    let openTool: jasmine.Spy;
+    let setTool: jasmine.Spy;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

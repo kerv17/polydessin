@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import * as Globals from '@app/Constants/constants';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
-
 @Injectable({
     providedIn: 'root',
 })
 export class ToolControllerService {
     currentTool: Tool;
+    toolMap: Map<string, Tool> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
@@ -22,23 +23,21 @@ export class ToolControllerService {
         document.addEventListener('keyup', (event: KeyboardEvent) => {
             this.checkKeyUp(event);
         });
+        this.initMap();
+    }
+    initMap(): void {
+        this.toolMap
+            .set(Globals.crayonShortcut, this.pencilService)
+            .set(Globals.lineShortcut, this.lineService)
+            .set(Globals.rectangleShortcut, this.rectangleService)
+            .set(Globals.ellipsisShortcut, this.ellipsisService);
     }
 
-    setCrayon(): void {
-        this.currentTool = this.pencilService;
+    setTool(shortcut: string): void {
+        const tempTool: Tool | undefined = this.toolMap.get(shortcut);
+        if (tempTool != undefined) this.currentTool = tempTool;
     }
 
-    setRectangle(): void {
-        this.currentTool = this.rectangleService;
-    }
-
-    setEllipse(): void {
-        this.currentTool = this.ellipsisService;
-    }
-
-    setLine(): void {
-        this.currentTool = this.lineService;
-    }
     shift(shift: boolean): void {
         this.currentTool.onShift(shift);
     }
@@ -46,26 +45,27 @@ export class ToolControllerService {
     setFill(): void {
         this.currentTool.toolMode = 'fill';
     }
+
     setBorder(): void {
         this.currentTool.toolMode = 'border';
     }
     setFillBorder(): void {
         this.currentTool.toolMode = 'fillBorder';
     }
-
+    // TODO changé ca
     private checkKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case 'c':
-                this.setCrayon();
+                this.setTool(Globals.crayonShortcut);
                 break;
             case '1':
-                this.setRectangle();
+                this.setTool(Globals.rectangleShortcut);
                 break;
             case '2':
-                this.setEllipse();
+                this.setTool(Globals.ellipsisShortcut);
                 break;
             case 'l':
-                this.setLine();
+                this.setTool(Globals.lineShortcut);
                 break;
             case 'Shift':
                 this.shift(true);

@@ -28,7 +28,7 @@
     <div class="BackgroundServices">
         <div class="services">
             <div *ngIf="width">
-                <app-width-slider [set]="set"></app-width-slider>
+                <app-width-slider [change]="resetSlider"></app-width-slider>
             </div>
             <div>
                 <app-color></app-color>
