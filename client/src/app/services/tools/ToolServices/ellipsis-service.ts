@@ -29,6 +29,10 @@ export class EllipsisService extends Tool {
     private perimerterPathData: Vec2[];
     lastMoveEvent: MouseEvent;
 
+    getPerimeterPathData(): Vec2[] {
+        return this.perimerterPathData;
+    }
+
     getPath(): Vec2[] {
         return this.pathData;
     }
@@ -82,19 +86,20 @@ export class EllipsisService extends Tool {
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         // Determiner si on doit faire la bordure
-        if (this.toolMode === 'border') {
+
+        switch(this.toolMode){
+          case 'border':
             this.drawBorder(ctx, path);
+            break;
+          case 'fill':
+            this.fill(ctx, path);
+            break;
+          case 'fillBorder':
+            this.fill(ctx, path);
+            this.drawBorder(ctx, path);
+            break;
         }
 
-        // Determiner si on doit fill le rectangle
-        if (this.toolMode === 'fill') {
-            this.fill(ctx, path);
-        }
-
-        if (this.toolMode === 'fillBorder') {
-            this.fill(ctx, path);
-            this.drawBorder(ctx, path);
-        }
         ctx.stroke();
         this.drawPerimeter(this.drawingService.previewCtx, this.perimerterPathData);
         ctx.stroke();
@@ -107,7 +112,7 @@ export class EllipsisService extends Tool {
         const c: Vec2 = path[2];
         ctx.beginPath();
         const ellipseWidth = this.ellipseWidth(a, c);
-        ctx.ellipse(a.x, a.y, ellipseWidth.x, ellipseWidth.y, 0, 0, 2* Math.PI);
+        ctx.ellipse(a.x, a.y, ellipseWidth.x, ellipseWidth.y, 0, 0, 2 * Math.PI);
     }
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -123,14 +128,8 @@ export class EllipsisService extends Tool {
 
     private getPathForEllipsis(mousePosition: Vec2): void {
         const a: Vec2 = this.pathData[0];
-        let c: Vec2 = mousePosition;
-        if (this.shift) {
-            c = this.perimerterPathData[2];
-        }
-
-        const bx: number = a.x + (c.x - a.x) / 2;
-        const by: number = a.y + (c.y - a.y) / 2;
-        const b: Vec2 = { x: bx, y: by };
+        let c: Vec2 = !this.shift ? mousePosition : this.perimerterPathData[2];
+        const b: Vec2 = { x: (a.x + (c.x - a.x) / 2), y: (a.y + (c.y - a.y) / 2)};
         this.pathData.push(b);
         this.pathData.push(c);
     }
@@ -150,39 +149,24 @@ export class EllipsisService extends Tool {
 
         const a: Vec2 = this.perimerterPathData[0];
         const b: Vec2 = { x: a.x, y: mousePosition.y };
-        let c: Vec2 = mousePosition;
-        let d: Vec2 = { x: mousePosition.x, y: a.y };
+        const c: Vec2 = mousePosition;
+        const d: Vec2 = { x: mousePosition.x, y: a.y };
 
         if (this.shift) {
-            if (mousePosition.x < a.x !== mousePosition.y < a.y) {
-                c = { x: a.x + -(b.y - a.y), y: mousePosition.y };
-                d = { x: a.x + -(b.y - a.y), y: a.y };
-            } else {
-                c = { x: a.x + b.y - a.y, y: mousePosition.y };
-                d = { x: a.x + b.y - a.y, y: a.y };
-            }
+            const onTopRightDiagonal = (mousePosition.x < a.x !== mousePosition.y < a.y);
+            c.x = onTopRightDiagonal ? (a.x + -(b.y - a.y)) : (a.x + b.y - a.y);
+            d.x = onTopRightDiagonal ? (a.x + -(b.y - a.y)) : (a.x + b.y - a.y);
         }
+
 
         list.push(a, b, c, d);
         this.perimerterPathData = list;
     }
 
     ellipseWidth(a: Vec2, c: Vec2): Vec2 {
-        let x = 0;
-        let y = 0;
 
-        if (a.x > c.x) {
-            x = Math.abs(c.x - a.x + this.width / 2);
-        } else {
-            x = Math.abs(c.x - a.x - this.width / 2);
-        }
-
-        if (a.y > c.y) {
-            y = Math.abs(c.y - a.y + this.width / 2);
-        } else {
-            y = Math.abs(c.y - a.y - this.width / 2);
-        }
-
+        let x = (c.x-a.x < 0) ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
+        let y = (c.y-a.y < 0) ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
         const s: Vec2 = { x, y };
 
         return s;
