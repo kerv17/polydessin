@@ -27,11 +27,12 @@ export class LineService extends Tool {
         super(drawingService);
         this.clearPath();
         this.width = 1;
+
     }
 
     onMouseMove(event: MouseEvent): void {
         this.lastMoveEvent = event;
-        this.pathData.push(this.pointToPush(event));
+        this.pathData.push(this.getPointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -43,7 +44,7 @@ export class LineService extends Tool {
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
-        this.pathData.push(this.pointToPush(event));
+        this.pathData.push(this.getPointToPush(event));
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
 
@@ -68,6 +69,7 @@ export class LineService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color || 'black';
+        ctx.lineCap
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -87,8 +89,7 @@ export class LineService extends Tool {
     }
 
 
-    private angle(p1:Vec2, p2:Vec2):number{
-        console.clear();
+    private getAngle(p1:Vec2, p2:Vec2):number{
         var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
         return angleDeg;
     }
@@ -98,7 +99,7 @@ export class LineService extends Tool {
       const solution:Vec2 = {x:p1.x, y:p1.y};
       const Xquadrants:number[] = [0,7];
       const Yquadrants:number[] = [3,4];
-      let angle = this.angle(p1, p2);
+      let angle = this.getAngle(p1, p2);
       let octant = Math.floor( Math.abs(angle/22.5) );
 
 
@@ -120,7 +121,7 @@ export class LineService extends Tool {
       this.onMouseMove(this.lastMoveEvent);
     }
 
-    pointToPush(event:MouseEvent):Vec2{
+    getPointToPush(event:MouseEvent):Vec2{
         const mousePosition = this.getPositionFromMouse(event);
         if (this.pathData.length > 0){
 
