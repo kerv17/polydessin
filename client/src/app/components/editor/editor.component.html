@@ -1,17 +1,12 @@
 <div class="container">
     <app-sidebar> </app-sidebar>
-   
-    
-       
+
     <div class="drawing-container">
-        <app-drawing class="drawing" tabindex="0"></app-drawing>
-        
-        <div class='resizer' [ngStyle]= "ResizerBottomRight"></div>
-        <div class='resizer'  id= 'ResizerBottomLine' (click)= "resizeBottomControl()" [ngStyle]= "ResizerBottomline"></div>
-        <div class='resizer' [ngStyle]= "ResizerRightLine"></div>
-        
-        
-        
-        
+        <app-drawing class="drawing" tabindex="0" [widthPrev]='posX' [heightPrev]='posY' [mouseDown]='mouseDown'></app-drawing>
+
+        <div class='resizer' [ngStyle]="ResizerBottomRight" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
+        <div class='resizer' id='ResizerBottomLine' (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' [ngStyle]="ResizerBottomline" (window:mouseup)='mouseUpHandler($event)'></div>
+        <div class='resizer' [ngStyle]="ResizerRightLine" (mousedown)="mouseDownHandler($event)" (window:mousemove)='mouseMoveHandler($event)' (window:mouseup)='mouseUpHandler($event)'></div>
+
     </div>
 </div>

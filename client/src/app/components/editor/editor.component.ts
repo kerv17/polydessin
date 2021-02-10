@@ -6,6 +6,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
+    mouseDown: boolean = false;
+    posX: number;
+    posY: number;
+
     constructor(private drawingService: DrawingService) {}
 
     ResizerBottomRight = {
@@ -23,6 +27,8 @@ export class EditorComponent {
         ['margin-left']: this.convertToStringSideLineX(),
         ['margin-top']: this.convertToStringSideLineY(),
     };
+
+    // doit être modifiable
     convertToStringBottomRightX(): string {
         const bottomRightX: string = this.drawingService.positionCornerControl().x.toString();
         const retour: string = bottomRightX.concat('px');
@@ -73,5 +79,20 @@ export class EditorComponent {
                 window.addEventListener('mouseup', this.stopResize);
             });
         }
+    }
+
+    mouseDownHandler(event: MouseEvent): void {
+        this.mouseDown = true;
+    }
+
+    mouseMoveHandler(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.posY = event.offsetY;
+            this.posX = event.offsetX;
+        }
+    }
+
+    mouseUpHandler(event: MouseEvent): void {
+        this.mouseDown = false;
     }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,10 +13,19 @@ export const DEFAULT_HEIGHT = 800;
     templateUrl: './drawing.component.html',
     styleUrls: ['./drawing.component.scss'],
 })
-export class DrawingComponent implements AfterViewInit {
+export class DrawingComponent implements AfterViewInit, OnChanges {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+
+    @Input()
+    widthPrev: number;
+
+    @Input()
+    heightPrev: number;
+
+    @Input()
+    mouseDown: boolean;
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
@@ -41,6 +50,20 @@ export class DrawingComponent implements AfterViewInit {
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.canvasSize = this.drawingService.setSizeCanva();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (this.mouseDown) {
+            if (changes.widthPrev) {
+                this.previewCanvas.nativeElement.width = this.widthPrev;
+            }
+            if (changes.heightPrev) {
+                this.previewCanvas.nativeElement.height = this.heightPrev;
+            }
+        } else {
+            this.baseCanvas.nativeElement.width = this.widthPrev;
+            this.baseCanvas.nativeElement.height = this.heightPrev;
+        }
     }
 
     @HostListener('mousemove', ['$event'])
