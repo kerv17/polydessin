@@ -35,26 +35,4 @@ export class DrawingService {
         this.controlSize = this.canvasSize;
         return this.canvasSize;
     }
-
-    // utiliser -3 au lieux de -2 pour un 1080p
-    positionBottomControl(): Vec2 {
-        const coordonatesBottomControl: Vec2 = this.setSizeCanva();
-        coordonatesBottomControl.x = this.controlSize.x / 2;
-        coordonatesBottomControl.y = this.controlSize.y - 2;
-        return coordonatesBottomControl;
-    }
-    positionSideControl(): Vec2 {
-        const coordonatesSideControl: Vec2 = this.setSizeCanva();
-        coordonatesSideControl.x = this.controlSize.x - 2;
-        coordonatesSideControl.y = this.controlSize.y / 2;
-        return coordonatesSideControl;
-    }
-    positionCornerControl(): Vec2 {
-        const coordonatesCornerControl: Vec2 = this.setSizeCanva();
-        coordonatesCornerControl.x = this.controlSize.x - 2;
-        coordonatesCornerControl.y = this.controlSize.y - 2;
-        return coordonatesCornerControl;
-    }
-
-    
 }
