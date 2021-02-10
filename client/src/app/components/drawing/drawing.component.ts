@@ -4,10 +4,6 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
-// TODO : Avoir un fichier séparé pour les constantes ?
-export const DEFAULT_WIDTH = 1000;
-export const DEFAULT_HEIGHT = 800;
-
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -41,9 +37,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // met la surface en blanc mais c aussi fait sans ce code
-        // this.baseCtx.fillStyle = "white";
-        // this.baseCtx.fillRect(0,0,DEFAULT_WIDTH,DEFAULT_HEIGHT);
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
@@ -98,22 +91,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ondbClick(event: MouseEvent): void {
         this.controller.currentTool.ondbClick(event);
     }
-
-    /*setDrawingSurface():void{
-        let halfWindowHeight:number = document.documentElement.clientHeight/2;
-        let halfWindowidth:number = document.documentElement.clientWidth/2;
-        let minSize:number = 250;
-        if(halfWindowHeight < minSize){
-            this.canvasSize.y = minSize;
-        }
-        else if(halfWindowidth < minSize){
-            this.canvasSize.x = minSize;
-        }
-        else{
-            this.canvasSize = { x: halfWindowidth, y: halfWindowHeight };
-        }
-
-    }*/
 
     get width(): number {
         return this.canvasSize.x;

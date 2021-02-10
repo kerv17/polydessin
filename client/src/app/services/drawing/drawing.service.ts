@@ -17,7 +17,6 @@ export class DrawingService {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    // est public pour etre modifier dans drawing component
     setSizeCanva(): Vec2 {
         const dimensionPageY = document.documentElement.clientHeight;
         const dimensionPageX = document.documentElement.clientWidth;
@@ -31,7 +30,6 @@ export class DrawingService {
         } else {
             this.canvasSize.y = dimensionPageY / 2;
         }
-        // initialise valeurs points de controle
         this.controlSize = this.canvasSize;
         return this.canvasSize;
     }

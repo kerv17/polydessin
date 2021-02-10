@@ -23,6 +23,7 @@ export class EditorComponent {
     resizerBottomLine: { [key: string]: string };
     resizerRightLine: { [key: string]: string };
     resizerBottomRight: { [key: string]: string };
+    
     setResizerRightLine(): void {
         this.resizerRightLine = {
             cursor: 'col-resize',
@@ -46,31 +47,7 @@ export class EditorComponent {
             'margin-top': String(this.posY) + 'px',
         };
     }
-    // laisser au cas ou
-    /*resizeFunct(e: MouseEvent): void {
-        this.drawingService.controlSize.y = e.pageY;
-        this.setResizerBottomLine();
-    }*/
-    /*stopResize(e: MouseEvent): void {
-        window.removeEventListener('mousemove', this.resizeFunct);
-        // window.removeEventListener('mouseup', this.stopResize);
-
-        this.drawingService.canvasSize = this.drawingService.controlSize;
-    }
-
-    resizeBottomControl(): void {
-        const resizer = document.getElementById('ResizerBottomLine');
-        if (resizer != null) {
-            resizer.addEventListener('mousedown', (e: MouseEvent): void => {
-                e.preventDefault();
-                this.setResizerBottomLine();
-                // laisser au cas ou
-                // window.addEventListener('mousemove', this.resizeFunct);
-                // window.addEventListener('mouseup', this.stopResize);
-            });
-        }
-    }*/
-
+    
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.mouseDown = true;
         this.position = pos;
