@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipsisService } from './ellipsis-service';
 
 // tslint:disable:no-any
-fdescribe('RectangleService', () => {
+describe('EllipsisService', () => {
     let service: EllipsisService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
@@ -67,9 +67,9 @@ fdescribe('RectangleService', () => {
 
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        //Put down mouse
+        // Put down mouse
         service.onMouseDown(mouseEvent);
-        //Rise it back up
+        // Rise it back up
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
@@ -89,10 +89,8 @@ fdescribe('RectangleService', () => {
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
-        expect(service.getPath().length==5)
+        expect(service.getPath().length === 5);
     });
-
-
 
     it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
@@ -104,26 +102,25 @@ fdescribe('RectangleService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    fit(' should change the pixel of the canvas ', () => {
+    it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        let mouseEvent1 = mouseEvent;
+        const mouseEvent1 = mouseEvent;
         service.onMouseDown(mouseEvent1);
         mouseEvent = { offsetX: 3, offsetY: 3, button: 0 } as MouseEvent;
-        let mouseEvent2 = mouseEvent;
+        const mouseEvent2 = mouseEvent;
         service.onMouseUp(mouseEvent2);
 
         // Premier pixel seulement
-        for (var _i = mouseEvent1.offsetX; _i <= mouseEvent2.offsetX, _i++;){
-          for (var _j = mouseEvent1.offsetY; _j <= mouseEvent2.offsetY, _j++;){
-            let imageData: ImageData = baseCtxStub.getImageData(_i, _j, 1, 1);
+        for (let _i = mouseEvent1.offsetX; _i <= mouseEvent2.offsetX, _i++; ) {
+            for (let _j = mouseEvent1.offsetY; _j <= mouseEvent2.offsetY, _j++; ) {
+                const imageData: ImageData = baseCtxStub.getImageData(_i, _j, 1, 1);
 
-
-            expect(imageData.data[0]).toEqual(0); // R
-            expect(imageData.data[1]).toEqual(0); // G
-            expect(imageData.data[2]).toEqual(0); // B
-            // tslint:disable-next-line:no-magic-numbers
-            expect(imageData.data[3]).not.toEqual(0); // A
-          }
+                expect(imageData.data[0]).toEqual(0); // R
+                expect(imageData.data[1]).toEqual(0); // G
+                expect(imageData.data[2]).toEqual(0); // B
+                // tslint:disable-next-line:no-magic-numbers
+                expect(imageData.data[3]).not.toEqual(0); // A
+            }
         }
     });
 });

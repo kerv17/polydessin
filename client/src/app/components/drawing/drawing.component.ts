@@ -37,6 +37,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        // met la surface en blanc mais c aussi fait sans ce code
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
@@ -59,6 +62,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             this.baseCanvas.nativeElement.height = this.heightPrev;
             this.baseCtx.putImageData(dessin, 0, 0);
         }
+        // need to find where to put this
+        // document.documentElement.clientHeight;
+        // document.documentElement.clientHeight;
+        // ne fait rien
+        // this.setDrawingSurface();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -75,7 +83,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.onMouseDown(event);
     }
 
-    @HostListener('mouseup', ['$event'])
+    @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.controller.currentTool.onMouseUp(event);
         this.controller.currentTool.color = this.colorService.primaryColor;
@@ -90,6 +98,16 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     @HostListener('dblclick', ['$event'])
     ondbClick(event: MouseEvent): void {
         this.controller.currentTool.ondbClick(event);
+    }
+
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.controller.currentTool.onMouseLeave(event);
+    }
+
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.controller.currentTool.onMouseEnter(event);
     }
 
     get width(): number {

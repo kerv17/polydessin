@@ -13,10 +13,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService) {
-        //sessionStorage.setItem("primaryColor","rgba(1,1,1,1)");
-        //sessionStorage.setItem("secondaryColor","rgba(1,1,1,1)");
-    }
+    constructor(private basicService: IndexService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {

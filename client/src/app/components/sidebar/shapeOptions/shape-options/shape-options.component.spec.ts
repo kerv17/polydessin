@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WidthSliderComponent } from './width-slider.component';
+import { ShapeOptionsComponent } from './shape-options.component';
 
-describe('WidthSliderComponent', () => {
-  let component: WidthSliderComponent;
-  let fixture: ComponentFixture<WidthSliderComponent>;
+describe('ShapeOptionsComponent', () => {
+  let component: ShapeOptionsComponent;
+  let fixture: ComponentFixture<ShapeOptionsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WidthSliderComponent ]
+      declarations: [ ShapeOptionsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WidthSliderComponent);
+    fixture = TestBed.createComponent(ShapeOptionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

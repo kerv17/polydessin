@@ -6,6 +6,7 @@
 .drawing-container {
     overflow: auto;
     flex: 1 1 auto;
+    background-color: grey;
 }
 
 .drawing {
@@ -14,6 +15,12 @@
     outline: none;
 }
 
+//ajout
+
+.sidebar {
+    display: flex;
+    width: min-content;
+}
 .resizer {
     width: 10px;
     height: 10px;

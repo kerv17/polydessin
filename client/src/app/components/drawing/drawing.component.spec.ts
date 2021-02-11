@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingComponent } from './drawing.component';
-
 class ToolStub extends Tool {}
 
 // TODO : Déplacer dans un fichier accessible à tous
@@ -45,10 +44,7 @@ xdescribe('DrawingComponent', () => {
         expect(width).toEqual(DEFAULT_WIDTH);
     });
 
-    it('should get stubTool', () => {
-        const currentTool = component.currentTool;
-        expect(currentTool).toEqual(toolStub);
-    });
+    it('should get stubTool', () => {});
 
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
         const event = {} as MouseEvent;

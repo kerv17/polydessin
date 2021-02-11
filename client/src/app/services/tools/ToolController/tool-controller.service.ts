@@ -1,79 +1,89 @@
-
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { PencilService } from '../ToolServices/pencil-service';
-import { RectangleService} from "../ToolServices/rectangle-service";
-import { LineService} from "../ToolServices/line-service";
-import { EllipsisService} from "../ToolServices/ellipsis-service";
-
+import * as Globals from '@app/Constants/constants';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LineService } from '@app/services/tools/ToolServices/line-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 @Injectable({
     providedIn: 'root',
 })
 export class ToolControllerService {
-    public currentTool: Tool;
+    currentTool: Tool;
+    toolMap: Map<string, Tool> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
-        private lineService:LineService,
-        private ellipsisService:EllipsisService) {
-      document.addEventListener('keydown', (event:KeyboardEvent) => {
-        this.checkKeyDown(event);
-
-      });
-      document.addEventListener('keyup', (event:KeyboardEvent) => {
-        this.checkKeyUp(event);
-
-      });
+        private lineService: LineService,
+        private ellipsisService: EllipsisService,
+    ) {
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            this.checkKeyDown(event);
+        });
+        document.addEventListener('keyup', (event: KeyboardEvent) => {
+            this.checkKeyUp(event);
+        });
+        this.initMap();
+    }
+    initMap(): void {
+        this.toolMap
+            .set(Globals.crayonShortcut, this.pencilService)
+            .set(Globals.lineShortcut, this.lineService)
+            .set(Globals.rectangleShortcut, this.rectangleService)
+            .set(Globals.ellipsisShortcut, this.ellipsisService);
     }
 
-    public setTool(): void {
-        this.currentTool = this.pencilService;
+    setTool(shortcut: string): void {
+        const tempTool: Tool | undefined = this.toolMap.get(shortcut);
+        if (tempTool != undefined) this.currentTool = tempTool;
     }
 
-    public setRectangle():void{
-      this.currentTool = this.rectangleService;
+    shift(shift: boolean): void {
+        this.currentTool.onShift(shift);
     }
 
-    public setEllipse():void{
-      this.currentTool = this.ellipsisService;
+    setFill(): void {
+        this.currentTool.toolMode = 'fill';
     }
 
-    public setLine():void{
-      this.currentTool = this.lineService;
+    setBorder(): void {
+        this.currentTool.toolMode = 'border';
     }
-    public shift(shift:boolean){
-      this.currentTool.onShift(shift);
+    setFillBorder(): void {
+        this.currentTool.toolMode = 'fillBorder';
     }
-
-    private checkKeyDown(event:KeyboardEvent):void{
-      switch(event.key){
-        case "c":
-          this.setTool();
-          break;
-        case "1":
-          this.setRectangle();
-          break;
-        case "l":
-          this.setLine();
-        case "Shift":
-          this.shift(true);
-          break;
-        default:
-          break;
-      }
-      return;
-    }
-
-
-    private checkKeyUp(event:KeyboardEvent):void{
-      switch(event.key){
-        case "Shift":
-          this.shift(false);
-          break;
-        default:
-          break;
-      }
-      return;
+    // TODO changé ca
+    private checkKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'c':
+                this.setTool(Globals.crayonShortcut);
+                break;
+            case '1':
+                this.setTool(Globals.rectangleShortcut);
+                break;
+            case '2':
+                this.setTool(Globals.ellipsisShortcut);
+                break;
+            case 'l':
+                this.setTool(Globals.lineShortcut);
+                break;
+            case 'Shift':
+                this.shift(true);
+                break;
+            default:
+                break;
+        }
+        return;
     }
 
+    private checkKeyUp(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'Shift':
+                this.shift(false);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
 }

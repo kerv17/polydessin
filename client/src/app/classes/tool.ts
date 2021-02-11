@@ -6,10 +6,12 @@ import { Vec2 } from './vec2';
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
-    public color: string;
-    public color2:string;
-    public toolMode:string = "border";
-    shift:boolean =false;
+    outOfBounds: boolean = false;
+    color: string;
+    color2: string;
+    width: number;
+    toolMode: string = 'border';
+    shift: boolean = false;
 
     constructor(protected drawingService: DrawingService) {}
 
@@ -19,11 +21,15 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onClick(event:MouseEvent):void {}
+    onMouseLeave(event: MouseEvent): void {}
 
-    ondbClick(event:MouseEvent):void {}
+    onMouseEnter(event: MouseEvent): void {}
 
-    onShift(shift:boolean){}
+    onClick(event: MouseEvent): void {}
+
+    ondbClick(event: MouseEvent): void {}
+
+    onShift(shift: boolean): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
