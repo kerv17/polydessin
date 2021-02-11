@@ -21,24 +21,24 @@ export class SidebarComponent {
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
         this.service.setTool(Globals.crayonShortcut);
-        this.openTool(!this.fillBorder, !this.showWidth);
+        this.openTool(false, true);
         this.crayon = Globals.backgroundGainsoboro;
     }
     openRectangle(): void {
         this.service.setTool(Globals.rectangleShortcut);
-        this.openTool(this.fillBorder, !this.showWidth);
+        this.openTool(true, true);
         this.rectangle = Globals.backgroundGainsoboro;
     }
 
     openLine(): void {
         this.service.setTool(Globals.lineShortcut);
-        this.openTool(!this.fillBorder, !this.showWidth);
+        this.openTool(false, true);
         this.line = Globals.backgroundGainsoboro;
     }
 
     openEllipsis(): void {
         this.service.setTool(Globals.ellipsisShortcut);
-        this.openTool(this.fillBorder, !this.showWidth);
+        this.openTool(true, true);
         this.ellipsis = Globals.backgroundGainsoboro;
     }
     openTool(fillBorder: boolean, showWidth: boolean): void {
