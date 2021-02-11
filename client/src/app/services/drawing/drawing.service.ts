@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 
 @Injectable({
     providedIn: 'root',
@@ -18,15 +19,16 @@ export class DrawingService {
     }
 
     setSizeCanva(): Vec2 {
-        const dimensionPageY = document.documentElement.clientHeight;
-        const dimensionPageX = document.documentElement.clientWidth;
-        if (dimensionPageX / 2 < 250) {
-            this.canvasSize.x = 250;
+        const dimensionPageY = window.innerHeight;
+        const dimensionPageX = window.innerWidth;
+
+        if ((dimensionPageX - Globals.SIDEBAR_WIDTH) / 2 < Globals.CANVAS_SIZE_MIN) {
+            this.canvasSize.x = Globals.CANVAS_SIZE_MIN;
         } else {
-            this.canvasSize.x = dimensionPageX / 2;
+            this.canvasSize.x = (dimensionPageX - Globals.SIDEBAR_WIDTH) / 2;
         }
-        if (dimensionPageY / 2 < 250) {
-            this.canvasSize.y = 250;
+        if (dimensionPageY / 2 < Globals.CANVAS_SIZE_MIN) {
+            this.canvasSize.y = Globals.CANVAS_SIZE_MIN;
         } else {
             this.canvasSize.y = dimensionPageY / 2;
         }
@@ -41,7 +43,6 @@ export class DrawingService {
             if (confirm('Êtes vous sur de supprimez votre dessin courant?')) {
                 this.clearCanvas(this.baseCtx);
                 this.clearCanvas(this.previewCtx);
-               
             }
             this.baseCtx.fillStyle = 'white';
             // TODO trouver vrai valeur
@@ -60,5 +61,15 @@ export class DrawingService {
         }
 
         return false;
+    }
+
+    fillNewSpace(canvasPreviousDimension: Vec2, canvasNewDimension: Vec2): void {
+        this.baseCtx.fillStyle = 'white';
+        if (canvasPreviousDimension.x < canvasNewDimension.x) {
+            this.baseCtx.fillRect(canvasPreviousDimension.x, 0, canvasNewDimension.x, canvasPreviousDimension.y);
+        }
+        if (canvasPreviousDimension.y < canvasNewDimension.y) {
+            this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.x);
+        }
     }
 }
