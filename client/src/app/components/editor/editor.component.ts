@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 @Component({
     selector: 'app-editor',
@@ -23,11 +24,11 @@ export class EditorComponent {
     resizerBottomLine: { [key: string]: string };
     resizerRightLine: { [key: string]: string };
     resizerBottomRight: { [key: string]: string };
-    
+
     setResizerRightLine(): void {
         this.resizerRightLine = {
             cursor: 'col-resize',
-            'margin-left': String(this.posX) + 'px',
+            'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
             'margin-top': String(this.posY / 2) + 'px',
         };
     }
@@ -35,8 +36,8 @@ export class EditorComponent {
     setResizerBottomRight(): void {
         this.resizerBottomRight = {
             cursor: 'nwse-resize',
-            'margin-left': String(this.posX) + 'px',
-            'margin-top': String(this.posY) + 'px',
+            'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
 
@@ -44,10 +45,10 @@ export class EditorComponent {
         this.resizerBottomLine = {
             cursor: 'row-resize',
             'margin-left': String(this.posX / 2) + 'px',
-            'margin-top': String(this.posY) + 'px',
+            'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
-    
+
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.mouseDown = true;
         this.position = pos;
@@ -65,10 +66,10 @@ export class EditorComponent {
 
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetX >= 250) {
+            if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
-                this.posX = 250;
+                this.posX = Globals.CANVAS_SIZE_MIN;
             }
             this.setResizerBottomLine();
             this.setResizerRightLine();
@@ -78,10 +79,10 @@ export class EditorComponent {
 
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetY >= 250) {
+            if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
-                this.posY = 250;
+                this.posY = Globals.CANVAS_SIZE_MIN;
             }
             this.setResizerBottomLine();
             this.setResizerRightLine();
@@ -91,16 +92,16 @@ export class EditorComponent {
 
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetX >= 250) {
+            if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
-                this.posX = 250;
+                this.posX = Globals.CANVAS_SIZE_MIN;
             }
 
-            if (event.offsetY >= 250) {
+            if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
-                this.posY = 250;
+                this.posY = Globals.CANVAS_SIZE_MIN;
             }
             this.setResizerBottomLine();
             this.setResizerRightLine();
@@ -113,7 +114,7 @@ export class EditorComponent {
         this.mouseDown = false;
     }
 
-    hideResizer():boolean{
+    hideResizer(): boolean {
         return !this.mouseDown;
     }
 }
