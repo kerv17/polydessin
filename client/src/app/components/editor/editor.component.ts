@@ -1,6 +1,8 @@
 import { Component, HostListener } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EditorService } from '@app/services/editor/editor.service';
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
@@ -8,47 +10,42 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class EditorComponent {
     mouseDown: boolean = false;
-    posX: number;
-    posY: number;
+    sizeCanvas: Vec2;
     position: number;
 
-    constructor(private drawingService: DrawingService) {
-        this.drawingService.setSizeCanva();
-        this.posX = this.drawingService.controlSize.x;
-        this.posY = this.drawingService.controlSize.y;
-        this.setResizerBottomLine();
-        this.setResizerRightLine();
-        this.setResizerBottomRight();
+    constructor(public drawingService: DrawingService, public editorService: EditorService) {
+        this.sizeCanvas = this.drawingService.setSizeCanva();
+        this.editorService.resetControlPoints(this.sizeCanvas.x, this.sizeCanvas.y);
     }
 
-    resizerBottomLine: { [key: string]: string };
-    resizerRightLine: { [key: string]: string };
-    resizerBottomRight: { [key: string]: string };
-
+    // resizerBottomLine: { [key: string]: string };
+    // resizerRightLine: { [key: string]: string };
+    // resizerBottomRight: { [key: string]: string };
+    /*
     setResizerRightLine(): void {
-        this.resizerRightLine = {
+        this.drawingService.resizerRightLine = {
             cursor: 'col-resize',
-            'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-            'margin-top': String(this.posY / 2) + 'px',
+            'margin-left': String(this.drawingService.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-top': String(this.drawingService.posY / 2) + 'px',
         };
     }
 
     setResizerBottomRight(): void {
-        this.resizerBottomRight = {
+        this.drawingService.resizerBottomRight = {
             cursor: 'nwse-resize',
-            'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-            'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-left': String(this.drawingService.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-top': String(this.drawingService.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
 
     setResizerBottomLine(): void {
-        this.resizerBottomLine = {
+        this.drawingService.resizerBottomLine = {
             cursor: 'row-resize',
-            'margin-left': String(this.posX / 2) + 'px',
-            'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-left': String(this.drawingService.posX / 2) + 'px',
+            'margin-top': String(this.drawingService.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
-
+*/
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.mouseDown = true;
         this.position = pos;
@@ -67,45 +64,45 @@ export class EditorComponent {
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
             if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.posX = event.offsetX;
+                this.editorService.posX = event.offsetX;
             } else {
-                this.posX = Globals.CANVAS_SIZE_MIN;
+                this.editorService.posX = Globals.CANVAS_SIZE_MIN;
             }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+            this.editorService.setResizerBottomLine();
+            this.editorService.setResizerRightLine();
+            this.editorService.setResizerBottomRight();
         }
     }
 
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
             if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.posY = event.offsetY;
+                this.editorService.posY = event.offsetY;
             } else {
-                this.posY = Globals.CANVAS_SIZE_MIN;
+                this.editorService.posY = Globals.CANVAS_SIZE_MIN;
             }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+            this.editorService.setResizerBottomLine();
+            this.editorService.setResizerRightLine();
+            this.editorService.setResizerBottomRight();
         }
     }
 
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
             if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.posX = event.offsetX;
+                this.editorService.posX = event.offsetX;
             } else {
-                this.posX = Globals.CANVAS_SIZE_MIN;
+                this.editorService.posX = Globals.CANVAS_SIZE_MIN;
             }
 
             if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.posY = event.offsetY;
+                this.editorService.posY = event.offsetY;
             } else {
-                this.posY = Globals.CANVAS_SIZE_MIN;
+                this.editorService.posY = Globals.CANVAS_SIZE_MIN;
             }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+            this.editorService.setResizerBottomLine();
+            this.editorService.setResizerRightLine();
+            this.editorService.setResizerBottomRight();
         }
     }
 

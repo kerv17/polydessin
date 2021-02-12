@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
+import { EditorService } from '@app/services/editor/editor.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,6 +12,15 @@ export class DrawingService {
     previewCanvas: HTMLCanvasElement;
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
+    constructor(private editor: EditorService) {}
+
+    // resizerBottomRight: { [key: string]: string };
+    // resizerRightLine: { [key: string]: string };
+    // resizerBottomLine: { [key: string]: string };
+
+    // posX: number;
+    // posY: number;
+
     controlSize: Vec2 = { x: 0, y: 0 };
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -53,6 +63,7 @@ export class DrawingService {
 
                 this.previewCanvas.height = this.canvasSize.y;
                 this.previewCanvas.width = this.canvasSize.x;
+                this.editor.resetControlPoints(this.canvasSize.x, this.canvasSize.y);
             }
         }
     }
@@ -77,4 +88,37 @@ export class DrawingService {
             this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.x);
         }
     }
+    /*
+    resetControlPoints(): void {
+        this.setResizerBottomLine();
+        this.setResizerRightLine();
+        this.setResizerBottomRight();
+        this.posX = this.controlSize.x;
+        this.posY = this.controlSize.y;
+    }
+
+    setResizerRightLine(): void {
+        this.resizerRightLine = {
+            cursor: 'col-resize',
+            'margin-left': String(this.canvasSize.x - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-top': String(this.canvasSize.y / 2) + 'px',
+        };
+    }
+
+    setResizerBottomRight(): void {
+        this.resizerBottomRight = {
+            cursor: 'nwse-resize',
+            'margin-left': String(this.canvasSize.x - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+            'margin-top': String(this.canvasSize.y - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+        };
+    }
+
+    setResizerBottomLine(): void {
+        this.resizerBottomLine = {
+            cursor: 'row-resize',
+            'margin-left': String(this.canvasSize.x / 2) + 'px',
+            'margin-top': String(this.canvasSize.y - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
+        };
+    }
+    */
 }
