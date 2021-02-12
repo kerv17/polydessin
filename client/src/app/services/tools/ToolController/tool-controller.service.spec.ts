@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import * as Globals from '@app/Constants/constants';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { ToolControllerService } from './tool-controller.service';
-import * as Globals from '@app/Constants/constants';
 
 // tslint:disable:no-any
-fdescribe('ToolControllerService', () => {
+describe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
     // let serviceSpy:jasmine.Spy;
