@@ -7,6 +7,7 @@
     overflow: auto;
     flex: 1 1 auto;
     background-color: grey;
+    border: 1px solid black;
 }
 
 .drawing {
@@ -14,8 +15,6 @@
     width: min-content;
     outline: none;
 }
-
-//ajout
 
 .sidebar {
     display: flex;

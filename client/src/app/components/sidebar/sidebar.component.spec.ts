@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSlider } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { SidebarComponent } from './sidebar.component';
@@ -9,13 +10,13 @@ fdescribe('SidebarComponent', () => {
     const showWidth = true;
 
     let openToolSpy: jasmine.Spy;
-
+    //let nouveauDessin: jasmine.Spy;
     let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
 
     beforeEach(async(() => {
         toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['setTool']);
         TestBed.configureTestingModule({
-            declarations: [SidebarComponent],
+            declarations: [SidebarComponent, MatSlider],
             providers: [SidebarComponent, { provide: ToolControllerService, useValue: toolControllerSpy }],
         }).compileComponents();
     }));
@@ -84,7 +85,7 @@ fdescribe('SidebarComponent', () => {
     });
     it('OpenTool should flip the slider status variable and se showWidth and FillBorder', () => {
         openToolSpy = spyOn(component, 'setButtonWhite');
-        let tempSlidervalue = component.resetSlider;
+        const tempSlidervalue = component.resetSlider;
         component.openTool(showFillOptions, showWidth);
         expect(openToolSpy).toHaveBeenCalled();
         expect(component.fillBorder).toEqual(showFillOptions);

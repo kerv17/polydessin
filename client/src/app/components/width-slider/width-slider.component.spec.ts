@@ -1,4 +1,4 @@
-import { SimpleChange } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,6 +25,7 @@ fdescribe('WidthSliderComponent', () => {
                 { provide: ToolControllerService, useValue: toolControllerSpy },
                 { provide: PencilService, useValue: pencil },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 
