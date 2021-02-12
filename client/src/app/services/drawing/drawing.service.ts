@@ -15,6 +15,8 @@ export class DrawingService {
     constructor(private editor: EditorService) {}
 
     controlSize: Vec2 = { x: 0, y: 0 };
+    // A voir
+    width: number = 1;
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -64,8 +66,11 @@ export class DrawingService {
 
     // TODO à transférer
     canvasNotEmpty(image: ImageData): boolean {
-        for (let i = 0; i < image.data.length; i += 4) {
-            if (image.data[i] != 255 || image.data[i + 1] != 255 || image.data[i + 2] != 255) {
+        // window.alert(image.data[image.data.length - 3]);
+        const quatre = 4;
+        const deuxcentcinquentcinq = 255;
+        for (let i = 0; i < image.data.length; i += quatre) {
+            if (image.data[i] !== deuxcentcinquentcinq || image.data[i + 1] !== deuxcentcinquentcinq || image.data[i + 2] !== deuxcentcinquentcinq) {
                 return true;
             }
         }
@@ -79,7 +84,7 @@ export class DrawingService {
             this.baseCtx.fillRect(canvasPreviousDimension.x, 0, canvasNewDimension.x, canvasPreviousDimension.y);
         }
         if (canvasPreviousDimension.y < canvasNewDimension.y) {
-            this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.x);
+            this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.y);
         }
     }
 }

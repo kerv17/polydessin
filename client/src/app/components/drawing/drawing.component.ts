@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -39,7 +40,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // met la surface en blanc mais c aussi fait sans ce code
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
@@ -116,5 +116,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     get height(): number {
         return this.canvasSize.y;
+    }
+
+    getCurrentTool(): Tool {
+        return this.controller.currentTool;
     }
 }

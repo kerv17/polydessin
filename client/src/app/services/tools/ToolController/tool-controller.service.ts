@@ -11,6 +11,11 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 export class ToolControllerService {
     currentTool: Tool;
     toolMap: Map<string, Tool> = new Map();
+    private escapeIsDown: boolean = false;
+    private backspaceIsDown: boolean = false;
+    private focused: boolean;
+
+    functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
@@ -18,12 +23,27 @@ export class ToolControllerService {
         private ellipsisService: EllipsisService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.checkKeyDown(event);
+            this.checkKeyEvent(event);
         });
         document.addEventListener('keyup', (event: KeyboardEvent) => {
-            this.checkKeyUp(event);
+            this.checkKeyEvent(event);
         });
+
+        document.addEventListener('focusin', (event: FocusEvent) => {
+            const target: Node = Object(event.target || event.currentTarget);
+            if (target != null) {
+                if (target.nodeName === 'INPUT') {
+                    this.focused = false;
+                } else {
+                    this.focused = true;
+                }
+            }
+        });
+
+        this.focused = true;
+
         this.initMap();
+        this.currentTool = pencilService;
     }
     initMap(): void {
         this.toolMap
@@ -31,6 +51,17 @@ export class ToolControllerService {
             .set(Globals.lineShortcut, this.lineService)
             .set(Globals.rectangleShortcut, this.rectangleService)
             .set(Globals.ellipsisShortcut, this.ellipsisService);
+
+        this.functionMap
+            .set(Globals.shiftShortcut, (event: KeyboardEvent) => {
+                this.shift(event.type);
+            })
+            .set(Globals.ESCAPE_SHORTCUT, (event: KeyboardEvent) => {
+                this.escape(event.type);
+            })
+            .set(Globals.BACKSPACE_SHORTCUT, (event: KeyboardEvent) => {
+                this.backspace(event.type);
+            });
     }
 
     setTool(shortcut: string): void {
@@ -38,8 +69,28 @@ export class ToolControllerService {
         if (tempTool != undefined) this.currentTool = tempTool;
     }
 
-    shift(shift: boolean): void {
-        this.currentTool.onShift(shift);
+    shift(eventType: string): void {
+        this.currentTool.onShift(eventType === 'keydown');
+    }
+    escape(eventType: string): void {
+        if (eventType === 'keydown') {
+            if (!this.escapeIsDown) {
+                this.currentTool.onEscape();
+            }
+            this.escapeIsDown = true;
+        } else {
+            this.escapeIsDown = false;
+        }
+    }
+    backspace(eventType: string): void {
+        if (eventType === 'keydown') {
+            if (!this.backspaceIsDown) {
+                this.currentTool.onBackspace();
+            }
+            this.backspaceIsDown = true;
+        } else {
+            this.backspaceIsDown = false;
+        }
     }
 
     setFill(): void {
@@ -52,37 +103,20 @@ export class ToolControllerService {
     setFillBorder(): void {
         this.currentTool.toolMode = 'fillBorder';
     }
-    // TODO changé ca
-    private checkKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case 'c':
-                this.setTool(Globals.crayonShortcut);
-                break;
-            case '1':
-                this.setTool(Globals.rectangleShortcut);
-                break;
-            case '2':
-                this.setTool(Globals.ellipsisShortcut);
-                break;
-            case 'l':
-                this.setTool(Globals.lineShortcut);
-                break;
-            case 'Shift':
-                this.shift(true);
-                break;
-            default:
-                break;
-        }
-        return;
-    }
-
-    private checkKeyUp(event: KeyboardEvent): void {
-        switch (event.key) {
-            case 'Shift':
-                this.shift(false);
-                break;
-            default:
-                break;
+    // TODO changer ca
+    private checkKeyEvent(event: KeyboardEvent): void {
+        if (this.focused) {
+            if (this.toolMap.has(event.key)) {
+                this.setTool(event.key);
+                return;
+            }
+            if (this.functionMap.has(event.key)) {
+                const functionToCall: ((event: KeyboardEvent) => void) | undefined = this.functionMap.get(event.key);
+                if (functionToCall !== undefined) {
+                    functionToCall.call(this, event);
+                }
+                return;
+            }
         }
         return;
     }

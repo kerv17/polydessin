@@ -21,18 +21,16 @@ export enum MouseButton {
 })
 export class LineService extends Tool {
     private pathData: Vec2[];
+    lastMoveEvent: MouseEvent;
 
     constructor(public drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
     }
-
     onMouseMove(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
-
-        this.pathData.push(mousePosition);
-
+        this.lastMoveEvent = event;
+        this.pathData.push(this.getPointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -40,19 +38,18 @@ export class LineService extends Tool {
     }
 
     onClick(event: MouseEvent): void {
-        const mousePosition = this.getPositionFromMouse(event);
-        this.pathData.push(mousePosition);
+        // this.pathData.push(this.pointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.pathData.push(mousePosition);
+
+        this.pathData.push(this.getPointToPush(event));
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
 
     ondbClick(event: MouseEvent): void {
+        const SNAP_RANGE = 20;
         const mousePosition = this.getPositionFromMouse(event);
-        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
-            this.pathData.pop();
-            this.pathData.pop();
+        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
             this.pathData.pop();
             this.pathData.pop();
 
@@ -86,5 +83,61 @@ export class LineService extends Tool {
         const y = Math.abs(a.y - b.y);
         const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         return distance;
+    }
+
+    private getAngle(p1: Vec2, p2: Vec2): number {
+        const HALF_CIRCLE_DEG = 180;
+        const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG) / Math.PI;
+        return angleDeg;
+    }
+
+    private getShiftAngle(p1: Vec2, p2: Vec2): Vec2 {
+        const solution: Vec2 = { x: p1.x, y: p1.y };
+
+        const NOT_IN_INDEX = -1;
+        const SEVEN = 7;
+        const THREE = 3;
+        const FOUR = 4;
+
+        const X_QUADRANTS: number[] = [0, SEVEN];
+        const Y_QUADRANTS: number[] = [THREE, FOUR];
+        const HALF_QUADRANTS = 22.5;
+        const angle = this.getAngle(p1, p2);
+        const octant = Math.floor(Math.abs(angle / HALF_QUADRANTS));
+
+        if (X_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+            solution.x = p2.x;
+        } else if (Y_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+            solution.y = p2.y;
+        } else {
+            solution.x = p2.x;
+            solution.y = p2.y > p1.y !== p2.x < p1.x ? p1.y + (p2.x - p1.x) : p1.y - (p2.x - p1.x);
+        }
+        return solution;
+    }
+
+    onShift(shifted: boolean): void {
+        this.shift = shifted;
+        console.log(this.shift);
+        this.onMouseMove(this.lastMoveEvent);
+    }
+    onEscape(): void {
+        this.pathData = [];
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    onBackspace(): void {
+        this.pathData.pop();
+        this.onMouseMove(this.lastMoveEvent);
+    }
+
+    getPointToPush(event: MouseEvent): Vec2 {
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.pathData.length > 0) {
+            const lastPointInPath = this.pathData[this.pathData.length - 1];
+            const shiftAngle = this.getShiftAngle(lastPointInPath, mousePosition);
+            return this.shift ? shiftAngle : mousePosition;
+        } else {
+            return mousePosition;
+        }
     }
 }
