@@ -9,7 +9,7 @@
             tabindex="0"
             [widthPrev]="editorService.posX"
             [heightPrev]="editorService.posY"
-            [mouseDown]="mouseDown"
+            [mouseDown]="editorService.mouseDown"
         ></app-drawing>
 
         <div class="resizer" *ngIf="hideResizer()" [ngStyle]="editorService.resizerBottomRight" (mousedown)="mouseDownHandler($event, 0)"></div>
