@@ -11,11 +11,11 @@ export class SidebarComponent {
     visible: boolean = false;
     showWidth: boolean = false;
     fillBorder: boolean = false;
-    resetSlider: boolean = true;
-    crayon: { backgroundColor: string } = { backgroundColor: 'white' };
-    rectangle: { backgroundColor: string } = { backgroundColor: 'white' };
-    line: { backgroundColor: string } = { backgroundColor: 'white' };
-    ellipsis: { backgroundColor: string } = { backgroundColor: 'white' };
+    resetSlider: boolean = false;
+    crayon: { backgroundColor: string } = Globals.backgroundWhite;
+    rectangle: { backgroundColor: string } = Globals.backgroundWhite;
+    line: { backgroundColor: string } = Globals.backgroundWhite;
+    ellipsis: { backgroundColor: string } = Globals.backgroundWhite;
 
     constructor(private service: ToolControllerService, private drawing: DrawingService) {}
     // TODO esseyer d'optimiser encore plus

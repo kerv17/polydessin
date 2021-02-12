@@ -14,13 +14,6 @@ export class DrawingService {
     canvasSize: Vec2 = { x: 0, y: 0 };
     constructor(private editor: EditorService) {}
 
-    // resizerBottomRight: { [key: string]: string };
-    // resizerRightLine: { [key: string]: string };
-    // resizerBottomLine: { [key: string]: string };
-
-    // posX: number;
-    // posY: number;
-
     controlSize: Vec2 = { x: 0, y: 0 };
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -51,21 +44,22 @@ export class DrawingService {
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
-            if (confirm('Êtes vous sur de supprimez votre dessin courant?')) {
-                this.baseCtx.fillStyle = 'white';
-                // TODO trouver vrai valeur
-
-                this.canvas.height = this.canvasSize.y;
-                this.canvas.width = this.canvasSize.x;
-                this.baseCtx.globalAlpha = 1;
-                this.baseCtx.fillStyle = 'white';
-                this.baseCtx.fillRect(0, 0, this.canvasSize.x, this.canvasSize.y);
-
-                this.previewCanvas.height = this.canvasSize.y;
-                this.previewCanvas.width = this.canvasSize.x;
-                this.editor.resetControlPoints(this.canvasSize.x, this.canvasSize.y);
+            if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
+                return;
             }
         }
+        this.baseCtx.fillStyle = 'white';
+        // TODO trouver vrai valeur
+
+        this.canvas.height = this.canvasSize.y;
+        this.canvas.width = this.canvasSize.x;
+
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvasSize.x, this.canvasSize.y);
+
+        this.previewCanvas.height = this.canvasSize.y;
+        this.previewCanvas.width = this.canvasSize.x;
+        this.editor.resetControlPoints(this.canvasSize.x, this.canvasSize.y);
     }
 
     // TODO à transférer
@@ -88,37 +82,4 @@ export class DrawingService {
             this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.x);
         }
     }
-    /*
-    resetControlPoints(): void {
-        this.setResizerBottomLine();
-        this.setResizerRightLine();
-        this.setResizerBottomRight();
-        this.posX = this.controlSize.x;
-        this.posY = this.controlSize.y;
-    }
-
-    setResizerRightLine(): void {
-        this.resizerRightLine = {
-            cursor: 'col-resize',
-            'margin-left': String(this.canvasSize.x - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-            'margin-top': String(this.canvasSize.y / 2) + 'px',
-        };
-    }
-
-    setResizerBottomRight(): void {
-        this.resizerBottomRight = {
-            cursor: 'nwse-resize',
-            'margin-left': String(this.canvasSize.x - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-            'margin-top': String(this.canvasSize.y - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-        };
-    }
-
-    setResizerBottomLine(): void {
-        this.resizerBottomLine = {
-            cursor: 'row-resize',
-            'margin-left': String(this.canvasSize.x / 2) + 'px',
-            'margin-top': String(this.canvasSize.y - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-        };
-    }
-    */
 }
