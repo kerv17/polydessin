@@ -27,9 +27,7 @@ export class LineService extends Tool {
         super(drawingService);
         this.clearPath();
         this.width = 1;
-
     }
-
     onMouseMove(event: MouseEvent): void {
         this.lastMoveEvent = event;
         this.pathData.push(this.getPointToPush(event));
@@ -40,7 +38,7 @@ export class LineService extends Tool {
     }
 
     onClick(event: MouseEvent): void {
-        //this.pathData.push(this.pointToPush(event));
+        // this.pathData.push(this.pointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
@@ -49,11 +47,11 @@ export class LineService extends Tool {
     }
 
     ondbClick(event: MouseEvent): void {
+        const SNAP_RANGE = 20;
         const mousePosition = this.getPositionFromMouse(event);
-        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < 20) {
+        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
             this.pathData.pop();
             this.pathData.pop();
-
 
             this.pathData.push(this.pathData[0]);
         } else {
@@ -69,7 +67,6 @@ export class LineService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color || 'black';
-        ctx.lineCap
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -88,58 +85,59 @@ export class LineService extends Tool {
         return distance;
     }
 
-
-    private getAngle(p1:Vec2, p2:Vec2):number{
-        var angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+    private getAngle(p1: Vec2, p2: Vec2): number {
+        const HALF_CIRCLE_DEG = 180;
+        const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG) / Math.PI;
         return angleDeg;
     }
 
+    private getShiftAngle(p1: Vec2, p2: Vec2): Vec2 {
+        const solution: Vec2 = { x: p1.x, y: p1.y };
 
-    private getShiftAngle(p1:Vec2, p2:Vec2):Vec2{
-      const solution:Vec2 = {x:p1.x, y:p1.y};
-      const Xquadrants:number[] = [0,7];
-      const Yquadrants:number[] = [3,4];
-      let angle = this.getAngle(p1, p2);
-      let octant = Math.floor( Math.abs(angle/22.5) );
+        const NOT_IN_INDEX = -1;
+        const SEVEN = 7;
+        const THREE = 3;
+        const FOUR = 4;
 
+        const X_QUADRANTS: number[] = [0, SEVEN];
+        const Y_QUADRANTS: number[] = [THREE, FOUR];
+        const HALF_QUADRANTS = 22.5;
+        const angle = this.getAngle(p1, p2);
+        const octant = Math.floor(Math.abs(angle / HALF_QUADRANTS));
 
-      if (Xquadrants.indexOf(octant)!== -1){
-        solution.x = p2.x;
-      }
-      else if (Yquadrants.indexOf(octant)!== -1){
-        solution.y = p2.y;
-      }
-      else {
-        solution.x = p2.x;
-        solution.y = (p2.y > p1.y !== p2.x < p1.x) ? p1.y + (p2.x-p1.x) : p1.y - (p2.x-p1.x);
-      }
-      return solution;
+        if (X_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+            solution.x = p2.x;
+        } else if (Y_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+            solution.y = p2.y;
+        } else {
+            solution.x = p2.x;
+            solution.y = p2.y > p1.y !== p2.x < p1.x ? p1.y + (p2.x - p1.x) : p1.y - (p2.x - p1.x);
+        }
+        return solution;
     }
 
     onShift(shifted: boolean): void {
-      this.shift = shifted;
-      console.log(this.shift);
-      this.onMouseMove(this.lastMoveEvent);
+        this.shift = shifted;
+        console.log(this.shift);
+        this.onMouseMove(this.lastMoveEvent);
     }
-    onEscape():void{
-      this.pathData = [];
-      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    onEscape(): void {
+        this.pathData = [];
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
-    onBackspace():void{
-      this.pathData.pop();
-      this.onMouseMove(this.lastMoveEvent);
+    onBackspace(): void {
+        this.pathData.pop();
+        this.onMouseMove(this.lastMoveEvent);
     }
 
-    getPointToPush(event:MouseEvent):Vec2{
+    getPointToPush(event: MouseEvent): Vec2 {
         const mousePosition = this.getPositionFromMouse(event);
-        if (this.pathData.length > 0){
-
-        let lastPointInPath = this.pathData[this.pathData.length-1];
-        let shiftAngle = this.getShiftAngle(lastPointInPath,mousePosition);
-        return this.shift ? shiftAngle : mousePosition;
-        }
-        else {
-          return mousePosition;
+        if (this.pathData.length > 0) {
+            const lastPointInPath = this.pathData[this.pathData.length - 1];
+            const shiftAngle = this.getShiftAngle(lastPointInPath, mousePosition);
+            return this.shift ? shiftAngle : mousePosition;
+        } else {
+            return mousePosition;
         }
     }
 }

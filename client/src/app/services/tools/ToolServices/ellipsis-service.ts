@@ -87,17 +87,17 @@ export class EllipsisService extends Tool {
         ctx.lineWidth = this.width;
         // Determiner si on doit faire la bordure
 
-        switch(this.toolMode){
-          case 'border':
-            this.drawBorder(ctx, path);
-            break;
-          case 'fill':
-            this.fill(ctx, path);
-            break;
-          case 'fillBorder':
-            this.fill(ctx, path);
-            this.drawBorder(ctx, path);
-            break;
+        switch (this.toolMode) {
+            case 'border':
+                this.drawBorder(ctx, path);
+                break;
+            case 'fill':
+                this.fill(ctx, path);
+                break;
+            case 'fillBorder':
+                this.fill(ctx, path);
+                this.drawBorder(ctx, path);
+                break;
         }
 
         ctx.stroke();
@@ -128,8 +128,8 @@ export class EllipsisService extends Tool {
 
     private getPathForEllipsis(mousePosition: Vec2): void {
         const a: Vec2 = this.pathData[0];
-        let c: Vec2 = !this.shift ? mousePosition : this.perimerterPathData[2];
-        const b: Vec2 = { x: (a.x + (c.x - a.x) / 2), y: (a.y + (c.y - a.y) / 2)};
+        const c: Vec2 = !this.shift ? mousePosition : this.perimerterPathData[2];
+        const b: Vec2 = { x: a.x + (c.x - a.x) / 2, y: a.y + (c.y - a.y) / 2 };
         this.pathData.push(b);
         this.pathData.push(c);
     }
@@ -153,20 +153,18 @@ export class EllipsisService extends Tool {
         const d: Vec2 = { x: mousePosition.x, y: a.y };
 
         if (this.shift) {
-            const onTopRightDiagonal = (mousePosition.x < a.x !== mousePosition.y < a.y);
-            c.x = onTopRightDiagonal ? (a.x + -(b.y - a.y)) : (a.x + b.y - a.y);
-            d.x = onTopRightDiagonal ? (a.x + -(b.y - a.y)) : (a.x + b.y - a.y);
+            const onTopRightDiagonal = mousePosition.x < a.x !== mousePosition.y < a.y;
+            c.x = onTopRightDiagonal ? a.x + -(b.y - a.y) : a.x + b.y - a.y;
+            d.x = onTopRightDiagonal ? a.x + -(b.y - a.y) : a.x + b.y - a.y;
         }
-
 
         list.push(a, b, c, d);
         this.perimerterPathData = list;
     }
 
     ellipseWidth(a: Vec2, c: Vec2): Vec2 {
-
-        let x = (c.x-a.x < 0) ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
-        let y = (c.y-a.y < 0) ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
+        const x = c.x - a.x < 0 ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
+        const y = c.y - a.y < 0 ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
         const s: Vec2 = { x, y };
 
         return s;
