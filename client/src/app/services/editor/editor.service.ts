@@ -12,8 +12,6 @@ export class EditorService {
     posX: number;
     posY: number;
 
-    constructor() {}
-
     resetControlPoints(canvasWidth: number, canvasHeight: number): void {
         this.posX = canvasWidth;
         this.posY = canvasHeight;
@@ -24,7 +22,7 @@ export class EditorService {
 
     setResizerRightLine(): void {
         this.resizerRightLine = {
-            cursor: 'col-resize',
+            ['cursor']: 'col-resize',
             'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
             'margin-top': String(this.posY / 2) + 'px',
         };
@@ -32,7 +30,7 @@ export class EditorService {
 
     setResizerBottomRight(): void {
         this.resizerBottomRight = {
-            cursor: 'nwse-resize',
+            ['cursor']: 'nwse-resize',
             'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
@@ -40,7 +38,7 @@ export class EditorService {
 
     setResizerBottomLine(): void {
         this.resizerBottomLine = {
-            cursor: 'row-resize',
+            ['cursor']: 'row-resize',
             'margin-left': String(this.posX / 2) + 'px',
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };

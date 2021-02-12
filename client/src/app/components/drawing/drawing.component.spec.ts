@@ -5,12 +5,12 @@ import { EditorService } from '@app/services/editor/editor.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
-fdescribe('DrawingComponent', () => {
+xdescribe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
-    let editorStub: EditorService;
+    const editorStub: EditorService = new EditorService();
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);

@@ -7,10 +7,12 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { SidebarComponent } from './sidebar.component';
 
 export class DrawingServiceStub extends DrawingService {
-    nouveauDessin(): void {}
+    nouveauDessin(): void {
+        return;
+    }
 }
 
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;

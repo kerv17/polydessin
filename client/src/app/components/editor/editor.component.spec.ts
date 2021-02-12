@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 // import { DrawingComponent } from '@app/components/drawing/drawing.component';
 // import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EditorService } from '@app/services/editor/editor.service';
 import { EditorComponent } from './editor.component';
 class ToolStub extends Tool {}
 
@@ -11,10 +12,11 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    const editorService: EditorService = new EditorService();
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
-        drawingStub = new DrawingService();
+        drawingStub = new DrawingService(editorService);
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent],
