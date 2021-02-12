@@ -43,6 +43,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
+        this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;

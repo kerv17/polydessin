@@ -4,13 +4,16 @@
     </div>
 
     <div class="drawing-container">
-        <div class="container">
+        <app-drawing
+            class="drawing"
+            tabindex="0"
+            [widthPrev]="editorService.posX"
+            [heightPrev]="editorService.posY"
+            [mouseDown]="mouseDown"
+        ></app-drawing>
 
-            <app-drawing class="drawing" tabindex="0" [widthPrev]='posX' [heightPrev]='posY' [mouseDown]='mouseDown'></app-drawing>
-
-            <div class='resizer' *ngIf ="hideResizer()" [ngStyle]="resizerBottomRight" (mousedown)="mouseDownHandler($event, 0)" ></div>
-            <div class='resizer' *ngIf ="hideResizer()" [ngStyle]="resizerBottomLine" (mousedown)="mouseDownHandler($event, 1)" ></div>
-            <div class='resizer' *ngIf ="hideResizer()" [ngStyle]="resizerRightLine" (mousedown)="mouseDownHandler($event, 2)" ></div>
-        </div>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="editorService.resizerBottomRight" (mousedown)="mouseDownHandler($event, 0)"></div>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="editorService.resizerBottomLine" (mousedown)="mouseDownHandler($event, 1)"></div>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="editorService.resizerRightLine" (mousedown)="mouseDownHandler($event, 2)"></div>
     </div>
 </div>

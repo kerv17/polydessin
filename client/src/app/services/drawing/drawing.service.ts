@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
+import { EditorService } from '@app/services/editor/editor.service';
 
 @Injectable({
     providedIn: 'root',
@@ -8,8 +9,11 @@ import * as Globals from '@app/Constants/constants';
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    previewCanvas: HTMLCanvasElement;
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
+    constructor(private editor: EditorService) {}
+
     controlSize: Vec2 = { x: 0, y: 0 };
     // A voir
     width: number = 1;
@@ -42,14 +46,22 @@ export class DrawingService {
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
-            if (confirm('Êtes vous sur de supprimez votre dessin courant?')) {
-                this.clearCanvas(this.baseCtx);
-                this.clearCanvas(this.previewCtx);
+            if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
+                return;
             }
-            this.baseCtx.fillStyle = 'white';
-            // TODO trouver vrai valeur
-            this.baseCtx.fillRect(0, 0, this.canvasSize.x, this.canvasSize.y);
         }
+        this.baseCtx.fillStyle = 'white';
+        // TODO trouver vrai valeur
+
+        this.canvas.height = this.canvasSize.y;
+        this.canvas.width = this.canvasSize.x;
+
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvasSize.x, this.canvasSize.y);
+
+        this.previewCanvas.height = this.canvasSize.y;
+        this.previewCanvas.width = this.canvasSize.x;
+        this.editor.resetControlPoints(this.canvasSize.x, this.canvasSize.y);
     }
 
     // TODO à transférer
