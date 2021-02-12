@@ -11,10 +11,11 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 export class ToolControllerService {
     currentTool: Tool;
     toolMap: Map<string, Tool> = new Map();
-    private EscapeIsDown:boolean = false;
-    private BackspaceIsDown:boolean = false;
+    private escapeIsDown: boolean = false;
+    private backspaceIsDown: boolean = false;
+    private focused: boolean;
 
-    functionMap:Map<string,Function> = new Map();
+    functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
@@ -27,6 +28,20 @@ export class ToolControllerService {
         document.addEventListener('keyup', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
         });
+
+        document.addEventListener('focusin', (event: FocusEvent) => {
+            const target: Node = Object(event.target || event.currentTarget);
+            if (target != null) {
+                if (target.nodeName === 'INPUT') {
+                    this.focused = false;
+                } else {
+                    this.focused = true;
+                }
+            }
+        });
+
+        this.focused = true;
+
         this.initMap();
         this.currentTool = pencilService;
     }
@@ -38,9 +53,15 @@ export class ToolControllerService {
             .set(Globals.ellipsisShortcut, this.ellipsisService);
 
         this.functionMap
-            .set(Globals.shiftShortcut,(event:KeyboardEvent) => { this.shift(event.type)})
-            .set(Globals.EscapeShortcut,(event:KeyboardEvent)=>{this.escape(event.type)})
-            .set(Globals.BackSpaceShortcut,(event:KeyboardEvent)=>{this.backspace(event.type)});
+            .set(Globals.shiftShortcut, (event: KeyboardEvent) => {
+                this.shift(event.type);
+            })
+            .set(Globals.EscapeShortcut, (event: KeyboardEvent) => {
+                this.escape(event.type);
+            })
+            .set(Globals.BackSpaceShortcut, (event: KeyboardEvent) => {
+                this.backspace(event.type);
+            });
     }
 
     setTool(shortcut: string): void {
@@ -49,21 +70,27 @@ export class ToolControllerService {
     }
 
     shift(eventType: string): void {
-
         this.currentTool.onShift(eventType === 'keydown');
     }
-    escape(eventType: string): void{
-        if (eventType === 'keydown'){
-          if(!this.EscapeIsDown) {this.currentTool.onEscape();}
-          this.EscapeIsDown = true;
+    escape(eventType: string): void {
+        if (eventType === 'keydown') {
+            if (!this.escapeIsDown) {
+                this.currentTool.onEscape();
+            }
+            this.escapeIsDown = true;
+        } else {
+            this.escapeIsDown = false;
         }
-        else {this.EscapeIsDown = false;}
     }
-    backspace(eventType: string): void{
-      if (eventType === 'keydown'){
-        if (!this.BackspaceIsDown){this.currentTool.onBackspace();}
-        this.BackspaceIsDown = true;
-      } else { this.BackspaceIsDown = false;}
+    backspace(eventType: string): void {
+        if (eventType === 'keydown') {
+            if (!this.backspaceIsDown) {
+                this.currentTool.onBackspace();
+            }
+            this.backspaceIsDown = true;
+        } else {
+            this.backspaceIsDown = false;
+        }
     }
 
     setFill(): void {
@@ -78,16 +105,19 @@ export class ToolControllerService {
     }
     // TODO changer ca
     private checkKeyEvent(event: KeyboardEvent): void {
-        if (this.toolMap.has(event.key)){
-          let tool:Tool | undefined = this.toolMap.get(event.key)
-          if (tool !== undefined ){this.currentTool = tool;}
-          return;
+        if (this.focused) {
+            if (this.toolMap.has(event.key)) {
+                this.setTool(event.key);
+                return;
+            }
+            if (this.functionMap.has(event.key)) {
+                const functionToCall: ((event: KeyboardEvent) => void) | undefined = this.functionMap.get(event.key);
+                if (functionToCall !== undefined) {
+                    functionToCall.call(this, event);
+                }
+                return;
+            }
         }
-        if(this.functionMap.has(event.key)){
-          let functionToCall:Function | undefined = this.functionMap.get(event.key);
-          if (functionToCall !== undefined){functionToCall.call(this,event);}
-          return;
-        }
-
+        return;
     }
 }
