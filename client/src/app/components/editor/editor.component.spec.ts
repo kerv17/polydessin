@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
-//import { DrawingComponent } from '@app/components/drawing/drawing.component';
-//import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+// import { DrawingComponent } from '@app/components/drawing/drawing.component';
+// import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorComponent } from './editor.component';
 class ToolStub extends Tool {}
@@ -24,7 +24,6 @@ describe('EditorComponent', () => {
             ],
         }).compileComponents();
     }));
-
 
     beforeEach(() => {
         fixture = TestBed.createComponent(EditorComponent);
