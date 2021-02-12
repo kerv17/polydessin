@@ -3,17 +3,27 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RectangleService } from './rectangle-service';
+import * as Globals from '@app/Constants/constants';
 
 // tslint:disable:no-any
 fdescribe('RectangleService', () => {
     let service: RectangleService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
+    let testPath:Vec2[];
+
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
-    let drawLineSpy: jasmine.Spy<any>;
+
+    // Function Spies
+    let drawRectangleSpy: jasmine.Spy<any>;
+    let drawBorderSpy: jasmine.Spy<any>;
+    let fillSpy: jasmine.Spy<any>;
+    let pointSpy: jasmine.Spy<any>;
+    let clearPathSpy: jasmine.Spy<any>;
+
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -26,8 +36,11 @@ fdescribe('RectangleService', () => {
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         service = TestBed.inject(RectangleService);
-        drawLineSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
-
+        drawRectangleSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
+        drawBorderSpy = spyOn<any>(service, 'drawBorder').and.callThrough();
+        fillSpy = spyOn<any>(service, 'fill').and.callThrough();
+        pointSpy = spyOn<any>(service, 'getRectanglePoints').and.callThrough();
+        clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
@@ -38,16 +51,20 @@ fdescribe('RectangleService', () => {
             offsetY: 25,
             button: 0,
         } as MouseEvent;
+
+        testPath = [ { x:0, y:0 }, { x:1, y:0 }, { x:1, y:1 }, { x:0, y:1} ];
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
+    it(' mouseDown should set mouseDownCoord to correct position and place it in the pathData', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service.getPath().length).toEqual(1);
+        expect(service.getPath()[0]).toEqual(expectedResult);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -59,7 +76,7 @@ fdescribe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: Globals.MouseButton.Right, // TODO: Avoir ceci dans un enum accessible
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -71,7 +88,9 @@ fdescribe('RectangleService', () => {
         service.onMouseDown(mouseEvent);
         // Rise it back up
         service.onMouseUp(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled();
+        expect(pointSpy).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
+        expect(clearPathSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
@@ -79,48 +98,84 @@ fdescribe('RectangleService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
-        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(pointSpy).not.toHaveBeenCalled();
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    xit(' onMouseMove should call drawRectangle if mouse was already down', () => {
+    it(' onMouseMove should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.onMouseDown(mouseEvent);
-        const expectedValue = 5;
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawLineSpy).toHaveBeenCalled();
-        expect(service.getPath().length).toEqual(expectedValue);
+        expect(pointSpy).toHaveBeenCalled();
+        expect(drawRectangleSpy).toHaveBeenCalled();
+        expect(clearPathSpy).toHaveBeenCalled();
+        expect(service.getPath()[0]).toEqual(service.mouseDownCoord);
     });
 
     it(' onMouseMove should not call drawRectangle if mouse was not already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(pointSpy).not.toHaveBeenCalled();
+        expect(drawRectangleSpy).not.toHaveBeenCalled();
     });
 
-    // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixels of the canvas ', () => {
-        service.toolMode = 'fill';
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
-        const mouseEvent1 = mouseEvent;
-        service.onMouseDown(mouseEvent1);
-        mouseEvent = { offsetX: 3, offsetY: 3, button: 0 } as MouseEvent;
-        const mouseEvent2 = mouseEvent;
-        service.onMouseUp(mouseEvent2);
-        const four = 4;
-        const imageData: ImageData = baseCtxStub.getImageData(mouseEvent1.offsetX, mouseEvent1.offsetY, mouseEvent2.offsetX, mouseEvent2.offsetY);
-        const expectedResult = imageData.data.length / four;
-        let check = true;
-        let a = 0;
-        for (let i = 0; i < imageData.data.length && check; i += four) {
-            check = imageData.data[i] + imageData.data[i + 1] + imageData.data[i + 2] === 0;
-            a++;
-        }
+    it('OnShift sets the value of shifted and autoruns move', () => {
+      const spy = spyOn<any>(service, 'onMouseMove').and.callThrough();
+      service.shift = false;
+      service.onShift(true);
+      expect(service.shift).toBe(true);
 
-        expect(a).toBe(expectedResult);
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it ('drawRectangle calls stroke', ()=>{
+      const spy = spyOn<any>(previewCtxStub,'stroke').and.callThrough();
+      (service as any).drawRectangle(previewCtxStub,testPath);
+      expect(spy).toHaveBeenCalled();
+    })
+
+    // Exemple de test d'intégration qui est quand même utile
+    it(' Setting the tool mode to border should call drawBorder ', () => {
+        service.toolMode = 'border';
+
+        (service as any).drawRectangle(previewCtxStub,testPath);
+        expect(drawBorderSpy).toHaveBeenCalled();
+    });
+
+    it(' Setting the tool mode to fill should call drawBorder ', () => {
+      service.toolMode = 'fill';
+      (service as any).drawRectangle(previewCtxStub,testPath);
+      expect(fillSpy).toHaveBeenCalled();
+    });
+
+    it(' Setting the tool mode to fillBorder should call drawBorder and fill', () => {
+      service.toolMode = 'fillBorder';
+      (service as any).drawRectangle(previewCtxStub,testPath);
+
+      expect(fillSpy).toHaveBeenCalled();
+      expect(drawBorderSpy).toHaveBeenCalled();
+    });
+
+    it(' drawBorder creates the border', () => {
+      const spy = spyOn<any>(previewCtxStub,'lineTo').and.callThrough();
+      service.toolMode = 'border';
+      (service as any).drawBorder(previewCtxStub,testPath);
+      expect(spy).toHaveBeenCalledTimes(4);
+    });
+
+    it(' fill creates a filled rectangle', () => {
+      const spy = spyOn<any>(previewCtxStub,'fillRect').and.callThrough();
+      (service as any).fill(previewCtxStub,testPath);
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it(' clearPath empties the path', () =>{
+        (service as any).pathData = testPath;
+        (service as any).clearPath();
+        expect(service.getPath().length).toEqual(0);
     });
 
     it('getRectanglePoints returns a square when shift is true', () => {
@@ -129,20 +184,16 @@ fdescribe('RectangleService', () => {
         const a: Vec2 = { x: 0, y: 0 };
         const b: Vec2 = { x: 6, y: 10 };
         const c: Vec2 = { x: -3, y: 10 };
+        const expectedResultB:Vec2 = {x: 10, y:10};
+        const expectedResultC:Vec2 = {x: -10, y:10};
         service.getPath().push(a);
         points = service.getRectanglePoints(b);
-        expect(Math.abs(points[2].x - a.x)).toEqual(Math.abs(points[2].y - a.y));
+        expect(points[2]).toEqual(expectedResultB);
+
 
         points = service.getRectanglePoints(c);
-        expect(Math.abs(points[2].x - a.x)).toEqual(Math.abs(points[2].y - a.y));
+        expect(points[2]).toEqual(expectedResultC);
     });
 
-    it('OnShift sets the value of shifted and autoruns move', () => {
-        const spy = spyOn<any>(service, 'onMouseMove').and.callThrough();
-        service.shift = false;
-        service.onShift(true);
-        expect(service.shift).toBe(true);
 
-        expect(spy).toHaveBeenCalled();
-    });
 });
