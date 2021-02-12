@@ -32,11 +32,9 @@ export class ToolControllerService {
         document.addEventListener('focusin', (event: FocusEvent) => {
             const target: Node = Object(event.target || event.currentTarget);
             if (target != null) {
-                if (target.nodeName === 'INPUT') {
-                    this.focused = false;
-                } else {
-                    this.focused = true;
-                }
+                this.focused = target.nodeName === 'INPUT';
+            } else {
+                this.focused = false;
             }
         });
 
