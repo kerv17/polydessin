@@ -54,9 +54,9 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if (($event.ctrlKey || $event.metaKey) && $event.key === Globals.newDrawingEvent) {
+        if ($event.ctrlKey && $event.key === Globals.newDrawingEvent) {
             $event.preventDefault();
-            this.nouveauDessin();
+            this.drawing.nouveauDessin();
         }
     }
 
