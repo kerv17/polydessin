@@ -23,6 +23,7 @@ export class RectangleService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     lastMoveEvent: MouseEvent;
@@ -66,21 +67,21 @@ export class RectangleService extends Tool {
         }
     }
 
-    onShift(shifted: boolean) {
+    onShift(shifted: boolean): void {
         this.shift = shifted;
         this.onMouseMove(this.lastMoveEvent);
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
+        ctx.lineWidth = this.width;
 
         // Determiner si on doit fill le rectangle
-        if (this.toolMode == 'fill' || this.toolMode == 'fillBorder') {
+        if (this.toolMode === 'fill' || this.toolMode === 'fillBorder') {
             this.fill(ctx, path);
         }
 
         // Determiner si on doit faire la bordure
-        if (this.toolMode == 'border' || this.toolMode == 'fillBorder') {
+        if (this.toolMode === 'border' || this.toolMode === 'fillBorder') {
             this.drawBorder(ctx, path);
         }
 
@@ -113,7 +114,7 @@ export class RectangleService extends Tool {
         let c: Vec2 = mousePosition;
         let d: Vec2 = { x: mousePosition.x, y: a.y };
         if (this.shift) {
-            if (mousePosition.x < a.x != mousePosition.y < a.y) {
+            if (mousePosition.x < a.x !== mousePosition.y < a.y) {
                 c = { x: a.x + -(b.y - a.y), y: mousePosition.y };
                 d = { x: a.x + -(b.y - a.y), y: a.y };
             } else {

@@ -22,6 +22,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -88,6 +89,7 @@ export class PencilService extends Tool {
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        // TODO check laquelle des lignes suivant est bonne
         this.applyAttributes(ctx);
 
         ctx.beginPath();
@@ -104,7 +106,7 @@ export class PencilService extends Tool {
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
     applyAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
-        const width = this.drawingService.width;
+        const width = this.width;
 
         if (width !== undefined && width > 0) {
             ctx.lineWidth = width;
