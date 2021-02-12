@@ -39,10 +39,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // met la surface en blanc mais c aussi fait sans ce code
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
-        this.baseCtx.globalAlpha = 1;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;

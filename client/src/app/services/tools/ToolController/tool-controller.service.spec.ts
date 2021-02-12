@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { PencilService } from '../ToolServices/pencil-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { ToolControllerService } from './tool-controller.service';
-// tslint:disable:no-any
+
 xdescribe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;

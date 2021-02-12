@@ -4,10 +4,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
-// TODO : Déplacer dans un fichier accessible à tous
-const DEFAULT_WIDTH = 1000;
-const DEFAULT_HEIGHT = 800;
-
 xdescribe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
@@ -36,15 +32,10 @@ xdescribe('DrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+    
+    it('should init',()=>{
 
-    it('should have a default WIDTH and HEIGHT', () => {
-        const height = component.height;
-        const width = component.width;
-        expect(height).toEqual(DEFAULT_HEIGHT);
-        expect(width).toEqual(DEFAULT_WIDTH);
     });
-
-    it('should get stubTool', () => {});
 
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
         const event = {} as MouseEvent;

@@ -27,7 +27,7 @@ export class EditorComponent {
 
     setResizerRightLine(): void {
         this.resizerRightLine = {
-            cursor: 'col-resize',
+            ['cursor']: 'col-resize',
             'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
             'margin-top': String(this.posY / 2) + 'px',
         };
@@ -35,7 +35,7 @@ export class EditorComponent {
 
     setResizerBottomRight(): void {
         this.resizerBottomRight = {
-            cursor: 'nwse-resize',
+            ['cursor']: 'nwse-resize',
             'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
@@ -43,7 +43,7 @@ export class EditorComponent {
 
     setResizerBottomLine(): void {
         this.resizerBottomLine = {
-            cursor: 'row-resize',
+            ['cursor']: 'row-resize',
             'margin-left': String(this.posX / 2) + 'px',
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
@@ -55,12 +55,16 @@ export class EditorComponent {
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
-        if (this.position === 0) {
-            this.mouseMoveHandlerCorner(event);
-        } else if (this.position === 1) {
-            this.mouseMoveHandlerBottom(event);
-        } else if (this.position === 2) {
-            this.mouseMoveHandlerRight(event);
+        switch (this.position) {
+            case 0:
+                this.mouseMoveHandlerCorner(event);
+                break;
+            case 1:
+                this.mouseMoveHandlerBottom(event);
+                break;
+            case 2:
+                this.mouseMoveHandlerRight(event);
+                break;
         }
     }
 

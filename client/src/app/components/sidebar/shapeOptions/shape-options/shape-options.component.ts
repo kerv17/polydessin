@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
@@ -7,7 +7,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     templateUrl: './shape-options.component.html',
     styleUrls: ['./shape-options.component.scss'],
 })
-export class ShapeOptionsComponent implements OnInit {
+export class ShapeOptionsComponent {
     fillButton: { backgroundColor: string } = Globals.backgroundWhite;
     borderButton: { backgroundColor: string } = Globals.backgroundWhite;
     fillBorderButton: { backgroundColor: string } = Globals.backgroundWhite;
@@ -35,6 +35,4 @@ export class ShapeOptionsComponent implements OnInit {
         this.borderButton = Globals.backgroundWhite;
         this.fillBorderButton = Globals.backgroundWhite;
     }
-
-    ngOnInit(): void {}
 }
