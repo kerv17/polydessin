@@ -6,7 +6,7 @@
 
     <div class='input-wrapper'>
         <div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
-        <br><br><br>
+        <br>
         <label>R : </label>
         <input [(ngModel)]='rValue' size="1" (change)="updateColorFromInput()" (keypress)='omitUnwantedColorValue($event)' maxlength='2'><br>
         <label>V : </label>

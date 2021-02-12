@@ -1,6 +1,6 @@
 .color-wrapper {
     display: flex;
-    height: 200px;
+    height: 150px;
     float: left;
 }
 
@@ -8,7 +8,7 @@
     width: 28px;
     height: 28px;
     border: 2px white;
-    float: left;
+    float: right;
 }
 
 .text {
@@ -36,8 +36,7 @@ button {
 .table {
     display: table;
     background-color: lightblue;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+    border-radius: 3%;
+    padding: 10px;
+    border: 1px solid black;
 }
