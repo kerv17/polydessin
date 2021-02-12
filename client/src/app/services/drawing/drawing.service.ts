@@ -69,7 +69,7 @@ export class DrawingService {
             this.baseCtx.fillRect(canvasPreviousDimension.x, 0, canvasNewDimension.x, canvasPreviousDimension.y);
         }
         if (canvasPreviousDimension.y < canvasNewDimension.y) {
-            this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.x);
+            this.baseCtx.fillRect(0, canvasPreviousDimension.y, canvasNewDimension.x, canvasNewDimension.y);
         }
     }
 }
