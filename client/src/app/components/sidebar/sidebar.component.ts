@@ -10,7 +10,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 export class SidebarComponent {
     visible: boolean = false;
     showWidth: boolean = false;
-    fillBorder: boolean = true;
+    fillBorder: boolean = false;
     resetSlider: boolean = true;
     crayon: { backgroundColor: string } = { backgroundColor: 'white' };
     rectangle: { backgroundColor: string } = { backgroundColor: 'white' };

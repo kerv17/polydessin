@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { SidebarComponent } from './sidebar.component';
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;

@@ -70,7 +70,9 @@ export class EditorComponent {
 
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
+            if (this.verifyWidth(event)) {
+                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
                 this.posX = Globals.CANVAS_SIZE_MIN;
@@ -83,7 +85,9 @@ export class EditorComponent {
 
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
+            if (this.verifyHeight(event)) {
+                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
                 this.posY = Globals.CANVAS_SIZE_MIN;
@@ -96,13 +100,17 @@ export class EditorComponent {
 
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
+            if (this.verifyWidth(event)) {
+                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
                 this.posX = Globals.CANVAS_SIZE_MIN;
             }
 
-            if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
+            if (this.verifyHeight(event)) {
+                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
                 this.posY = Globals.CANVAS_SIZE_MIN;
@@ -111,6 +119,18 @@ export class EditorComponent {
             this.setResizerRightLine();
             this.setResizerBottomRight();
         }
+    }
+    verifyWidth(event: MouseEvent): boolean {
+        if (event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
+            return true;
+        }
+        return false;
+    }
+    verifyHeight(event: MouseEvent): boolean {
+        if (event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
+            return true;
+        }
+        return false;
     }
 
     @HostListener('mouseup', ['$event'])

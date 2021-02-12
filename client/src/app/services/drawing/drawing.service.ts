@@ -11,6 +11,8 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
     controlSize: Vec2 = { x: 0, y: 0 };
+    // A voir
+    width: number = 1;
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }

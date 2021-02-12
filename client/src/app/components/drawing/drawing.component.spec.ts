@@ -32,9 +32,10 @@ xdescribe('DrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    
-    it('should init',()=>{
 
+    it('should get stubTool', () => {
+        const currentTool = component.getCurrentTool();
+        expect(currentTool).toEqual(toolStub);
     });
 
     it(" should call the tool's mouse move when receiving a mouse move event", () => {

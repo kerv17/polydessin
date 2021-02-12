@@ -207,7 +207,8 @@ xdescribe('PencilService', () => {
 
     it(' drawPixel should not draw a single pixel at the last mouseCoord of the path if the width is not 1 pixel', () => {
         const rectSpy = spyOn(drawServiceSpy.previewCtx, 'fillRect');
-        drawServiceSpy.previewCtx.lineWidth = 24;
+        const testLineWidth = 24;
+        drawServiceSpy.previewCtx.lineWidth = testLineWidth;
         service.onMouseDown(mouseEvent);
         service['drawPixel'](drawServiceSpy.previewCtx, service['pathData']);
         expect(rectSpy).not.toHaveBeenCalled();
@@ -216,13 +217,13 @@ xdescribe('PencilService', () => {
     it(' applyAttributes should set the pencil width to the correct selected value if the value is valid ', () => {
         // drawServiceSpy.width = 20;
         service.applyAttributes(drawServiceSpy.previewCtx);
-        //expect(drawServiceSpy.previewCtx.lineWidth).toEqual(drawServiceSpy.width);
+        // expect(drawServiceSpy.previewCtx.lineWidth).toEqual(drawServiceSpy.width);
     });
 
     it(' applyAttributes should not set the pencil width if the selected value is not valid', () => {
         // drawServiceSpy.width = -10;
         service.applyAttributes(drawServiceSpy.previewCtx);
-        //expect(drawServiceSpy.previewCtx.lineWidth).not.toEqual(drawServiceSpy.width);
+        // expect(drawServiceSpy.previewCtx.lineWidth).not.toEqual(drawServiceSpy.width);
     });
 
     it(' applyAttributes should set the pencil color to the correct selected color if it is valid', () => {

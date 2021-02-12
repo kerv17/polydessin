@@ -31,6 +31,10 @@ export abstract class Tool {
 
     onShift(shift: boolean): void {}
 
+    onEscape(): void {}
+
+    onBackspace(): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }

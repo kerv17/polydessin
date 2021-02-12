@@ -6,7 +6,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { WidthSliderComponent } from './width-slider.component';
 
-fdescribe('WidthSliderComponent', () => {
+describe('WidthSliderComponent', () => {
     let component: WidthSliderComponent;
     let fixture: ComponentFixture<WidthSliderComponent>;
     let matSliderChange: MatSliderChange;
