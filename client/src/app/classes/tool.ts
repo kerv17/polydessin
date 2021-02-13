@@ -9,6 +9,7 @@ export abstract class Tool {
     outOfBounds: boolean = false;
     color: string;
     color2: string;
+    width: number;
     toolMode: string = 'border';
     shift: boolean = false;
 
@@ -29,6 +30,10 @@ export abstract class Tool {
     ondbClick(event: MouseEvent): void {}
 
     onShift(shift: boolean): void {}
+
+    onEscape(): void {}
+
+    onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };

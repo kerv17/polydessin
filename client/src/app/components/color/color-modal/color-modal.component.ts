@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
+import { MAX_OPACITY } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
-
-const MAX_OPACITY = 100;
 
 @Component({
     selector: 'app-color-modal',

@@ -7,6 +7,7 @@
     overflow: auto;
     flex: 1 1 auto;
     background-color: grey;
+    border: 1px solid black;
 }
 
 .drawing {
@@ -15,6 +16,10 @@
     outline: none;
 }
 
+.sidebar {
+    display: flex;
+    width: min-content;
+}
 .resizer {
     width: 10px;
     height: 10px;

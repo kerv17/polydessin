@@ -1,8 +1,10 @@
 .container {
     display: flex;
     height: auto;
-    min-height: 98vh;
-    border: 1px solid black;
+
+    min-height: 100vh;
+    //
+    width: 460px;
     padding: 0 5px 0 5px;
 }
 //J'utilise ca pour faire la rangé de bouton a gauche
@@ -10,31 +12,33 @@
     display: flex;
     //flex: 1;
     flex-direction: column;
-
-    width: min-content;
-    background-image: url(../../../assets/c3a1391c57807876a7f3bddaac3ef1eb.jpeg);
-    //background-color: black;
+    border: 1px solid black;
+    width: 60 px;
+    background-image: url(../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png);
+    background-color: black;
     justify-content: start-flex;
 }
 .services {
     flex-direction: column;
     margin-left: 50px;
+    width: 350px;
 }
 .function {
     display: flex;
-    width: 100px;
+    width: 50px;
+    height: 50px;
     border-radius: 4px;
-    background: white;
+    background-color: white;
     flex: 0.1;
     max-height: 100px;
     align-self: center;
-    margin: 0.5em;
+    border-color: black;
     flex-grow: 0.1;
 }
 .function:focus {
     background-color: gainsboro;
 }
-.function .infobulle {
+.infobulle {
     visibility: hidden;
     width: 120px;
     background-color: black;
@@ -42,13 +46,24 @@
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
-    left: 100px;
+    left: 60px;
 
     position: absolute;
 }
 
-.function:hover .infobulle {
+.ToolContainer:hover .infobulle {
     visibility: visible;
     display: block;
     background-color: gainsboro;
+}
+
+.ToolContainer {
+    align-self: center;
+    margin: 0.5em;
+}
+
+.BackgroundServices {
+    background-image: url(../../../assets/bluebackground.jpeg);
+    background-size: cover;
+    border: 1px solid black;
 }

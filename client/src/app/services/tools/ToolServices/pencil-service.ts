@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { MouseButton } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 @Injectable({
     providedIn: 'root',
@@ -22,6 +14,7 @@ export class PencilService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -104,7 +97,7 @@ export class PencilService extends Tool {
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
     applyAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
-        const width = this.drawingService.width;
+        const width = this.width;
 
         if (width !== undefined && width > 0) {
             ctx.lineWidth = width;

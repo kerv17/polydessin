@@ -1,22 +1,13 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
-// à mettre dans un autre fichier
-const gradientLevel1 = 0.17;
-const gradientLevel2 = 0.34;
-const gradientLevel3 = 0.51;
-const gradientLevel4 = 0.68;
-const gradientLevel5 = 0.81;
-const lineWidth = 5;
-const lineHeigth = 10;
+import {
+    GRADIENT_LEVEL_1,
+    GRADIENT_LEVEL_2,
+    GRADIENT_LEVEL_3,
+    GRADIENT_LEVEL_4,
+    GRADIENT_LEVEL_5,
+    LINE_HEIGTH_PALETTE,
+    LINE_WIDTH_PALETTE,
+} from '@app/Constants/constants';
 
 @Component({
     selector: 'app-color-slider',
@@ -56,11 +47,11 @@ export class ColorSliderComponent implements AfterViewInit {
 
         const gradient = this.ctx.createLinearGradient(0, 0, 0, height);
         gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
-        gradient.addColorStop(gradientLevel1, 'rgba(255, 255, 0, 1)');
-        gradient.addColorStop(gradientLevel2, 'rgba(0, 255, 0, 1)');
-        gradient.addColorStop(gradientLevel3, 'rgba(0, 255, 255, 1)');
-        gradient.addColorStop(gradientLevel4, 'rgba(0, 0, 255, 1)');
-        gradient.addColorStop(gradientLevel5, 'rgba(255, 0, 255, 1)');
+        gradient.addColorStop(GRADIENT_LEVEL_1, 'rgba(255, 255, 0, 1)');
+        gradient.addColorStop(GRADIENT_LEVEL_2, 'rgba(0, 255, 0, 1)');
+        gradient.addColorStop(GRADIENT_LEVEL_3, 'rgba(0, 255, 255, 1)');
+        gradient.addColorStop(GRADIENT_LEVEL_4, 'rgba(0, 0, 255, 1)');
+        gradient.addColorStop(GRADIENT_LEVEL_5, 'rgba(255, 0, 255, 1)');
         gradient.addColorStop(1, 'rgba(255, 0, 0, 1)');
 
         this.ctx.beginPath();
@@ -73,8 +64,8 @@ export class ColorSliderComponent implements AfterViewInit {
         if (this.selectedHeight) {
             this.ctx.beginPath();
             this.ctx.strokeStyle = 'white';
-            this.ctx.lineWidth = lineWidth;
-            this.ctx.rect(0, this.selectedHeight - lineWidth, width, lineHeigth);
+            this.ctx.lineWidth = LINE_WIDTH_PALETTE;
+            this.ctx.rect(0, this.selectedHeight - LINE_WIDTH_PALETTE, width, LINE_HEIGTH_PALETTE);
             this.ctx.stroke();
             this.ctx.closePath();
         }

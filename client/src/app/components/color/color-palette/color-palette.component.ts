@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { LINE_HEIGTH_PALETTE, LINE_WIDTH_PALETTE } from '@app/Constants/constants';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -8,9 +9,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
-const lineWidth = 5;
-const lineHeigth = 10;
 
 @Component({
     selector: 'app-color-palette',
@@ -83,8 +81,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.ctx.strokeStyle = 'white';
             this.ctx.fillStyle = 'white';
             this.ctx.beginPath();
-            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, lineHeigth, 0, 2 * Math.PI);
-            this.ctx.lineWidth = lineWidth;
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, LINE_HEIGTH_PALETTE, 0, 2 * Math.PI);
+            this.ctx.lineWidth = LINE_WIDTH_PALETTE;
             this.ctx.stroke();
         }
     }

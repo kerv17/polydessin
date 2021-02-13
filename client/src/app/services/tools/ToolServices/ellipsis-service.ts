@@ -23,10 +23,15 @@ export class EllipsisService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
+        this.width = 1;
     }
     private pathData: Vec2[];
     private perimerterPathData: Vec2[];
     lastMoveEvent: MouseEvent;
+
+    getPerimeterPathData(): Vec2[] {
+        return this.perimerterPathData;
+    }
 
     getPath(): Vec2[] {
         return this.pathData;
@@ -73,38 +78,46 @@ export class EllipsisService extends Tool {
         }
     }
 
-    onShift(shifted: boolean) {
+    onShift(shifted: boolean): void {
         this.shift = shifted;
         this.onMouseMove(this.lastMoveEvent);
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.drawingService.width;
-        2;
+        ctx.lineWidth = this.width;
         // Determiner si on doit faire la bordure
-        if (this.toolMode == 'border' || this.toolMode == 'fillBorder') {
-            this.drawBorder(ctx, path);
+
+        switch (this.toolMode) {
+            case 'border':
+                this.drawBorder(ctx, path);
+                break;
+            case 'fill':
+                this.fill(ctx, path);
+                break;
+            case 'fillBorder':
+                this.fill(ctx, path);
+                this.drawBorder(ctx, path);
+                break;
         }
 
-        // Determiner si on doit fill le rectangle
-        if (this.toolMode == 'fill' || this.toolMode == 'fillBorder') {
-            this.fill(ctx, path);
-        }
         ctx.stroke();
         this.drawPerimeter(this.drawingService.previewCtx, this.perimerterPathData);
         ctx.stroke();
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = this.color2 || 'black';
+    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[], col: string = this.color2 || 'black'): void {
+        ctx.strokeStyle = col;
+        ctx.lineWidth = this.width;
         const a: Vec2 = path[1];
         const c: Vec2 = path[2];
         ctx.beginPath();
-        ctx.ellipse(a.x, a.y, Math.abs(c.x - a.x), Math.abs(c.y - a.y), 0, 0, 2 * Math.PI);
+        const ellipseWidth = this.ellipseWidth(a, c);
+        ctx.ellipse(a.x, a.y, ellipseWidth.x, ellipseWidth.y, 0, 0, 2 * Math.PI);
     }
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.fillStyle = this.color || 'black';
+        this.drawBorder(ctx, path, this.color);
         ctx.fill();
     }
 
@@ -113,15 +126,10 @@ export class EllipsisService extends Tool {
         this.perimerterPathData = [];
     }
 
-    private getPathForEllipsis(mousePosition: Vec2) {
+    private getPathForEllipsis(mousePosition: Vec2): void {
         const a: Vec2 = this.pathData[0];
-        let c: Vec2 = mousePosition;
-        if (this.shift) {
-            c = this.perimerterPathData[2];
-        }
-        const bx: number = a.x + (c.x - a.x) / 2;
-        const by: number = a.y + (c.y - a.y) / 2;
-        const b: Vec2 = { x: bx, y: by };
+        const c: Vec2 = !this.shift ? mousePosition : this.perimerterPathData[2];
+        const b: Vec2 = { x: a.x + (c.x - a.x) / 2, y: a.y + (c.y - a.y) / 2 };
         this.pathData.push(b);
         this.pathData.push(c);
     }
@@ -136,25 +144,29 @@ export class EllipsisService extends Tool {
         ctx.closePath();
     }
 
-    private getRectanglePoints(mousePosition: Vec2) {
+    private getRectanglePoints(mousePosition: Vec2): void {
         const list: Vec2[] = [];
 
         const a: Vec2 = this.perimerterPathData[0];
         const b: Vec2 = { x: a.x, y: mousePosition.y };
-        let c: Vec2 = mousePosition;
-        let d: Vec2 = { x: mousePosition.x, y: a.y };
+        const c: Vec2 = mousePosition;
+        const d: Vec2 = { x: mousePosition.x, y: a.y };
 
         if (this.shift) {
-            if (mousePosition.x < a.x != mousePosition.y < a.y) {
-                c = { x: a.x + -(b.y - a.y), y: mousePosition.y };
-                d = { x: a.x + -(b.y - a.y), y: a.y };
-            } else {
-                c = { x: a.x + b.y - a.y, y: mousePosition.y };
-                d = { x: a.x + b.y - a.y, y: a.y };
-            }
+            const onTopRightDiagonal = mousePosition.x < a.x !== mousePosition.y < a.y;
+            c.x = onTopRightDiagonal ? a.x + -(b.y - a.y) : a.x + b.y - a.y;
+            d.x = onTopRightDiagonal ? a.x + -(b.y - a.y) : a.x + b.y - a.y;
         }
 
         list.push(a, b, c, d);
         this.perimerterPathData = list;
+    }
+
+    ellipseWidth(a: Vec2, c: Vec2): Vec2 {
+        const x = c.x - a.x < 0 ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
+        const y = c.y - a.y < 0 ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
+        const s: Vec2 = { x, y };
+
+        return s;
     }
 }

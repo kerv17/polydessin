@@ -181,4 +181,14 @@ describe('ColorService', () => {
         expect(service.verifyOpacityInput('101')).toEqual('1');
         expect(service.verifyOpacityInput('')).toEqual('1');
     });
+
+    it('resetColorValues should reset all attributes', () => {
+        service.resetColorValues();
+        const arrayExpected: string[] = new Array();
+        const initialColor = 'rgba(0,0,0,1)';
+        expect(service.recentColors).toEqual(arrayExpected);
+        expect(service.primaryColor).toEqual(initialColor);
+        expect(service.secondaryColor).toEqual(initialColor);
+        expect(service.modalVisibility).toEqual(false);
+    });
 });

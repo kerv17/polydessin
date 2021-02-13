@@ -197,19 +197,19 @@ describe('PencilService', () => {
     });
 
     it(' drawPixel should draw a single pixel at the last mouseCoord of the path if the width is 1 pixel', () => {
-        const rectSpy = spyOn(drawServiceSpy.previewCtx, 'fillRect');
-        drawServiceSpy.previewCtx.lineWidth = 1;
+        const rectSpy = spyOn(drawServiceSpy.baseCtx, 'fillRect');
+        service.width = 1;
         service.onMouseDown(mouseEvent);
-        service['drawPixel'](drawServiceSpy.previewCtx, service['pathData']);
+        service['drawPixel'](drawServiceSpy.baseCtx, service['pathData']);
         expect(rectSpy).toHaveBeenCalled();
     });
 
     it(' drawPixel should not draw a single pixel at the last mouseCoord of the path if the width is not 1 pixel', () => {
-        const rectSpy = spyOn(drawServiceSpy.previewCtx, 'fillRect');
+        const rectSpy = spyOn(drawServiceSpy.baseCtx, 'fillRect');
         const validLinewidth = 24;
-        drawServiceSpy.previewCtx.lineWidth = validLinewidth;
+        service.width = validLinewidth;
         service.onMouseDown(mouseEvent);
-        service['drawPixel'](drawServiceSpy.previewCtx, service['pathData']);
+        service['drawPixel'](drawServiceSpy.baseCtx, service['pathData']);
         expect(rectSpy).not.toHaveBeenCalled();
     });
 
@@ -228,16 +228,16 @@ describe('PencilService', () => {
 
     it(' applyAttributes should set the pencil width to the correct selected value if the value is valid ', () => {
         const validPencilWidth = 20;
-        drawServiceSpy.width = validPencilWidth;
-        service.applyAttributes(drawServiceSpy.previewCtx);
-        expect(drawServiceSpy.previewCtx.lineWidth).toEqual(drawServiceSpy.width);
+        service.width = validPencilWidth;
+        service.applyAttributes(baseCtxStub);
+        expect(baseCtxStub.lineWidth).toEqual(service.width);
     });
 
     it(' applyAttributes should not set the pencil width if the selected value is not valid', () => {
         const invalidPencilWidth = -10;
-        drawServiceSpy.width = invalidPencilWidth;
-        service.applyAttributes(drawServiceSpy.previewCtx);
-        expect(drawServiceSpy.previewCtx.lineWidth).not.toEqual(drawServiceSpy.width);
+        service.width = invalidPencilWidth;
+        service.applyAttributes(baseCtxStub);
+        expect(baseCtxStub.lineWidth).not.toEqual(service.width);
     });
 
     it(' applyAttributes should set the pencil color to the correct selected color if it is valid', () => {

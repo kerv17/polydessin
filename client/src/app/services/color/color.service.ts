@@ -75,4 +75,11 @@ export class ColorService {
             return '1';
         }
     }
+
+    resetColorValues(): void {
+        this.recentColors = new Array();
+        this.primaryColor = 'rgba(0,0,0,1)';
+        this.secondaryColor = 'rgba(0,0,0,1)';
+        this.modalVisibility = false;
+    }
 }
