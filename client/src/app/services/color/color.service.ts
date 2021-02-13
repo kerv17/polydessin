@@ -70,10 +70,11 @@ export class ColorService {
 
     verifyOpacityInput(opacity: string): string {
         if (parseFloat(opacity) > maxOpacity) {
-            window.alert('La valeur fournie est invalide! Veuillez entrez une valeur entre 0 et 100.');
             return '1';
-        } else {
+        } else if (opacity !== '') {
             return (parseInt(opacity, 10) / 100).toString();
+        } else {
+            return '1';
         }
     }
 }

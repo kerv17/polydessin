@@ -1,6 +1,22 @@
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { ColorSliderComponent } from '@app/components/color/color-slider/color-slider.component';
 import { ColorService } from '@app/services/color/color.service';
 import { ColorModalComponent } from './color-modal.component';
+
+// Mock pour le colorpalette component
+@Component({
+    selector: 'app-color-palette',
+    template: './color-palette.component.html',
+})
+class MockColorPaletteComponent {
+    @Input()
+    hue: string;
+
+    @Input()
+    opacity: string;
+}
 
 describe('ColorModalComponent', () => {
     let component: ColorModalComponent;
@@ -19,8 +35,9 @@ describe('ColorModalComponent', () => {
         colorService.primaryColor = 'rgba(0,0,0,1)';
         colorService.secondaryColor = 'rgba(0,0,0,1)';
         TestBed.configureTestingModule({
-            declarations: [ColorModalComponent],
+            declarations: [ColorModalComponent, ColorSliderComponent, MockColorPaletteComponent],
             providers: [{ provide: ColorService, useValue: colorService }],
+            imports: [FormsModule],
         }).compileComponents();
     }));
 
