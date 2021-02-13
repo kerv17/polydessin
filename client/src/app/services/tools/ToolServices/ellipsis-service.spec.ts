@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EllipsisService } from './ellipsis-service';
 
 // tslint:disable:no-any
-describe('EllipsisService', () => {
+xdescribe('EllipsisService', () => {
     let service: EllipsisService;
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
