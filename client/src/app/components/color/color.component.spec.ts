@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorService } from '@app/services/color/color.service';
+import { ColorModalComponent } from './color-modal/color-modal.component';
 import { ColorComponent } from './color.component';
 
 describe('ColorComponent', () => {
@@ -13,7 +14,7 @@ describe('ColorComponent', () => {
     beforeEach(async(() => {
         colorService = new ColorService();
         TestBed.configureTestingModule({
-            declarations: [ColorComponent],
+            declarations: [ColorComponent, ColorModalComponent],
             providers: [{ provide: ColorService, useValue: colorService }],
         }).compileComponents();
 

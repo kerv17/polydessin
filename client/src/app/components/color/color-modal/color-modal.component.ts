@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
-// const opacityPosition = 3;
+const MAX_OPACITY = 100;
 
 @Component({
     selector: 'app-color-modal',
@@ -73,17 +73,7 @@ export class ColorModalComponent implements AfterViewInit {
                 this.colorService.verifyOpacityInput(this.opacity) +
                 ')';
             this.hue = this.color;
-        } else {
-            this.setColorInputValue();
         }
-    }
-
-    // met à jour la couleur lorsque l'opacité est changée manuellement
-    updateOpacity(): void {
-        if (this.colorService.verifyOpacityInput(this.opacity) === '1') {
-            this.opacity = '100';
-        }
-        this.updateColorFromInput();
     }
 
     // Restreint les caractères pour l'opacité à (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
@@ -96,5 +86,37 @@ export class ColorModalComponent implements AfterViewInit {
     omitUnwantedColorValue(event: KeyboardEvent): boolean {
         const key = event.key.charCodeAt(0);
         return (key >= '0'.charCodeAt(0) && key <= '9'.charCodeAt(0)) || (key >= 'a'.charCodeAt(0) && key <= 'f'.charCodeAt(0));
+    }
+
+    // empêche l'utilisateur d'entrer une valeur supérieure à 100
+    verifyMaxOpacity(): boolean {
+        if (parseFloat(this.opacity) > MAX_OPACITY) {
+            this.opacity = '100';
+            return false;
+        }
+        return true;
+    }
+
+    // empêche l'input d'opacité d'être vide
+    opacityIsNotEmpty(): boolean {
+        if (this.opacity.length === 0) {
+            this.opacity = '100';
+            return false;
+        }
+        return true;
+    }
+
+    // empêche les inputs de couleur d'être vide
+    verifyIfEmpty(): void {
+        if (this.rValue === '') {
+            this.rValue = '00';
+        }
+        if (this.gValue === '') {
+            this.gValue = '00';
+        }
+        if (this.bValue === '') {
+            this.bValue = '00';
+        }
+        this.updateColorFromInput();
     }
 }

@@ -1,12 +1,27 @@
+import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { ColorSliderComponent } from '@app/components/color/color-slider/color-slider.component';
 import { ColorService } from '@app/services/color/color.service';
 import { ColorModalComponent } from './color-modal.component';
+
+// Mock pour le colorpalette component
+@Component({
+    selector: 'app-color-palette',
+    template: './color-palette.component.html',
+})
+class MockColorPaletteComponent {
+    @Input()
+    hue: string;
+
+    @Input()
+    opacity: string;
+}
 
 describe('ColorModalComponent', () => {
     let component: ColorModalComponent;
     let fixture: ComponentFixture<ColorModalComponent>;
     let colorService: ColorService;
-    let verifySpy: jasmine.Spy;
     let readSpy: jasmine.Spy;
     let confirmSpy: jasmine.Spy;
     let selectedColorSpy: jasmine.Spy;
@@ -19,8 +34,9 @@ describe('ColorModalComponent', () => {
         colorService.primaryColor = 'rgba(0,0,0,1)';
         colorService.secondaryColor = 'rgba(0,0,0,1)';
         TestBed.configureTestingModule({
-            declarations: [ColorModalComponent],
+            declarations: [ColorModalComponent, ColorSliderComponent, MockColorPaletteComponent],
             providers: [{ provide: ColorService, useValue: colorService }],
+            imports: [FormsModule],
         }).compileComponents();
     }));
 
@@ -66,19 +82,19 @@ describe('ColorModalComponent', () => {
         expect(confirmSpy).toHaveBeenCalledWith(component.color);
     });
 
-    it(' confirmColor emits false as visibility value ', () => {
+    it(' confirmColor should emit false as visibility value ', () => {
         const visibilityEmitterSpy = spyOn(component.isVisible, 'emit');
         component.confirmColor();
         expect(visibilityEmitterSpy).toHaveBeenCalledWith(false);
     });
 
-    it(' confirmColor emits color as color value ', () => {
+    it(' confirmColor should emit color as color value ', () => {
         const colorEmitterSpy = spyOn(component.colorModified, 'emit');
         component.confirmColor();
         expect(colorEmitterSpy).toHaveBeenCalledWith(component.color);
     });
 
-    it(' cancel emits false as visibility value ', () => {
+    it(' cancel should emit false as visibility value ', () => {
         const visibilityEmitterSpy = spyOn(component.isVisible, 'emit');
         component.cancel();
         expect(visibilityEmitterSpy).toHaveBeenCalledWith(false);
@@ -116,15 +132,6 @@ describe('ColorModalComponent', () => {
         expect(updateSpy).toHaveBeenCalled();
     });
 
-    it(' updateColorFromInput should call setColorInputValue if rgb values are not all hexadecimal ', () => {
-        setColorSpy = spyOn(component, 'updateColorFromInput');
-        component.rValue = 'gg';
-        component.gValue = '345';
-        component.bValue = '00';
-        component.updateColorFromInput();
-        expect(setColorSpy).toHaveBeenCalled();
-    });
-
     it(' updateColorFromInput should update color & hue to correct rgba value if all values provided are hexadecimal ', () => {
         const expectedResult: string = 'rgba(' + parseInt('72', 16) + ',' + parseInt('fb', 16) + ',' + parseInt('aa', 16) + ',0.45)';
         component.rValue = '72';
@@ -134,26 +141,6 @@ describe('ColorModalComponent', () => {
         component.updateColorFromInput();
         expect(component.color).toEqual(expectedResult);
         expect(component.hue).toEqual(expectedResult);
-    });
-
-    it('updateOpacity should call verifyOpacityInput', () => {
-        component.opacity = '75';
-        verifySpy = spyOn(colorService, 'verifyOpacityInput');
-        component.updateOpacity();
-        expect(verifySpy).toHaveBeenCalledWith(component.opacity);
-    });
-
-    it('updateOpacity should set opacity value to 100 if the returned opacity is 1', () => {
-        component.opacity = '900';
-        component.updateOpacity();
-        expect(component.opacity).toEqual('100');
-    });
-
-    it('updateOpacity should call updateColorFromInput', () => {
-        component.opacity = '75';
-        updateSpy = spyOn(component, 'updateColorFromInput');
-        component.updateOpacity();
-        expect(updateSpy).toHaveBeenCalled();
     });
 
     it('omitUnwantedChars should return true if key pressed is a number from 0 to 9', () => {
@@ -218,5 +205,55 @@ describe('ColorModalComponent', () => {
             key: '-',
         } as KeyboardEvent;
         expect(component.omitUnwantedColorValue(keyEvent3)).toEqual(expectedResult);
+    });
+
+    it('verifyMaxOpacity should set opacity to 100 and return false if opacity value input is greater than 100', () => {
+        component.opacity = '101';
+        expect(component.verifyMaxOpacity()).toEqual(false);
+        expect(component.opacity).toEqual('100');
+    });
+
+    it('verifyMaxOpacity should return true if opacity value input is not greater than 100', () => {
+        component.opacity = '23';
+        expect(component.verifyMaxOpacity()).toEqual(true);
+        expect(component.opacity).toEqual('23');
+    });
+
+    it('opacityIsNotEmpty should set opacity to 100 and return false if opacity input is empty', () => {
+        component.opacity = '';
+        expect(component.opacityIsNotEmpty()).toEqual(false);
+        expect(component.opacity).toEqual('100');
+    });
+
+    it('opacityIsNotEmpty should set opacity return true if opacity input is not empty', () => {
+        component.opacity = '23';
+        expect(component.opacityIsNotEmpty()).toEqual(true);
+        expect(component.opacity).toEqual('23');
+    });
+
+    it('verifyIfEmpty should set color values to 00 if the inputs are left empty', () => {
+        component.rValue = '';
+        component.gValue = '';
+        component.bValue = '';
+        component.verifyIfEmpty();
+        expect(component.rValue).toEqual('00');
+        expect(component.gValue).toEqual('00');
+        expect(component.bValue).toEqual('00');
+    });
+
+    it('verifyIfEmpty should call updateColorFromInput', () => {
+        updateSpy = spyOn(component, 'updateColorFromInput');
+        component.verifyIfEmpty();
+        expect(updateSpy).toHaveBeenCalled();
+    });
+
+    it('verifyIfEmpty should not change color values if the inputs are not empty', () => {
+        component.rValue = '255';
+        component.gValue = '67';
+        component.bValue = '168';
+        component.verifyIfEmpty();
+        expect(component.rValue).toEqual('255');
+        expect(component.gValue).toEqual('67');
+        expect(component.bValue).toEqual('168');
     });
 });
