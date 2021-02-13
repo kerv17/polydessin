@@ -169,27 +169,16 @@ describe('ColorService', () => {
         expect(service.readRGBValues('')).toEqual(expectedResult);
     });
 
-    it('verifyOpacityInput should return the correpsonding a value of the provided opacity input value', () => {
+    it('verifyOpacityInput should return the a value of the opacity input value if it is not empty and lower than 100', () => {
         expect(service.verifyOpacityInput('76')).toEqual('0.76');
         expect(service.verifyOpacityInput('100')).toEqual('1');
         expect(service.verifyOpacityInput('0')).toEqual('0');
     });
 
-    it('verifyOpacityInput should return 1 if the provided opacity is greater than 100', () => {
+    it('verifyOpacityInput should return 1 if the provided opacity is greater than 100 or empty', () => {
         expect(service.verifyOpacityInput('345')).toEqual('1');
         expect(service.verifyOpacityInput('999')).toEqual('1');
         expect(service.verifyOpacityInput('101')).toEqual('1');
-    });
-
-    it('verifyOpacityInput should alert the user if the provided opacity is greater than 100', () => {
-        const alertSpy = spyOn(window, 'alert');
-        service.verifyOpacityInput('456');
-        expect(alertSpy).toHaveBeenCalledWith('La valeur fournie est invalide! Veuillez entrez une valeur entre 0 et 100.');
-    });
-
-    it('verifyOpacityInput should not alert the user if the provided opacity is lower or equal to 100', () => {
-        const alertSpy = spyOn(window, 'alert');
-        service.verifyOpacityInput('100');
-        expect(alertSpy).not.toHaveBeenCalled();
+        expect(service.verifyOpacityInput('')).toEqual('1');
     });
 });

@@ -89,7 +89,7 @@ export class ColorModalComponent implements AfterViewInit {
     }
 
     // empêche l'utilisateur d'entrer une valeur supérieure à 100
-    verifyMax(): boolean {
+    verifyMaxOpacity(): boolean {
         if (parseFloat(this.opacity) > MAX_OPACITY) {
             this.opacity = '100';
             return false;

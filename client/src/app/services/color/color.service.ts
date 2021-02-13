@@ -69,9 +69,7 @@ export class ColorService {
     }
 
     verifyOpacityInput(opacity: string): string {
-        if (parseFloat(opacity) > maxOpacity) {
-            return '1';
-        } else if (opacity !== '') {
+        if (opacity !== '' && parseFloat(opacity) <= maxOpacity) {
             return (parseInt(opacity, 10) / 100).toString();
         } else {
             return '1';
