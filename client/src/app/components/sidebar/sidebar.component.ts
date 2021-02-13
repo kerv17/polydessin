@@ -48,15 +48,15 @@ export class SidebarComponent {
         this.setButtonWhite();
     }
 
-    nouveauDessin(): void {
-        this.drawing.nouveauDessin();
+    newCanvas(): void {
+        this.drawing.newCanvas();
     }
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
-            this.drawing.nouveauDessin();
+            this.drawing.newCanvas();
         }
     }
 

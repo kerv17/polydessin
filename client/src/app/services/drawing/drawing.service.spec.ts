@@ -6,6 +6,7 @@ describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
     let fillRectSpy: jasmine.Spy;
+    // let canvasNotEmptySpy: jasmine.Spy;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingService);
@@ -103,4 +104,6 @@ describe('DrawingService', () => {
         expect(fillRectSpy).toHaveBeenCalledWith(previousSize.x, 0, newSize.x, previousSize.y);
         expect(fillRectSpy).toHaveBeenCalledWith(0, previousSize.y, newSize.x, newSize.y);
     });
+
+    //it('should create a new canvas if the canvas is not empty and the user comfirms', () => {});
 });

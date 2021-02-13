@@ -7,7 +7,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { SidebarComponent } from './sidebar.component';
 
 export class DrawingServiceStub extends DrawingService {
-    nouveauDessin(): void {
+    newCanvas(): void {
         return;
     }
 }
@@ -109,9 +109,9 @@ describe('SidebarComponent', () => {
         expect(component.resetSlider).toEqual(!tempSlidervalue);
     });
 
-    it('nouveauDessin should call drawingService nouveau dessin', () => {
-        drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
-        component.nouveauDessin();
+    it('newCanvas should call drawingService nouveau dessin', () => {
+        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
+        component.newCanvas();
 
         expect(drawingStubSpy).toHaveBeenCalled();
     });
@@ -121,7 +121,7 @@ describe('SidebarComponent', () => {
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
-        drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
+        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
         // component.onKeyPress(event);
         window.dispatchEvent(keyDownEvent);
         expect(eventSpy).toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onKeyPress does nothing if both event keys are bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
+        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
         const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
         const event = new KeyboardEvent('keydown', keyEventData);
@@ -141,7 +141,7 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onKeyPress does nothing if both if the Ctrl Key is bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
+        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
         const keyEventData = { isTrusted: true, key: 'o', ctrlKey: false };
         const event = new KeyboardEvent('keydown', keyEventData);

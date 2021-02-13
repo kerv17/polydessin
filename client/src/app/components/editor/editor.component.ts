@@ -111,3 +111,4 @@ export class EditorComponent {
         return !this.mouseDown;
     }
 }
+0;
