@@ -1,7 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
+import { ResizedEvent } from 'angular-resize-event';
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
@@ -9,12 +11,36 @@ import { EditorService } from '@app/services/editor/editor.service';
 })
 export class EditorComponent {
     sizeCanvas: Vec2;
+    container: { [key: string]: string };
+    editorSizeX: number;
+    editorSizeY: number;
 
     constructor(public drawingService: DrawingService, public editorService: EditorService) {
         this.sizeCanvas = this.drawingService.setSizeCanva();
         this.editorService.resetControlPoints(this.sizeCanvas.x, this.sizeCanvas.y);
     }
 
+    onResize(event: ResizedEvent): void {
+        if (window.innerHeight < this.editorService.posY) {
+            this.editorSizeY = this.editorService.posY * 1.1;
+        }
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.editorService.posX) {
+            this.editorSizeX = (this.editorService.posX + Globals.SIDEBAR_WIDTH) * 1.1;
+        }
+        if (window.innerHeight > this.editorService.posY) {
+            this.editorSizeY = window.innerHeight;
+        }
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH > this.editorService.posX) {
+            this.editorSizeX = window.innerWidth;
+        }
+        this.setContainerSize();
+    }
+    setContainerSize(): void {
+        this.container = {
+            width: String(this.editorSizeX) + 'px',
+            height: String(this.editorSizeY) + 'px',
+        };
+    }
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.editorService.mouseDown = true;
         this.editorService.position = pos;
