@@ -11,7 +11,7 @@ export class SidebarComponent {
     visible: boolean = false;
     showWidth: boolean = false;
     fillBorder: boolean = false;
-
+    showline: boolean = false;
     resetSlider: boolean = false;
     crayon: { backgroundColor: string } = Globals.backgroundWhite;
     rectangle: { backgroundColor: string } = Globals.backgroundWhite;
@@ -33,7 +33,7 @@ export class SidebarComponent {
 
     openLine(): void {
         this.service.setTool(Globals.lineShortcut);
-        this.openTool(false, true);
+        this.openTool(false, true, true);
         this.line = Globals.backgroundGainsoboro;
     }
 
@@ -42,9 +42,10 @@ export class SidebarComponent {
         this.openTool(true, true);
         this.ellipsis = Globals.backgroundGainsoboro;
     }
-    openTool(fillBorder: boolean, showWidth: boolean): void {
+    openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
+        this.showline = showline;
         this.resetSlider = !this.resetSlider;
         this.setButtonWhite();
     }

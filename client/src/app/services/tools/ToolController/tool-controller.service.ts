@@ -101,6 +101,10 @@ export class ToolControllerService {
     setFillBorder(): void {
         this.currentTool.toolMode = 'fillBorder';
     }
+
+    getLineMode(): boolean {
+        return this.currentTool.toolMode === 'point';
+    }
     // TODO changer ca
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {

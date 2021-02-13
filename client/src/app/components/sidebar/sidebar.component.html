@@ -34,10 +34,11 @@
                 <app-color></app-color>
             </div>
             <div *ngIf="fillBorder">
-                <app-shape-options [change]="resetSlider"></app-shape-options>
+                <app-shape-options></app-shape-options>
             </div>
-
-
+            <div *ngIf="showline">
+                <app-line-options [change]="resetSlider"></app-line-options>
+            </div>
         </div>
     </div>
 </div>

@@ -11,6 +11,7 @@ export class PointWidthSliderComponent implements OnChanges {
     @Input() pointWidth: number = 1;
     @Input() change: boolean;
     constructor(private tool: ToolControllerService) {}
+
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.change) {
             this.pointWidth = this.tool.currentTool.pointWidth;
