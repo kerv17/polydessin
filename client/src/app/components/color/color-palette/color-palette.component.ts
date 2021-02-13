@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { LINE_HEIGTH_PALETTE, LINE_WIDTH_PALETTE } from '@app/Constants/constants';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
@@ -8,9 +9,6 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
-const lineWidth = 5;
-const lineHeigth = 10;
 
 @Component({
     selector: 'app-color-palette',
@@ -27,6 +25,9 @@ const lineHeigth = 10;
 export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     @Input()
     hue: string;
+
+    @Input()
+    opacity: string;
 
     @Output()
     color: EventEmitter<string> = new EventEmitter(true);
@@ -80,8 +81,8 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
             this.ctx.strokeStyle = 'white';
             this.ctx.fillStyle = 'white';
             this.ctx.beginPath();
-            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, lineHeigth, 0, 2 * Math.PI);
-            this.ctx.lineWidth = lineWidth;
+            this.ctx.arc(this.selectedPosition.x, this.selectedPosition.y, LINE_HEIGTH_PALETTE, 0, 2 * Math.PI);
+            this.ctx.lineWidth = LINE_WIDTH_PALETTE;
             this.ctx.stroke();
         }
     }
@@ -108,12 +109,11 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
     }
 
     emitColor(x: number, y: number): void {
-        const rgbaColor = this.getColorAtPosition(x, y);
-        this.color.emit(rgbaColor);
+        this.color.emit(this.getColorAtPosition(x, y));
     }
 
     getColorAtPosition(x: number, y: number): string {
         const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',' + (parseInt(this.opacity, 10) / 100).toString() + ')';
     }
 }

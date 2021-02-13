@@ -1,20 +1,28 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ColorService } from '@app/services/color/color.service';
+import { ColorModalComponent } from './color-modal/color-modal.component';
 import { ColorComponent } from './color.component';
 
 describe('ColorComponent', () => {
     let component: ColorComponent;
+    let mouseEvent: MouseEvent;
     let fixture: ComponentFixture<ColorComponent>;
     let colorService: ColorService;
-    let setOpacitySpy: jasmine.Spy;
     let saveColorSpy: jasmine.Spy;
+    let updateSpy: jasmine.Spy;
 
     beforeEach(async(() => {
         colorService = new ColorService();
         TestBed.configureTestingModule({
-            declarations: [ColorComponent],
+            declarations: [ColorComponent, ColorModalComponent],
             providers: [{ provide: ColorService, useValue: colorService }],
         }).compileComponents();
+
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: 1,
+        } as MouseEvent;
     }));
 
     beforeEach(() => {
@@ -25,6 +33,20 @@ describe('ColorComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('ngAfterViewInit should call updateColor', () => {
+        updateSpy = spyOn(component, 'updateColor');
+        component.ngAfterViewInit();
+        expect(updateSpy).toHaveBeenCalled();
+    });
+
+    it('ngAfterViewInit should initialize visibility value & recentColors', () => {
+        colorService.modalVisibility = true;
+        colorService.recentColors = ['rgba(0,0,0,1)', 'rgba(34,ff,cc,1)'];
+        component.ngAfterViewInit();
+        expect(component.visibility).toEqual(colorService.modalVisibility);
+        expect(component.recentColors).toEqual(colorService.recentColors);
     });
 
     it(' invert should swap primaryColor value with secondaryColor value ', () => {
@@ -41,12 +63,6 @@ describe('ColorComponent', () => {
         component.invert();
         expect(colorService.primaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(colorService.secondaryColor).toEqual('rgba(23,4,56,1)');
-    });
-
-    it(' invert should call setOpacityValue ', () => {
-        setOpacitySpy = spyOn(component, 'setOpacityValue');
-        component.invert();
-        expect(setOpacitySpy).toHaveBeenCalled();
     });
 
     it(' openModal should toggle visibility attribute to true ', () => {
@@ -66,12 +82,6 @@ describe('ColorComponent', () => {
         expect(component.visibility).toEqual(false);
     });
 
-    it(' closeModal should call setOpacityValue ', () => {
-        setOpacitySpy = spyOn(component, 'setOpacityValue');
-        component.closeModal();
-        expect(setOpacitySpy).toHaveBeenCalled();
-    });
-
     it(' updateColor should initialise the color values ', () => {
         colorService.primaryColor = 'rgba(23,4,56,1)';
         colorService.secondaryColor = 'rgba(5,78,fa,0.5)';
@@ -88,7 +98,7 @@ describe('ColorComponent', () => {
 
     it(' selectSecondaryColor should call saveColor ', () => {
         saveColorSpy = spyOn(colorService, 'saveColor');
-        component.selectSecondaryColor('rgba(23,4,56,1)');
+        component.selectSecondaryColor('rgba(23,4,56,1)', mouseEvent);
         expect(saveColorSpy).toHaveBeenCalled();
     });
 
@@ -99,48 +109,8 @@ describe('ColorComponent', () => {
     });
 
     it(' selectSecondaryColor should update the secondary color value ', () => {
-        component.selectSecondaryColor('rgba(5,78,fa,0.5)');
+        component.selectSecondaryColor('rgba(5,78,fa,0.5)', mouseEvent);
         expect(component.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(colorService.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
-    });
-
-    it(' updateOpacityPrimary should update primaryColor value with the new opacity value ', () => {
-        component.primaryColor = 'rgba(23,4,56,1)';
-        component.OP = '45';
-        component.updateOpacityPrimary();
-        expect(component.primaryColor).toEqual('rgba(23,4,56,0.45)');
-        expect(colorService.primaryColor).toEqual('rgba(23,4,56,0.45)');
-    });
-
-    it(' updateOpacitySecondary should update secondaryColor value with the new opacity value ', () => {
-        component.secondaryColor = 'rgba(5,78,fa,0.5)';
-        component.OS = '25';
-        component.updateOpacitySecondary();
-        expect(component.secondaryColor).toEqual('rgba(5,78,fa,0.25)');
-        expect(colorService.secondaryColor).toEqual('rgba(5,78,fa,0.25)');
-    });
-
-    it(' updateOpacityPrimary should set opacity to 100 if the provided value is greater than 100 ', () => {
-        component.primaryColor = 'rgba(23,4,56,0.75)';
-        component.OP = '235';
-        component.updateOpacityPrimary();
-        expect(component.primaryColor).toEqual('rgba(23,4,56,1)');
-        expect(colorService.primaryColor).toEqual('rgba(23,4,56,1)');
-    });
-
-    it(' updateOpacitySecondary should set opacity to 100 if the provided value is greater than 100 ', () => {
-        component.secondaryColor = 'rgba(5,78,fa,0.5)';
-        component.OS = '525';
-        component.updateOpacitySecondary();
-        expect(component.secondaryColor).toEqual('rgba(5,78,fa,1)');
-        expect(colorService.secondaryColor).toEqual('rgba(5,78,fa,1)');
-    });
-
-    it(' setOpacityValue should initialize the correct opacity value for both primary & secondary colors', () => {
-        component.primaryColor = 'rgba(23,4,56,0.75)';
-        component.secondaryColor = 'rgba(5,78,fa,0.38)';
-        component.setOpacityValue();
-        expect(component.OP).toEqual('75');
-        expect(component.OS).toEqual('38');
     });
 });

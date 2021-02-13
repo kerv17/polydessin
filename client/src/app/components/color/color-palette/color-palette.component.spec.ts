@@ -164,10 +164,11 @@ describe('ColorPaletteComponent', () => {
 
     it(' getColorAtPosition returns correct rgba string ', () => {
         component.draw();
+        component.opacity = '54';
         const x = 5;
         const y = 5;
         const imageData = component.ctx.getImageData(x, y, 1, 1).data;
-        const expectedResult: string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+        const expectedResult: string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',' + '0.54' + ')';
         expect(component.getColorAtPosition(x, y)).toEqual(expectedResult);
     });
 });
