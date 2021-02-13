@@ -7,8 +7,9 @@
     overflow: auto;
     flex: 1 1 auto;
     background-color: grey;
-    border: 1px solid black;
+    border: 1px solid black;    
 }
+
 
 .drawing {
     display: grid;
@@ -27,5 +28,5 @@
     margin-left: 40px;
     border-radius: 50%;
     background-color: black;
-    position: absolute;
+    position: fixed;
 }

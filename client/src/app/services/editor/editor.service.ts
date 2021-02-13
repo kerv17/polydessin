@@ -48,7 +48,7 @@ export class EditorService {
 
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (this.verifyWidth(event)) {
+            if (this.forceMaxWidth(event)) {
                 this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
@@ -63,7 +63,7 @@ export class EditorService {
 
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (this.verifyHeight(event)) {
+            if (this.forceMaxHeight(event)) {
                 this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
@@ -78,7 +78,7 @@ export class EditorService {
 
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
-            if (this.verifyWidth(event)) {
+            if (this.forceMaxWidth(event)) {
                 this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
@@ -86,7 +86,7 @@ export class EditorService {
                 this.posX = Globals.CANVAS_SIZE_MIN;
             }
 
-            if (this.verifyHeight(event)) {
+            if (this.forceMaxHeight(event)) {
                 this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
@@ -98,13 +98,13 @@ export class EditorService {
             this.setResizerBottomRight();
         }
     }
-    verifyWidth(event: MouseEvent): boolean {
+    forceMaxWidth(event: MouseEvent): boolean {
         if (event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
             return true;
         }
         return false;
     }
-    verifyHeight(event: MouseEvent): boolean {
+    forceMaxHeight(event: MouseEvent): boolean {
         if (event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
             return true;
         }

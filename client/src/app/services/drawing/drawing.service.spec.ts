@@ -18,7 +18,7 @@ describe('DrawingService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
-    it('should set canvasSize to 250 by 250 if drawing vue is inferior to 970 by 500 (500+470)', () => {
+    it('setSizeCanva should set canvasSize to 250 by 250 if drawing vue is inferior to 970 by 500 (500+470)', () => {
         const width = 700;
         const height = 500;
         global.innerWidth = width;
@@ -27,7 +27,7 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResult, y: expectedResult };
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater then 970 and height is greater then 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 970 and height is greater than 500', () => {
         const width = 1470;
         const height = 800;
         global.innerWidth = width;
@@ -37,7 +37,7 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
-    it('should set canvasSize to 250 by height/2 if drawing vue width is lesser then 970 and height is greater then 500', () => {
+    it('setSizeCanva should set canvasSize to 250 by height/2 if drawing vue width is lesser than 970 and height is greater than 500', () => {
         const width = 800;
         const height = 600;
         global.innerWidth = width;
@@ -47,7 +47,7 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by 250 if  drawing vue width is greater then 970 and height is lesser then 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by 250 if drawing vue width is greater then 970 and height is lesser then 500', () => {
         const width = 1000;
         const height = 400;
         global.innerWidth = width;
@@ -57,7 +57,7 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
-    it('should set controlSize to same value as canvasSize', () => {
+    it('setSizeCanva should set controlSize to same value as canvasSize', () => {
         const width = 1470;
         const height = 800;
         global.innerWidth = width;
@@ -81,21 +81,21 @@ describe('DrawingService', () => {
         service.fillNewSpace(previousSize, newSize);
         expect(fillRectSpy).toHaveBeenCalledWith(previousSize.x, 0, newSize.x, previousSize.y);
     });
-    it('should fill new height', () => {
+    it('fillNewSpace should fill new height', () => {
         const previousSize = { x: 300, y: 400 };
         const newSize = { x: 300, y: 600 };
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
         service.fillNewSpace(previousSize, newSize);
         expect(fillRectSpy).toHaveBeenCalledWith(0, previousSize.y, newSize.x, newSize.y);
     });
-    it('should not fill', () => {
+    it('fillNewSpace should not fill if new size is smaller than previous size', () => {
         const previousSize = { x: 500, y: 400 };
         const newSize = { x: 300, y: 300 };
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
         service.fillNewSpace(previousSize, newSize);
         expect(fillRectSpy).not.toHaveBeenCalled();
     });
-    it('should fill new height and width', () => {
+    it('fillNewSpace should fill new height and width', () => {
         const previousSize = { x: 500, y: 400 };
         const newSize = { x: 700, y: 700 };
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
