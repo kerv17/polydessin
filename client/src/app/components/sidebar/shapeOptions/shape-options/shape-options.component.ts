@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
@@ -8,9 +8,13 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./shape-options.component.scss'],
 })
 export class ShapeOptionsComponent {
+    @Input() change: boolean = false;
     fillButton: { backgroundColor: string } = Globals.backgroundWhite;
     borderButton: { backgroundColor: string } = Globals.backgroundWhite;
     fillBorderButton: { backgroundColor: string } = Globals.backgroundWhite;
+
+    linePoint: boolean = false;
+    lineOn: boolean = false;
 
     constructor(private toolControllerService: ToolControllerService) {}
 
@@ -34,5 +38,10 @@ export class ShapeOptionsComponent {
         this.fillButton = Globals.backgroundWhite;
         this.borderButton = Globals.backgroundWhite;
         this.fillBorderButton = Globals.backgroundWhite;
+    }
+
+    setPoint(point: boolean): void {
+        this.toolControllerService.currentTool.toolMode = point ? 'point' : 'noPoint';
+        this.linePoint = point;
     }
 }

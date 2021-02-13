@@ -27,6 +27,7 @@ export class LineService extends Tool {
         super(drawingService);
         this.clearPath();
         this.width = 1;
+        this.toolMode = 'noPoint';
     }
     onMouseMove(event: MouseEvent): void {
         this.lastMoveEvent = event;
