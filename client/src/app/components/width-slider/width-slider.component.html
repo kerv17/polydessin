@@ -1,4 +1,4 @@
 <p>Veuiller entrez la largeur de l'outil en Pixel</p>
 
-<mat-slider thumbLabel min="1" max="50" [(ngModel)]="width" (change)="getSliderValue($event)"></mat-slider>
+<mat-slider thumbLabel min="1" max="50" [(ngModel)]="width" (change)="updateWidthValues($event)"></mat-slider>
 <div class="value">L'épaisseur courante est de {{ width }}px</div>

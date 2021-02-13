@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EditorService } from '@app/services/editor/editor.service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { ToolControllerService } from './tool-controller.service';
 
 // tslint:disable:no-any
-fdescribe('ToolControllerService', () => {
+describe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
 
@@ -17,7 +18,7 @@ fdescribe('ToolControllerService', () => {
         });
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToolControllerService);
-        service.currentTool = new PencilService(new DrawingService());
+        service.currentTool = new PencilService(new DrawingService(new EditorService()));
     });
 
     it('should be created', () => {
@@ -60,5 +61,5 @@ fdescribe('ToolControllerService', () => {
         document.dispatchEvent(focusEvent);
         expect((service as any).focused).not.toBeTrue();
     });
-    it('it should set the right tool', () => {});
+    // it('it should set the right tool', () => {});
 });

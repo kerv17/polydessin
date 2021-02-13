@@ -1,4 +1,4 @@
-import { SimpleChange } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -6,7 +6,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { WidthSliderComponent } from './width-slider.component';
 
-fdescribe('WidthSliderComponent', () => {
+describe('WidthSliderComponent', () => {
     let component: WidthSliderComponent;
     let fixture: ComponentFixture<WidthSliderComponent>;
     let matSliderChange: MatSliderChange;
@@ -16,7 +16,7 @@ fdescribe('WidthSliderComponent', () => {
     const defaultToolValue = 5;
 
     beforeEach(async(() => {
-        toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setCrayon']);
+        toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setTool']);
         pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({
             declarations: [WidthSliderComponent],
@@ -25,6 +25,7 @@ fdescribe('WidthSliderComponent', () => {
                 { provide: ToolControllerService, useValue: toolControllerSpy },
                 { provide: PencilService, useValue: pencil },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 
@@ -32,9 +33,9 @@ fdescribe('WidthSliderComponent', () => {
         matSliderChange = {
             value: matSlidervalue, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
-        pencil = TestBed.inject(PencilService);
+
         pencil.width = defaultToolValue;
-        toolControllerSpy = TestBed.inject(ToolControllerService) as jasmine.SpyObj<ToolControllerService>;
+
         toolControllerSpy.currentTool = pencil;
         fixture = TestBed.createComponent(WidthSliderComponent);
         component = fixture.componentInstance;
@@ -58,6 +59,7 @@ fdescribe('WidthSliderComponent', () => {
 
     it('Verifying that the component sets the right width value', () => {
         component.updateWidthValues(matSliderChange);
+
         expect(component.width).toEqual(matSlidervalue);
     });
 

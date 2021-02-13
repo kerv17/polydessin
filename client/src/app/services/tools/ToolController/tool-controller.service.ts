@@ -54,10 +54,10 @@ export class ToolControllerService {
             .set(Globals.shiftShortcut, (event: KeyboardEvent) => {
                 this.shift(event.type);
             })
-            .set(Globals.EscapeShortcut, (event: KeyboardEvent) => {
+            .set(Globals.ESCAPE_SHORTCUT, (event: KeyboardEvent) => {
                 this.escape(event.type);
             })
-            .set(Globals.BackSpaceShortcut, (event: KeyboardEvent) => {
+            .set(Globals.BACKSPACE_SHORTCUT, (event: KeyboardEvent) => {
                 this.backspace(event.type);
             });
     }
