@@ -134,7 +134,6 @@ export class LineService extends Tool {
 
     onShift(shifted: boolean): void {
         this.shift = shifted;
-        console.log(this.shift);
         this.onMouseMove(this.lastMoveEvent);
     }
     onEscape(): void {

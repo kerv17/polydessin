@@ -11,8 +11,6 @@ export const ellipsisShortcut = '2';
 export const CORRECTION_CONTROL_MARGIN = 2;
 export const CANVAS_SIZE_MIN = 250;
 export const SIDEBAR_WIDTH = 470;
-export const shiftShortcut = 'Shift';
-
 
 export enum MouseButton {
     Left = 0,
@@ -23,5 +21,6 @@ export enum MouseButton {
 }
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
+export const SHIFT_SHORTCUT = 'Shift';
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;

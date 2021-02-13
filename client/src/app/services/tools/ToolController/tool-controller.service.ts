@@ -13,7 +13,7 @@ export class ToolControllerService {
     toolMap: Map<string, Tool> = new Map();
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
-    private focused: boolean;
+    private focused: boolean = true;
 
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
@@ -32,7 +32,7 @@ export class ToolControllerService {
         document.addEventListener('focusin', (event: FocusEvent) => {
             const target: Node = Object(event.target || event.currentTarget);
             if (target != null) {
-                this.focused = target.nodeName === 'INPUT';
+                this.focused = target.nodeName !== 'INPUT';
             } else {
                 this.focused = false;
             }
@@ -51,7 +51,7 @@ export class ToolControllerService {
             .set(Globals.ellipsisShortcut, this.ellipsisService);
 
         this.functionMap
-            .set(Globals.shiftShortcut, (event: KeyboardEvent) => {
+            .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {
                 this.shift(event.type);
             })
             .set(Globals.ESCAPE_SHORTCUT, (event: KeyboardEvent) => {
