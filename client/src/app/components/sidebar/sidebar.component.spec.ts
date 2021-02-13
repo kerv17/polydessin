@@ -54,10 +54,10 @@ describe('SidebarComponent', () => {
     });
 
     it('it should set all the background colors of the buttons to white', () => {
-        expect(component.crayon).toEqual(Globals.backgroundWhite);
-        expect(component.rectangle).toEqual(Globals.backgroundWhite);
-        expect(component.line).toEqual(Globals.backgroundWhite);
-        expect(component.ellipsis).toEqual(Globals.backgroundWhite);
+        expect(component.crayon).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.line).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.ellipsis).toEqual(Globals.BACKGROUND_WHITE);
     });
 
     it('OpenCrayon should change the ngSyle variable and call SetTool and OpenTool', () => {
@@ -65,39 +65,39 @@ describe('SidebarComponent', () => {
 
         component.openCrayon();
 
-        expect(component.crayon).toEqual(Globals.backgroundGainsoboro);
+        expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.crayonShortcut);
+        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.CRAYON_SHORTCUT);
     });
 
     it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openRectangle();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.rectangle).toEqual(Globals.backgroundGainsoboro);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.rectangleShortcut);
+        expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
+        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
 
     it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openRectangle();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.rectangle).toEqual(Globals.backgroundGainsoboro);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.rectangleShortcut);
+        expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
+        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
     it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openLine();
         expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth);
-        expect(component.line).toEqual(Globals.backgroundGainsoboro);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.lineShortcut);
+        expect(component.line).toEqual(Globals.BACKGROUND_GAINSBORO);
+        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.LINE_SHORTCUT);
     });
     it('OpenEllipsis should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openEllipsis();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.ellipsis).toEqual(Globals.backgroundGainsoboro);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.ellipsisShortcut);
+        expect(component.ellipsis).toEqual(Globals.BACKGROUND_GAINSBORO);
+        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
     it('OpenTool should flip the slider status variable and se showWidth and FillBorder', () => {
         openToolSpy = spyOn(component, 'setButtonWhite');
@@ -117,14 +117,13 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
-        const event = new KeyboardEvent('keydown', {
-            key: 'o',
-            ctrlKey: true,
-        });
+        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: true };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
-        eventSpy = spyOn(event, 'preventDefault');
+        eventSpy = spyOn(keyDownEvent, 'preventDefault');
         drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
-        component.onKeyPress(event);
+        // component.onKeyPress(event);
+        window.dispatchEvent(keyDownEvent);
         expect(eventSpy).toHaveBeenCalled();
         expect(drawingStubSpy).toHaveBeenCalled();
     });
@@ -132,12 +131,11 @@ describe('SidebarComponent', () => {
     it('checking if onKeyPress does nothing if both event keys are bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
 
-        const event = new KeyboardEvent('keydown', {
-            key: 'x',
-            ctrlKey: false,
-        });
+        const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
+        const event = new KeyboardEvent('keydown', keyEventData);
+
         eventSpy = spyOn(event, 'preventDefault');
-        component.onKeyPress(event);
+        window.dispatchEvent(event);
         expect(eventSpy).not.toHaveBeenCalled();
         expect(drawingStubSpy).not.toHaveBeenCalled();
     });
@@ -145,21 +143,20 @@ describe('SidebarComponent', () => {
     it('checking if onKeyPress does nothing if both if the Ctrl Key is bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'nouveauDessin');
 
-        const event = new KeyboardEvent('keydown', {
-            key: '0',
-            ctrlKey: true,
-        });
+        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: false };
+        const event = new KeyboardEvent('keydown', keyEventData);
+        window.dispatchEvent(event);
         eventSpy = spyOn(event, 'preventDefault');
-        component.onKeyPress(event);
+
         expect(eventSpy).not.toHaveBeenCalled();
         expect(drawingStubSpy).not.toHaveBeenCalled();
     });
 
     it('setButtonWhite should set all icons to white', () => {
         component.setButtonWhite();
-        expect(component.crayon).toEqual(Globals.backgroundWhite);
-        expect(component.rectangle).toEqual(Globals.backgroundWhite);
-        expect(component.line).toEqual(Globals.backgroundWhite);
-        expect(component.ellipsis).toEqual(Globals.backgroundWhite);
+        expect(component.crayon).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.line).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.ellipsis).toEqual(Globals.BACKGROUND_WHITE);
     });
 });

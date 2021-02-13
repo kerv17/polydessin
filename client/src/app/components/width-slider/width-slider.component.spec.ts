@@ -39,6 +39,7 @@ describe('WidthSliderComponent', () => {
         toolControllerSpy.currentTool = pencil;
         fixture = TestBed.createComponent(WidthSliderComponent);
         component = fixture.componentInstance;
+        component.change = true;
         fixture.detectChanges();
     });
     it('should create PencilService', () => {
@@ -83,7 +84,8 @@ describe('WidthSliderComponent', () => {
         toolControllerSpy.currentTool.width = newValue;
         // On doit faire comme si le form contenait une nouvelle valeur
         const temp = toolControllerSpy.currentTool.width;
-        component.ngOnChanges({ change: new SimpleChange(null, component.width, true) });
+
+        component.ngOnChanges({ change: new SimpleChange(null, component.change, true) });
         expect(toolControllerSpy.currentTool.width).toEqual(temp);
         expect(component.width).toEqual(newValue);
     });

@@ -24,7 +24,7 @@ describe('ToolControllerService', () => {
     });
 
     xit('should call checkKeyPress() when any key is down', () => {
-        const keyEventData = { isTrusted: true, key: Globals.crayonShortcut };
+        const keyEventData = { isTrusted: true, key: Globals.CRAYON_SHORTCUT };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         dispatchEvent(keyDownEvent);
         // expect().toHaveBeenCalled();
