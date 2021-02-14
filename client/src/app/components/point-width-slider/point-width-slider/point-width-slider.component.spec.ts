@@ -9,7 +9,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { PointWidthSliderComponent } from './point-width-slider.component';
-fdescribe('PointWidthSliderComponent', () => {
+describe('PointWidthSliderComponent', () => {
     let component: PointWidthSliderComponent;
     let fixture: ComponentFixture<PointWidthSliderComponent>;
     let toolController: ToolControllerService;
@@ -17,6 +17,11 @@ fdescribe('PointWidthSliderComponent', () => {
     let matSliderChange: MatSliderChange;
 
     beforeEach(async(() => {
+        line = new LineService({} as DrawingService);
+        const DEFAULT_WIDTH_VALUE = 5;
+        line.pointWidth = DEFAULT_WIDTH_VALUE;
+        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController.currentTool = line;
         TestBed.configureTestingModule({
             declarations: [PointWidthSliderComponent],
             providers: [
@@ -28,17 +33,13 @@ fdescribe('PointWidthSliderComponent', () => {
     }));
 
     beforeEach(() => {
-        line = new LineService({} as DrawingService);
-        const DEFAULT_WIDTH_VALUE = 5;
-        line.pointWidth = DEFAULT_WIDTH_VALUE;
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, line, {} as EllipsisService);
-        toolController.currentTool = line;
         fixture = TestBed.createComponent(PointWidthSliderComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         matSliderChange = {
             value: Globals.TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
+        component.change = true;
     });
 
     it('should create', () => {
@@ -79,7 +80,7 @@ fdescribe('PointWidthSliderComponent', () => {
     it('verifying ngOnchanges with the change value not changing', () => {
         // set the value of pointwidth to 12
         component.getPointSliderValue(matSliderChange);
-        // component.ngOnChanges({});
+        component.ngOnChanges({});
         // On doit faire comme si le form contenait une nouvelle valeur
 
         // on change pas la valeur de set
