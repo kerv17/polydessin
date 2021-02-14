@@ -8,7 +8,6 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    visible: boolean = false;
     showWidth: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
@@ -18,7 +17,9 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {}
+    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+        this.openCrayon();
+    }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
         this.service.setTool(Globals.CRAYON_SHORTCUT);

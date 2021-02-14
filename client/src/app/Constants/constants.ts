@@ -1,3 +1,4 @@
+// Buttons in sidebar
 export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
 
@@ -10,6 +11,17 @@ export const ELLIPSIS_SHORTCUT = '2';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
+
+// Variables d'editor
+export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;
+
+// Variables pour parcourir le RGBA
+export const ROUGE = 0;
+export const VERT = 1;
+export const BLEU = 2;
+export const OPACITE = 3;
+export const PIXEL_SIZE = 4;
+export const WHITE = 255;
 
 // Color
 export const MAX_OPACITY = 100;

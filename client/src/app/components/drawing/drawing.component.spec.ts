@@ -5,7 +5,7 @@ import { EditorService } from '@app/services/editor/editor.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
-xdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;

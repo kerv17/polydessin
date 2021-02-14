@@ -191,7 +191,7 @@ describe('EditorService', () => {
     });
     it('mouseMoveHandlerRight should force max size on posX if mouse offsetX is too big', () => {
         service.mouseDown = true;
-        const width = 1460;
+        const width = 1470;
         const height = 800;
         const expectedResult = 950;
         global.innerWidth = width;
@@ -293,7 +293,7 @@ describe('EditorService', () => {
     });
     it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too big', () => {
         service.mouseDown = true;
-        const width = 1460;
+        const width = 1470;
         const height = 800;
         const expectedResultX = 950;
         const expectedResultY = 760;

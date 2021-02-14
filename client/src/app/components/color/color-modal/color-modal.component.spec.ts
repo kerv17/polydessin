@@ -18,7 +18,7 @@ class MockColorPaletteComponent {
     opacity: string;
 }
 
-xdescribe('ColorModalComponent', () => {
+describe('ColorModalComponent', () => {
     let component: ColorModalComponent;
     let fixture: ComponentFixture<ColorModalComponent>;
     let colorService: ColorService;

@@ -1,17 +1,28 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
+import { EditorService } from '@app/services/editor/editor.service';
 import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
     let fillRectSpy: jasmine.Spy;
-    // let canvasNotEmptySpy: jasmine.Spy;q
+    let canvasNotEmptySpy: jasmine.Spy;
+    let setSizeSpy: jasmine.Spy;
+    let clearCanvasSpy: jasmine.Spy;
+    let editorSpy: jasmine.SpyObj<EditorService>;
+    let confirmSpy: jasmine.Spy;
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        editorSpy = jasmine.createSpyObj(EditorService, ['resetControlPoints']);
+        service = new DrawingService(editorSpy);
+        TestBed.configureTestingModule({
+            providers: [DrawingService, { provide: EditorService, useValue: editorSpy }],
+        });
         service = TestBed.inject(DrawingService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         service.canvas = canvasTestHelper.canvas;
+        service.previewCanvas = canvasTestHelper.canvas;
         service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
@@ -69,11 +80,33 @@ describe('DrawingService', () => {
         expect(service.controlSize.x).toEqual(expectedResultX);
         expect(service.controlSize.y).toEqual(expectedResultY);
     });
+    it('setSizeCanva should work the same way if a vec is passed in paramaters', () => {
+        const width = 1470;
+        const height = 800;
+        const vec: Vec2 = { x: 0, y: 0 };
+
+        global.innerWidth = width;
+        global.innerHeight = height;
+        const expectedResultX = 505;
+        const expectedResultY = 400;
+        service.setSizeCanva(vec);
+        expect(vec.x).toEqual(expectedResultX);
+        expect(vec.y).toEqual(expectedResultY);
+    });
+
     it('should clear the whole canvas', () => {
         service.clearCanvas(service.baseCtx);
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
         const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
         expect(hasColoredPixels).toEqual(false);
+    });
+
+    it('should get mouse position', () => {
+        const event = { offsetX: 1, offsetY: 0 } as MouseEvent;
+        const vec = service.getPositionFromMouse(event);
+
+        expect(vec.x).toEqual(event.offsetX);
+        expect(vec.y).toEqual(event.offsetY);
     });
     it('should fill new width', () => {
         const previousSize = { x: 300, y: 400 };
@@ -104,6 +137,84 @@ describe('DrawingService', () => {
         expect(fillRectSpy).toHaveBeenCalledWith(previousSize.x, 0, newSize.x, previousSize.y);
         expect(fillRectSpy).toHaveBeenCalledWith(0, previousSize.y, newSize.x, newSize.y);
     });
+    // Problème de test
+    it('should create a new canvas if the canvas is not empty and the user confirms', () => {
+        confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
+        // juste pour voir s'il ya un changement
+        const vec: Vec2 = { x: 1, y: 1 };
+        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        clearCanvasSpy = spyOn(service, 'clearCanvas');
+        setSizeSpy = spyOn(service, 'setSizeCanva').and.returnValue(vec);
+        fillRectSpy = spyOn(service.baseCtx, 'fillRect');
+        service.newCanvas();
 
-    // it('should create a new canvas if the canvas is not empty and the user comfirms', () => {});
+        expect(fillRectSpy).toHaveBeenCalled();
+        expect(setSizeSpy).toHaveBeenCalled();
+        expect(canvasNotEmptySpy).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
+        expect(editorSpy.resetControlPoints).toHaveBeenCalled();
+        expect(service.canvas.width).toEqual(vec.x);
+        expect(service.canvas.height).toEqual(vec.y);
+        expect(service.previewCanvas.width).toEqual(vec.x);
+        expect(service.previewCanvas.height).toEqual(vec.y);
+    });
+
+    it('should not create a new canvas if the canvas is not empty and the user doesnt confirm', () => {
+        confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
+        // juste pour voir s'il ya un changement
+        const vec: Vec2 = { x: 1, y: 1 };
+        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        clearCanvasSpy = spyOn(service, 'clearCanvas');
+        setSizeSpy = spyOn(service, 'setSizeCanva').and.returnValue(vec);
+        fillRectSpy = spyOn(service.baseCtx, 'fillRect');
+        service.newCanvas();
+
+        expect(fillRectSpy).not.toHaveBeenCalled();
+        expect(setSizeSpy).toHaveBeenCalled();
+        expect(canvasNotEmptySpy).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).not.toHaveBeenCalledWith(service.previewCtx);
+        expect(editorSpy.resetControlPoints).not.toHaveBeenCalled();
+        expect(service.canvas.width).not.toEqual(vec.x);
+        expect(service.canvas.height).not.toEqual(vec.y);
+        expect(service.previewCanvas.width).not.toEqual(vec.x);
+        expect(service.previewCanvas.height).not.toEqual(vec.y);
+    });
+
+    it('should  create a new canvas if the canvas is  empty ', () => {
+        confirmSpy = spyOn(window, 'confirm');
+        // juste pour voir s'il ya un changement
+        const vec: Vec2 = { x: 1, y: 1 };
+        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        clearCanvasSpy = spyOn(service, 'clearCanvas');
+        setSizeSpy = spyOn(service, 'setSizeCanva').and.returnValue(vec);
+        fillRectSpy = spyOn(service.baseCtx, 'fillRect');
+        service.newCanvas();
+
+        expect(fillRectSpy).toHaveBeenCalled();
+        expect(setSizeSpy).toHaveBeenCalled();
+        expect(canvasNotEmptySpy).toHaveBeenCalled();
+        expect(confirmSpy).not.toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
+        expect(editorSpy.resetControlPoints).toHaveBeenCalled();
+        expect(service.canvas.width).toEqual(vec.x);
+        expect(service.canvas.height).toEqual(vec.y);
+        expect(service.previewCanvas.width).toEqual(vec.x);
+        expect(service.previewCanvas.height).toEqual(vec.y);
+    });
+
+    it('should return true if the canvas is not empty', () => {
+        service.baseCtx.fillStyle = 'black';
+        service.baseCtx.fillRect(0, 0, 2, 2);
+        const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
+        expect(service.canvasNotEmpty(image)).toBeTrue();
+    });
+
+    it('should return false if the canvas is empty', () => {
+        service.baseCtx.fillStyle = 'white';
+        service.baseCtx.fillRect(0, 0, service.canvas.width, service.canvas.height);
+        const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
+        expect(service.canvasNotEmpty(image)).not.toBeTrue();
+    });
 });

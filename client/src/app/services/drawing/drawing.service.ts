@@ -45,8 +45,8 @@ export class DrawingService {
     }
     // TODO à modifier
     newCanvas(): void {
-        const vec: Vec2 = { x: 0, y: 0 };
-        this.setSizeCanva(vec);
+        let vec: Vec2 = { x: 0, y: 0 };
+        vec = this.setSizeCanva(vec);
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
@@ -66,13 +66,9 @@ export class DrawingService {
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    // TODO à transférer
     canvasNotEmpty(image: ImageData): boolean {
-        // window.alert(image.data[image.data.length - 3]);
-        const quatre = 4;
-        const deuxcentcinquentcinq = 255;
-        for (let i = 0; i < image.data.length; i += quatre) {
-            if (image.data[i] != deuxcentcinquentcinq || image.data[i + 1] != deuxcentcinquentcinq || image.data[i + 2] != deuxcentcinquentcinq) {
+        for (let i = 0; i < image.data.length; i += Globals.PIXEL_SIZE) {
+            if (image.data[i] !== Globals.WHITE || image.data[i + 1] !== Globals.WHITE || image.data[i + 2] !== Globals.WHITE) {
                 return true;
             }
         }
