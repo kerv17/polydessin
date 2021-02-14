@@ -13,7 +13,7 @@ export class ToolControllerService {
     toolMap: Map<string, Tool> = new Map();
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
-    private focused: boolean;
+    private focused: boolean = true;
 
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
@@ -30,13 +30,12 @@ export class ToolControllerService {
         });
 
         document.addEventListener('focusin', (event: FocusEvent) => {
-            const target: Node = Object(event.target || event.currentTarget);
+            const target: HTMLElement = Object(event.target || event.currentTarget);
+            console.log(target.tagName, target);
             if (target != null) {
-                if (target.nodeName === 'INPUT') {
-                    this.focused = false;
-                } else {
-                    this.focused = true;
-                }
+                this.focused = target.nodeName !== 'INPUT';
+            } else {
+                this.focused = false;
             }
         });
 
@@ -53,7 +52,7 @@ export class ToolControllerService {
             .set(Globals.ellipsisShortcut, this.ellipsisService);
 
         this.functionMap
-            .set(Globals.shiftShortcut, (event: KeyboardEvent) => {
+            .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {
                 this.shift(event.type);
             })
             .set(Globals.ESCAPE_SHORTCUT, (event: KeyboardEvent) => {
@@ -102,6 +101,10 @@ export class ToolControllerService {
     }
     setFillBorder(): void {
         this.currentTool.toolMode = 'fillBorder';
+    }
+
+    getLineMode(): boolean {
+        return this.currentTool.toolMode === 'point';
     }
     // TODO changer ca
     private checkKeyEvent(event: KeyboardEvent): void {
