@@ -1,0 +1,6 @@
+<button id="noLinePoint" (click)="setPoint(false)">Sans points aux jointures</button>
+<button id="linePoint" (click)="setPoint(true)">Point aux jointures</button>
+
+<div *ngIf="linePoint">
+    <app-point-width-slider [change]="change"></app-point-width-slider>
+</div>

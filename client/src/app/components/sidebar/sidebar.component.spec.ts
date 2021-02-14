@@ -89,7 +89,7 @@ describe('SidebarComponent', () => {
     it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openLine();
-        expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth);
+        expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth, true);
         expect(component.line).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.LINE_SHORTCUT);
     });
