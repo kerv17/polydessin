@@ -123,4 +123,8 @@ export class ToolControllerService {
         }
         return;
     }
+
+    resetWidth(): void {
+        Array.from(this.toolMap.values()).forEach((value) => (value.width = 1));
+    }
 }

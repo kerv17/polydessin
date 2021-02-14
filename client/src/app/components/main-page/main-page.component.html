@@ -2,7 +2,7 @@
     <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
 
     <div id="server-message">
-        <button class="button" routerLink="/editor">Créer un nouveau dessin</button>
+        <button class="button" routerLink="/editor" (click)='resetDrawingAttributes()'>Créer un nouveau dessin</button>
         <button class="button">Ouvrir le carrousel de dessins</button>
         <button class="button" *ngIf="verifDessinExistant()">Continuer un dessin.</button>
     </div>
