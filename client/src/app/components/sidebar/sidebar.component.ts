@@ -10,6 +10,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 export class SidebarComponent {
     showWidth: boolean = false;
     fillBorder: boolean = false;
+    showline: boolean = false;
     resetSlider: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
@@ -33,7 +34,7 @@ export class SidebarComponent {
 
     openLine(): void {
         this.service.setTool(Globals.LINE_SHORTCUT);
-        this.openTool(false, true);
+        this.openTool(false, true, true);
         this.line = Globals.BACKGROUND_GAINSBORO;
     }
 
@@ -42,9 +43,10 @@ export class SidebarComponent {
         this.openTool(true, true);
         this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }
-    openTool(fillBorder: boolean, showWidth: boolean): void {
+    openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
+        this.showline = showline;
         this.resetSlider = !this.resetSlider;
         this.setButtonWhite();
     }

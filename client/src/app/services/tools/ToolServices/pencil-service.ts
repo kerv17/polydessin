@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/Constants/constants';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+// TODO : Déplacer ça dans un fichier séparé accessible par tous
 @Injectable({
     providedIn: 'root',
 })
@@ -18,7 +19,7 @@ export class PencilService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
 

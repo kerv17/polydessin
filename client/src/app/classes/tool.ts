@@ -10,6 +10,7 @@ export abstract class Tool {
     color: string;
     color2: string;
     width: number;
+    pointWidth: number;
     toolMode: string = 'border';
     shift: boolean = false;
 

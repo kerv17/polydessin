@@ -27,6 +27,7 @@ export class LineService extends Tool {
         super(drawingService);
         this.clearPath();
         this.width = 1;
+        this.toolMode = 'noPoint';
     }
     onMouseMove(event: MouseEvent): void {
         this.lastMoveEvent = event;
@@ -67,13 +68,28 @@ export class LineService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color || 'black';
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+        if (this.toolMode === 'point') {
+            this.drawDot(ctx, path);
+        }
     }
 
+    private drawDot(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.strokeStyle = this.color2 || 'black';
+        ctx.fillStyle = this.color2 || 'black';
+        for (const point of path) {
+            ctx.beginPath();
+            ctx.ellipse(point.x, point.y, this.pointWidth, this.pointWidth, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
     private clearPath(): void {
         this.pathData = [];
     }
@@ -118,7 +134,6 @@ export class LineService extends Tool {
 
     onShift(shifted: boolean): void {
         this.shift = shifted;
-        console.log(this.shift);
         this.onMouseMove(this.lastMoveEvent);
     }
     onEscape(): void {

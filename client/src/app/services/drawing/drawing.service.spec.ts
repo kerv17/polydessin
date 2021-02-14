@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { EditorService } from '@app/services/editor/editor.service';
 import { DrawingService } from './drawing.service';
 
-fdescribe('DrawingService', () => {
+describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
     let fillRectSpy: jasmine.Spy;
