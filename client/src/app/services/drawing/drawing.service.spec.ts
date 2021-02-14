@@ -28,7 +28,7 @@ describe('DrawingService', () => {
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
     it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 970 and height is greater than 500', () => {
-        const width = 1470;
+        const width = 1460;
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
@@ -52,13 +52,13 @@ describe('DrawingService', () => {
         const height = 400;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 265;
+        const expectedResultX = 270;
         const expectedResultY = 250;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
     });
     it('setSizeCanva should set controlSize to same value as canvasSize', () => {
-        const width = 1470;
+        const width = 1460;
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;

@@ -45,11 +45,11 @@ export class EditorService {
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
-    
+
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxWidth(event)) {
-                this.posX = (document.documentElement.clientWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
@@ -64,7 +64,7 @@ export class EditorService {
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxHeight(event)) {
-                this.posY = document.documentElement.clientHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
@@ -79,7 +79,7 @@ export class EditorService {
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxWidth(event)) {
-                this.posX = (document.documentElement.clientWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
@@ -87,7 +87,7 @@ export class EditorService {
             }
 
             if (this.forceMaxHeight(event)) {
-                this.posY = document.documentElement.clientHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
@@ -99,13 +99,13 @@ export class EditorService {
         }
     }
     forceMaxWidth(event: MouseEvent): boolean {
-        if (event.offsetX >= (document.documentElement.clientWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
+        if (event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
             return true;
         }
         return false;
     }
     forceMaxHeight(event: MouseEvent): boolean {
-        if (event.offsetY >= document.documentElement.clientHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
+        if (event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
             return true;
         }
         return false;

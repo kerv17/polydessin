@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { EditorService } from './editor.service';
 
 // tslint: disable: no - any;
-fdescribe('EditorService', () => {
+describe('EditorService', () => {
     let service: EditorService;
     let setResizerBottomLineSpy: jasmine.Spy;
     let setResizerRightLineSpy: jasmine.Spy;
@@ -41,7 +41,7 @@ fdescribe('EditorService', () => {
     it('setResizerRightLine should set right line control point', () => {
         const entreeX = 1000;
         const entreeY = 700;
-        const expectedWidth = '997px';
+        const expectedWidth = '997.5px';
         const expectedHeight = '350px';
         const expectedCursor = 'col-resize';
         let expectedNGStyle: { [key: string]: string };
@@ -59,7 +59,7 @@ fdescribe('EditorService', () => {
         const entreeX = 1000;
         const entreeY = 700;
         const expectedWidth = '500px';
-        const expectedHeight = '697px';
+        const expectedHeight = '697.5px';
         const expectedCursor = 'row-resize';
         let expectedNGStyle: { [key: string]: string };
         expectedNGStyle = {
@@ -75,8 +75,8 @@ fdescribe('EditorService', () => {
     it('setResizerBottomRight should set bottom right control point', () => {
         const entreeX = 1000;
         const entreeY = 700;
-        const expectedWidth = '997px';
-        const expectedHeight = '697px';
+        const expectedWidth = '997.5px';
+        const expectedHeight = '697.5px';
         const expectedCursor = 'nwse-resize';
         let expectedNGStyle: { [key: string]: string };
         expectedNGStyle = {
@@ -291,7 +291,7 @@ fdescribe('EditorService', () => {
         expect(service.posX).toEqual(expectedResult);
         expect(service.posY).toEqual(expectedResult);
     });
-    it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too', () => {
+    it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too big', () => {
         service.mouseDown = true;
         const width = 1460;
         const height = 800;
