@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
-// import { DrawingComponent } from '@app/components/drawing/drawing.component';
-// import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { ColorComponent } from '@app/components/color/color.component';
+import { DrawingComponent } from '@app/components/drawing/drawing.component';
+import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { EditorComponent } from './editor.component';
@@ -19,7 +20,7 @@ describe('EditorComponent', () => {
         drawingStub = new DrawingService(editorService);
 
         TestBed.configureTestingModule({
-            declarations: [EditorComponent],
+            declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent],
             providers: [
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
