@@ -50,7 +50,6 @@ export class EditorService {
         if (this.mouseDown) {
             if (this.forceMaxWidth(event)) {
                 this.posX = (document.documentElement.clientWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
-                this.editorX = event.offsetX*1.2;
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {

@@ -22,13 +22,6 @@ export class EditorComponent {
         this.editorService.mouseDown = true;
         this.editorService.position = pos;
         this.elementView.nativeElement.off
-        // let elmnt = document.getElementsByClassName("drawing-container");
-        /*if(elmnt){
-            window.alert(elmnt?.clientHeight);
-            window.alert(elmnt?.clientTop);
-            window.alert(elmnt?.offsetHeight);
-            window.alert(elmnt?.offsetTop);
-        }*/
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
