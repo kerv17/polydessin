@@ -9,9 +9,12 @@ export const RECTANGLE_SHORTCUT = '1';
 export const ELLIPSIS_SHORTCUT = '2';
 export const CORRECTION_CONTROL_MARGIN = 2.5;
 export const CANVAS_SIZE_MIN = 250;
-export const SIDEBAR_WIDTH = 468;
+export const SIDEBAR_WIDTH = 470;
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
+
+//Variables d'editor
+export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;

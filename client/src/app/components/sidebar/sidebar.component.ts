@@ -17,7 +17,9 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {}
+    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+        this.openCrayon();
+    }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
         this.service.setTool(Globals.CRAYON_SHORTCUT);

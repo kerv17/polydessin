@@ -10,7 +10,7 @@ export class EditorService {
     resizerBottomLine: { [key: string]: string };
     position: number;
     mouseDown: boolean = false;
-    test: { height: number } = { height: 2 * window.innerHeight };
+
     posX: number;
     posY: number;
 

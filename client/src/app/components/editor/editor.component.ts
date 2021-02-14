@@ -22,10 +22,10 @@ export class EditorComponent {
 
     onResize(event: ResizedEvent): void {
         if (window.innerHeight < this.editorService.posY) {
-            this.editorSizeY = this.editorService.posY * 1.1;
+            this.editorSizeY = this.editorService.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL;
         }
         if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.editorService.posX) {
-            this.editorSizeX = (this.editorService.posX + Globals.SIDEBAR_WIDTH) * 1.1;
+            this.editorSizeX = (this.editorService.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL;
         }
         if (window.innerHeight > this.editorService.posY) {
             this.editorSizeY = window.innerHeight;
@@ -69,4 +69,3 @@ export class EditorComponent {
         return !this.editorService.mouseDown;
     }
 }
-0;
