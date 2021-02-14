@@ -1,10 +1,11 @@
 .container {
     display: flex;
-    height: auto;
-
     height: 100%;
-    //
-    width: 460px;
+    position: relative;
+    width: 100%;
+    //min-height: 100vh;
+    flex: 1 1 auto;
+    width: 470px;
     //padding: 0 5px 0 5px;
 }
 //J'utilise ca pour faire la rangé de bouton a gauche

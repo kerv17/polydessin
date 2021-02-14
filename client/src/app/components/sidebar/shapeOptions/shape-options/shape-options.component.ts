@@ -8,31 +8,31 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./shape-options.component.scss'],
 })
 export class ShapeOptionsComponent {
-    fillButton: { backgroundColor: string } = Globals.backgroundWhite;
-    borderButton: { backgroundColor: string } = Globals.backgroundWhite;
-    fillBorderButton: { backgroundColor: string } = Globals.backgroundWhite;
+    fillButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    borderButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    fillBorderButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(private toolControllerService: ToolControllerService) {}
 
     setFill(): void {
         this.toolControllerService.setFill();
         this.setButtonsWhite();
-        this.fillButton = Globals.backgroundGainsoboro;
+        this.fillButton = Globals.BACKGROUND_GAINSBORO;
     }
     setBorder(): void {
         this.toolControllerService.setBorder();
         this.setButtonsWhite();
-        this.borderButton = Globals.backgroundGainsoboro;
+        this.borderButton = Globals.BACKGROUND_GAINSBORO;
     }
     setFillBorder(): void {
         this.toolControllerService.setFillBorder();
         this.setButtonsWhite();
-        this.fillBorderButton = Globals.backgroundGainsoboro;
+        this.fillBorderButton = Globals.BACKGROUND_GAINSBORO;
     }
 
     setButtonsWhite(): void {
-        this.fillButton = Globals.backgroundWhite;
-        this.borderButton = Globals.backgroundWhite;
-        this.fillBorderButton = Globals.backgroundWhite;
+        this.fillButton = Globals.BACKGROUND_WHITE;
+        this.borderButton = Globals.BACKGROUND_WHITE;
+        this.fillBorderButton = Globals.BACKGROUND_WHITE;
     }
 }

@@ -6,6 +6,7 @@ describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
     let fillRectSpy: jasmine.Spy;
+    // let canvasNotEmptySpy: jasmine.Spy;q
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawingService);
@@ -32,7 +33,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 505;
         const expectedResultY = 400;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
@@ -62,7 +63,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 505;
         const expectedResultY = 400;
         service.setSizeCanva();
         expect(service.controlSize.x).toEqual(expectedResultX);
@@ -103,4 +104,6 @@ describe('DrawingService', () => {
         expect(fillRectSpy).toHaveBeenCalledWith(previousSize.x, 0, newSize.x, previousSize.y);
         expect(fillRectSpy).toHaveBeenCalledWith(0, previousSize.y, newSize.x, newSize.y);
     });
+
+    // it('should create a new canvas if the canvas is not empty and the user comfirms', () => {});
 });

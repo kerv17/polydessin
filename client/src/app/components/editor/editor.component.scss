@@ -5,11 +5,8 @@
 }
 
 .drawing-container {
-    // breaks the scrow bars
-    // overflow: auto;
     flex: 1 1 auto;
     background-color: grey;
-    //border: 1px solid black;  
     height: 100%;
     width: 100%; 
 }
@@ -23,14 +20,12 @@
 .sidebar {
     display: flex;
     width: min-content;
+    height: 100%;
 }
 .resizer {
     width: 10px;
     height: 10px;
-    //margin-top: 50px;
-    //margin-left: 40px;
     border-radius: 50%;
     background-color: black;
-   // position:fixed;
     position: absolute;
 }

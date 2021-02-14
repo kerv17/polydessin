@@ -40,6 +40,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
@@ -67,7 +68,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
                 this.baseCanvas.nativeElement.width = this.widthPrev;
                 this.baseCanvas.nativeElement.height = this.heightPrev;
+
                 this.baseCtx.putImageData(dessin, 0, 0);
+
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
             }
         }
