@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
@@ -10,6 +10,9 @@ import { EditorService } from '@app/services/editor/editor.service';
 export class EditorComponent {
     sizeCanvas: Vec2;
 
+    @ViewChild('containerIWant') elementView: ElementRef;
+      viewHeight: number;
+
     constructor(public drawingService: DrawingService, public editorService: EditorService) {
         this.sizeCanvas = this.drawingService.setSizeCanva();
         this.editorService.resetControlPoints(this.sizeCanvas.x, this.sizeCanvas.y);
@@ -18,6 +21,14 @@ export class EditorComponent {
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.editorService.mouseDown = true;
         this.editorService.position = pos;
+        this.elementView.nativeElement.off
+        // let elmnt = document.getElementsByClassName("drawing-container");
+        /*if(elmnt){
+            window.alert(elmnt?.clientHeight);
+            window.alert(elmnt?.clientTop);
+            window.alert(elmnt?.offsetHeight);
+            window.alert(elmnt?.offsetTop);
+        }*/
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {

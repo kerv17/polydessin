@@ -27,7 +27,7 @@ export class DrawingService {
     setSizeCanva(): Vec2 {
         const dimensionPageY = window.innerHeight;
         const dimensionPageX = window.innerWidth;
-        window.alert(window.innerHeight);
+       // window.alert();
 
         if ((dimensionPageX - Globals.SIDEBAR_WIDTH) / 2 < Globals.CANVAS_SIZE_MIN) {
             this.canvasSize.x = Globals.CANVAS_SIZE_MIN;
