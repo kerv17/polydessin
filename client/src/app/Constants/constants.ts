@@ -47,3 +47,6 @@ export const CANVAS_SIZE_MIN = 250;
 export const SIDEBAR_WIDTH = 470;
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
+// Constante pour test
+
+export const TEST_MAT_SLIDER_VALUE = 12;

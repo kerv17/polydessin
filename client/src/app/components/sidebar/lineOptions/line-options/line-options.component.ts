@@ -11,6 +11,8 @@ export class LineOptionsComponent {
     linePoint: boolean = false;
 
     constructor(private toolControllerService: ToolControllerService) {
+        //We need this because this componenent is recreated every time we switch tools
+        //and this decides wetherthe slider appears
         this.linePoint = this.toolControllerService.getLineMode();
     }
 
