@@ -49,7 +49,7 @@ describe('SidebarComponent', () => {
     });
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
-        expect(component.resetSlider).toEqual(false);
+        expect(component.resetSlider).toEqual(true);
         expect(component.fillBorder).toEqual(false);
     });
 

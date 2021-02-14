@@ -45,8 +45,8 @@ export class DrawingService {
     }
     // TODO à modifier
     newCanvas(): void {
-        const vec: Vec2 = { x: 0, y: 0 };
-        this.setSizeCanva(vec);
+        let vec: Vec2 = { x: 0, y: 0 };
+        vec = this.setSizeCanva(vec);
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
