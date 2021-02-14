@@ -8,7 +8,6 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    visible: boolean = false;
     showWidth: boolean = false;
     fillBorder: boolean = false;
     resetSlider: boolean = false;

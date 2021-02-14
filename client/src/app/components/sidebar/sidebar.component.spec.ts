@@ -47,15 +47,14 @@ describe('SidebarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    it('it should give ShowWidth Visible ,fill border,reset Slider default values of false', () => {
-        expect(component.visible).toEqual(false);
-        expect(component.showWidth).toEqual(false);
+    it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
+        expect(component.showWidth).toEqual(true);
         expect(component.resetSlider).toEqual(false);
         expect(component.fillBorder).toEqual(false);
     });
 
-    it('it should set all the background colors of the buttons to white', () => {
-        expect(component.crayon).toEqual(Globals.BACKGROUND_WHITE);
+    it('it should set all the background colors of the buttons to white except crayon ', () => {
+        expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
         expect(component.line).toEqual(Globals.BACKGROUND_WHITE);
         expect(component.ellipsis).toEqual(Globals.BACKGROUND_WHITE);
