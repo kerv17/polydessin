@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSlider } from '@angular/material/slider';
+import { ColorComponent } from '@app/components/color/color.component';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
@@ -28,7 +29,7 @@ describe('SidebarComponent', () => {
         drawingStub = new DrawingServiceStub({} as EditorService);
         toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['setTool']);
         TestBed.configureTestingModule({
-            declarations: [SidebarComponent, MatSlider],
+            declarations: [SidebarComponent, MatSlider, ColorComponent],
             providers: [
                 SidebarComponent,
                 { provide: ToolControllerService, useValue: toolControllerSpy },
