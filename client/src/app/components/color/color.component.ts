@@ -37,6 +37,7 @@ export class ColorComponent implements AfterViewInit {
 
     closeModal(): void {
         this.visibility = false;
+        this.colorService.modalVisibility = false;
     }
 
     updateColor(): void {
@@ -45,15 +46,19 @@ export class ColorComponent implements AfterViewInit {
     }
 
     selectPrimaryColor(color: string): void {
-        this.colorService.saveColor(this.primaryColor);
-        this.primaryColor = color;
-        this.colorService.primaryColor = this.primaryColor;
+        if (!this.colorService.modalVisibility) {
+            this.colorService.saveColor(this.primaryColor);
+            this.primaryColor = color;
+            this.colorService.primaryColor = this.primaryColor;
+        }
     }
 
     selectSecondaryColor(color: string, event: MouseEvent): boolean {
-        this.colorService.saveColor(this.secondaryColor);
-        this.secondaryColor = color;
-        this.colorService.secondaryColor = this.secondaryColor;
+        if (!this.colorService.modalVisibility) {
+            this.colorService.saveColor(this.secondaryColor);
+            this.secondaryColor = color;
+            this.colorService.secondaryColor = this.secondaryColor;
+        }
         // pour prévenir l'ouverture du menu contextuel lorsqu'on clique avec le bouton droit de la souris
         return false;
     }

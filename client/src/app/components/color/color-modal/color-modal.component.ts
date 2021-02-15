@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
-import { MAX_OPACITY } from '@app/Constants/constants';
+import { DEFAULT_COLOR, MAX_OPACITY } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class ColorModalComponent implements AfterViewInit {
     rValue: string = '0';
     gValue: string = '0';
     bValue: string = '0';
-    opacity: string = '100';
+    opacity: string = MAX_OPACITY.toString();
 
     @Output()
     isVisible: EventEmitter<boolean> = new EventEmitter(true);
@@ -26,7 +26,7 @@ export class ColorModalComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.color = this.colorService.selectedColor();
         this.setColorInputValue();
-        if (this.color !== 'rgba(0,0,0,1)') {
+        if (this.color !== DEFAULT_COLOR) {
             this.hue = this.color;
         }
     }

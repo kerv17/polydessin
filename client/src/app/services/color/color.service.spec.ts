@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from './color.service';
 
 describe('ColorService', () => {
@@ -76,13 +77,13 @@ describe('ColorService', () => {
 
     it('selectedColor should return the primaryColor if it was selected', () => {
         service.primaryColor = 'rgba(125,43,100,1)';
-        service.currentColor = 'Primary';
+        service.currentColor = PRIMARY_COLOR;
         expect(service.selectedColor()).toEqual(service.primaryColor);
     });
 
     it('selectedColor should return the secondaryColor if it was selected', () => {
         service.secondaryColor = 'rgba(90,56,235,1)';
-        service.currentColor = 'Secondary';
+        service.currentColor = SECONDARY_COLOR;
         expect(service.selectedColor()).toEqual(service.secondaryColor);
     });
 
@@ -101,62 +102,80 @@ describe('ColorService', () => {
 
     it('confirmColorSelection should call saveColor with the given color if the Primary color has changed', () => {
         saveColorSpy = spyOn(service, 'saveColor');
-        service.currentColor = 'Primary';
-        service.primaryColor = 'rgba(0,0,0,1)';
+        service.currentColor = PRIMARY_COLOR;
+        service.primaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(43,43,125,1)');
         expect(saveColorSpy).toHaveBeenCalledWith('rgba(0,0,0,1)');
     });
 
     it('confirmColorSelection should call saveColor with the given color if the Secondary color has changed', () => {
         saveColorSpy = spyOn(service, 'saveColor');
-        service.currentColor = 'Secondary';
-        service.secondaryColor = 'rgba(0,0,0,1)';
+        service.currentColor = SECONDARY_COLOR;
+        service.secondaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(43,43,125,1)');
-        expect(saveColorSpy).toHaveBeenCalledWith('rgba(0,0,0,1)');
+        expect(saveColorSpy).toHaveBeenCalledWith(DEFAULT_COLOR);
     });
 
     it('confirmColorSelection should update Primary color with given color if it was changed', () => {
-        service.currentColor = 'Primary';
-        service.primaryColor = 'rgba(0,0,0,1)';
+        service.currentColor = PRIMARY_COLOR;
+        service.primaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(28,79,203,1)');
         expect(service.primaryColor).toEqual('rgba(28,79,203,1)');
     });
 
     it('confirmColorSelection should update Secondary color with given color if it was changed', () => {
-        service.currentColor = 'Secondary';
-        service.secondaryColor = 'rgba(0,0,0,1)';
+        service.currentColor = SECONDARY_COLOR;
+        service.secondaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(28,79,203,1)');
         expect(service.secondaryColor).toEqual('rgba(28,79,203,1)');
     });
 
     it('confirmColorSelection should not call saveColor if the Primary color was not changed', () => {
         saveColorSpy = spyOn(service, 'saveColor');
-        service.currentColor = 'Primary';
-        service.primaryColor = 'rgba(0,0,0,1)';
-        service.confirmColorSelection('rgba(0,0,0,1)');
+        service.currentColor = PRIMARY_COLOR;
+        service.primaryColor = DEFAULT_COLOR;
+        service.confirmColorSelection(DEFAULT_COLOR);
         expect(saveColorSpy).not.toHaveBeenCalled();
     });
 
     it('confirmColorSelection should not call saveColor if the Primary color was not changed', () => {
         saveColorSpy = spyOn(service, 'saveColor');
-        service.currentColor = 'Secondary';
-        service.secondaryColor = 'rgba(0,0,0,1)';
-        service.confirmColorSelection('rgba(0,0,0,1)');
+        service.currentColor = SECONDARY_COLOR;
+        service.secondaryColor = DEFAULT_COLOR;
+        service.confirmColorSelection(DEFAULT_COLOR);
         expect(saveColorSpy).not.toHaveBeenCalled();
     });
 
     it('confirmColorSelection should do nothing if there was an error in the selection', () => {
         saveColorSpy = spyOn(service, 'saveColor');
         service.currentColor = 'Sec';
-        service.secondaryColor = 'rgba(0,0,0,1)';
+        service.secondaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(200,33,56,1)');
         expect(saveColorSpy).not.toHaveBeenCalled();
         expect(service.secondaryColor).not.toEqual('rgba(200,33,56,1)');
         service.currentColor = '.!';
-        service.primaryColor = 'rgba(0,0,0,1)';
+        service.primaryColor = DEFAULT_COLOR;
         service.confirmColorSelection('rgba(200,33,56,1)');
         expect(saveColorSpy).not.toHaveBeenCalled();
         expect(service.primaryColor).not.toEqual('rgba(200,33,56,1)');
+    });
+
+    it('confirmColorSelection should not call saveColor if only the opacity of primary color changed', () => {
+        saveColorSpy = spyOn(service, 'saveColor');
+        service.currentColor = PRIMARY_COLOR;
+        service.secondaryColor = DEFAULT_COLOR;
+        service.confirmColorSelection('rgba(0,0,0,0.5)');
+        expect(saveColorSpy).not.toHaveBeenCalled();
+        expect(service.primaryColor).toEqual('rgba(0,0,0,0.5)');
+    });
+
+    it('confirmColorSelection should not call saveColor if only the opacity of secondary color changed', () => {
+        saveColorSpy = spyOn(service, 'saveColor');
+        service.currentColor = SECONDARY_COLOR;
+        service.secondaryColor = 'rgba(0,0,0,0.75)';
+        service.confirmColorSelection('rgba(0,0,0,0.25)');
+        expect(saveColorSpy).not.toHaveBeenCalled();
+        expect(service.secondaryColor).toEqual('rgba(0,0,0,0.25)');
     });
 
     it('readRGBValues should return an array containig the correct rgb values of the color string given', () => {
@@ -185,10 +204,16 @@ describe('ColorService', () => {
     it('resetColorValues should reset all attributes', () => {
         service.resetColorValues();
         const arrayExpected: string[] = new Array();
-        const initialColor = 'rgba(0,0,0,1)';
+        const initialColor = DEFAULT_COLOR;
         expect(service.recentColors).toEqual(arrayExpected);
         expect(service.primaryColor).toEqual(initialColor);
         expect(service.secondaryColor).toEqual(initialColor);
         expect(service.modalVisibility).toEqual(false);
+    });
+
+    it('rgbaToRgb should return the same color without the opacity value', () => {
+        const color = 'rgba(23,255,167,1)';
+        const expectedResult = 'rgb(23,255,167)';
+        expect(service.rgbaToRgb(color)).toEqual(expectedResult);
     });
 });
