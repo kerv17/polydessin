@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
+// tslint:disable:no-string-literal
 describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
@@ -35,7 +36,6 @@ describe('PencilService', () => {
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         drawPixelSpy = spyOn<any>(service, 'drawPixel').and.callThrough();
         // Configuration du spy du service
-        // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
