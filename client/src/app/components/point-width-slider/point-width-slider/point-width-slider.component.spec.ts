@@ -1,4 +1,4 @@
-import { SimpleChange } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSliderChange } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
@@ -9,6 +9,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { PointWidthSliderComponent } from './point-width-slider.component';
+
 describe('PointWidthSliderComponent', () => {
     let component: PointWidthSliderComponent;
     let fixture: ComponentFixture<PointWidthSliderComponent>;
@@ -29,6 +30,7 @@ describe('PointWidthSliderComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: LineService, useValue: line },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 

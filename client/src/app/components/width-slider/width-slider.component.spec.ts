@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import * as Globals from '@app/Constants/constants';
@@ -17,6 +17,7 @@ describe('WidthSliderComponent', () => {
     const defaultToolValue = 5;
 
     beforeEach(async(() => {
+        //  To change
         toolControllerSpy = jasmine.createSpyObj('ToolControllerService', ['setTool']);
         pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({
@@ -26,7 +27,6 @@ describe('WidthSliderComponent', () => {
                 { provide: ToolControllerService, useValue: toolControllerSpy },
                 { provide: PencilService, useValue: pencil },
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 

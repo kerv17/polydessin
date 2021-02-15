@@ -1,38 +1,48 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { ColorComponent } from '@app/components/color/color.component';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LineService } from '@app/services/tools/ToolServices/line-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { WidthSliderComponent } from '../width-slider/width-slider.component';
 import { SidebarComponent } from './sidebar.component';
-
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
         return;
     }
 }
 
-describe('SidebarComponent', () => {
+fdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
     const showWidth = true;
     let drawingStub: DrawingServiceStub;
-
+    let toolControllerSpy: jasmine.Spy;
     let openToolSpy: jasmine.Spy;
     let drawingStubSpy: jasmine.Spy;
-    let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
+    let toolController: ToolControllerService;
+    let setWhiteSpy: jasmine.Spy;
+    // let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
     let eventSpy: jasmine.Spy;
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as EditorService);
-        toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['setTool']);
+        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        // toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['setTool']);
         TestBed.configureTestingModule({
-            declarations: [SidebarComponent, MatSlider, ColorComponent],
+            imports: [FormsModule],
+            declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
             providers: [
                 SidebarComponent,
-                { provide: ToolControllerService, useValue: toolControllerSpy },
+                WidthSliderComponent,
+                { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
             ],
         }).compileComponents();
@@ -42,6 +52,7 @@ describe('SidebarComponent', () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        toolControllerSpy = spyOn(toolController, 'setTool');
     });
 
     it('should create', () => {
@@ -62,12 +73,11 @@ describe('SidebarComponent', () => {
 
     it('OpenCrayon should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
-
         component.openCrayon();
 
         expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.CRAYON_SHORTCUT);
+        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.CRAYON_SHORTCUT);
     });
 
     it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
@@ -75,7 +85,7 @@ describe('SidebarComponent', () => {
         component.openRectangle();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
         expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
+        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
 
     it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
@@ -83,27 +93,29 @@ describe('SidebarComponent', () => {
         component.openRectangle();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
         expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
+        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
     it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openLine();
         expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth, true);
         expect(component.line).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.LINE_SHORTCUT);
+        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.LINE_SHORTCUT);
     });
     it('OpenEllipsis should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openEllipsis();
         expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
         expect(component.ellipsis).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy.setTool).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
+        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
-    it('OpenTool should flip the slider status variable and se showWidth and FillBorder', () => {
-        openToolSpy = spyOn(component, 'setButtonWhite');
+    it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
+        setWhiteSpy = spyOn(component, 'setButtonWhite');
         const tempSlidervalue = component.resetSlider;
-        component.openTool(showFillOptions, showWidth);
-        expect(openToolSpy).toHaveBeenCalled();
+
+        component.openTool(showFillOptions, showWidth, false);
+        expect(setWhiteSpy).toHaveBeenCalled();
+        // expect(component.showline).not.toBeTrue();
         expect(component.fillBorder).toEqual(showFillOptions);
         expect(component.showWidth).toEqual(showWidth);
         expect(component.resetSlider).toEqual(!tempSlidervalue);
