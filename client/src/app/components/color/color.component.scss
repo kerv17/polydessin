@@ -8,6 +8,7 @@
     visibility: visible;
     display: block;
     background-color: gainsboro;
+    top: 30px;
 }
 
 .button:hover .infobulle {
@@ -17,17 +18,17 @@
 }
 
 .infobulle {
-    text-align: center;
     visibility: hidden;
-    width: 120px;
+    width: 90px;
     line-height: 15px;
     background-color: black;
     color: black;
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
-    left: 30px;
     position: relative;
+    font-size: smaller;
+    right: 30px;
 }
 
 .text {
