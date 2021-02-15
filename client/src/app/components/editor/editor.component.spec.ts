@@ -5,6 +5,7 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
+import { ResizedEvent } from 'angular-resize-event';
 import { EditorComponent } from './editor.component';
 class ToolStub extends Tool {}
 
@@ -39,6 +40,39 @@ describe('EditorComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('onResize should increase editorSizeX and editorSizeX if canvas is bigger than the window to ensure control points are accessible', () => {
+        const width = 1000;
+        const height = 400;
+        const posX = 1030;
+        const posY = 800;
+        const expectedWidth = 1650;
+        const expectedHeight = 880;
+        const event = {} as ResizedEvent;
+        global.innerWidth = width;
+        global.innerHeight = height;
+        component.editorService.posX = posX;
+        component.editorService.posY = posY;
+        component.onResize(event);
+        expect(component.editorSizeX).toEqual(expectedWidth);
+        expect(component.editorSizeY).toEqual(expectedHeight);
+    });
+    it('onResize should decrease editorSizeX and editorSizeX if canvas is smaller than the window to remove the scroll bar', () => {
+        const width = 1000;
+        const height = 800;
+        const posX = 500;
+        const posY = 400;
+        const event = {} as ResizedEvent;
+        const expectedWidth = 1000;
+        const expectedHeight = 800;
+        global.innerWidth = width;
+        global.innerHeight = height;
+        component.editorService.posX = posX;
+        component.editorService.posY = posY;
+        component.onResize(event);
+        expect(component.editorSizeX).toEqual(expectedWidth);
+        expect(component.editorSizeY).toEqual(expectedHeight);
     });
 
     it('mouseDownHandler should set editorService.mouseDown to true and set editorService.position', () => {
