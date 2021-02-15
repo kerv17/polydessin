@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { PRIMARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { ColorModalComponent } from './color-modal/color-modal.component';
 import { ColorComponent } from './color.component';
@@ -66,13 +67,13 @@ describe('ColorComponent', () => {
     });
 
     it(' openModal should toggle visibility attribute to true ', () => {
-        const colorType = 'Primary';
+        const colorType = PRIMARY_COLOR;
         component.openModal(colorType);
         expect(colorService.modalVisibility).toEqual(true);
     });
 
     it(' openModal should retrieve which color was clicked ', () => {
-        const colorType = 'Primary';
+        const colorType = PRIMARY_COLOR;
         component.openModal(colorType);
         expect(colorService.currentColor).toEqual(colorType);
     });
@@ -80,6 +81,7 @@ describe('ColorComponent', () => {
     it(' closeModal should toggle visibility attribute to false ', () => {
         component.closeModal();
         expect(component.visibility).toEqual(false);
+        expect(colorService.modalVisibility).toEqual(false);
     });
 
     it(' updateColor should initialise the color values ', () => {
@@ -90,27 +92,66 @@ describe('ColorComponent', () => {
         expect(component.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
     });
 
-    it(' selectPrimaryColor should call saveColor ', () => {
+    it(' selectPrimaryColor should call saveColor if modalVisibility is false', () => {
+        colorService.modalVisibility = false;
         saveColorSpy = spyOn(colorService, 'saveColor');
         component.selectPrimaryColor('rgba(23,4,56,1)');
         expect(saveColorSpy).toHaveBeenCalled();
     });
 
-    it(' selectSecondaryColor should call saveColor ', () => {
+    it(' selectPrimaryColor should not call saveColor if modalVisibility is true', () => {
+        colorService.modalVisibility = true;
+        saveColorSpy = spyOn(colorService, 'saveColor');
+        component.selectPrimaryColor('rgba(23,4,56,1)');
+        expect(saveColorSpy).not.toHaveBeenCalled();
+    });
+
+    it(' selectSecondaryColor should call saveColor if modalVisibility is false', () => {
+        colorService.modalVisibility = false;
         saveColorSpy = spyOn(colorService, 'saveColor');
         component.selectSecondaryColor('rgba(23,4,56,1)', mouseEvent);
         expect(saveColorSpy).toHaveBeenCalled();
     });
 
-    it(' selectPrimaryColor should update the primary color value ', () => {
+    it(' selectSecondaryColor should call saveColor if modalVisibility is true', () => {
+        colorService.modalVisibility = true;
+        saveColorSpy = spyOn(colorService, 'saveColor');
+        component.selectSecondaryColor('rgba(23,4,56,1)', mouseEvent);
+        expect(saveColorSpy).not.toHaveBeenCalled();
+    });
+
+    it(' selectPrimaryColor should update the primary color value if modalVisibility is false', () => {
+        colorService.modalVisibility = false;
         component.selectPrimaryColor('rgba(23,4,56,1)');
         expect(component.primaryColor).toEqual('rgba(23,4,56,1)');
         expect(colorService.primaryColor).toEqual('rgba(23,4,56,1)');
     });
 
-    it(' selectSecondaryColor should update the secondary color value ', () => {
+    it(' selectPrimaryColor should not update the primary color value if modalVisibility is true', () => {
+        colorService.modalVisibility = true;
+        component.selectPrimaryColor('rgba(23,4,56,1)');
+        expect(component.primaryColor).not.toEqual('rgba(23,4,56,1)');
+        expect(colorService.primaryColor).not.toEqual('rgba(23,4,56,1)');
+    });
+
+    it(' selectSecondaryColor should update the secondary color value if modalVisibility is false', () => {
+        colorService.modalVisibility = false;
         component.selectSecondaryColor('rgba(5,78,fa,0.5)', mouseEvent);
         expect(component.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(colorService.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
+    });
+
+    it(' selectSecondaryColor should not update the secondary color value if modalVisibility is true', () => {
+        colorService.modalVisibility = true;
+        component.selectSecondaryColor('rgba(5,78,fa,0.5)', mouseEvent);
+        expect(component.secondaryColor).not.toEqual('rgba(5,78,fa,0.5)');
+        expect(colorService.secondaryColor).not.toEqual('rgba(5,78,fa,0.5)');
+    });
+
+    it(' selectSecondaryColor should always return false', () => {
+        colorService.modalVisibility = true;
+        expect(component.selectSecondaryColor('rgba(5,78,fa,0.5)', mouseEvent)).toEqual(false);
+        colorService.modalVisibility = false;
+        expect(component.selectSecondaryColor('rgba(5,78,fa,0.5)', mouseEvent)).toEqual(false);
     });
 });

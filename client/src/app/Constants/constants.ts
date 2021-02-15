@@ -27,6 +27,12 @@ export const GRADIENT_LEVEL_2 = 0.34;
 export const GRADIENT_LEVEL_3 = 0.51;
 export const GRADIENT_LEVEL_4 = 0.68;
 export const GRADIENT_LEVEL_5 = 0.81;
+export const DEFAULT_COLOR = 'rgba(0,0,0,1)';
+export const PRIMARY_COLOR = 'Primary';
+export const SECONDARY_COLOR = 'Secondary';
+export const MAX_SIZE_RECENT_COLORS = 10;
+export const MAX_RGB_VALUE = 255;
+export const RGB_STRING_VALUE_POSITION = 5;
 
 // Mouse event enum
 export enum MouseButton {
