@@ -8,39 +8,40 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    visible: boolean = false;
     showWidth: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
     resetSlider: boolean = false;
-    crayon: { backgroundColor: string } = Globals.backgroundWhite;
-    rectangle: { backgroundColor: string } = Globals.backgroundWhite;
-    line: { backgroundColor: string } = Globals.backgroundWhite;
-    ellipsis: { backgroundColor: string } = Globals.backgroundWhite;
+    crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {}
+    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+        this.openCrayon();
+    }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
-        this.service.setTool(Globals.crayonShortcut);
+        this.service.setTool(Globals.CRAYON_SHORTCUT);
         this.openTool(false, true);
-        this.crayon = Globals.backgroundGainsoboro;
+        this.crayon = Globals.BACKGROUND_GAINSBORO;
     }
     openRectangle(): void {
-        this.service.setTool(Globals.rectangleShortcut);
+        this.service.setTool(Globals.RECTANGLE_SHORTCUT);
         this.openTool(true, true);
-        this.rectangle = Globals.backgroundGainsoboro;
+        this.rectangle = Globals.BACKGROUND_GAINSBORO;
     }
 
     openLine(): void {
-        this.service.setTool(Globals.lineShortcut);
+        this.service.setTool(Globals.LINE_SHORTCUT);
         this.openTool(false, true, true);
-        this.line = Globals.backgroundGainsoboro;
+        this.line = Globals.BACKGROUND_GAINSBORO;
     }
 
     openEllipsis(): void {
-        this.service.setTool(Globals.ellipsisShortcut);
+        this.service.setTool(Globals.ELLIPSIS_SHORTCUT);
         this.openTool(true, true);
-        this.ellipsis = Globals.backgroundGainsoboro;
+        this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }
     openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
         this.fillBorder = fillBorder;
@@ -50,22 +51,22 @@ export class SidebarComponent {
         this.setButtonWhite();
     }
 
-    nouveauDessin(): void {
-        this.drawing.nouveauDessin();
+    newCanvas(): void {
+        this.drawing.newCanvas();
     }
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if ($event.ctrlKey && $event.key === Globals.newDrawingEvent) {
+        if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
-            this.drawing.nouveauDessin();
+            this.drawing.newCanvas();
         }
     }
 
     setButtonWhite(): void {
-        this.crayon = Globals.backgroundWhite;
-        this.rectangle = Globals.backgroundWhite;
-        this.ellipsis = Globals.backgroundWhite;
-        this.line = Globals.backgroundWhite;
+        this.crayon = Globals.BACKGROUND_WHITE;
+        this.rectangle = Globals.BACKGROUND_WHITE;
+        this.ellipsis = Globals.BACKGROUND_WHITE;
+        this.line = Globals.BACKGROUND_WHITE;
     }
 }
