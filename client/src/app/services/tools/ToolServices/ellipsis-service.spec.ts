@@ -203,7 +203,7 @@ describe('EllipsisService', () => {
         expect(pixel.filter((color) => color === 0).length).toEqual(expectedResult);
     });
 
-    xit('border changers the border pixels', () => {
+    it('border changers the border pixels', () => {
         // (service as any ).width = 10;
         const path: Vec2[] = [
             { x: 0, y: 0 },
@@ -223,7 +223,7 @@ describe('EllipsisService', () => {
         expect(pixelIsBlack).toBeTrue();
     });
 
-    xit('fillBorder changers the border pixels', () => {
+    it('fillBorder changers the border pixels', () => {
         // (service as any ).width = 10;
         const path: Vec2[] = [
             { x: 0, y: 0 },
