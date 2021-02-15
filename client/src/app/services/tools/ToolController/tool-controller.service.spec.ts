@@ -129,7 +129,8 @@ describe('ToolControllerService', () => {
     });
 
     xit('focusing on an input element removes focus', () => {
-        const input = document.createElement('INPUT'); // Emulates an input zone
+        const input = new HTMLInputElement(); // Emulates an input zone
+
         const focusEvent = new FocusEvent('focusin');
         input.dispatchEvent(focusEvent);
         expect((service as any).focused).not.toBeTrue();
@@ -147,7 +148,11 @@ describe('ToolControllerService', () => {
             test = service.currentTool === (service as any).toolMap.get(key);
         }
 
+        service.setTool('c');
+        service.setTool('f');
+
         expect(test).toBeTrue();
+        expect(service.currentTool).toEqual((service as any).toolMap.get('c'));
     });
 
     it('checkKeyEvent should call the right functions', () => {
