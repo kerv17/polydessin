@@ -9,7 +9,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class PencilService extends Tool {
-    private pathData: Vec2[];
     color: string;
 
     constructor(drawingService: DrawingService) {
@@ -89,10 +88,6 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-    }
-
-    private clearPath(): void {
-        this.pathData = [];
     }
 
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer

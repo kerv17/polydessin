@@ -60,6 +60,7 @@ export class SidebarComponent {
         this.service.resetToolsMode();
         this.openCrayon();
         this.drawing.newCanvas();
+        this.service.currentTool.clearPath();
     }
 
     @HostListener('window:keydown', ['$event'])

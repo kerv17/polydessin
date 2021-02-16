@@ -18,7 +18,6 @@ export class RectangleService extends Tool {
         this.clearPath();
         this.width = 1;
     }
-    private pathData: Vec2[];
     lastMoveEvent: MouseEvent;
     getPath(): Vec2[] {
         return this.pathData;
@@ -94,10 +93,6 @@ export class RectangleService extends Tool {
         const widhtHeight: Vec2 = { x: path[2].x - path[0].x, y: path[2].y - path[0].y };
         ctx.fillStyle = this.color || 'black';
         ctx.fillRect(path[0].x, path[0].y, widhtHeight.x, widhtHeight.y);
-    }
-
-    private clearPath(): void {
-        this.pathData = [];
     }
 
     getRectanglePoints(mousePosition: Vec2): Vec2[] {
