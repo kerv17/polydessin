@@ -1,17 +1,14 @@
 .container {
+    display: flex;
     height: 100%;
     width: 100%;
-    display: flex;
 }
 
 .drawing-container {
-    // breaks the scrow bars
-    // overflow: auto;
-    height: 100%;
-    width: 100%;
     flex: 1 1 auto;
     background-color: grey;
-    // border: 1px solid green;
+    height: 100%;
+    width: 100%; 
 }
 
 .drawing {
@@ -28,10 +25,7 @@
 .resizer {
     width: 10px;
     height: 10px;
-    //margin-top: 50px;
-    //margin-left: 40px;
     border-radius: 50%;
     background-color: black;
-    // position:fixed;
     position: absolute;
 }

@@ -82,7 +82,7 @@ describe('ShapeOptionsComponent', () => {
         setFillSpy = spyOn(component, 'setFill');
         setBorderSpy = spyOn(component, 'setBorder');
         fillBorderSpy = spyOn(component, 'setFillBorder');
-        component.ngOnChanges({ chanotnge: new SimpleChange(null, component.change, true) });
+        component.ngOnChanges({ change: new SimpleChange(null, component.change, true) });
         expect(setFillSpy).not.toHaveBeenCalled();
         expect(setBorderSpy).not.toHaveBeenCalled();
         expect(fillBorderSpy).not.toHaveBeenCalled();

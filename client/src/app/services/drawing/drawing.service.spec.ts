@@ -44,7 +44,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 505;
+        const expectedResultX = 500;
         const expectedResultY = 400;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
@@ -64,7 +64,7 @@ describe('DrawingService', () => {
         const height = 400;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 270;
+        const expectedResultX = 265;
         const expectedResultY = 250;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.setSizeCanva()).toEqual(expectedVect);
@@ -74,7 +74,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 505;
+        const expectedResultX = 500;
         const expectedResultY = 400;
         service.setSizeCanva();
         expect(service.controlSize.x).toEqual(expectedResultX);
@@ -87,7 +87,7 @@ describe('DrawingService', () => {
 
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 505;
+        const expectedResultX = 500;
         const expectedResultY = 400;
         service.setSizeCanva(vec);
         expect(vec.x).toEqual(expectedResultX);

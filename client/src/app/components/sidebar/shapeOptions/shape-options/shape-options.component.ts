@@ -50,8 +50,6 @@ export class ShapeOptionsComponent implements OnChanges {
                 case 'fillBorder':
                     this.setFillBorder();
                     break;
-                default:
-                    break;
             }
         }
     }

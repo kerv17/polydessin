@@ -10,22 +10,23 @@ import { ResizedEvent } from 'angular-resize-event';
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    sizeCanvas: Vec2;
     container: { [key: string]: string };
-    editorSizeX: number;
+    sizeCanvasOnReset: Vec2;
     editorSizeY: number;
+    editorSizeX: number;
 
     constructor(public drawingService: DrawingService, public editorService: EditorService) {
-        this.sizeCanvas = this.drawingService.setSizeCanva();
-        this.editorService.resetControlPoints(this.sizeCanvas.x, this.sizeCanvas.y);
+        this.sizeCanvasOnReset = this.drawingService.setSizeCanva();
+        this.editorService.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
 
     onResize(event: ResizedEvent): void {
         if (window.innerHeight < this.editorService.posY) {
-            this.editorSizeY = this.editorService.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL;
+            // because JS creates decimals https://medium.com/@DominicCarmel/understanding-javascripts-weird-decimal-calculations-e65f0e1adefb
+            this.editorSizeY = Math.floor(this.editorService.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
         }
         if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.editorService.posX) {
-            this.editorSizeX = (this.editorService.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL;
+            this.editorSizeX = Math.floor((this.editorService.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
         }
         if (window.innerHeight > this.editorService.posY) {
             this.editorSizeY = window.innerHeight;

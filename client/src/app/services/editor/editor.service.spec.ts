@@ -41,7 +41,7 @@ describe('EditorService', () => {
     it('setResizerRightLine should set right line control point', () => {
         const entreeX = 1000;
         const entreeY = 700;
-        const expectedWidth = '997px';
+        const expectedWidth = '997.5px';
         const expectedHeight = '350px';
         const expectedCursor = 'col-resize';
         let expectedNGStyle: { [key: string]: string };
@@ -59,7 +59,7 @@ describe('EditorService', () => {
         const entreeX = 1000;
         const entreeY = 700;
         const expectedWidth = '500px';
-        const expectedHeight = '697px';
+        const expectedHeight = '697.5px';
         const expectedCursor = 'row-resize';
         let expectedNGStyle: { [key: string]: string };
         expectedNGStyle = {
@@ -75,8 +75,8 @@ describe('EditorService', () => {
     it('setResizerBottomRight should set bottom right control point', () => {
         const entreeX = 1000;
         const entreeY = 700;
-        const expectedWidth = '997px';
-        const expectedHeight = '697px';
+        const expectedWidth = '997.5px';
+        const expectedHeight = '697.5px';
         const expectedCursor = 'nwse-resize';
         let expectedNGStyle: { [key: string]: string };
         expectedNGStyle = {
@@ -191,7 +191,7 @@ describe('EditorService', () => {
     });
     it('mouseMoveHandlerRight should force max size on posX if mouse offsetX is too big', () => {
         service.mouseDown = true;
-        const width = 1460;
+        const width = 1470;
         const height = 800;
         const expectedResult = 950;
         global.innerWidth = width;
@@ -291,9 +291,9 @@ describe('EditorService', () => {
         expect(service.posX).toEqual(expectedResult);
         expect(service.posY).toEqual(expectedResult);
     });
-    it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too', () => {
+    it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too big', () => {
         service.mouseDown = true;
-        const width = 1460;
+        const width = 1470;
         const height = 800;
         const expectedResultX = 950;
         const expectedResultY = 760;

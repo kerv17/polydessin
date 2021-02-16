@@ -1,15 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { LINE_HEIGTH_PALETTE, LINE_WIDTH_PALETTE } from '@app/Constants/constants';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
-
 @Component({
     selector: 'app-color-palette',
     templateUrl: './color-palette.component.html',
