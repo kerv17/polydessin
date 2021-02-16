@@ -123,6 +123,7 @@ describe('LineService', () => {
             offsetY: 20,
             button: 0,
         } as MouseEvent;
+        (service as any).pathData.push({ x: 20, y: 20 }, { x: 20, y: 20 });
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
         const expectedParam: Vec2[] = [
@@ -133,10 +134,9 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
     });
 
-    it('onDbClick should clearPath and clear canvas', () => {
+    it('onDbClick should clearPath', () => {
         service.ondbClick(mouseEvent);
         expect((service as any).pathData.length).toEqual(0);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     // Exemple de test d'intégration qui est quand même utile
