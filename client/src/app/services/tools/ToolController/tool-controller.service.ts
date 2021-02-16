@@ -30,18 +30,8 @@ export class ToolControllerService {
         });
 
         document.addEventListener('focusin', (event: FocusEvent) => {
-            console.log(event.target, 1);
-            // window.alert(event.target);
-            const target = event.target;
-            if (target != null) {
-                this.focused = !(target instanceof HTMLInputElement);
-                console.log(target instanceof HTMLInputElement);
-            } else {
-                this.focused = false;
-            }
+            this.checkFocus(event);
         });
-
-        this.focused = true;
 
         this.initMap();
         this.currentTool = pencilService;
@@ -63,6 +53,12 @@ export class ToolControllerService {
             .set(Globals.BACKSPACE_SHORTCUT, (event: KeyboardEvent) => {
                 this.backspace(event.type);
             });
+    }
+
+    checkFocus(event: FocusEvent): void {
+        const target = event.target;
+        this.focused = !(target instanceof HTMLInputElement);
+        console.log(this.focused);
     }
 
     setTool(shortcut: string): void {
@@ -114,12 +110,8 @@ export class ToolControllerService {
             if (this.toolMap.has(event.key)) {
                 this.setTool(event.key);
                 return;
-            }
-            if (this.functionMap.has(event.key)) {
-                const functionToCall: ((event: KeyboardEvent) => void) | undefined = this.functionMap.get(event.key);
-                if (functionToCall !== undefined) {
-                    functionToCall.call(this, event);
-                }
+            } else {
+                this.functionMap.get(event.key)?.call(this, event);
                 return;
             }
         }

@@ -128,14 +128,25 @@ describe('ToolControllerService', () => {
         expect((service as any).escapeIsDown).toBeTrue();
     });
 
-    xit('focusing on an input element removes focus', () => {
-        const input = new HTMLInputElement(); // Emulates an input zone
-
+    it('focusin should call checkFocus', () => {
+        const spy = spyOn(service,'checkFocus');
         const focusEvent = new FocusEvent('focusin');
-        input.dispatchEvent(focusEvent);
-        expect((service as any).focused).not.toBeTrue();
+
         document.dispatchEvent(focusEvent);
-        expect((service as any).focused).toBeTrue();
+
+        expect(spy).toHaveBeenCalled();
+    });
+
+
+    it('checkFocus',()=> {
+
+      const focusEvent = new FocusEvent('focusin');
+      window.dispatchEvent(focusEvent);
+      expect((service as any).focused).toBeFalse();
+
+      (document.createElement('button') as HTMLButtonElement).dispatchEvent(focusEvent);
+      expect((service as any).focused).toBeFalse();
+
     });
 
     it('checkKeyEvent should set the right tool', () => {
@@ -194,6 +205,13 @@ describe('ToolControllerService', () => {
         expect(spyFunction).not.toHaveBeenCalled();
     });
 
+    it('checkKeyEvent should call function if designed by key', () => {
+      const spyFunction = spyOn<any>(service,'escape');
+      const keyEvent: KeyboardEvent = new KeyboardEvent('keydown', { key: Globals.ESCAPE_SHORTCUT });
+      (service as any).checkKeyEvent(keyEvent);
+      expect(spyFunction).toHaveBeenCalled();
+  });
+
     it('setFill, setBorder setFillBorder modify the current tools toolMode', () => {
         service.setFill();
         expect(service.currentTool.toolMode).toBe('fill');
@@ -208,6 +226,7 @@ describe('ToolControllerService', () => {
         service.currentTool.toolMode = 'point';
         expect(service.getLineMode()).toBeTrue();
     });
+
 
     it('resetWidth should set width value of all tools to 1', () => {
         const widthTestValue = 50;
