@@ -196,10 +196,10 @@ describe('EllipsisService', () => {
             { x: 0, y: 0 },
             { x: 10, y: 10 },
         ];
-        const spy = spyOn(previewCtxStub,'fill');
+        const spy = spyOn(previewCtxStub, 'fill');
         (service as any).toolMode = 'fill';
         (service as any).drawEllipse(previewCtxStub, path);
-        expect(spy).toHaveBeenCalled
+        expect(spy).toHaveBeenCalled();
     });
 
     it('border changers the border pixels', () => {
@@ -208,11 +208,10 @@ describe('EllipsisService', () => {
             { x: 0, y: 0 },
             { x: 10, y: 10 },
         ];
-        const spy = spyOn(previewCtxStub,'ellipse');
+        const spy = spyOn(previewCtxStub, 'ellipse');
         (service as any).toolMode = 'border';
         (service as any).drawEllipse(previewCtxStub, path);
         expect(spy).toHaveBeenCalled();
-
     });
 
     it('fillBorder changers the border pixels', () => {
@@ -222,8 +221,8 @@ describe('EllipsisService', () => {
             { x: 10, y: 10 },
         ];
 
-        const ellipseSpy = spyOn(previewCtxStub,'ellipse');
-        const fillSpy = spyOn(previewCtxStub,'fill');
+        const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
+        const fillSpy = spyOn(previewCtxStub, 'fill');
         (service as any).toolMode = 'fillBorder';
         (service as any).drawEllipse(previewCtxStub, path);
         expect(ellipseSpy).toHaveBeenCalled();
