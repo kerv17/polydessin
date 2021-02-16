@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
@@ -7,7 +7,8 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     templateUrl: './shape-options.component.html',
     styleUrls: ['./shape-options.component.scss'],
 })
-export class ShapeOptionsComponent {
+export class ShapeOptionsComponent implements OnChanges {
+    @Input() change: boolean = false;
     fillButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     borderButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     fillBorderButton: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
@@ -34,5 +35,22 @@ export class ShapeOptionsComponent {
         this.fillButton = Globals.BACKGROUND_WHITE;
         this.borderButton = Globals.BACKGROUND_WHITE;
         this.fillBorderButton = Globals.BACKGROUND_WHITE;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.change) {
+            const toolMode: string = this.toolControllerService.currentTool.toolMode;
+            switch (toolMode) {
+                case 'fill':
+                    this.setFill();
+                    break;
+                case 'border':
+                    this.setBorder();
+                    break;
+                case 'fillBorder':
+                    this.setFillBorder();
+                    break;
+            }
+        }
     }
 }

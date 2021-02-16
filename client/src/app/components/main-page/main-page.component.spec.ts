@@ -14,7 +14,7 @@ describe('MainPageComponent', () => {
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
     const colorService: ColorService = new ColorService();
-    let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
+    let toolControllerSpy: ToolControllerService;
 
     beforeEach(async(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
