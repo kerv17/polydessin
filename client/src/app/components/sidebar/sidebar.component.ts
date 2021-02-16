@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 @Component({
@@ -17,8 +18,10 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+    constructor(private service: ToolControllerService, private drawing: DrawingService, private colorService: ColorService) {
         this.openCrayon();
+        this.colorService.resetColorValues();
+        this.service.resetWidth();
     }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {

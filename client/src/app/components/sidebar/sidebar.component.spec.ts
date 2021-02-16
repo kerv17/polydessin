@@ -4,6 +4,7 @@ import { MatSlider } from '@angular/material/slider';
 import { ColorComponent } from '@app/components/color/color.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -29,6 +30,7 @@ describe('SidebarComponent', () => {
     let drawingStubSpy: jasmine.Spy;
     let toolController: ToolControllerService;
     let setWhiteSpy: jasmine.Spy;
+    const colorService: ColorService = new ColorService();
 
     let eventSpy: jasmine.Spy;
 
@@ -44,6 +46,7 @@ describe('SidebarComponent', () => {
                 WidthSliderComponent,
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: ColorService, useValue: colorService },
             ],
         }).compileComponents();
     }));
@@ -58,6 +61,7 @@ describe('SidebarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
         expect(component.resetSlider).toEqual(true);
