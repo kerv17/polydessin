@@ -38,7 +38,7 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
 
     let eventSpy: jasmine.Spy;
-    let router = {
+    const router = {
         navigate: jasmine.createSpy('navigate'),
     };
 
