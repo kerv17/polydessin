@@ -128,13 +128,22 @@ describe('ToolControllerService', () => {
         expect((service as any).escapeIsDown).toBeTrue();
     });
 
-    xit('focusing on an input element removes focus', () => {
-        const input = document.createElement('INPUT'); // Emulates an input zone
+    it('focusin should call checkFocus', () => {
+        const spy = spyOn(service, 'checkFocus');
         const focusEvent = new FocusEvent('focusin');
-        input.dispatchEvent(focusEvent);
-        expect((service as any).focused).not.toBeTrue();
+
         document.dispatchEvent(focusEvent);
-        expect((service as any).focused).toBeTrue();
+
+        expect(spy).toHaveBeenCalled();
+    });
+
+    xit('checkFocus', () => {
+        const focusEvent = new FocusEvent('focusin');
+        window.dispatchEvent(focusEvent);
+        expect((service as any).focused).toBeFalse();
+
+        (document.createElement('button') as HTMLButtonElement).dispatchEvent(focusEvent);
+        expect((service as any).focused).toBeFalse();
     });
 
     it('checkKeyEvent should set the right tool', () => {
@@ -147,7 +156,11 @@ describe('ToolControllerService', () => {
             test = service.currentTool === (service as any).toolMap.get(key);
         }
 
+        service.setTool('c');
+        service.setTool('f');
+
         expect(test).toBeTrue();
+        expect(service.currentTool).toEqual((service as any).toolMap.get('c'));
     });
 
     it('checkKeyEvent should call the right functions', () => {
@@ -186,7 +199,14 @@ describe('ToolControllerService', () => {
         const keyEvent: KeyboardEvent = new KeyboardEvent('keydown', { key: 'p' });
         (service as any).checkKeyEvent(keyEvent);
         expect(spyTool).not.toHaveBeenCalled();
-        expect(spyFunction).not.toHaveBeenCalled();
+        expect(spyFunction).toHaveBeenCalled();
+    });
+
+    it('checkKeyEvent should call function if designed by key', () => {
+        const spyFunction = spyOn<any>(service, 'escape');
+        const keyEvent: KeyboardEvent = new KeyboardEvent('keydown', { key: Globals.ESCAPE_SHORTCUT });
+        (service as any).checkKeyEvent(keyEvent);
+        expect(spyFunction).toHaveBeenCalled();
     });
 
     it('setFill, setBorder setFillBorder modify the current tools toolMode', () => {
@@ -203,7 +223,6 @@ describe('ToolControllerService', () => {
         service.currentTool.toolMode = 'point';
         expect(service.getLineMode()).toBeTrue();
     });
-
     it('resetWidth should set width value of all tools to 1', () => {
         const widthTestValue = 50;
         pencilServiceSpy.width = widthTestValue;
