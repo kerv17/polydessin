@@ -11,7 +11,7 @@ export abstract class Tool {
     color2: string;
     width: number;
     pointWidth: number;
-    toolMode: string = 'border';
+    toolMode: string = 'fill';
     shift: boolean = false;
 
     constructor(protected drawingService: DrawingService) {}

@@ -2,7 +2,7 @@
     <div class="sidebar-container">
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton te ramène à la page principale</div>
-            <img src="../../../assets/GoBack.png" class="function" onclick="history.back()" tabindex="0" />
+            <img src="../../../assets/GoBack.png" class="function" routerLink=".." tabindex="0" />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
@@ -30,12 +30,12 @@
             <div *ngIf="showWidth">
                 <app-width-slider [change]="resetSlider"></app-width-slider>
             </div>
-            <br>
+            <br />
             <div>
                 <app-color></app-color>
             </div>
             <div *ngIf="fillBorder">
-                <app-shape-options></app-shape-options>
+                <app-shape-options [change]="resetSlider"></app-shape-options>
             </div>
             <div *ngIf="showline">
                 <app-line-options [change]="resetSlider"></app-line-options>

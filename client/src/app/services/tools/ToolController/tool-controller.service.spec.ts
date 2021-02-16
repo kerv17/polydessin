@@ -24,7 +24,7 @@ describe('ToolControllerService', () => {
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', {}, { color: 'test' });
         rectangleServiceSpy = jasmine.createSpyObj('RectangleService', {}, { color: 'test' });
         lineServiceSpy = jasmine.createSpyObj('LineService', {}, { color: 'test' });
-        // serviceSpy = jasmine.createSpy('Toolservice',);
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },

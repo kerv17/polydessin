@@ -1,6 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA, SimpleChange } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSliderChange } from '@angular/material/slider';
+import { FormsModule } from '@angular/forms';
+import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -24,13 +25,13 @@ describe('PointWidthSliderComponent', () => {
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
         toolController.currentTool = line;
         TestBed.configureTestingModule({
-            declarations: [PointWidthSliderComponent],
+            imports: [FormsModule],
+            declarations: [PointWidthSliderComponent, MatSlider],
             providers: [
                 PointWidthSliderComponent,
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: LineService, useValue: line },
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 

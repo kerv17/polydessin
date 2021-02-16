@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { ColorComponent } from '@app/components/color/color.component';
+import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
@@ -10,7 +11,6 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
-import { WidthSliderComponent } from '../width-slider/width-slider.component';
 import { SidebarComponent } from './sidebar.component';
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
@@ -18,7 +18,7 @@ export class DrawingServiceStub extends DrawingService {
     }
 }
 
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -29,13 +29,13 @@ fdescribe('SidebarComponent', () => {
     let drawingStubSpy: jasmine.Spy;
     let toolController: ToolControllerService;
     let setWhiteSpy: jasmine.Spy;
-    // let toolControllerSpy: jasmine.SpyObj<ToolControllerService>;
+
     let eventSpy: jasmine.Spy;
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as EditorService);
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
-        // toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['setTool']);
+
         TestBed.configureTestingModule({
             imports: [FormsModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
