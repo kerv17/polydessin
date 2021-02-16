@@ -17,8 +17,6 @@ describe('ToolControllerService', () => {
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
 
-    // let serviceSpy:jasmine.Spy;
-
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', {}, { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', {}, { color: 'test' });
