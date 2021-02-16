@@ -28,17 +28,17 @@
     <div class="BackgroundServices">
         <div class="services">
             <div *ngIf="showWidth">
-                <app-width-slider [change]="resetSlider"></app-width-slider>
+                <app-width-slider [change]="resetAttributes"></app-width-slider>
             </div>
             <br />
             <div>
-                <app-color></app-color>
+                <app-color [reset]="resetAttributes"></app-color>
             </div>
             <div *ngIf="fillBorder">
-                <app-shape-options [change]="resetSlider"></app-shape-options>
+                <app-shape-options [change]="resetAttributes"></app-shape-options>
             </div>
             <div *ngIf="showline">
-                <app-line-options [change]="resetSlider"></app-line-options>
+                <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
         </div>
     </div>

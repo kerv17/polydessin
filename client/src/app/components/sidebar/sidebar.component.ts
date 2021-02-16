@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 @Component({
@@ -11,14 +12,16 @@ export class SidebarComponent {
     showWidth: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
-    resetSlider: boolean = false;
+    resetAttributes: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+    constructor(private service: ToolControllerService, private drawing: DrawingService, private colorService: ColorService) {
         this.openCrayon();
+        this.colorService.resetColorValues();
+        this.service.resetWidth();
     }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
@@ -47,11 +50,15 @@ export class SidebarComponent {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
         this.showline = showline;
-        this.resetSlider = !this.resetSlider;
+        this.resetAttributes = !this.resetAttributes;
         this.setButtonWhite();
     }
 
     newCanvas(): void {
+        this.colorService.resetColorValues();
+        this.service.resetWidth();
+        this.service.resetToolsMode();
+        this.openCrayon();
         this.drawing.newCanvas();
         this.service.currentTool.clearPath();
     }

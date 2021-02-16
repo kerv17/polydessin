@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
 @Component({
@@ -6,11 +6,14 @@ import { ColorService } from '@app/services/color/color.service';
     templateUrl: './color.component.html',
     styleUrls: ['./color.component.scss'],
 })
-export class ColorComponent implements AfterViewInit {
+export class ColorComponent implements AfterViewInit, OnChanges {
     primaryColor: string;
     secondaryColor: string;
     visibility: boolean;
     recentColors: string[] = new Array();
+
+    @Input()
+    reset: boolean;
 
     constructor(private colorService: ColorService) {}
 
@@ -18,6 +21,14 @@ export class ColorComponent implements AfterViewInit {
         this.updateColor();
         this.visibility = this.colorService.modalVisibility;
         this.recentColors = this.colorService.recentColors;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.reset) {
+            this.updateColor();
+            this.visibility = this.colorService.modalVisibility;
+            this.recentColors = this.colorService.recentColors;
+        }
     }
 
     invert(): void {
