@@ -64,7 +64,7 @@ describe('SidebarComponent', () => {
 
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
-        expect(component.resetSlider).toEqual(true);
+        expect(component.resetAttributes).toEqual(true);
         expect(component.fillBorder).toEqual(false);
     });
 
@@ -115,14 +115,14 @@ describe('SidebarComponent', () => {
     });
     it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
         setWhiteSpy = spyOn(component, 'setButtonWhite');
-        const tempSlidervalue = component.resetSlider;
+        const tempSlidervalue = component.resetAttributes;
 
         component.openTool(showFillOptions, showWidth, false);
         expect(setWhiteSpy).toHaveBeenCalled();
         // expect(component.showline).not.toBeTrue();
         expect(component.fillBorder).toEqual(showFillOptions);
         expect(component.showWidth).toEqual(showWidth);
-        expect(component.resetSlider).toEqual(!tempSlidervalue);
+        expect(component.resetAttributes).toEqual(!tempSlidervalue);
     });
 
     it('newCanvas should call drawingService nouveau dessin', () => {
@@ -130,6 +130,18 @@ describe('SidebarComponent', () => {
         component.newCanvas();
 
         expect(drawingStubSpy).toHaveBeenCalled();
+    });
+
+    it('newCanvas should call the reset methods from services', () => {
+        const resetColorSpy = spyOn(colorService, 'resetColorValues');
+        const resetWidthSpy = spyOn(toolController, 'resetWidth');
+        const resetToolsModeSpy = spyOn(toolController, 'resetToolsMode');
+
+        component.newCanvas();
+
+        expect(resetColorSpy).toHaveBeenCalled();
+        expect(resetWidthSpy).toHaveBeenCalled();
+        expect(resetToolsModeSpy).toHaveBeenCalled();
     });
 
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {

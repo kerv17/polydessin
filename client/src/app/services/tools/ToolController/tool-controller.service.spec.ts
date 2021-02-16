@@ -233,4 +233,18 @@ describe('ToolControllerService', () => {
         expect(rectangleServiceSpy.width).toEqual(1);
         expect(lineServiceSpy.width).toEqual(1);
     });
+
+    it('resetToolsMode should set the tool mode of all tools to fill', () => {
+        const initialModeTest = 'fillBorder';
+        const expectedMode = 'fill';
+        pencilServiceSpy.toolMode = initialModeTest;
+        ellipsisServiceSpy.toolMode = initialModeTest;
+        rectangleServiceSpy.toolMode = initialModeTest;
+        lineServiceSpy.toolMode = initialModeTest;
+        service.resetToolsMode();
+        expect(pencilServiceSpy.toolMode).toEqual(expectedMode);
+        expect(ellipsisServiceSpy.toolMode).toEqual(expectedMode);
+        expect(rectangleServiceSpy.toolMode).toEqual(expectedMode);
+        expect(lineServiceSpy.toolMode).toEqual(expectedMode);
+    });
 });

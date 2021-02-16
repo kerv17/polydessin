@@ -12,7 +12,7 @@ export class SidebarComponent {
     showWidth: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
-    resetSlider: boolean = false;
+    resetAttributes: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
@@ -50,11 +50,15 @@ export class SidebarComponent {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
         this.showline = showline;
-        this.resetSlider = !this.resetSlider;
+        this.resetAttributes = !this.resetAttributes;
         this.setButtonWhite();
     }
 
     newCanvas(): void {
+        this.colorService.resetColorValues();
+        this.service.resetWidth();
+        this.service.resetToolsMode();
+        this.openCrayon();
         this.drawing.newCanvas();
     }
 
