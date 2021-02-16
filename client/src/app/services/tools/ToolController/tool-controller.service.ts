@@ -38,10 +38,10 @@ export class ToolControllerService {
     }
     initMap(): void {
         this.toolMap
-            .set(Globals.crayonShortcut, this.pencilService)
-            .set(Globals.lineShortcut, this.lineService)
-            .set(Globals.rectangleShortcut, this.rectangleService)
-            .set(Globals.ellipsisShortcut, this.ellipsisService);
+            .set(Globals.CRAYON_SHORTCUT, this.pencilService)
+            .set(Globals.LINE_SHORTCUT, this.lineService)
+            .set(Globals.RECTANGLE_SHORTCUT, this.rectangleService)
+            .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService);
 
         this.functionMap
             .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {

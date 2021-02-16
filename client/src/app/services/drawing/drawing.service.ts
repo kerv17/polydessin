@@ -12,6 +12,7 @@ export class DrawingService {
     previewCanvas: HTMLCanvasElement;
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
+
     constructor(private editor: EditorService) {}
 
     controlSize: Vec2 = { x: 0, y: 0 };
@@ -24,25 +25,28 @@ export class DrawingService {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    setSizeCanva(): Vec2 {
-        const dimensionPageY = window.innerHeight;
-        const dimensionPageX = window.innerWidth;
+    setSizeCanva(vec: Vec2 = this.canvasSize): Vec2 {
+        const dimensionPageY: number = window.innerHeight;
+        const dimensionPageX: number = window.innerWidth;
 
         if ((dimensionPageX - Globals.SIDEBAR_WIDTH) / 2 < Globals.CANVAS_SIZE_MIN) {
-            this.canvasSize.x = Globals.CANVAS_SIZE_MIN;
+            vec.x = Globals.CANVAS_SIZE_MIN;
         } else {
-            this.canvasSize.x = (dimensionPageX - Globals.SIDEBAR_WIDTH) / 2;
+            vec.x = (dimensionPageX - Globals.SIDEBAR_WIDTH) / 2;
         }
         if (dimensionPageY / 2 < Globals.CANVAS_SIZE_MIN) {
-            this.canvasSize.y = Globals.CANVAS_SIZE_MIN;
+            vec.y = Globals.CANVAS_SIZE_MIN;
         } else {
-            this.canvasSize.y = dimensionPageY / 2;
+            vec.y = dimensionPageY / 2;
         }
-        this.controlSize = this.canvasSize;
-        return this.canvasSize;
+        this.controlSize.x = vec.x;
+        this.controlSize.y = vec.y;
+        return vec;
     }
     // TODO à modifier
-    nouveauDessin(): void {
+    newCanvas(): void {
+        let vec: Vec2 = { x: 0, y: 0 };
+        vec = this.setSizeCanva(vec);
         // Doit vérifier si la surface est vide ou non
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
@@ -50,27 +54,21 @@ export class DrawingService {
                 return;
             }
         }
+        this.canvas.height = vec.y;
+        this.canvas.width = vec.x;
+
+        this.previewCanvas.height = vec.y;
+        this.previewCanvas.width = vec.x;
+        this.clearCanvas(this.previewCtx);
+        this.editor.resetControlPoints(this.canvas.width, this.canvas.height);
         this.baseCtx.fillStyle = 'white';
-        // TODO trouver vrai valeur
 
-        this.canvas.height = this.canvasSize.y;
-        this.canvas.width = this.canvasSize.x;
-
-        this.baseCtx.fillStyle = 'white';
-        this.baseCtx.fillRect(0, 0, this.canvasSize.x, this.canvasSize.y);
-
-        this.previewCanvas.height = this.canvasSize.y;
-        this.previewCanvas.width = this.canvasSize.x;
-        this.editor.resetControlPoints(this.canvasSize.x, this.canvasSize.y);
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    // TODO à transférer
     canvasNotEmpty(image: ImageData): boolean {
-        // window.alert(image.data[image.data.length - 3]);
-        const quatre = 4;
-        const deuxcentcinquentcinq = 255;
-        for (let i = 0; i < image.data.length; i += quatre) {
-            if (image.data[i] !== deuxcentcinquentcinq || image.data[i + 1] !== deuxcentcinquentcinq || image.data[i + 2] !== deuxcentcinquentcinq) {
+        for (let i = 0; i < image.data.length; i += Globals.PIXEL_SIZE) {
+            if (image.data[i] !== Globals.WHITE || image.data[i + 1] !== Globals.WHITE || image.data[i + 2] !== Globals.WHITE) {
                 return true;
             }
         }

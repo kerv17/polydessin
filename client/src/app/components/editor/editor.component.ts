@@ -3,111 +3,70 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
+import { ResizedEvent } from 'angular-resize-event';
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    mouseDown: boolean = false;
-    sizeCanvas: Vec2;
-    position: number;
+    container: { [key: string]: string };
+    sizeCanvasOnReset: Vec2;
+    editorSizeY: number;
+    editorSizeX: number;
 
     constructor(public drawingService: DrawingService, public editorService: EditorService) {
-        this.sizeCanvas = this.drawingService.setSizeCanva();
-        this.editorService.resetControlPoints(this.sizeCanvas.x, this.sizeCanvas.y);
+        this.sizeCanvasOnReset = this.drawingService.setSizeCanva();
+        this.editorService.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
 
+    onResize(event: ResizedEvent): void {
+        if (window.innerHeight < this.editorService.posY) {
+            // because JS creates decimals https://medium.com/@DominicCarmel/understanding-javascripts-weird-decimal-calculations-e65f0e1adefb
+            this.editorSizeY = Math.floor(this.editorService.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+        }
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.editorService.posX) {
+            this.editorSizeX = Math.floor((this.editorService.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+        }
+        if (window.innerHeight > this.editorService.posY) {
+            this.editorSizeY = window.innerHeight;
+        }
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH > this.editorService.posX) {
+            this.editorSizeX = window.innerWidth;
+        }
+        this.setContainerSize();
+    }
+    setContainerSize(): void {
+        this.container = {
+            width: String(this.editorSizeX) + 'px',
+            height: String(this.editorSizeY) + 'px',
+        };
+    }
     mouseDownHandler(event: MouseEvent, pos: number): void {
-        this.mouseDown = true;
-        this.position = pos;
+        this.editorService.mouseDown = true;
+        this.editorService.position = pos;
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
-        switch (this.position) {
+        switch (this.editorService.position) {
             case 0:
-                this.mouseMoveHandlerCorner(event);
+                this.editorService.mouseMoveHandlerCorner(event);
                 break;
             case 1:
-                this.mouseMoveHandlerBottom(event);
+                this.editorService.mouseMoveHandlerBottom(event);
                 break;
             case 2:
-                this.mouseMoveHandlerRight(event);
+                this.editorService.mouseMoveHandlerRight(event);
                 break;
         }
-    }
-
-    mouseMoveHandlerRight(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.verifyWidth(event)) {
-                this.editorService.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
-            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.editorService.posX = event.offsetX;
-            } else {
-                this.editorService.posX = Globals.CANVAS_SIZE_MIN;
-            }
-            this.editorService.setResizerBottomLine();
-            this.editorService.setResizerRightLine();
-            this.editorService.setResizerBottomRight();
-        }
-    }
-
-    mouseMoveHandlerBottom(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.verifyHeight(event)) {
-                this.editorService.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
-            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.editorService.posY = event.offsetY;
-            } else {
-                this.editorService.posY = Globals.CANVAS_SIZE_MIN;
-            }
-            this.editorService.setResizerBottomLine();
-            this.editorService.setResizerRightLine();
-            this.editorService.setResizerBottomRight();
-        }
-    }
-
-    mouseMoveHandlerCorner(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.verifyWidth(event)) {
-                this.editorService.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
-            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.editorService.posX = event.offsetX;
-            } else {
-                this.editorService.posX = Globals.CANVAS_SIZE_MIN;
-            }
-
-            if (this.verifyHeight(event)) {
-                this.editorService.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
-            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.editorService.posY = event.offsetY;
-            } else {
-                this.editorService.posY = Globals.CANVAS_SIZE_MIN;
-            }
-            this.editorService.setResizerBottomLine();
-            this.editorService.setResizerRightLine();
-            this.editorService.setResizerBottomRight();
-        }
-    }
-    verifyWidth(event: MouseEvent): boolean {
-        if (event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
-            return true;
-        }
-        return false;
-    }
-    verifyHeight(event: MouseEvent): boolean {
-        if (event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
-            return true;
-        }
-        return false;
     }
 
     @HostListener('mouseup', ['$event'])
     mouseUpHandler(event: MouseEvent): void {
-        this.mouseDown = false;
+        this.editorService.mouseDown = false;
     }
 
     hideResizer(): boolean {
-        return !this.mouseDown;
+        return !this.editorService.mouseDown;
     }
 }

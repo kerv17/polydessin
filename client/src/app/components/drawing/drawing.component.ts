@@ -30,7 +30,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
-    private truc: boolean = false;
+    private viewInitialized: boolean = false;
 
     // TODO : Avoir un service dédié pour gérer tous les outils ? Ceci peut devenir lourd avec le temps
 
@@ -49,11 +49,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        this.truc = true;
+        this.viewInitialized = true;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.truc) {
+        if (this.viewInitialized) {
             if (this.mouseDown) {
                 if (changes.widthPrev) {
                     this.previewCanvas.nativeElement.width = this.widthPrev;
@@ -67,7 +67,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
                 this.baseCanvas.nativeElement.width = this.widthPrev;
                 this.baseCanvas.nativeElement.height = this.heightPrev;
+
                 this.baseCtx.putImageData(dessin, 0, 0);
+
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
             }
         }
