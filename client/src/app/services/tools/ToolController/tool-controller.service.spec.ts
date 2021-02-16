@@ -138,7 +138,7 @@ describe('ToolControllerService', () => {
     });
 
 
-    it('checkFocus',()=> {
+    xit('checkFocus',()=> {
 
       const focusEvent = new FocusEvent('focusin');
       window.dispatchEvent(focusEvent);
@@ -202,7 +202,7 @@ describe('ToolControllerService', () => {
         const keyEvent: KeyboardEvent = new KeyboardEvent('keydown', { key: 'p' });
         (service as any).checkKeyEvent(keyEvent);
         expect(spyTool).not.toHaveBeenCalled();
-        expect(spyFunction).not.toHaveBeenCalled();
+        expect(spyFunction).toHaveBeenCalled();
     });
 
     it('checkKeyEvent should call function if designed by key', () => {
