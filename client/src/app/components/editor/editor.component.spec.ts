@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Tool } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
@@ -26,7 +27,7 @@ describe('EditorComponent', () => {
         editorStub = new EditorService();
 
         TestBed.configureTestingModule({
-            imports: [FormsModule],
+            imports: [FormsModule, RouterTestingModule],
             declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent, WidthSliderComponent, MatSlider],
             providers: [
                 { provide: Tool, useValue: toolStub },

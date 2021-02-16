@@ -1,9 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ColorComponent } from '@app/components/color/color.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -25,25 +28,34 @@ describe('SidebarComponent', () => {
     const showWidth = true;
     let drawingStub: DrawingServiceStub;
     let toolControllerSpy: jasmine.Spy;
+    let colorService: ColorService;
+    let colorSpy: jasmine.Spy;
+    let resetDrawingSpy: jasmine.Spy;
     let openToolSpy: jasmine.Spy;
     let drawingStubSpy: jasmine.Spy;
     let toolController: ToolControllerService;
     let setWhiteSpy: jasmine.Spy;
+    let resetWidthSpy: jasmine.Spy;
 
     let eventSpy: jasmine.Spy;
+    let router = {
+        navigate: jasmine.createSpy('navigate'),
+    };
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as EditorService);
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
-
+        colorService = new ColorService();
         TestBed.configureTestingModule({
-            imports: [FormsModule],
+            imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
             providers: [
                 SidebarComponent,
                 WidthSliderComponent,
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: ColorService, useValue: colorService },
+                { provide: Router, useValue: router },
             ],
         }).compileComponents();
     }));
@@ -63,7 +75,19 @@ describe('SidebarComponent', () => {
         expect(component.resetSlider).toEqual(true);
         expect(component.fillBorder).toEqual(false);
     });
-
+    it('should go back and call resetDrawing', () => {
+        resetDrawingSpy = spyOn(component, 'resetDrawingAttributes');
+        component.goBack();
+        expect(resetDrawingSpy).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['..']);
+    });
+    it('should reset all drawing attributes', () => {
+        colorSpy = spyOn(colorService, 'resetColorValues');
+        resetWidthSpy = spyOn(toolController, 'resetWidth');
+        component.resetDrawingAttributes();
+        expect(colorSpy).toHaveBeenCalled();
+        expect(resetWidthSpy).toHaveBeenCalled();
+    });
     it('it should set all the background colors of the buttons to white except crayon ', () => {
         expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);

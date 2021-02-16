@@ -118,7 +118,7 @@ describe('EllipsisService', () => {
             const b: Vec2 = { x: -50, y: 50 };
             const s = service.ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
-            console.log(s.x);
+
             expect(s).toEqual(expectedResult);
         }
         // Top right
@@ -133,7 +133,7 @@ describe('EllipsisService', () => {
             const b: Vec2 = { x: -50, y: -50 };
             const s = service.ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
-            console.log(s.x);
+
             expect(s).toEqual(expectedResult);
         }
     });

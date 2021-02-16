@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 @Component({
@@ -17,29 +19,43 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService) {
+    constructor(
+        private toolcontroller: ToolControllerService,
+        private drawing: DrawingService,
+        private router: Router,
+        private colorService: ColorService,
+    ) {
         this.openCrayon();
+    }
+
+    goBack(): void {
+        this.router.navigate(['..']);
+        this.resetDrawingAttributes();
+    }
+    resetDrawingAttributes(): void {
+        this.colorService.resetColorValues();
+        this.toolcontroller.resetWidth();
     }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
-        this.service.setTool(Globals.CRAYON_SHORTCUT);
+        this.toolcontroller.setTool(Globals.CRAYON_SHORTCUT);
         this.openTool(false, true);
         this.crayon = Globals.BACKGROUND_GAINSBORO;
     }
     openRectangle(): void {
-        this.service.setTool(Globals.RECTANGLE_SHORTCUT);
+        this.toolcontroller.setTool(Globals.RECTANGLE_SHORTCUT);
         this.openTool(true, true);
         this.rectangle = Globals.BACKGROUND_GAINSBORO;
     }
 
     openLine(): void {
-        this.service.setTool(Globals.LINE_SHORTCUT);
+        this.toolcontroller.setTool(Globals.LINE_SHORTCUT);
         this.openTool(false, true, true);
         this.line = Globals.BACKGROUND_GAINSBORO;
     }
 
     openEllipsis(): void {
-        this.service.setTool(Globals.ELLIPSIS_SHORTCUT);
+        this.toolcontroller.setTool(Globals.ELLIPSIS_SHORTCUT);
         this.openTool(true, true);
         this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }

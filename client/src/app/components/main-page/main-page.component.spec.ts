@@ -56,11 +56,4 @@ describe('MainPageComponent', () => {
         component.sendTimeToServer();
         expect(indexServiceSpy.basicPost).toHaveBeenCalled();
     });
-
-    it('resetDrawingAttributes should call resetColorValues and resetWidth', () => {
-        const resetColorSpy = spyOn(colorService, 'resetColorValues');
-        component.resetDrawingAttributes();
-        expect(resetColorSpy).toHaveBeenCalled();
-        expect(toolControllerSpy.resetWidth).toHaveBeenCalled();
-    });
 });
