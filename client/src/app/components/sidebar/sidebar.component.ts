@@ -86,7 +86,7 @@ export class SidebarComponent {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
-        } else {
+        } else if (this.toolcontroller.focused) {
             this.functionMap.get($event.key)?.call(this);
         }
     }

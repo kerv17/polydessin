@@ -13,7 +13,7 @@ export class ToolControllerService {
     toolMap: Map<string, Tool> = new Map();
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
-    private focused: boolean = true;
+    focused: boolean = true;
 
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(

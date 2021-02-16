@@ -21,7 +21,7 @@ export class DrawingServiceStub extends DrawingService {
     }
 }
 
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -182,33 +182,34 @@ fdescribe('SidebarComponent', () => {
         expect(eventSpy).toHaveBeenCalled();
         expect(drawingStubSpy).toHaveBeenCalled();
     });
-    // tslint:disable:no-any
+
     it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
         component.initMap();
         const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         openToolSpy = spyOn(component, 'openTool');
-        mapSpy = spyOn(component.functionMap, 'get');
+        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        toolController.focused = true;
 
         window.dispatchEvent(keyDownEvent);
         expect(mapSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
         expect(openToolSpy).toHaveBeenCalled();
-        expect(component.functionMap.get(Globals.ELLIPSIS_SHORTCUT)).not.toEqual(undefined);
     });
 
-    xit('checking if onkeyPress calls Map.get() if its a toolkey but is not a real key ', () => {
-        const keyEventData = { isTrusted: true, key: 'random', ctrlKey: false };
+    it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
+        component.initMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         openToolSpy = spyOn(component, 'openTool');
-        mapSpy = spyOn((component as any).functionMap, 'get');
-        window.dispatchEvent(keyDownEvent);
+        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        toolController.focused = false;
 
         window.dispatchEvent(keyDownEvent);
-        expect(mapSpy).not.toBeTrue();
+        expect(mapSpy).not.toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
         expect(openToolSpy).not.toHaveBeenCalled();
     });
 
-    xit('checking if onKeyPress does nothing if both event keys are bad', () => {
+    it('checking if onKeyPress does nothing if both event keys are bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
         const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
