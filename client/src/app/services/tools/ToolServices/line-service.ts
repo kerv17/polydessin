@@ -30,14 +30,12 @@ export class LineService extends Tool {
         this.pointWidth = 1;
     }
     onMouseMove(event: MouseEvent): void {
-        if (this.pathData.length !== 0) {
-            this.lastMoveEvent = event;
-            this.pathData.push(this.getPointToPush(event));
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
-            this.pathData.pop();
-        }
+        this.lastMoveEvent = event;
+        this.pathData.push(this.getPointToPush(event));
+        // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.previewCtx, this.pathData);
+        this.pathData.pop();
     }
 
     onClick(event: MouseEvent): void {
