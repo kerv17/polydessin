@@ -137,6 +137,7 @@ describe('SidebarComponent', () => {
     });
 
     it('newCanvas should call the reset methods from services', () => {
+        toolController.currentTool = new PencilService(drawingStub);
         const resetColorSpy = spyOn(colorService, 'resetColorValues');
         const resetWidthSpy = spyOn(toolController, 'resetWidth');
         const resetToolsModeSpy = spyOn(toolController, 'resetToolsMode');
