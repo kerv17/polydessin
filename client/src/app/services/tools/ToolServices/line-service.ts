@@ -28,6 +28,7 @@ export class LineService extends Tool {
         this.clearPath();
         this.width = 1;
         this.toolMode = 'noPoint';
+        this.pointWidth = 1;
     }
     onMouseMove(event: MouseEvent): void {
         this.lastMoveEvent = event;
@@ -83,6 +84,7 @@ export class LineService extends Tool {
     private drawDot(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.strokeStyle = this.color2 || 'black';
         ctx.fillStyle = this.color2 || 'black';
+
         for (const point of path) {
             ctx.beginPath();
             ctx.ellipse(point.x, point.y, this.pointWidth, this.pointWidth, 0, 0, 2 * Math.PI);
