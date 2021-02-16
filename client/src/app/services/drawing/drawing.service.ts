@@ -43,11 +43,11 @@ export class DrawingService {
         this.controlSize.y = vec.y;
         return vec;
     }
-    // TODO à modifier
+
     newCanvas(): void {
         let vec: Vec2 = { x: 0, y: 0 };
         vec = this.setSizeCanva(vec);
-        // Doit vérifier si la surface est vide ou non
+
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
             if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
