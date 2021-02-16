@@ -135,15 +135,6 @@ describe('ToolControllerService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    xit('checkFocus', () => {
-        const focusEvent = new FocusEvent('focusin');
-        window.dispatchEvent(focusEvent);
-        expect((service as any).focused).toBeFalse();
-
-        (document.createElement('button') as HTMLButtonElement).dispatchEvent(focusEvent);
-        expect((service as any).focused).toBeFalse();
-    });
-
     it('checkKeyEvent should set the right tool', () => {
         let test = true;
 
