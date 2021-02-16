@@ -22,7 +22,6 @@ describe('WidthSliderComponent', () => {
     const defaultToolValue = 5;
 
     beforeEach(async(() => {
-        //  To change
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
 
         pencil = new PencilService({} as DrawingService);

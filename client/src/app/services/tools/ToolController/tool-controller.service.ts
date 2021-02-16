@@ -13,7 +13,7 @@ export class ToolControllerService {
     toolMap: Map<string, Tool> = new Map();
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
-    private focused: boolean = true;
+    focused: boolean = true;
 
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
@@ -103,7 +103,7 @@ export class ToolControllerService {
     getLineMode(): boolean {
         return this.currentTool.toolMode === 'point';
     }
-    // TODO changer ca
+
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {
             if (this.toolMap.has(event.key)) {

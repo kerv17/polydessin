@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -17,32 +18,49 @@ export class SidebarComponent {
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    functionMap: Map<string, () => void>;
 
-    constructor(private service: ToolControllerService, private drawing: DrawingService, private colorService: ColorService) {
+    constructor(
+        private toolcontroller: ToolControllerService,
+        private drawing: DrawingService,
+        private router: Router,
+        private colorService: ColorService,
+    ) {
         this.openCrayon();
         this.colorService.resetColorValues();
-        this.service.resetWidth();
+        this.toolcontroller.resetWidth();
+        this.functionMap = new Map();
+        this.initMap();
+    }
+
+    goBack(): void {
+        this.router.navigate(['..']);
+        this.resetDrawingAttributes();
+    }
+    resetDrawingAttributes(): void {
+        this.colorService.resetColorValues();
+        this.toolcontroller.resetWidth();
     }
     // TODO esseyer d'optimiser encore plus
     openCrayon(): void {
-        this.service.setTool(Globals.CRAYON_SHORTCUT);
+        this.toolcontroller.setTool(Globals.CRAYON_SHORTCUT);
         this.openTool(false, true);
         this.crayon = Globals.BACKGROUND_GAINSBORO;
     }
     openRectangle(): void {
-        this.service.setTool(Globals.RECTANGLE_SHORTCUT);
+        this.toolcontroller.setTool(Globals.RECTANGLE_SHORTCUT);
         this.openTool(true, true);
         this.rectangle = Globals.BACKGROUND_GAINSBORO;
     }
 
     openLine(): void {
-        this.service.setTool(Globals.LINE_SHORTCUT);
+        this.toolcontroller.setTool(Globals.LINE_SHORTCUT);
         this.openTool(false, true, true);
         this.line = Globals.BACKGROUND_GAINSBORO;
     }
 
     openEllipsis(): void {
-        this.service.setTool(Globals.ELLIPSIS_SHORTCUT);
+        this.toolcontroller.setTool(Globals.ELLIPSIS_SHORTCUT);
         this.openTool(true, true);
         this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }
@@ -56,11 +74,11 @@ export class SidebarComponent {
 
     newCanvas(): void {
         this.colorService.resetColorValues();
-        this.service.resetWidth();
-        this.service.resetToolsMode();
+        this.toolcontroller.resetWidth();
+        this.toolcontroller.resetToolsMode();
         this.openCrayon();
         this.drawing.newCanvas();
-        this.service.currentTool.clearPath();
+        this.toolcontroller.currentTool.clearPath();
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -68,6 +86,8 @@ export class SidebarComponent {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
+        } else if (this.toolcontroller.focused) {
+            this.functionMap.get($event.key)?.call(this);
         }
     }
 
@@ -76,5 +96,12 @@ export class SidebarComponent {
         this.rectangle = Globals.BACKGROUND_WHITE;
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
+    }
+    initMap(): void {
+        this.functionMap
+            .set(Globals.CRAYON_SHORTCUT, this.openCrayon)
+            .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
+            .set(Globals.LINE_SHORTCUT, this.openLine)
+            .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis);
     }
 }

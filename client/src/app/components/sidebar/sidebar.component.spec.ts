@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ColorComponent } from '@app/components/color/color.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
@@ -26,20 +28,27 @@ describe('SidebarComponent', () => {
     const showWidth = true;
     let drawingStub: DrawingServiceStub;
     let toolControllerSpy: jasmine.Spy;
+    let colorService: ColorService;
+    let colorSpy: jasmine.Spy;
+    let resetDrawingSpy: jasmine.Spy;
     let openToolSpy: jasmine.Spy;
     let drawingStubSpy: jasmine.Spy;
     let toolController: ToolControllerService;
     let setWhiteSpy: jasmine.Spy;
-    const colorService: ColorService = new ColorService();
+    let resetWidthSpy: jasmine.Spy;
+    let mapSpy: jasmine.Spy;
 
     let eventSpy: jasmine.Spy;
+    const router = {
+        navigate: jasmine.createSpy('navigate'),
+    };
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as EditorService);
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
-
+        colorService = new ColorService();
         TestBed.configureTestingModule({
-            imports: [FormsModule],
+            imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
             providers: [
                 SidebarComponent,
@@ -47,6 +56,7 @@ describe('SidebarComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ColorService, useValue: colorService },
+                { provide: Router, useValue: router },
             ],
         }).compileComponents();
     }));
@@ -67,7 +77,19 @@ describe('SidebarComponent', () => {
         expect(component.resetAttributes).toEqual(true);
         expect(component.fillBorder).toEqual(false);
     });
-
+    it('should go back and call resetDrawing', () => {
+        resetDrawingSpy = spyOn(component, 'resetDrawingAttributes');
+        component.goBack();
+        expect(resetDrawingSpy).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['..']);
+    });
+    it('should reset all drawing attributes', () => {
+        colorSpy = spyOn(colorService, 'resetColorValues');
+        resetWidthSpy = spyOn(toolController, 'resetWidth');
+        component.resetDrawingAttributes();
+        expect(colorSpy).toHaveBeenCalled();
+        expect(resetWidthSpy).toHaveBeenCalled();
+    });
     it('it should set all the background colors of the buttons to white except crayon ', () => {
         expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
@@ -99,6 +121,7 @@ describe('SidebarComponent', () => {
         expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
+
     it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openLine();
@@ -119,7 +142,6 @@ describe('SidebarComponent', () => {
 
         component.openTool(showFillOptions, showWidth, false);
         expect(setWhiteSpy).toHaveBeenCalled();
-        // expect(component.showline).not.toBeTrue();
         expect(component.fillBorder).toEqual(showFillOptions);
         expect(component.showWidth).toEqual(showWidth);
         expect(component.resetAttributes).toEqual(!tempSlidervalue);
@@ -139,7 +161,7 @@ describe('SidebarComponent', () => {
     it('newCanvas should call the reset methods from services', () => {
         toolController.currentTool = new PencilService(drawingStub);
         const resetColorSpy = spyOn(colorService, 'resetColorValues');
-        const resetWidthSpy = spyOn(toolController, 'resetWidth');
+        resetWidthSpy = spyOn(toolController, 'resetWidth');
         const resetToolsModeSpy = spyOn(toolController, 'resetToolsMode');
 
         component.newCanvas();
@@ -150,21 +172,48 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
-        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: true };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
-        // component.onKeyPress(event);
+
         window.dispatchEvent(keyDownEvent);
         expect(eventSpy).toHaveBeenCalled();
         expect(drawingStubSpy).toHaveBeenCalled();
+    });
+
+    it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
+        component.initMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        openToolSpy = spyOn(component, 'openTool');
+        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        toolController.focused = true;
+
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
+        expect(openToolSpy).toHaveBeenCalled();
+    });
+
+    it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
+        component.initMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        openToolSpy = spyOn(component, 'openTool');
+        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        toolController.focused = false;
+
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).not.toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
+        expect(openToolSpy).not.toHaveBeenCalled();
     });
 
     it('checking if onKeyPress does nothing if both event keys are bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
         const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
+
         const event = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(event, 'preventDefault');
@@ -173,10 +222,10 @@ describe('SidebarComponent', () => {
         expect(drawingStubSpy).not.toHaveBeenCalled();
     });
 
-    it('checking if onKeyPress does nothing if both if the Ctrl Key is bad', () => {
+    it('checking if onKeyPress does nothing if the Ctrl Key is bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
-        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: false };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: false };
         const event = new KeyboardEvent('keydown', keyEventData);
         window.dispatchEvent(event);
         eventSpy = spyOn(event, 'preventDefault');
