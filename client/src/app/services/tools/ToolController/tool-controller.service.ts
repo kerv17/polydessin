@@ -103,7 +103,7 @@ export class ToolControllerService {
     getLineMode(): boolean {
         return this.currentTool.toolMode === 'point';
     }
-    // TODO changer ca
+
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {
             if (this.toolMap.has(event.key)) {
@@ -119,5 +119,9 @@ export class ToolControllerService {
 
     resetWidth(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.width = 1));
+    }
+
+    resetToolsMode(): void {
+        Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
     }
 }

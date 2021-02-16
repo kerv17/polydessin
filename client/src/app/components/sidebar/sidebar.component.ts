@@ -13,11 +13,12 @@ export class SidebarComponent {
     showWidth: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
-    resetSlider: boolean = false;
+    resetAttributes: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    functionMap: Map<string, () => void>;
 
     constructor(
         private toolcontroller: ToolControllerService,
@@ -26,6 +27,10 @@ export class SidebarComponent {
         private colorService: ColorService,
     ) {
         this.openCrayon();
+        this.colorService.resetColorValues();
+        this.toolcontroller.resetWidth();
+        this.functionMap = new Map();
+        this.initMap();
     }
 
     goBack(): void {
@@ -63,11 +68,15 @@ export class SidebarComponent {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
         this.showline = showline;
-        this.resetSlider = !this.resetSlider;
+        this.resetAttributes = !this.resetAttributes;
         this.setButtonWhite();
     }
 
     newCanvas(): void {
+        this.colorService.resetColorValues();
+        this.toolcontroller.resetWidth();
+        this.toolcontroller.resetToolsMode();
+        this.openCrayon();
         this.drawing.newCanvas();
         this.toolcontroller.currentTool.clearPath();
     }
@@ -77,6 +86,8 @@ export class SidebarComponent {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
+        } else {
+            this.functionMap.get($event.key)?.call(this);
         }
     }
 
@@ -85,5 +96,12 @@ export class SidebarComponent {
         this.rectangle = Globals.BACKGROUND_WHITE;
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
+    }
+    initMap(): void {
+        this.functionMap
+            .set(Globals.CRAYON_SHORTCUT, this.openCrayon)
+            .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
+            .set(Globals.LINE_SHORTCUT, this.openLine)
+            .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis);
     }
 }

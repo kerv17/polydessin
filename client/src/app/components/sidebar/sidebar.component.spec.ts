@@ -21,7 +21,7 @@ export class DrawingServiceStub extends DrawingService {
     }
 }
 
-describe('SidebarComponent', () => {
+fdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -36,6 +36,7 @@ describe('SidebarComponent', () => {
     let toolController: ToolControllerService;
     let setWhiteSpy: jasmine.Spy;
     let resetWidthSpy: jasmine.Spy;
+    let mapSpy: jasmine.Spy;
 
     let eventSpy: jasmine.Spy;
     const router = {
@@ -70,9 +71,10 @@ describe('SidebarComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
-        expect(component.resetSlider).toEqual(true);
+        expect(component.resetAttributes).toEqual(true);
         expect(component.fillBorder).toEqual(false);
     });
     it('should go back and call resetDrawing', () => {
@@ -119,6 +121,7 @@ describe('SidebarComponent', () => {
         expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
     });
+
     it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
         openToolSpy = spyOn(component, 'openTool');
         component.openLine();
@@ -135,14 +138,13 @@ describe('SidebarComponent', () => {
     });
     it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
         setWhiteSpy = spyOn(component, 'setButtonWhite');
-        const tempSlidervalue = component.resetSlider;
+        const tempSlidervalue = component.resetAttributes;
 
         component.openTool(showFillOptions, showWidth, false);
         expect(setWhiteSpy).toHaveBeenCalled();
-        // expect(component.showline).not.toBeTrue();
         expect(component.fillBorder).toEqual(showFillOptions);
         expect(component.showWidth).toEqual(showWidth);
-        expect(component.resetSlider).toEqual(!tempSlidervalue);
+        expect(component.resetAttributes).toEqual(!tempSlidervalue);
     });
 
     it('newCanvas should call drawingService nouveau dessin', () => {
@@ -156,22 +158,61 @@ describe('SidebarComponent', () => {
         expect(clearPathSpy).toHaveBeenCalled();
     });
 
+    it('newCanvas should call the reset methods from services', () => {
+        toolController.currentTool = new PencilService(drawingStub);
+        const resetColorSpy = spyOn(colorService, 'resetColorValues');
+        resetWidthSpy = spyOn(toolController, 'resetWidth');
+        const resetToolsModeSpy = spyOn(toolController, 'resetToolsMode');
+
+        component.newCanvas();
+
+        expect(resetColorSpy).toHaveBeenCalled();
+        expect(resetWidthSpy).toHaveBeenCalled();
+        expect(resetToolsModeSpy).toHaveBeenCalled();
+    });
+
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
-        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: true };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
-        // component.onKeyPress(event);
+
         window.dispatchEvent(keyDownEvent);
         expect(eventSpy).toHaveBeenCalled();
         expect(drawingStubSpy).toHaveBeenCalled();
     });
+    // tslint:disable:no-any
+    it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
+        component.initMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        openToolSpy = spyOn(component, 'openTool');
+        mapSpy = spyOn(component.functionMap, 'get');
 
-    it('checking if onKeyPress does nothing if both event keys are bad', () => {
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
+        expect(openToolSpy).toHaveBeenCalled();
+        expect(component.functionMap.get(Globals.ELLIPSIS_SHORTCUT)).not.toEqual(undefined);
+    });
+
+    xit('checking if onkeyPress calls Map.get() if its a toolkey but is not a real key ', () => {
+        const keyEventData = { isTrusted: true, key: 'random', ctrlKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        openToolSpy = spyOn(component, 'openTool');
+        mapSpy = spyOn((component as any).functionMap, 'get');
+        window.dispatchEvent(keyDownEvent);
+
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).not.toBeTrue();
+        expect(openToolSpy).not.toHaveBeenCalled();
+    });
+
+    xit('checking if onKeyPress does nothing if both event keys are bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
         const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
+
         const event = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(event, 'preventDefault');
@@ -180,10 +221,10 @@ describe('SidebarComponent', () => {
         expect(drawingStubSpy).not.toHaveBeenCalled();
     });
 
-    it('checking if onKeyPress does nothing if both if the Ctrl Key is bad', () => {
+    it('checking if onKeyPress does nothing if the Ctrl Key is bad', () => {
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
-        const keyEventData = { isTrusted: true, key: 'o', ctrlKey: false };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: false };
         const event = new KeyboardEvent('keydown', keyEventData);
         window.dispatchEvent(event);
         eventSpy = spyOn(event, 'preventDefault');

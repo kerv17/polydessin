@@ -1,9 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ColorService } from '@app/services/color/color.service';
 import { IndexService } from '@app/services/index/index.service';
-import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { of } from 'rxjs';
 import { MainPageComponent } from './main-page.component';
 
@@ -13,23 +11,16 @@ describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
-    const colorService: ColorService = new ColorService();
-    let toolControllerSpy: ToolControllerService;
 
     beforeEach(async(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
-        toolControllerSpy = jasmine.createSpyObj(ToolControllerService, ['resetWidth']);
 
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [
-                { provide: IndexService, useValue: indexServiceSpy },
-                { provide: ColorService, useValue: colorService },
-                { provide: ToolControllerService, useValue: toolControllerSpy },
-            ],
+            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
         }).compileComponents();
     }));
 

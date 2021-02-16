@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PRIMARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
@@ -48,6 +49,22 @@ describe('ColorComponent', () => {
         component.ngAfterViewInit();
         expect(component.visibility).toEqual(colorService.modalVisibility);
         expect(component.recentColors).toEqual(colorService.recentColors);
+    });
+
+    it('ngOnChanges should call updateColor if reset boolean value has changed', () => {
+        updateSpy = spyOn(component, 'updateColor');
+        component.ngOnChanges({
+            reset: new SimpleChange(false, true, true),
+        });
+        fixture.detectChanges();
+        expect(updateSpy).toHaveBeenCalled();
+    });
+
+    it('ngOnChanges should not call updateColor if reset boolean value has not changed', () => {
+        updateSpy = spyOn(component, 'updateColor');
+        component.ngOnChanges({});
+        fixture.detectChanges();
+        expect(updateSpy).not.toHaveBeenCalled();
     });
 
     it(' invert should swap primaryColor value with secondaryColor value ', () => {
