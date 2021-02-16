@@ -20,7 +20,6 @@ export enum MouseButton {
     providedIn: 'root',
 })
 export class LineService extends Tool {
-    private pathData: Vec2[];
     lastMoveEvent: MouseEvent;
 
     constructor(public drawingService: DrawingService) {
@@ -31,12 +30,14 @@ export class LineService extends Tool {
         this.pointWidth = 1;
     }
     onMouseMove(event: MouseEvent): void {
-        this.lastMoveEvent = event;
-        this.pathData.push(this.getPointToPush(event));
-        // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawLine(this.drawingService.previewCtx, this.pathData);
-        this.pathData.pop();
+        if (this.pathData.length !== 0) {
+            this.lastMoveEvent = event;
+            this.pathData.push(this.getPointToPush(event));
+            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.pathData.pop();
+        }
     }
 
     onClick(event: MouseEvent): void {
@@ -48,18 +49,21 @@ export class LineService extends Tool {
     }
 
     ondbClick(event: MouseEvent): void {
-        const SNAP_RANGE = 20;
-        const mousePosition = this.getPositionFromMouse(event);
-        if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
-            this.pathData.pop();
-            this.pathData.pop();
-            this.pathData.push(this.pathData[0]);
-        } else {
-            this.pathData.push(this.getPointToPush(event));
+        // Removes the last 2 points, one for each added by solo click of the dbClick
+        this.pathData.pop();
+        this.pathData.pop();
+        if (this.pathData.length > 0) {
+            const SNAP_RANGE = 20;
+            const mousePosition = this.getPositionFromMouse(event);
+            if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
+                this.pathData.push(this.pathData[0]);
+            } else {
+                this.pathData.push(this.getPointToPush(event));
+            }
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.clearPath();
         }
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawLine(this.drawingService.baseCtx, this.pathData);
-        this.clearPath();
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -87,9 +91,6 @@ export class LineService extends Tool {
             ctx.fill();
             ctx.stroke();
         }
-    }
-    private clearPath(): void {
-        this.pathData = [];
     }
 
     private distanceBewteenPoints(a: Vec2, b: Vec2): number {
