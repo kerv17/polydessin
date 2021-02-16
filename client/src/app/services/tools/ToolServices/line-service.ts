@@ -43,7 +43,6 @@ export class LineService extends Tool {
         // this.pathData.push(this.pointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-
         this.pathData.push(this.getPointToPush(event));
         this.drawLine(this.drawingService.previewCtx, this.pathData);
     }
@@ -54,14 +53,11 @@ export class LineService extends Tool {
         if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
             this.pathData.pop();
             this.pathData.pop();
-
             this.pathData.push(this.pathData[0]);
         } else {
-            this.pathData.push(mousePosition);
+            this.pathData.push(this.getPointToPush(event));
         }
-
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawingService.baseCtx.strokeStyle = sessionStorage.getItem('color') || 'black';
         this.drawLine(this.drawingService.baseCtx, this.pathData);
         this.clearPath();
     }
@@ -139,7 +135,7 @@ export class LineService extends Tool {
         this.onMouseMove(this.lastMoveEvent);
     }
     onEscape(): void {
-        this.pathData = [];
+        this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
     onBackspace(): void {
