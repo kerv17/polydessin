@@ -58,7 +58,6 @@ export class ToolControllerService {
     checkFocus(event: FocusEvent): void {
         const target = event.target;
         this.focused = !(target instanceof HTMLInputElement);
-        console.log(this.focused);
     }
 
     setTool(shortcut: string): void {
