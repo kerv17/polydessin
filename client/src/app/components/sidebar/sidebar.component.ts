@@ -53,6 +53,7 @@ export class SidebarComponent {
 
     newCanvas(): void {
         this.drawing.newCanvas();
+        this.service.currentTool.clearPath();
     }
 
     @HostListener('window:keydown', ['$event'])
