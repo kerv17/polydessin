@@ -13,6 +13,7 @@ export abstract class Tool {
     pointWidth: number;
     toolMode: string = 'fill';
     shift: boolean = false;
+    protected pathData: Vec2[];
 
     constructor(protected drawingService: DrawingService) {}
 
@@ -38,5 +39,9 @@ export abstract class Tool {
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
+    }
+
+    clearPath(): void {
+        this.pathData = [];
     }
 }

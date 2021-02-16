@@ -19,7 +19,7 @@ export class EllipsisService extends Tool {
         this.clearPath();
         this.width = 1;
     }
-    private pathData: Vec2[];
+
     private perimerterPathData: Vec2[];
     lastMoveEvent: MouseEvent;
 
@@ -115,7 +115,7 @@ export class EllipsisService extends Tool {
         ctx.fill();
     }
 
-    private clearPath(): void {
+    clearPath(): void {
         this.pathData = [];
         this.perimerterPathData = [];
     }
