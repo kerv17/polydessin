@@ -83,15 +83,15 @@ describe('EditorComponent', () => {
     it('mouseDownHandler should set editorService.mouseDown to true and set editorService.position', () => {
         component.editorService.mouseDown = false;
         const expectedResult = 1;
-        component.editorService.position = 0;
+        component.editorService.resizerId = 0;
         const event = {} as MouseEvent;
         component.mouseDownHandler(event, expectedResult);
-        expect(component.editorService.position).toEqual(expectedResult);
+        expect(component.editorService.resizerId).toEqual(expectedResult);
         expect(component.editorService.mouseDown).toEqual(true);
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerCorner when receiving a mouse move event with position 0', () => {
-        component.editorService.position = 0;
+        component.editorService.resizerId = 0;
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerCorner');
         component.mouseMoveHandler(event);
@@ -100,7 +100,7 @@ describe('EditorComponent', () => {
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerBottom when receiving a mouse move event with position 1', () => {
-        component.editorService.position = 1;
+        component.editorService.resizerId = 1;
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerBottom');
         component.mouseMoveHandler(event);
@@ -109,7 +109,7 @@ describe('EditorComponent', () => {
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerRight when receiving a mouse move event with position 2', () => {
-        component.editorService.position = 2;
+        component.editorService.resizerId = 2;
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerRight');
         component.mouseMoveHandler(event);

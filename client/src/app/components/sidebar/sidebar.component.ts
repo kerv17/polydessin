@@ -76,9 +76,9 @@ export class SidebarComponent {
         this.colorService.resetColorValues();
         this.toolcontroller.resetWidth();
         this.toolcontroller.resetToolsMode();
-        this.openCrayon();
         this.drawing.newCanvas();
-        this.toolcontroller.currentTool.clearPath();
+        this.toolcontroller.lineService.clearPath();
+        this.openCrayon();
     }
 
     @HostListener('window:keydown', ['$event'])

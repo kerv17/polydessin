@@ -44,11 +44,11 @@ export class EditorComponent {
     }
     mouseDownHandler(event: MouseEvent, pos: number): void {
         this.editorService.mouseDown = true;
-        this.editorService.position = pos;
+        this.editorService.resizerId = pos;
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
-        switch (this.editorService.position) {
+        switch (this.editorService.resizerId) {
             case 0:
                 this.editorService.mouseMoveHandlerCorner(event);
                 break;

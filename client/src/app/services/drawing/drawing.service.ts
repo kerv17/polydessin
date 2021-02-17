@@ -45,8 +45,8 @@ export class DrawingService {
     }
 
     newCanvas(): void {
-        let vec: Vec2 = { x: 0, y: 0 };
-        vec = this.setSizeCanva(vec);
+        let newCanvasSize: Vec2 = { x: 0, y: 0 };
+        newCanvasSize = this.setSizeCanva(newCanvasSize);
 
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {
@@ -54,11 +54,11 @@ export class DrawingService {
                 return;
             }
         }
-        this.canvas.height = vec.y;
-        this.canvas.width = vec.x;
+        this.canvas.height = newCanvasSize.y;
+        this.canvas.width = newCanvasSize.x;
 
-        this.previewCanvas.height = vec.y;
-        this.previewCanvas.width = vec.x;
+        this.previewCanvas.height = newCanvasSize.y;
+        this.previewCanvas.width = newCanvasSize.x;
         this.clearCanvas(this.previewCtx);
         this.editor.resetControlPoints(this.canvas.width, this.canvas.height);
         this.baseCtx.fillStyle = 'white';

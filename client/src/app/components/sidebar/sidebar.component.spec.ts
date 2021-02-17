@@ -148,24 +148,27 @@ describe('SidebarComponent', () => {
     });
 
     it('newCanvas should call drawingService nouveau dessin', () => {
+        toolController.lineService = new LineService(drawingStub);
+        const spy = spyOn(toolController.lineService, 'clearPath');
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
         toolController.currentTool = new LineService(drawingStub);
-        const clearPathSpy = spyOn(toolController.currentTool, 'clearPath');
 
         component.newCanvas();
 
         expect(drawingStubSpy).toHaveBeenCalled();
-        expect(clearPathSpy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
     });
 
     it('newCanvas should call the reset methods from services', () => {
-        toolController.currentTool = new PencilService(drawingStub);
+        toolController.lineService = new LineService(drawingStub);
+        const spy = spyOn(toolController.lineService, 'clearPath');
         const resetColorSpy = spyOn(colorService, 'resetColorValues');
         resetWidthSpy = spyOn(toolController, 'resetWidth');
         const resetToolsModeSpy = spyOn(toolController, 'resetToolsMode');
 
         component.newCanvas();
 
+        expect(spy).toHaveBeenCalled();
         expect(resetColorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
         expect(resetToolsModeSpy).toHaveBeenCalled();
