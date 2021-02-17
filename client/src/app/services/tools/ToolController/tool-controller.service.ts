@@ -19,7 +19,7 @@ export class ToolControllerService {
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
-        private lineService: LineService,
+        public lineService: LineService,
         private ellipsisService: EllipsisService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {

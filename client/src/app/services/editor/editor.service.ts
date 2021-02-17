@@ -8,7 +8,7 @@ export class EditorService {
     resizerBottomRight: { [key: string]: string };
     resizerRightLine: { [key: string]: string };
     resizerBottomLine: { [key: string]: string };
-    position: number;
+    resizerId: number;
     mouseDown: boolean = false;
 
     posX: number;
