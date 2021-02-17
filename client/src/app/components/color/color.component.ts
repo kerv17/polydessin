@@ -9,34 +9,43 @@ import { ColorService } from '@app/services/color/color.service';
 export class ColorComponent implements AfterViewInit {
     primaryColor: string;
     secondaryColor: string;
-    visibility: boolean;
+    // visibility: boolean;
     recentColors: string[] = new Array();
 
     constructor(private colorService: ColorService) {}
 
+    get visibility(): boolean {
+        return this.colorService.modalVisibility;
+    }
+
     ngAfterViewInit(): void {
         this.updateColor();
-        this.visibility = this.colorService.modalVisibility;
+        // this.visibility = this.colorService.modalVisibility;
         this.recentColors = this.colorService.recentColors;
     }
 
     invert(): void {
-        const tempColor: string = this.primaryColor;
-        this.primaryColor = this.secondaryColor;
-        this.secondaryColor = tempColor;
+        if (!this.colorService.modalVisibility) {
+            const tempColor: string = this.primaryColor;
+            this.primaryColor = this.secondaryColor;
+            this.secondaryColor = tempColor;
 
-        this.colorService.primaryColor = this.primaryColor;
-        this.colorService.secondaryColor = this.secondaryColor;
+            this.colorService.primaryColor = this.primaryColor;
+            this.colorService.secondaryColor = this.secondaryColor;
+        }
     }
 
     openModal(color: string): void {
-        this.colorService.modalVisibility = true;
-        this.colorService.currentColor = color;
-        this.visibility = this.colorService.modalVisibility;
+        if (!this.colorService.modalVisibility) {
+            this.colorService.modalVisibility = true;
+            this.colorService.currentColor = color;
+            // this.visibility = this.colorService.modalVisibility;
+        }
     }
 
     closeModal(): void {
-        this.visibility = false;
+        // this.visibility = false;
+        this.colorService.modalVisibility = false;
     }
 
     updateColor(): void {
