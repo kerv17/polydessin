@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ColorSliderComponent } from '@app/components/color/color-slider/color-slider.component';
+import { DEFAULT_COLOR, PRIMARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { ColorModalComponent } from './color-modal.component';
 
@@ -30,9 +31,9 @@ describe('ColorModalComponent', () => {
 
     beforeEach(async(() => {
         colorService = new ColorService();
-        colorService.currentColor = 'Primary';
-        colorService.primaryColor = 'rgba(0,0,0,1)';
-        colorService.secondaryColor = 'rgba(0,0,0,1)';
+        colorService.currentColor = PRIMARY_COLOR;
+        colorService.primaryColor = DEFAULT_COLOR;
+        colorService.secondaryColor = DEFAULT_COLOR;
         TestBed.configureTestingModule({
             declarations: [ColorModalComponent, ColorSliderComponent, MockColorPaletteComponent],
             providers: [{ provide: ColorService, useValue: colorService }],
@@ -64,14 +65,14 @@ describe('ColorModalComponent', () => {
 
     it(' ngAfterViewInit should initialize hue value if color is not black', () => {
         colorService.primaryColor = 'rgba(23,55,ff,1)';
-        colorService.currentColor = 'Primary';
+        colorService.currentColor = PRIMARY_COLOR;
         component.ngAfterViewInit();
         expect(component.hue).toEqual(component.color);
     });
 
     it(' ngAfterViewInit should not initialize hue value if color is black', () => {
-        colorService.primaryColor = 'rgba(0,0,0,1)';
-        colorService.currentColor = 'Primary';
+        colorService.primaryColor = DEFAULT_COLOR;
+        colorService.currentColor = PRIMARY_COLOR;
         component.ngAfterViewInit();
         expect(component.hue).not.toEqual(component.color);
     });

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
@@ -13,7 +14,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService) {}
+    constructor(private basicService: IndexService, private router: Router) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -35,6 +36,11 @@ export class MainPageComponent {
             )
             .subscribe(this.message);
     }
+
+    goToEditor(): void {
+        this.router.navigate(['/editor']);
+    }
+
     verifDessinExistant(): boolean {
         return false;
     }

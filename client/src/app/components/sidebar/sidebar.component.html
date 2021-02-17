@@ -1,11 +1,45 @@
 <div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br /> L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br /> Vous êtes encouragés de modifier et compléter le code.<br /> N'oubliez
-        pas de regarder les tests dans les fichiers spec.ts aussi!
-
-    </p>
-    <input type="button" value="Go back!" onclick="history.back()">
-    <app-color></app-color>
-
+    <div class="sidebar-container">
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton te ramène à la page principale</div>
+            <img src="../../../assets/GoBack.png" class="function" (click)="goBack()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
+            <img src="../../../assets/pencil.png/" [ngStyle]="crayon" class="function" (click)="openCrayon()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
+            <img src="../../../assets/line.png" [ngStyle]="line" class="function" (click)="openLine()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
+            <img src="../../../assets/rectangle.png" [ngStyle]="rectangle" class="function" (click)="openRectangle()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
+            <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
+            <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
+        </div>
+    </div>
+    <div class="BackgroundServices">
+        <div class="services">
+            <div *ngIf="showWidth">
+                <app-width-slider [change]="resetAttributes"></app-width-slider>
+            </div>
+            <br />
+            <div>
+                <app-color [reset]="resetAttributes"></app-color>
+            </div>
+            <div *ngIf="fillBorder">
+                <app-shape-options [change]="resetAttributes"></app-shape-options>
+            </div>
+            <div *ngIf="showline">
+                <app-line-options [change]="resetAttributes"></app-line-options>
+            </div>
+        </div>
+    </div>
 </div>

@@ -6,6 +6,14 @@ import { Vec2 } from './vec2';
 export abstract class Tool {
     mouseDownCoord: Vec2;
     mouseDown: boolean = false;
+    outOfBounds: boolean = false;
+    color: string;
+    color2: string;
+    width: number;
+    pointWidth: number;
+    toolMode: string = 'fill';
+    shift: boolean = false;
+    protected pathData: Vec2[];
 
     constructor(protected drawingService: DrawingService) {}
 
@@ -15,7 +23,25 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
+    onMouseLeave(event: MouseEvent): void {}
+
+    onMouseEnter(event: MouseEvent): void {}
+
+    onClick(event: MouseEvent): void {}
+
+    ondbClick(event: MouseEvent): void {}
+
+    onShift(shift: boolean): void {}
+
+    onEscape(): void {}
+
+    onBackspace(): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
+    }
+
+    clearPath(): void {
+        this.pathData = [];
     }
 }

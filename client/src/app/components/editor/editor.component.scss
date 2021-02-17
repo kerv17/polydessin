@@ -1,11 +1,14 @@
 .container {
-    height: 100%;
     display: flex;
+    height: 100%;
+    width: 100%;
 }
 
 .drawing-container {
-    overflow: auto;
     flex: 1 1 auto;
+    background-color: grey;
+    height: 100%;
+    width: 100%; 
 }
 
 .drawing {
@@ -13,4 +16,16 @@
     width: min-content;
     outline: none;
 }
-  
+
+.sidebar {
+    display: flex;
+    width: min-content;
+    height: 100%;
+}
+.resizer {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: black;
+    position: absolute;
+}

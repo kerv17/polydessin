@@ -1,12 +1,70 @@
 .container {
-    height: auto;
-    min-height: 98vh;
-    border: 1px solid black;
-    padding: 0 5px 0 5px;
-    margin-right: 5px;
+    display: flex;
+    height: 100%;
+    position: relative;
+    width: 100%;
+    //min-height: 100vh;
+    flex: 1 1 auto;
+    width: 470px;
+    //padding: 0 5px 0 5px;
 }
-
+//J'utilise ca pour faire la rangé de bouton a gauche
 .sidebar-container {
     display: flex;
+    //flex: 1;
     flex-direction: column;
+    border: 1px solid black;
+    width: 60 px;
+    background-image: url(../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png);
+    background-color: black;
+    justify-content: start-flex;
+}
+.services {
+    flex-direction: column;
+    margin-left: 50px;
+    width: 350px;
+}
+.function {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    background-color: white;
+    flex: 0.1;
+    max-height: 100px;
+    align-self: center;
+    border-color: black;
+    flex-grow: 0.1;
+}
+.function:focus {
+    background-color: gainsboro;
+}
+.infobulle {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: black;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    left: 60px;
+
+    position: absolute;
+}
+
+.ToolContainer:hover .infobulle {
+    visibility: visible;
+    display: block;
+    background-color: gainsboro;
+}
+
+.ToolContainer {
+    align-self: center;
+    margin: 0.5em;
+}
+
+.BackgroundServices {
+    background-image: url(../../../assets/bluebackground.jpeg);
+    background-size: cover;
+    border: 1px solid black;
 }

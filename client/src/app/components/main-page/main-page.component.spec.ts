@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IndexService } from '@app/services/index/index.service';
 import { of } from 'rxjs';
@@ -11,6 +12,9 @@ describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
+    const router = {
+        navigate: jasmine.createSpy('navigate'),
+    };
 
     beforeEach(async(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
@@ -20,7 +24,10 @@ describe('MainPageComponent', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+            providers: [
+                { provide: IndexService, useValue: indexServiceSpy },
+                { provide: Router, useValue: router },
+            ],
         }).compileComponents();
     }));
 
@@ -46,5 +53,10 @@ describe('MainPageComponent', () => {
     it('should call basicPost when calling sendTimeToServer', () => {
         component.sendTimeToServer();
         expect(indexServiceSpy.basicPost).toHaveBeenCalled();
+    });
+    it('should go to editor ', () => {
+        component.goToEditor();
+
+        expect(router.navigate).toHaveBeenCalledWith(['/editor']);
     });
 });

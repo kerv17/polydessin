@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ColorService } from '@app/services/color/color.service';
 
 @Component({
@@ -6,11 +6,13 @@ import { ColorService } from '@app/services/color/color.service';
     templateUrl: './color.component.html',
     styleUrls: ['./color.component.scss'],
 })
-export class ColorComponent implements AfterViewInit {
+export class ColorComponent implements AfterViewInit, OnChanges {
     primaryColor: string;
     secondaryColor: string;
-    // visibility: boolean;
     recentColors: string[] = new Array();
+
+    @Input()
+    reset: boolean;
 
     constructor(private colorService: ColorService) {}
 
@@ -20,8 +22,14 @@ export class ColorComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.updateColor();
-        // this.visibility = this.colorService.modalVisibility;
         this.recentColors = this.colorService.recentColors;
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.reset) {
+            this.updateColor();
+            this.recentColors = this.colorService.recentColors;
+        }
     }
 
     invert(): void {
@@ -39,12 +47,10 @@ export class ColorComponent implements AfterViewInit {
         if (!this.colorService.modalVisibility) {
             this.colorService.modalVisibility = true;
             this.colorService.currentColor = color;
-            // this.visibility = this.colorService.modalVisibility;
         }
     }
 
     closeModal(): void {
-        // this.visibility = false;
         this.colorService.modalVisibility = false;
     }
 
@@ -54,15 +60,19 @@ export class ColorComponent implements AfterViewInit {
     }
 
     selectPrimaryColor(color: string): void {
-        this.colorService.saveColor(this.primaryColor);
-        this.primaryColor = color;
-        this.colorService.primaryColor = this.primaryColor;
+        if (!this.colorService.modalVisibility) {
+            this.colorService.saveColor(this.primaryColor);
+            this.primaryColor = color;
+            this.colorService.primaryColor = this.primaryColor;
+        }
     }
 
     selectSecondaryColor(color: string, event: MouseEvent): boolean {
-        this.colorService.saveColor(this.secondaryColor);
-        this.secondaryColor = color;
-        this.colorService.secondaryColor = this.secondaryColor;
+        if (!this.colorService.modalVisibility) {
+            this.colorService.saveColor(this.secondaryColor);
+            this.secondaryColor = color;
+            this.colorService.secondaryColor = this.secondaryColor;
+        }
         // pour prévenir l'ouverture du menu contextuel lorsqu'on clique avec le bouton droit de la souris
         return false;
     }

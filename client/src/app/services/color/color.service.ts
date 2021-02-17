@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-
-// à mettre dans un fichier de constantes
-const maxSize = 10;
-const maxDecimal = 255;
-const rgbValueStart = 5;
-const maxOpacity = 100;
+import {
+    DEFAULT_COLOR,
+    MAX_OPACITY,
+    MAX_RGB_VALUE,
+    MAX_SIZE_RECENT_COLORS,
+    PRIMARY_COLOR,
+    RGB_STRING_VALUE_POSITION,
+    SECONDARY_COLOR,
+} from '@app/Constants/constants';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService {
-    primaryColor: string = 'rgba(0,0,0,1)';
-    secondaryColor: string = 'rgba(0,0,0,1)';
+    primaryColor: string = DEFAULT_COLOR;
+    secondaryColor: string = DEFAULT_COLOR;
     currentColor: string;
     modalVisibility: boolean;
     recentColors: string[] = new Array();
@@ -22,14 +25,14 @@ export class ColorService {
 
     isHexadecimal(value: string): boolean {
         const num: number = parseInt(value, 16);
-        if (num >= 0 && num <= maxDecimal) {
+        if (num >= 0 && num <= MAX_RGB_VALUE) {
             return true;
         }
         return false;
     }
 
     saveColor(color: string): void {
-        if (this.recentColors.length < maxSize) {
+        if (this.recentColors.length < MAX_SIZE_RECENT_COLORS) {
             this.recentColors.push(color);
         } else {
             this.recentColors.shift();
@@ -38,23 +41,27 @@ export class ColorService {
     }
 
     selectedColor(): string {
-        if (this.currentColor === 'Primary') {
+        if (this.currentColor === PRIMARY_COLOR) {
             return this.primaryColor;
-        } else if (this.currentColor === 'Secondary') {
+        } else if (this.currentColor === SECONDARY_COLOR) {
             return this.secondaryColor;
         }
         return '';
     }
 
     confirmColorSelection(color: string): void {
-        if (this.currentColor === 'Primary') {
+        if (this.currentColor === PRIMARY_COLOR) {
             if (color !== this.primaryColor) {
-                this.saveColor(this.primaryColor);
+                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
+                    this.saveColor(this.primaryColor);
+                }
                 this.primaryColor = color;
             }
-        } else if (this.currentColor === 'Secondary') {
+        } else if (this.currentColor === SECONDARY_COLOR) {
             if (color !== this.secondaryColor) {
-                this.saveColor(this.secondaryColor);
+                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
+                    this.saveColor(this.secondaryColor);
+                }
                 this.secondaryColor = color;
             }
         }
@@ -62,17 +69,29 @@ export class ColorService {
 
     readRGBValues(color: string): string[] {
         if (color !== '' && color !== undefined) {
-            const subColor: string = color.substring(rgbValueStart, color.length - 1);
+            const subColor: string = color.substring(RGB_STRING_VALUE_POSITION, color.length - 1);
             return subColor.split(',');
         }
         return ['00', '00', '00', '1'];
     }
 
     verifyOpacityInput(opacity: string): string {
-        if (opacity !== '' && parseFloat(opacity) <= maxOpacity) {
+        if (opacity !== '' && parseFloat(opacity) <= MAX_OPACITY) {
             return (parseInt(opacity, 10) / 100).toString();
         } else {
             return '1';
         }
+    }
+
+    resetColorValues(): void {
+        this.recentColors = new Array();
+        this.primaryColor = DEFAULT_COLOR;
+        this.secondaryColor = DEFAULT_COLOR;
+        this.modalVisibility = false;
+    }
+
+    rgbaToRgb(color: string): string {
+        const values = this.readRGBValues(color);
+        return 'rgb(' + values[0] + ',' + values[1] + ',' + values[2] + ')';
     }
 }
