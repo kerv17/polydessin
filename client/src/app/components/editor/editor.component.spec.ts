@@ -8,7 +8,7 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
 import { ResizedEvent } from 'angular-resize-event';
 import { EditorComponent } from './editor.component';
 class ToolStub extends Tool {}
@@ -18,21 +18,20 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
-    let editorStub: EditorService;
-    const editorService: EditorService = new EditorService();
+    let resizeStub: ResizePoint;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
-        drawingStub = new DrawingService(editorService);
-        editorStub = new EditorService();
-
+        drawingStub = new DrawingService(resizeStub);
+        resizeStub = new ResizePoint();
+        drawingStub.resizePoint = resizeStub;
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent, WidthSliderComponent, MatSlider],
             providers: [
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
-                { provide: EditorService, useValue: editorStub },
+                { provide: ResizePoint, useValue: resizeStub },
             ],
         }).compileComponents();
     }));
@@ -57,8 +56,8 @@ describe('EditorComponent', () => {
         const event = {} as ResizedEvent;
         global.innerWidth = width;
         global.innerHeight = height;
-        component.editorService.posX = posX;
-        component.editorService.posY = posY;
+        component.drawingService.resizePoint.posX = posX;
+        component.drawingService.resizePoint.posY = posY;
         component.onResize(event);
         expect(component.editorSizeX).toEqual(expectedWidth);
         expect(component.editorSizeY).toEqual(expectedHeight);
@@ -73,59 +72,59 @@ describe('EditorComponent', () => {
         const expectedHeight = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        component.editorService.posX = posX;
-        component.editorService.posY = posY;
+        component.drawingService.resizePoint.posX = posX;
+        component.drawingService.resizePoint.posY = posY;
         component.onResize(event);
         expect(component.editorSizeX).toEqual(expectedWidth);
         expect(component.editorSizeY).toEqual(expectedHeight);
     });
 
-    it('mouseDownHandler should set editorService.mouseDown to true and set editorService.position', () => {
-        component.editorService.mouseDown = false;
+    it('mouseDownHandler should set ResizePoint.mouseDown to true and set ResizePoint.position', () => {
+        component.drawingService.resizePoint.mouseDown = false;
         const expectedResult = 1;
-        component.editorService.resizerId = 0;
+        component.drawingService.resizePoint.resizerId = 0;
         const event = {} as MouseEvent;
         component.mouseDownHandler(event, expectedResult);
-        expect(component.editorService.resizerId).toEqual(expectedResult);
-        expect(component.editorService.mouseDown).toEqual(true);
+        expect(component.drawingService.resizePoint.resizerId).toEqual(expectedResult);
+        expect(component.drawingService.resizePoint.mouseDown).toEqual(true);
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerCorner when receiving a mouse move event with position 0', () => {
-        component.editorService.resizerId = 0;
+        component.drawingService.resizePoint.resizerId = 0;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerCorner');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerCorner');
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerBottom when receiving a mouse move event with position 1', () => {
-        component.editorService.resizerId = 1;
+        component.drawingService.resizePoint.resizerId = 1;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerBottom');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerBottom');
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
     it(' mouseMoveHandler should call the tool mouseMoveHandlerRight when receiving a mouse move event with position 2', () => {
-        component.editorService.resizerId = 2;
+        component.drawingService.resizePoint.resizerId = 2;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(editorStub, 'mouseMoveHandlerRight');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerRight');
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
-    it('mouseUpHandler should set editorService.mouseDown to false', () => {
-        component.editorService.mouseDown = true;
+    it('mouseUpHandler should set ResizePoint.mouseDown to false', () => {
+        component.drawingService.resizePoint.mouseDown = true;
         const event = {} as MouseEvent;
         component.mouseUpHandler(event);
-        expect(component.editorService.mouseDown).toEqual(false);
+        expect(component.drawingService.resizePoint.mouseDown).toEqual(false);
     });
 
-    it('hideResizer should return opposite of editorService.mouseDown', () => {
-        component.editorService.mouseDown = false;
+    it('hideResizer should return opposite of ResizePoint.mouseDown', () => {
+        component.drawingService.resizePoint.mouseDown = false;
         expect(component.hideResizer()).toEqual(true);
     });
 });

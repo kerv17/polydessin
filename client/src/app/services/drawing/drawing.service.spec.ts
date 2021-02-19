@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
 import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {
@@ -11,13 +11,13 @@ describe('DrawingService', () => {
     let canvasNotEmptySpy: jasmine.Spy;
     let setSizeSpy: jasmine.Spy;
     let clearCanvasSpy: jasmine.Spy;
-    let editorSpy: jasmine.SpyObj<EditorService>;
+    let resizePointSpy: jasmine.SpyObj<ResizePoint>;
     let confirmSpy: jasmine.Spy;
     beforeEach(() => {
-        editorSpy = jasmine.createSpyObj(EditorService, ['resetControlPoints']);
-        service = new DrawingService(editorSpy);
+        resizePointSpy = jasmine.createSpyObj(ResizePoint, ['resetControlPoints']);
+        service = new DrawingService(resizePointSpy);
         TestBed.configureTestingModule({
-            providers: [DrawingService, { provide: EditorService, useValue: editorSpy }],
+            providers: [DrawingService, { provide: ResizePoint, useValue: resizePointSpy }],
         });
         service = TestBed.inject(DrawingService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
@@ -154,7 +154,7 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
         expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
-        expect(editorSpy.resetControlPoints).toHaveBeenCalled();
+        expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
         expect(service.canvas.width).toEqual(vec.x);
         expect(service.canvas.height).toEqual(vec.y);
         expect(service.previewCanvas.width).toEqual(vec.x);
@@ -176,7 +176,7 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
         expect(clearCanvasSpy).not.toHaveBeenCalledWith(service.previewCtx);
-        expect(editorSpy.resetControlPoints).not.toHaveBeenCalled();
+        expect(resizePointSpy.resetControlPoints).not.toHaveBeenCalled();
         expect(service.canvas.width).not.toEqual(vec.x);
         expect(service.canvas.height).not.toEqual(vec.y);
         expect(service.previewCanvas.width).not.toEqual(vec.x);
@@ -198,7 +198,7 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
         expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
-        expect(editorSpy.resetControlPoints).toHaveBeenCalled();
+        expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
         expect(service.canvas.width).toEqual(vec.x);
         expect(service.canvas.height).toEqual(vec.y);
         expect(service.previewCanvas.width).toEqual(vec.x);

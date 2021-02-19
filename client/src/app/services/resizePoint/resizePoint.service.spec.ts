@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { EditorService } from './editor.service';
+import { ResizePoint } from './resizePoint.service';
 
 // tslint: disable: no - any;
-describe('EditorService', () => {
-    let service: EditorService;
+describe('ResizePoint', () => {
+    let service: ResizePoint;
     let setResizerBottomLineSpy: jasmine.Spy;
     let setResizerRightLineSpy: jasmine.Spy;
     let setResizerBottomRightSpy: jasmine.Spy;
@@ -11,7 +11,7 @@ describe('EditorService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(EditorService);
+        service = TestBed.inject(ResizePoint);
         mouseEvent = {
             offsetX: 50,
             offsetY: 50,

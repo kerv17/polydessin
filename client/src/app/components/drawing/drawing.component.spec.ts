@@ -2,7 +2,7 @@ import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
@@ -21,12 +21,12 @@ describe('DrawingComponent', () => {
     let fillRectSpy: jasmine.Spy;
     let fillNewSpaceSpy: jasmine.Spy;
     let putImageDataSpy: jasmine.Spy;
-    const editorStub: EditorService = new EditorService();
+    const resizePointStub: ResizePoint = new ResizePoint();
     let toolController: ToolControllerService;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
-        drawingStub = new DrawingService(editorStub);
+        drawingStub = new DrawingService(resizePointStub);
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
 
         TestBed.configureTestingModule({
