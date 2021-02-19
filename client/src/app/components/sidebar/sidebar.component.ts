@@ -42,7 +42,7 @@ export class SidebarComponent {
         this.colorService.resetColorValues();
         this.toolcontroller.resetWidth();
     }
-    // TODO esseyer d'optimiser encore plus
+
     openCrayon(): void {
         this.toolcontroller.setTool(Globals.CRAYON_SHORTCUT);
         this.openTool(false, true);

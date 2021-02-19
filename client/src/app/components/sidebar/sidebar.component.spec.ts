@@ -8,7 +8,7 @@ import { WidthSliderComponent } from '@app/components/width-slider/width-slider.
 import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
@@ -44,7 +44,7 @@ describe('SidebarComponent', () => {
     };
 
     beforeEach(async(() => {
-        drawingStub = new DrawingServiceStub({} as EditorService);
+        drawingStub = new DrawingServiceStub({} as ResizePoint);
         toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
         colorService = new ColorService();
         TestBed.configureTestingModule({

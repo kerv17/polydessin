@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +13,7 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
 
-    constructor(private editor: EditorService) {}
+    constructor(public resizePoint: ResizePoint) {}
 
     controlSize: Vec2 = { x: 0, y: 0 };
     // A voir
@@ -60,7 +60,7 @@ export class DrawingService {
         this.previewCanvas.height = newCanvasSize.y;
         this.previewCanvas.width = newCanvasSize.x;
         this.clearCanvas(this.previewCtx);
-        this.editor.resetControlPoints(this.canvas.width, this.canvas.height);
+        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
         this.baseCtx.fillStyle = 'white';
 
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);

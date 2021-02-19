@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EditorService } from '@app/services/editor/editor.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -12,7 +12,7 @@ describe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
     let drawingService: DrawingService;
-    let editorService: EditorService;
+    let resizePoint: ResizePoint;
     let ellipsisServiceSpy: jasmine.SpyObj<EllipsisService>;
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
@@ -33,8 +33,8 @@ describe('ToolControllerService', () => {
         });
         TestBed.configureTestingModule({});
         service = TestBed.inject(ToolControllerService);
-        editorService = new EditorService();
-        drawingService = new DrawingService(editorService);
+        resizePoint = new ResizePoint();
+        drawingService = new DrawingService(resizePoint);
         (service as any).currentTool = new RectangleService(drawingService);
     });
 
