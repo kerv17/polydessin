@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
-import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {

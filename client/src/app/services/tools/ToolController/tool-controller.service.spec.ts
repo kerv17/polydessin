@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';

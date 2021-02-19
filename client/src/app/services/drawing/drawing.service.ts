@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
-import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 
 @Injectable({
     providedIn: 'root',

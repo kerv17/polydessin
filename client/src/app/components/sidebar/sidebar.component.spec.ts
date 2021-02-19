@@ -8,7 +8,7 @@ import { WidthSliderComponent } from '@app/components/width-slider/width-slider.
 import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';

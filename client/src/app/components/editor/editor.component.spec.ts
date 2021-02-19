@@ -8,7 +8,7 @@ import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizePoint } from '@app/services/resizePoint/resizePoint.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ResizedEvent } from 'angular-resize-event';
 import { EditorComponent } from './editor.component';
 class ToolStub extends Tool {}

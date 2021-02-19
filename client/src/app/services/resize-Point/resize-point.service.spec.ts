@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ResizePoint } from './resizePoint.service';
+import { ResizePoint } from './resize-point.service';
 
 // tslint: disable: no - any;
 describe('ResizePoint', () => {
