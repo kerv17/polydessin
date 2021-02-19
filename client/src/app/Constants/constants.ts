@@ -11,6 +11,8 @@ export const ELLIPSIS_SHORTCUT = '2';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
+export const RECTANGLE_SELECTION_SHORTCUT = 'R';
+export const CANVAS_SELECTION_EVENT = 'A';
 
 // Variables d'editor
 export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;

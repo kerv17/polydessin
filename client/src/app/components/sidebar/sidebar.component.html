@@ -21,8 +21,12 @@
             <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
         </div>
         <div class="ToolContainer">
-            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
+            <div class="infobulle">Ce bouton crée un nouveau dessin. Le raccourci est 'Ctrl+o'</div>
             <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+A'</div>
+            <img src="../../../assets/selection.png" (click)="selectCanvas()" class="function" tabindex="0" />
         </div>
     </div>
     <div class="BackgroundServices">
@@ -30,7 +34,7 @@
             <div *ngIf="showWidth">
                 <app-width-slider [change]="resetAttributes"></app-width-slider>
             </div>
-            <br />
+            <br/>
             <div>
                 <app-color [reset]="resetAttributes"></app-color>
             </div>
