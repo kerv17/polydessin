@@ -1,0 +1,14 @@
+<!--Code tiré pour le model window de  https://www.w3schools.com/howto/howto_css_modals.asp-->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="carouselContainer">
+            <owl-carousel-o [options]="customOptions">
+                <ng-container *ngFor="let slide of dynamicSlides" class="container">
+                    <ng-template carouselSlide>
+                        <img class="carousel" [src]="slide.src" alt="test" />
+                    </ng-template>
+                </ng-container>
+            </owl-carousel-o>
+        </div>
+    </div>
+</div>

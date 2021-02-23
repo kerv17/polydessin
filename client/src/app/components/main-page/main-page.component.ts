@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-
+    showCaroussel: boolean = false;
     constructor(private basicService: IndexService, private router: Router) {}
 
     sendTimeToServer(): void {
@@ -43,5 +43,9 @@ export class MainPageComponent {
 
     verifDessinExistant(): boolean {
         return false;
+    }
+
+    ouvrirCaroussel(): void {
+        this.showCaroussel = true;
     }
 }

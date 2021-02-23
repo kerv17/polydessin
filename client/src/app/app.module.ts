@@ -3,8 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCarouselModule } from '@ngmodule/material-carousel';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { CarousselComponent } from './components/caroussel/caroussel/caroussel.component';
 import { ColorModalComponent } from './components/color/color-modal/color-modal.component';
 import { ColorPaletteComponent } from './components/color/color-palette/color-palette.component';
 import { ColorSliderComponent } from './components/color/color-slider/color-slider.component';
@@ -18,6 +22,7 @@ import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-o
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -33,8 +38,19 @@ import { ColorService } from './services/color/color.service';
         PointWidthSliderComponent,
         ShapeOptionsComponent,
         LineOptionsComponent,
+        CarousselComponent,
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        MatSliderModule,
+        FormsModule,
+        MatCarouselModule,
+        BrowserAnimationsModule,
+
+        CarouselModule,
+    ],
     providers: [ColorService],
     bootstrap: [AppComponent],
 })
