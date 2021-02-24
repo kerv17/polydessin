@@ -9,3 +9,10 @@ body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
+.owl-item.active.center > img {
+    border: 2px solid red;
+}
+.owl-carousel {
+    //align-content: right;
+    margin: auto;
+}

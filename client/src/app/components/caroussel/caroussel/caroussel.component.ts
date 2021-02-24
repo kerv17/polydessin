@@ -52,7 +52,7 @@ export class CarousselComponent {
         mouseDrag: false,
         merge: true,
         touchDrag: true,
-        margin: 10,
+        margin: 20,
         pullDrag: false,
         dots: true,
         navSpeed: 600,

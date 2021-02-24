@@ -2,7 +2,7 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="carouselContainer">
-            <owl-carousel-o [options]="customOptions">
+            <owl-carousel-o [options]="customOptions" class="test">
                 <ng-container *ngFor="let slide of dynamicSlides" class="container">
                     <ng-template carouselSlide>
                         <img class="carousel" [src]="slide.src" alt="test" />
