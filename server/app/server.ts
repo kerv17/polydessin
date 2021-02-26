@@ -2,6 +2,7 @@ import * as http from 'http';
 import { inject, injectable } from 'inversify';
 import { Application } from './app';
 import { TYPES } from './types';
+import { DatabaseService } from "./services/database.service";
 
 @injectable()
 export class Server {
@@ -9,7 +10,10 @@ export class Server {
     private readonly baseDix: number = 10;
     private server: http.Server;
 
-    constructor(@inject(TYPES.Application) private application: Application) {}
+    constructor(
+        @inject(TYPES.Application) private application: Application,
+        @inject(TYPES.DatabaseService) private databaseService: DatabaseService
+        ) {}
 
     init(): void {
         this.application.app.set('port', this.appPort);
