@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 @Component({
     selector: 'app-sidebar',
@@ -25,6 +26,7 @@ export class SidebarComponent {
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
+        public exportService: ExportService,
     ) {
         this.openCrayon();
         this.colorService.resetColorValues();
