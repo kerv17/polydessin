@@ -67,7 +67,8 @@ export class SidebarComponent {
     }
 
     selectCanvas(): void {
-        // permet de sélectionner toute la surface de dessin (canvas) avec Ctrl+A;
+        this.toolcontroller.selectionService.selectCanvas(this.drawing.baseCtx, this.drawing.canvas.width, this.drawing.canvas.height);
+        this.openTool(false, false, false);
         this.selection = Globals.BACKGROUND_GAINSBORO;
     }
 

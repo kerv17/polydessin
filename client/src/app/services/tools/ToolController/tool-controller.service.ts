@@ -22,7 +22,7 @@ export class ToolControllerService {
         private rectangleService: RectangleService,
         public lineService: LineService,
         private ellipsisService: EllipsisService,
-        private selectionService: SelectionService,
+        public selectionService: SelectionService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
