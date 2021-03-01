@@ -25,8 +25,8 @@
             <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
         </div>
         <div class="ToolContainer">
-            <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+A'</div>
-            <img src="../../../assets/selection.png" (click)="selectCanvas()" class="function" tabindex="0" />
+            <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
+            <img src="../../../assets/selection.png" [ngStyle]="selection" (click)="selectCanvas()" class="function" tabindex="0" />
         </div>
     </div>
     <div class="BackgroundServices">
