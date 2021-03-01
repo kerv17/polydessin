@@ -5,6 +5,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import {AerosolService} from '@app/services/tools/ToolServices/aerosol-service.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -21,6 +22,7 @@ export class ToolControllerService {
         private rectangleService: RectangleService,
         private lineService: LineService,
         private ellipsisService: EllipsisService,
+        private aerosolService: AerosolService
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
@@ -41,7 +43,8 @@ export class ToolControllerService {
             .set(Globals.CRAYON_SHORTCUT, this.pencilService)
             .set(Globals.LINE_SHORTCUT, this.lineService)
             .set(Globals.RECTANGLE_SHORTCUT, this.rectangleService)
-            .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService);
+            .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService)
+            .set(Globals.AEROSOL_SHORTCUT, this.aerosolService);
 
         this.functionMap
             .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {

@@ -8,6 +8,7 @@ export const CRAYON_SHORTCUT = 'c';
 export const LINE_SHORTCUT = 'l';
 export const RECTANGLE_SHORTCUT = '1';
 export const ELLIPSIS_SHORTCUT = '2';
+export const AEROSOL_SHORTCUT = 'a';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
