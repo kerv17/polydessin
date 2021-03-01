@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { MILS_TO_SEC } from '@app/Constants/constants';
 
 @Injectable({
     providedIn: 'root',
@@ -13,22 +14,44 @@ export class AerosolService extends Tool {
     }
 
     sprayRadius: number = 50;
-    sprayAmountPerSecond: number = 50;
+    sprayAmountPerSecond: number = 10;
     pointWidth = 3;
-
+    lastPosition:Vec2;
+    mouseDown = false;
+    timeoutID:any;
     // Fonction servant a generer un nombre aleatoire entre -max et max
     rng(max: number): number {
         return Math.floor(Math.random() * (2 * max) - max);
     }
 
+
     onMouseDown(event: MouseEvent): void {
-        const position = this.getPositionFromMouse(event);
-        this.spray(position, this.sprayRadius, this.sprayAmountPerSecond);
-        console.log(position,this.pathData);
+        this.lastPosition = this.getPositionFromMouse(event);
+        this.mouseDown = true;
+        this.timeoutID = setInterval(()=>{this.onTimeout();},MILS_TO_SEC);
+        this.onTimeout();
     }
 
     onMouseMove(event: MouseEvent): void {
+      this.lastPosition = this.getPositionFromMouse(event);
       this.showRadius(this.getPositionFromMouse(event),this.sprayRadius);
+      //this.onTimeout();
+    }
+
+    onTimeout(){
+
+      if (this.mouseDown){
+        this.sprayPoints(this.lastPosition,this.sprayRadius,this.sprayAmountPerSecond);
+        this.drawSpray(this.drawingService.previewCtx);
+      }
+    }
+
+    onMouseUp(event: MouseEvent):void{
+        this.drawSpray(this.drawingService.baseCtx);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearPath();
+        this.mouseDown = false;
+        clearTimeout(this.timeoutID);
     }
 
 
@@ -40,15 +63,21 @@ export class AerosolService extends Tool {
       this.drawSpray(this.drawingService.previewCtx);
     }
 
-    private spray(position: Vec2, radius: number, amount: number): void {
+    private sprayPoints(position: Vec2, radius: number, amount: number): void {
         for (let i = 0; i < amount; i++) {
             this.pathData.push(this.addPoint(position, radius));
         }
-        this.drawSpray(this.drawingService.previewCtx);
     }
 
     private addPoint(position: Vec2, radius: number): Vec2 {
-        const pointToAdd: Vec2 = { x: position.x + this.rng(radius), y: position.y + this.rng(radius) };
+        let pointToAdd: Vec2
+        let xVariation: number;
+        let yVariation: number;
+        do{
+            xVariation = this.rng(radius);
+            yVariation = this.rng(radius);
+            pointToAdd = { x: position.x + xVariation, y: position.y + yVariation };
+        }while(this.distance(xVariation, yVariation)>radius);
         return pointToAdd;
     }
 
@@ -61,5 +90,10 @@ export class AerosolService extends Tool {
           ctx.fill();
           ctx.stroke();
       }
+    }
+
+    private distance(x: number,y: number):number {
+        const distance = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        return distance;
     }
 }
