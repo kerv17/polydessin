@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { ColorService } from '@app/services/color/color.service';
+import { Router } from '@angular/router';
 import { IndexService } from '@app/services/index/index.service';
-import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,7 +14,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private basicService: IndexService, private colorService: ColorService, private toolControlerService: ToolControllerService) {}
+    constructor(private basicService: IndexService, private router: Router) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -38,12 +37,11 @@ export class MainPageComponent {
             .subscribe(this.message);
     }
 
-    verifDessinExistant(): boolean {
-        return false;
+    goToEditor(): void {
+        this.router.navigate(['/editor']);
     }
 
-    resetDrawingAttributes(): void {
-        this.colorService.resetColorValues();
-        this.toolControlerService.resetWidth();
+    verifDessinExistant(): boolean {
+        return false;
     }
 }

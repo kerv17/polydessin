@@ -14,13 +14,13 @@ export class ToolControllerService {
     toolMap: Map<string, Tool> = new Map();
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
-    private focused: boolean = true;
+    focused: boolean = true;
 
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
-        private lineService: LineService,
+        public lineService: LineService,
         private ellipsisService: EllipsisService,
         private aerosolService: AerosolService
     ) {
@@ -106,7 +106,7 @@ export class ToolControllerService {
     getLineMode(): boolean {
         return this.currentTool.toolMode === 'point';
     }
-    // TODO changer ca
+
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {
             if (this.toolMap.has(event.key)) {
@@ -129,5 +129,8 @@ export class ToolControllerService {
           return this.toolMap.get(toolShortcut) as Tool;
         }
         else return this.pencilService;
+    }
+    resetToolsMode(): void {
+        Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
     }
 }

@@ -4,11 +4,11 @@ import * as Globals from '@app/Constants/constants';
 @Injectable({
     providedIn: 'root',
 })
-export class EditorService {
+export class ResizePoint {
     resizerBottomRight: { [key: string]: string };
     resizerRightLine: { [key: string]: string };
     resizerBottomLine: { [key: string]: string };
-    position: number;
+    resizerId: number;
     mouseDown: boolean = false;
 
     posX: number;

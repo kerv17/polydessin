@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { EditorService } from '@app/services/editor/editor.service';
 import { ResizedEvent } from 'angular-resize-event';
 @Component({
     selector: 'app-editor',
@@ -15,23 +14,23 @@ export class EditorComponent {
     editorSizeY: number;
     editorSizeX: number;
 
-    constructor(public drawingService: DrawingService, public editorService: EditorService) {
+    constructor(public drawingService: DrawingService) {
         this.sizeCanvasOnReset = this.drawingService.setSizeCanva();
-        this.editorService.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
+        this.drawingService.resizePoint.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
 
     onResize(event: ResizedEvent): void {
-        if (window.innerHeight < this.editorService.posY) {
+        if (window.innerHeight < this.drawingService.resizePoint.posY) {
             // because JS creates decimals https://medium.com/@DominicCarmel/understanding-javascripts-weird-decimal-calculations-e65f0e1adefb
-            this.editorSizeY = Math.floor(this.editorService.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+            this.editorSizeY = Math.floor(this.drawingService.resizePoint.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
         }
-        if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.editorService.posX) {
-            this.editorSizeX = Math.floor((this.editorService.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.drawingService.resizePoint.posX) {
+            this.editorSizeX = Math.floor((this.drawingService.resizePoint.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
         }
-        if (window.innerHeight > this.editorService.posY) {
+        if (window.innerHeight > this.drawingService.resizePoint.posY) {
             this.editorSizeY = window.innerHeight;
         }
-        if (window.innerWidth - Globals.SIDEBAR_WIDTH > this.editorService.posX) {
+        if (window.innerWidth - Globals.SIDEBAR_WIDTH > this.drawingService.resizePoint.posX) {
             this.editorSizeX = window.innerWidth;
         }
         this.setContainerSize();
@@ -43,30 +42,30 @@ export class EditorComponent {
         };
     }
     mouseDownHandler(event: MouseEvent, pos: number): void {
-        this.editorService.mouseDown = true;
-        this.editorService.position = pos;
+        this.drawingService.resizePoint.mouseDown = true;
+        this.drawingService.resizePoint.resizerId = pos;
     }
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
-        switch (this.editorService.position) {
+        switch (this.drawingService.resizePoint.resizerId) {
             case 0:
-                this.editorService.mouseMoveHandlerCorner(event);
+                this.drawingService.resizePoint.mouseMoveHandlerCorner(event);
                 break;
             case 1:
-                this.editorService.mouseMoveHandlerBottom(event);
+                this.drawingService.resizePoint.mouseMoveHandlerBottom(event);
                 break;
             case 2:
-                this.editorService.mouseMoveHandlerRight(event);
+                this.drawingService.resizePoint.mouseMoveHandlerRight(event);
                 break;
         }
     }
 
     @HostListener('mouseup', ['$event'])
     mouseUpHandler(event: MouseEvent): void {
-        this.editorService.mouseDown = false;
+        this.drawingService.resizePoint.mouseDown = false;
     }
 
     hideResizer(): boolean {
-        return !this.editorService.mouseDown;
+        return !this.drawingService.resizePoint.mouseDown;
     }
 }
