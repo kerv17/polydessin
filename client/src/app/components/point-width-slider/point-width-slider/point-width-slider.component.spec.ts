@@ -5,6 +5,7 @@ import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -22,7 +23,13 @@ describe('PointWidthSliderComponent', () => {
         line = new LineService({} as DrawingService);
         const DEFAULT_WIDTH_VALUE = 5;
         line.pointWidth = DEFAULT_WIDTH_VALUE;
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as AerosolService,
+        );
         toolController.currentTool = line;
         TestBed.configureTestingModule({
             imports: [FormsModule],

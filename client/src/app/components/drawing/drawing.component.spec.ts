@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -27,7 +28,13 @@ describe('DrawingComponent', () => {
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(editorStub);
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as AerosolService,
+        );
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

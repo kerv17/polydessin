@@ -7,11 +7,13 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EditorService } from '@app/services/editor/editor.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SidebarComponent } from './sidebar.component';
+
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
         return;
@@ -34,7 +36,13 @@ describe('SidebarComponent', () => {
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as EditorService);
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as AerosolService,
+        );
 
         TestBed.configureTestingModule({
             imports: [FormsModule],
