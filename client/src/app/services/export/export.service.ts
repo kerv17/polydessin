@@ -4,12 +4,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class ExportService {
-    constructor(private drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService) {}
+    showModalExport: boolean = false;
 
-    exportImage(type: string): void {
+    exportImage(type: string, name: string): void {
         const a = document.createElement('a');
-        a.href = this.drawingService.canvas.toDataURL(type);
-        a.download = 'canvas';
+        a.href = this.drawingService.canvas.toDataURL('image/' + type);
+        a.download = name;
         document.body.appendChild(a);
         a.click();
     }

@@ -1,0 +1,10 @@
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="close" (click)="close()">&times;</div>
+        <button (click)="togglePng()">Png</button>
+        <button (click)="toggleJpg()">Jpg</button>
+        <button (click)="exportPicture()">Export</button>
+        <input [(ngModel)]="fileName" />
+        <div><canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas></div>
+    </div>
+</div>

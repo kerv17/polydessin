@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
-declare let $: any;
 
 @Component({
     selector: 'app-caroussel',

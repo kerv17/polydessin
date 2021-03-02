@@ -5,6 +5,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -88,6 +89,8 @@ export class SidebarComponent {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
+        } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
+            this.exportService.showModalExport = !this.exportService.showModalExport;
         } else if (this.toolcontroller.focused) {
             this.functionMap.get($event.key)?.call(this);
         }
