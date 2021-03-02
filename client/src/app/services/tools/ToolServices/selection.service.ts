@@ -20,6 +20,7 @@ export class SelectionService extends Tool {
     topLeftHandler: Vec2;
     bottomRight: boolean = false;
     initialMousePosition: Vec2;
+    initialSelectionPosition: Vec2;
 
     constructor(drawingService: DrawingService, private selectionHandler: SelectionHandlerService) {
         super(drawingService);
@@ -66,8 +67,7 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             if (this.inMovement) {
                 this.onMouseUpSelection(event);
-                this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
-
+                this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
                 this.inMovement = false;
                 this.drawSelectionBox(this.drawingService.previewCtx);
             } else {
@@ -76,10 +76,8 @@ export class SelectionService extends Tool {
                     this.onMouseUpHandler();
                 }
                 this.drawSelectionBox(this.drawingService.previewCtx);
+                this.initialSelectionPosition = this.topLeftHandler;
             }
-            this.drawingService.baseCtx.fillStyle = 'white';
-            this.drawingService.baseCtx.fillRect(this.topLeftHandler.x, this.topLeftHandler.y, this.selectedArea.width, this.selectedArea.height);
-            this.drawingService.baseCtx.stroke();
             this.inSelection = true;
         }
         this.mouseDown = false;
@@ -93,6 +91,14 @@ export class SelectionService extends Tool {
             const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.inMovement) {
+                /*this.drawingService.previewCtx.fillStyle = 'white';
+                this.drawingService.previewCtx.fillRect(
+                    this.initialSelectionPosition.x,
+                    this.initialSelectionPosition.y,
+                    this.selectedArea.width,
+                    this.selectedArea.height,
+                );
+                this.drawingService.previewCtx.stroke();*/
                 this.onMouseMoveSelection(event, this.drawingService.previewCtx);
             } else {
                 if (this.inSelection) {
@@ -106,6 +112,29 @@ export class SelectionService extends Tool {
             this.clearPath();
             this.pathData.push(vec[0]);
         }
+    }
+
+    // confirmer déplacement
+    onEnter(event: MouseEvent): void {
+        this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.previewCtx.fillRect(
+            this.initialSelectionPosition.x,
+            this.initialSelectionPosition.y,
+            this.selectedArea.width,
+            this.selectedArea.height,
+        );
+        this.drawingService.baseCtx.stroke();
+        this.selectedArea = new ImageData(0, 0);
+        this.clearPath();
+        this.inSelection = false;
+        this.bottomRight = false;
+        this.mouseDown = false;
+        this.inMovement = false;
+        this.topLeftHandler = { x: 0, y: 0 };
+        this.bottomRightHandler = { x: 0, y: 0 };
+        this.initialSelectionPosition = { x: 0, y: 0 };
+        this.initialMousePosition = { x: 0, y: 0 };
     }
 
     /*
@@ -213,15 +242,16 @@ export class SelectionService extends Tool {
 
     // cadre avec les 8 pts de selection
     private drawSelectionBox(ctx: CanvasRenderingContext2D): void {
-        ctx.lineWidth = this.width;
-        ctx.strokeStyle = 'blue';
         this.selectionHandler.setHandlersPositions(this.topLeftHandler, this.bottomRightHandler);
         this.drawHandles(ctx);
-        /*ctx.beginPath();
-        for (const point of path) {
+        ctx.lineWidth = this.width;
+        ctx.strokeStyle = 'blue';
+        ctx.beginPath();
+        for (const point of this.selectionHandler.handlersPositions) {
             ctx.lineTo(point.x, point.y);
         }
-        ctx.closePath();*/
+        ctx.closePath();
+        ctx.stroke();
         ctx.strokeStyle = 'black';
     }
 
