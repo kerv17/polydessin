@@ -18,6 +18,7 @@ import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-o
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+
 @NgModule({
     declarations: [
         AppComponent,
