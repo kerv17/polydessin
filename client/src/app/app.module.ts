@@ -17,6 +17,7 @@ import { RadiusSliderComponent } from './components/radius-slider/radius-slider/
 import { LineOptionsComponent } from './components/sidebar/lineOptions/line-options/line-options.component';
 import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
 @NgModule({
@@ -35,10 +36,11 @@ import { ColorService } from './services/color/color.service';
         ShapeOptionsComponent,
         LineOptionsComponent,
         RadiusSliderComponent,
+        SprayAmountSliderComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
     providers: [ColorService],
     bootstrap: [AppComponent],
-    exports: [RadiusSliderComponent],
+    exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })
 export class AppModule {}

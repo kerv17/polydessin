@@ -1,0 +1,3 @@
+<p>Veuiller entrez le nombre de particules par secondes de l'outil aerosol</p>
+<mat-slider thumbLabel min="1" max="500" [(ngModel)]="width" (change)="updateWidthValues($event)"></mat-slider>
+<div class="value">Le PPS courant est de {{ width }}px</div>
