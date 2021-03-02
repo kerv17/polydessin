@@ -15,7 +15,6 @@ export class AerosolService extends Tool {
 
     sprayRadius: number = 50;
     sprayAmountPerSecond: number = 10;
-    pointWidth = 3;
     lastPosition:Vec2;
     mouseDown = false;
     timeoutID:any;
@@ -51,6 +50,7 @@ export class AerosolService extends Tool {
         this.clearPath();
         this.mouseDown = false;
         clearTimeout(this.timeoutID);
+        this.onMouseMove(event);
     }
 
 
@@ -85,7 +85,7 @@ export class AerosolService extends Tool {
       ctx.fillStyle = this.color || 'black';
       for(const point of this.pathData){
           ctx.beginPath();
-          ctx.ellipse(point.x, point.y, this.pointWidth, this.pointWidth, 0, 0, 2 * Math.PI);
+          ctx.ellipse(point.x, point.y, this.width, this.width, 0, 0, 2 * Math.PI);
           ctx.fill();
           ctx.stroke();
       }
