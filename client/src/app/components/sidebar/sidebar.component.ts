@@ -9,6 +9,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     showWidth: boolean = false;
+    showAerosol:boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
     resetSlider: boolean = false;
@@ -16,6 +17,7 @@ export class SidebarComponent {
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    aerosol:{ backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(private service: ToolControllerService, private drawing: DrawingService) {
         this.openCrayon();
@@ -40,13 +42,23 @@ export class SidebarComponent {
 
     openEllipsis(): void {
         this.service.setTool(Globals.ELLIPSIS_SHORTCUT);
+        this.ellipsis = Globals.BACKGROUND_GAINSBORO;
         this.openTool(true, true);
         this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }
+
+    openAerosol(): void {
+        this.service.setTool(Globals.AEROSOL_SHORTCUT);
+        this.openTool(false,true);
+        this.showAerosol = true;
+        this.aerosol = Globals.BACKGROUND_GAINSBORO;
+    }
+
     openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
         this.fillBorder = fillBorder;
         this.showWidth = showWidth;
         this.showline = showline;
+        this.showAerosol = false;
         this.resetSlider = !this.resetSlider;
         this.setButtonWhite();
     }
@@ -69,5 +81,6 @@ export class SidebarComponent {
         this.rectangle = Globals.BACKGROUND_WHITE;
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
+        this.aerosol = Globals.BACKGROUND_WHITE;
     }
 }

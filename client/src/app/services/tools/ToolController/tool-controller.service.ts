@@ -123,4 +123,11 @@ export class ToolControllerService {
     resetWidth(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.width = 1));
     }
+
+    getTool(toolShortcut: string):Tool{
+        if(this.toolMap.has(toolShortcut)){
+          return this.toolMap.get(toolShortcut) as Tool;
+        }
+        else return this.pencilService;
+    }
 }

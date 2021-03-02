@@ -13,6 +13,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PointWidthSliderComponent } from './components/point-width-slider/point-width-slider/point-width-slider.component';
+import { RadiusSliderComponent } from './components/radius-slider/radius-slider/radius-slider.component';
 import { LineOptionsComponent } from './components/sidebar/lineOptions/line-options/line-options.component';
 import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -33,9 +34,11 @@ import { ColorService } from './services/color/color.service';
         PointWidthSliderComponent,
         ShapeOptionsComponent,
         LineOptionsComponent,
+        RadiusSliderComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
     providers: [ColorService],
     bootstrap: [AppComponent],
+    exports: [RadiusSliderComponent],
 })
 export class AppModule {}

@@ -21,6 +21,10 @@
             <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
         </div>
         <div class="ToolContainer">
+          <div class="infobulle">Ce bouton active l'outil d'aerosol. Le raccourci est 'a'</div>
+          <img src="../../../assets/aerosol.png" [ngStyle]="aerosol" class="function" (click)="openAerosol()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
             <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
         </div>
@@ -30,7 +34,10 @@
             <div *ngIf="showWidth">
                 <app-width-slider [change]="resetSlider"></app-width-slider>
             </div>
-            <br />
+            <div *ngIf="showAerosol">
+                <radius-slider [change]="resetSlider"></radius-slider>
+            </div>
+
             <div>
                 <app-color></app-color>
             </div>

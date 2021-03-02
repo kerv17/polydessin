@@ -9,7 +9,7 @@ export abstract class Tool {
     outOfBounds: boolean = false;
     color: string;
     color2: string;
-    width: number;
+    width: number = 1;
     pointWidth: number;
     toolMode: string = 'fill';
     shift: boolean = false;
