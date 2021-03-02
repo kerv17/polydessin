@@ -15,7 +15,7 @@ export abstract class Tool {
     shift: boolean = false;
     protected pathData: Vec2[];
 
-    constructor(protected drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService) {}
 
     onMouseDown(event: MouseEvent): void {}
 
@@ -43,5 +43,11 @@ export abstract class Tool {
 
     clearPath(): void {
         this.pathData = [];
+    }
+
+    clearPreviewCtx(): void{
+      if (this.drawingService.previewCtx != undefined){
+          this.drawingService.clearCanvas(this.drawingService.previewCtx );
+      }
     }
 }

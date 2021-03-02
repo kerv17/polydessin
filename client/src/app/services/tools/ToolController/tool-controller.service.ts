@@ -64,6 +64,7 @@ export class ToolControllerService {
     }
 
     setTool(shortcut: string): void {
+        this.currentTool.clearPreviewCtx();
         const tempTool: Tool | undefined = this.toolMap.get(shortcut);
         if (tempTool != undefined) this.currentTool = tempTool;
     }
