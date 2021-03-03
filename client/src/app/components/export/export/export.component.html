@@ -1,10 +1,29 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close" (click)="close()">&times;</div>
-        <button (click)="togglePng()">Png</button>
-        <button (click)="toggleJpg()">Jpg</button>
-        <button (click)="exportPicture()">Export</button>
+        <div>
+            <p>Veuillez choisir le type du fichier exporté</p>
+            <button (click)="togglePng()">Png</button>
+            <button (click)="toggleJpg()">Jpeg</button>
+
+          </div>
+        <div>
+            <p>Vous pouvez appliquer un filtre</p>
+            <button (click)="setFiltre('grayscale(100)')">FiltreGris</button>
+            <button (click)="setFiltre('blur(4px)')">Embrouiller</button>
+            <button (click)="setFiltre('none')">Aucun Filtre</button>
+            <button (click)="setFiltre('sepia(100)')">Sepia</button>
+            <button (click)="setFiltre('invert(100)')">Invert</button>
+            <button (click)="setFiltre('brightness(50%)')">Baisse de luminosité</button>
+            <button (click)="setFiltre('brightness(150%)')">Augmentation de luminosité</button>
+        </div>
+      <div>
+        <p>Veuillez choisir le nom du fichier</p>
         <input [(ngModel)]="fileName" />
-        <div><canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas></div>
+      </div>
+        <div>
+          <p>Voici le canvas de prévisualisation</p>
+          <canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas></div>
+        <button (click)="exportPicture()">Export</button>
     </div>
 </div>

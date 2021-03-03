@@ -51,6 +51,7 @@ export class SidebarComponent {
         this.crayon = Globals.BACKGROUND_GAINSBORO;
     }
     openRectangle(): void {
+
         this.toolcontroller.setTool(Globals.RECTANGLE_SHORTCUT);
         this.openTool(true, true);
         this.rectangle = Globals.BACKGROUND_GAINSBORO;
@@ -86,7 +87,10 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
+
+      if (this.exportService.showModalExport) {
+            $event.stopImmediatePropagation();
+        } else if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
         } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {

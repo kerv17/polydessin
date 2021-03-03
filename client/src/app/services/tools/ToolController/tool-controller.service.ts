@@ -106,13 +106,8 @@ export class ToolControllerService {
 
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {
-            if (this.toolMap.has(event.key)) {
-                this.setTool(event.key);
-                return;
-            } else {
-                this.functionMap.get(event.key)?.call(this, event);
-                return;
-            }
+            this.functionMap.get(event.key)?.call(this, event);
+            return;
         }
         return;
     }

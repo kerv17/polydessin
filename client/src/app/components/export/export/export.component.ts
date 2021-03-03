@@ -13,33 +13,34 @@ export class ExportComponent implements AfterViewInit {
         this.width = window.innerWidth / 4;
         this.height = window.innerHeight / 4;
     }
-    private exportMode: string;
+    exportMode: string;
     width: number;
     height: number;
+    filtre: string;
+    fileName: string = 'canvas';
 
-    fileName: string;
-
-    ngAfterViewInit() {
-        window.alert(this.height);
+    ngAfterViewInit(): void {
         this.ctx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // this.exportService.drawingService.baseCtx.scale(
-        //     this.width / this.exportService.drawingService.canvas.width,
-        //    this.height / this.exportService.drawingService.canvas.height,
-        // );
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
     togglePng(): void {
         this.exportMode = 'png';
     }
-
+    setFiltre(buttonfiltre: string): void {
+        this.filtre = buttonfiltre;
+        this.ctx.filter = this.filtre;
+        this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
+    }
     toggleJpg(): void {
         this.exportMode = 'jpeg';
     }
 
     exportPicture(): void {
-        this.exportService.exportImage(this.exportMode, this.fileName);
+        this.exportService.exportImage(this.exportMode, this.fileName, this.filtre);
     }
     close(): void {
         this.exportService.showModalExport = false;
     }
+
+
 }
