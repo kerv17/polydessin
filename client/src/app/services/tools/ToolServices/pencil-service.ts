@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 @Injectable({
@@ -46,6 +47,7 @@ export class PencilService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -88,6 +90,16 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+        let action: DrawAction = {
+          tool: this as Tool,
+          colors:[this.color],
+          widths:[this.width],
+          points: path
+         } as DrawAction;
+        if( ctx === this.drawingService.baseCtx){
+            let c:CustomEvent = new CustomEvent('action',{detail: action});
+            dispatchEvent(c);
+         }
     }
 
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
@@ -103,4 +115,26 @@ export class PencilService extends Tool {
             ctx.strokeStyle = this.color;
         }
     }
+
+    doAction(action:DrawAction): void{
+      const baseCtx = this.drawingService.baseCtx;
+      baseCtx.lineCap = 'round';
+      const width = action.widths[0];
+
+      if (width !== undefined && width > 0) {
+          baseCtx.lineWidth = width;
+      }
+
+      if (action.colors[0] !== undefined && action.colors[0] !== '') {
+          baseCtx.strokeStyle = action.colors[0];
+      }
+
+      baseCtx.beginPath();
+        for (const point of action.points) {
+          baseCtx.lineTo(point.x, point.y);
+        }
+        baseCtx.stroke();
+    }
+
+
 }

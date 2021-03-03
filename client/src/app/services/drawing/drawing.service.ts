@@ -44,14 +44,16 @@ export class DrawingService {
         return vec;
     }
 
-    newCanvas(): void {
+    newCanvas(undoRequest:boolean = false): void {
         let newCanvasSize: Vec2 = { x: 0, y: 0 };
         newCanvasSize = this.setSizeCanva(newCanvasSize);
 
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        if (this.canvasNotEmpty(image)) {
-            if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
-                return;
+        if (!undoRequest){
+            if (this.canvasNotEmpty(image)) {
+                if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
+                    return;
+                }
             }
         }
         this.canvas.height = newCanvasSize.y;

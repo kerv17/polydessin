@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
 
 @Component({
     selector: 'app-drawing',
@@ -27,12 +28,13 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
+
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
-    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
+    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService, private undoRedoService:UndoRedoService) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
 
@@ -113,6 +115,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     onMouseEnter(event: MouseEvent): void {
         this.controller.currentTool.onMouseEnter(event);
     }
+
+
 
     get width(): number {
         return this.canvasSize.x;

@@ -1,4 +1,5 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction} from '@app/services/tools/undoRedo/undo-redo.service';
 import { Vec2 } from './vec2';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
@@ -50,4 +51,6 @@ export abstract class Tool {
           this.drawingService.clearCanvas(this.drawingService.previewCtx );
       }
     }
+
+    doAction(action: DrawAction):void {}
 }
