@@ -54,7 +54,6 @@ export class SelectionService extends Tool {
         if (this.inSelection) {
             this.onMouseDownSelection(event, mousePosition);
             if (!this.inMovement) {
-                this.topLeftHandler = mousePosition;
                 this.onMouseDownHandler(event, mousePosition);
             }
         } else {
@@ -67,7 +66,7 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             if (this.inMovement) {
                 this.onMouseUpSelection(event);
-                this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+                // this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
                 this.inMovement = false;
                 this.drawSelectionBox(this.drawingService.previewCtx);
             } else {
@@ -77,8 +76,8 @@ export class SelectionService extends Tool {
                 }
                 this.drawSelectionBox(this.drawingService.previewCtx);
                 this.initialSelectionPosition = this.topLeftHandler;
+                this.inSelection = true;
             }
-            this.inSelection = true;
         }
         this.mouseDown = false;
         this.clearPath();
@@ -91,14 +90,17 @@ export class SelectionService extends Tool {
             const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (this.inMovement) {
-                /*this.drawingService.previewCtx.fillStyle = 'white';
+                this.drawingService.previewCtx.fillStyle = 'white';
+                this.drawingService.previewCtx.strokeStyle = 'white';
                 this.drawingService.previewCtx.fillRect(
                     this.initialSelectionPosition.x,
                     this.initialSelectionPosition.y,
                     this.selectedArea.width,
                     this.selectedArea.height,
                 );
-                this.drawingService.previewCtx.stroke();*/
+                this.drawingService.previewCtx.stroke();
+                this.drawingService.previewCtx.fillStyle = 'black';
+                this.drawingService.previewCtx.strokeStyle = 'black';
                 this.onMouseMoveSelection(event, this.drawingService.previewCtx);
             } else {
                 if (this.inSelection) {
@@ -212,6 +214,12 @@ export class SelectionService extends Tool {
         this.clearPath();
         this.inSelection = false;
         this.bottomRight = false;
+        this.mouseDown = false;
+        this.inMovement = false;
+        this.topLeftHandler = { x: 0, y: 0 };
+        this.bottomRightHandler = { x: 0, y: 0 };
+        this.initialSelectionPosition = { x: 0, y: 0 };
+        this.initialMousePosition = { x: 0, y: 0 };
     }
 
     // selection des pixels
@@ -237,6 +245,7 @@ export class SelectionService extends Tool {
         prevctx.fillRect(width - 10, (height - 5) / 2, 10, 10); // centre droit
         prevctx.fillRect((width - 5) / 2, height - 10, 10, 10); // centre bas
         this.selectedArea = basectx.getImageData(0, 0, width, height);
+        this.topLeftHandler = { x: 0, y: 0 };
         this.bottomRightHandler = { x: width - 10, y: height - 10 };
     }
 
@@ -278,6 +287,7 @@ export class SelectionService extends Tool {
         } else {
             this.inSelection = false;
             this.rectangleService.onMouseDown(event);
+            this.topLeftHandler = mousePosition;
         }
     }
 
@@ -288,6 +298,7 @@ export class SelectionService extends Tool {
             const width: number = mousePosition.x - this.topLeftHandler.x;
             const height: number = mousePosition.y - this.topLeftHandler.y;
             this.selectedArea = ctx.getImageData(this.topLeftHandler.x, this.topLeftHandler.y, width, height);
+            this.bottomRightHandler = mousePosition;
             this.drawSelectionBox(ctx);
         }
     }
