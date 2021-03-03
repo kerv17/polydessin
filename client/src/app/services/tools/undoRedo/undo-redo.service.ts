@@ -8,10 +8,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class UndoRedoService {
     pile: DrawAction[];
-    currentLocation: number = -1;
+    currentLocation: number = 0;
 
     constructor() {
-        this.pile = [];
+        this.pile = [{} as DrawAction];
 
         /*
         To avoid using recursive dependencies, we should look into
@@ -30,19 +30,19 @@ export class UndoRedoService {
     }
 
     undo(): void {
-        // TO-DO
+        if(this.currentLocation> 0){
         this.currentLocation--;
 
-        const drawingService:DrawingService = this.pile[0].tool.drawingService;
-        drawingService.newCanvas(true);
-        for(const action of this.pile.slice(0, this.currentLocation)){
-          action.tool.doAction(action);
+        const drawingService:DrawingService = this.pile[1].tool.drawingService;
+        drawingService.resetCanvas();
+        for (let i = 1;i<=this.currentLocation;i++){
+          this.doAction(this.pile[i]);
         }
         console.log(this.pile, this.currentLocation);
+      }
     }
 
     redo(): void {
-        // TO-DO
         this.currentLocation++;
         const action = this.pile[this.currentLocation];
         action.tool.doAction(action);
@@ -54,7 +54,7 @@ export class UndoRedoService {
     addAction(action: DrawAction): void {
         console.log(action);
         if (this.currentLocation < this.pile.length-1) {
-            this.pile = this.pile.slice(0, this.currentLocation);
+            this.pile = this.pile.slice(0, this.currentLocation+1);
         }
         this.pile.push(action);
         this.currentLocation++;

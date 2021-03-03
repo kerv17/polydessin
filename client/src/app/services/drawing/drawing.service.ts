@@ -44,18 +44,16 @@ export class DrawingService {
         return vec;
     }
 
-    newCanvas(undoRequest:boolean = false): void {
+    newCanvas(): void {
         let newCanvasSize: Vec2 = { x: 0, y: 0 };
         newCanvasSize = this.setSizeCanva(newCanvasSize);
 
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        if (!undoRequest){
             if (this.canvasNotEmpty(image)) {
                 if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
                     return;
                 }
             }
-        }
         this.canvas.height = newCanvasSize.y;
         this.canvas.width = newCanvasSize.x;
 
@@ -66,6 +64,11 @@ export class DrawingService {
         this.baseCtx.fillStyle = 'white';
 
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    resetCanvas():void {
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.clearCanvas(this.previewCtx);
     }
 
     canvasNotEmpty(image: ImageData): boolean {
