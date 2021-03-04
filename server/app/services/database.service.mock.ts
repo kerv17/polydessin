@@ -1,7 +1,7 @@
 import { Db, MongoClient, MongoClientOptions } from "mongodb";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-const DATABASE_NAME = "database";
+const DATABASE_NAME = "projet2990";
 
 export class DatabaseServiceMock {
   private db: Db;

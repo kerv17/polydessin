@@ -43,6 +43,7 @@ export class DatabaseService {
   async populateDB(): Promise<void> {
     let metaDatas: Metadata[] = [
       {
+        code: ""
         name: "Object Oriented Programming",
         tags: ["Samuel Kadoury"],
       },
