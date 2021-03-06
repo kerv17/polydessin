@@ -67,12 +67,7 @@ export class SidebarComponent {
     }
 
     selectCanvas(): void {
-        this.toolcontroller.selectionService.selectCanvas(
-            this.drawing.baseCtx,
-            this.drawing.previewCtx,
-            this.drawing.canvas.width,
-            this.drawing.canvas.height,
-        );
+        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.openTool(false, false);
         this.selection = Globals.BACKGROUND_GAINSBORO;
     }

@@ -5,7 +5,6 @@ import { Vec2 } from '@app/classes/vec2';
     providedIn: 'root',
 })
 export class SelectionHandlerService {
-    constructor() {}
     // position des 8 handlers
     handlersPositions: Vec2[] = [];
 
@@ -13,7 +12,7 @@ export class SelectionHandlerService {
     clickedElement: boolean[] = [false, false, false, false, false, false, false, false];
 
     // fonction de vérif pour savoir où est survenu le clic de la souris
-    handlerWasClicked(mousePosition: Vec2): boolean {
+    /*handlerWasClicked(mousePosition: Vec2): boolean {
         if (this.handlersPositions.length > 0) {
             for (let pos = 0; pos < this.handlersPositions.length; pos++) {
                 if (this.handlersPositions[pos].x === mousePosition.x && this.handlersPositions[pos].y === mousePosition.y) {
@@ -22,7 +21,6 @@ export class SelectionHandlerService {
                 }
             }
         }
-
         return false;
     }
 
@@ -32,7 +30,7 @@ export class SelectionHandlerService {
             return true;
         }
         return false;
-    }
+    }*/
 
     // calcul position des 8 handlers
     setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
