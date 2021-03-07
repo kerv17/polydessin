@@ -52,28 +52,4 @@ export class SelectionHandlerService {
         // centre gauche
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
     }
-
-    /* resizeSelectionBox(mousePosition: Vec2, topLeft: Vec2): void {
-        let width: number;
-        let height: number;
-
-        if (this.clickedElement[0]) {
-        }
-        if (this.clickedElement[1]) {
-        }
-        if (this.clickedElement[2]) {
-        }
-        if (this.clickedElement[3]) {
-        }
-        if (this.clickedElement[4]) {
-            width = mousePosition.x - topLeft.x;
-            height = mousePosition.y - topLeft.y;
-        }
-        if (this.clickedElement[5]) {
-        }
-        if (this.clickedElement[6]) {
-        }
-        if (this.clickedElement[7]) {
-        }
-    }*/
 }
