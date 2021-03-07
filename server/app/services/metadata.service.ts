@@ -114,7 +114,7 @@ export class CoursesService {
   private validateMetadata(metadata: Metadata): boolean {
     return (
       this.validateName(metadata.name) ||
-      this.validateCredits(metadata.tags)
+      this.validateTags(metadata.tags)
     );
   }
   // TODO define name acceptance rules
@@ -123,7 +123,7 @@ export class CoursesService {
   }
 
   // TODO define tags acceptance rules
-  private validateCredits(tag: string[]): boolean {
+  private validateTags(tag: string[]): boolean {
     return true;
     //credits > 0 && credits <= 6;
   }
