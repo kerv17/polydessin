@@ -70,6 +70,13 @@ export class SidebarComponent {
         this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.openTool(false, false);
         this.selection = Globals.BACKGROUND_GAINSBORO;
+        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+    }
+
+    openSelection(): void {
+        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+        this.openTool(false, false);
+        this.selection = Globals.BACKGROUND_GAINSBORO;
     }
 
     openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
@@ -97,7 +104,8 @@ export class SidebarComponent {
         } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
             $event.preventDefault();
             this.selectCanvas();
-            this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+        } else if ($event.key === Globals.RECTANGLE_SELECTION_SHORTCUT) {
+            this.openSelection();
         } else if (this.toolcontroller.focused) {
             this.functionMap.get($event.key)?.call(this);
         }
