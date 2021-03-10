@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ExportService } from '@app/services/export/export.service';
-
+const CONSTANTE_DIVISION_FENETRE = 4;
 @Component({
     selector: 'app-export',
     templateUrl: './export.component.html',
@@ -8,39 +8,39 @@ import { ExportService } from '@app/services/export/export.service';
 })
 export class ExportComponent implements AfterViewInit {
     @ViewChild('export', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    png: string = 'png';
+    jpeg: string = 'jpeg';
     ctx: CanvasRenderingContext2D;
-    constructor(private exportService: ExportService) {
-        this.width = window.innerWidth / 4;
-        this.height = window.innerHeight / 4;
-    }
     exportMode: string;
     width: number;
     height: number;
-    filtre: string;
+    filtre: string = 'none';
     fileName: string = 'canvas';
+    constructor(private exportService: ExportService) {
+        this.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
+        this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
+    }
 
     ngAfterViewInit(): void {
+        this.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
+        this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
         this.ctx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
-    togglePng(): void {
-        this.exportMode = 'png';
+    toggleMode(mode: string): void {
+        this.exportMode = mode;
     }
+
     setFiltre(buttonfiltre: string): void {
         this.filtre = buttonfiltre;
         this.ctx.filter = this.filtre;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
-    toggleJpg(): void {
-        this.exportMode = 'jpeg';
-    }
 
     exportPicture(): void {
-        this.exportService.exportImage(this.exportMode, this.fileName, this.filtre);
+        this.exportService.exportImage(this.exportMode, this.fileName);
     }
     close(): void {
         this.exportService.showModalExport = false;
     }
-
-
 }

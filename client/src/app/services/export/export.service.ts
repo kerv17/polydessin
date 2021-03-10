@@ -7,11 +7,9 @@ export class ExportService {
     constructor(public drawingService: DrawingService) {}
     showModalExport: boolean = false;
 
-    exportImage(type: string, name: string, filter: string): void {
-        if (type != undefined && name != undefined) {
+    exportImage(type: string, name: string): void {
+        if (type != undefined && name !== '') {
             if (confirm('Êtes-vous sûr de vouloir exporter le dessin')) {
-                this.drawingService.baseCtx.filter = filter;
-                this.drawingService.baseCtx.drawImage(this.drawingService.canvas, 0, 0);
                 const a = document.createElement('a');
                 a.href = this.drawingService.canvas.toDataURL('image/' + type);
                 a.download = name;

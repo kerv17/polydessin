@@ -27,7 +27,7 @@
 
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton exporte le dessin . Le raccourci est 'Ctrl+e'</div>
-            <img src="../../../assets/export.png" class="function" tabindex="0" />
+            <img src="../../../assets/export.png" (click)="openExport()" class="function" tabindex="0" />
         </div>
     </div>
     <div class="BackgroundServices">
@@ -47,8 +47,7 @@
             </div>
         </div>
     </div>
-</div>
-
-<div *ngIf="exportService.showModalExport">
-    <app-export></app-export>
+    <div *ngIf="exportService.showModalExport">
+        <app-export></app-export>
+    </div>
 </div>

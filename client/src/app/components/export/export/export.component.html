@@ -3,27 +3,95 @@
         <div class="close" (click)="close()">&times;</div>
         <div>
             <p>Veuillez choisir le type du fichier exporté</p>
-            <button (click)="togglePng()">Png</button>
-            <button (click)="toggleJpg()">Jpeg</button>
-
-          </div>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'png' ? 'gainsboro' : 'white'
+                }"
+                (click)="toggleMode('png')"
+            >
+                Png
+            </button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: exportMode == 'jpeg' ? 'gainsboro' : 'white'
+                }"
+                (click)="toggleMode('jpeg')"
+            >
+                Jpeg
+            </button>
+            <div *ngIf="exportMode != undefined">
+                <p>Le format choisi est de {{ exportMode }}</p>
+            </div>
+        </div>
         <div>
             <p>Vous pouvez appliquer un filtre</p>
-            <button (click)="setFiltre('grayscale(100)')">FiltreGris</button>
-            <button (click)="setFiltre('blur(4px)')">Embrouiller</button>
-            <button (click)="setFiltre('none')">Aucun Filtre</button>
-            <button (click)="setFiltre('sepia(100)')">Sepia</button>
-            <button (click)="setFiltre('invert(100)')">Invert</button>
-            <button (click)="setFiltre('brightness(50%)')">Baisse de luminosité</button>
-            <button (click)="setFiltre('brightness(150%)')">Augmentation de luminosité</button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'none' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('none')"
+            >
+                Aucun Filtre
+            </button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'grayscale(100)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('grayscale(100)')"
+            >
+                FiltreGris
+            </button>
+            <button
+                id="blur"
+                [ngStyle]="{
+                    backgroundColor: filtre == 'blur(4px)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('blur(4px)')"
+            >
+                Embrouiller
+            </button>
+
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'sepia(100)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('sepia(100)')"
+            >
+                Sepia
+            </button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'invert(100)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('invert(100)')"
+            >
+                Inversion de couleur
+            </button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'brightness(50%)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('brightness(50%)')"
+            >
+                Baisse de luminosité
+            </button>
+            <button
+                [ngStyle]="{
+                    backgroundColor: filtre == 'brightness(150%)' ? 'gainsboro' : 'white'
+                }"
+                (click)="setFiltre('brightness(150%)')"
+            >
+                Augmentation de luminosité
+            </button>
         </div>
-      <div>
-        <p>Veuillez choisir le nom du fichier</p>
-        <input [(ngModel)]="fileName" />
-      </div>
         <div>
-          <p>Voici le canvas de prévisualisation</p>
-          <canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas></div>
+            <p>Veuillez choisir le nom du fichier</p>
+            <input [(ngModel)]="fileName" />
+        </div>
+        <div>
+            <p>Voici le canvas de prévisualisation</p>
+            <canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas>
+        </div>
         <button (click)="exportPicture()">Export</button>
     </div>
 </div>
