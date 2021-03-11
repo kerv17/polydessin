@@ -44,6 +44,8 @@ export class PencilService extends Tool {
             }
 
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            const action: DrawAction = this.createAction();
+            this.dispatchAction(action);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -82,7 +84,7 @@ export class PencilService extends Tool {
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[], fromDrawAction: boolean = false): void {
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.applyAttributes(ctx);
 
         ctx.beginPath();
@@ -90,10 +92,6 @@ export class PencilService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-        const action: DrawAction = this.createAction();
-        if (ctx === this.drawingService.baseCtx && !fromDrawAction) {
-            this.dispatchAction(action);
-        }
     }
 
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
@@ -114,7 +112,7 @@ export class PencilService extends Tool {
         const previousSetting: Setting = this.saveSetting();
         this.loadSetting(action.setting);
 
-        this.drawLine(action.canvas, this.pathData, true);
+        this.drawLine(action.canvas, this.pathData);
         this.loadSetting(previousSetting);
     }
 }
