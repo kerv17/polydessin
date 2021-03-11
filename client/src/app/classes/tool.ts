@@ -77,7 +77,7 @@ export abstract class Tool {
         this.color = setting.color;
         this.color2 = setting.color2;
         this.width = setting.width;
-        this.pointWidth = setting.width;
+        this.pointWidth = setting.pointWidth;
         this.toolMode = setting.toolMode;
         this.shift = setting.shift;
         this.pathData = setting.pathData;
