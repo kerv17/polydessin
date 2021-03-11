@@ -9,6 +9,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { PointWidthSliderComponent } from './point-width-slider.component';
 
 describe('PointWidthSliderComponent', () => {
@@ -22,7 +23,13 @@ describe('PointWidthSliderComponent', () => {
         line = new LineService({} as DrawingService);
         const DEFAULT_WIDTH_VALUE = 5;
         line.pointWidth = DEFAULT_WIDTH_VALUE;
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as SelectionService,
+        );
         toolController.currentTool = line;
         TestBed.configureTestingModule({
             imports: [FormsModule],

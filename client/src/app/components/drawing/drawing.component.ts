@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -33,6 +34,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private viewInitialized: boolean = false;
 
     selectionBox: { [key: string]: string };
+    handler0: { [key: string]: string };
     handler1: { [key: string]: string };
     handler2: { [key: string]: string };
     handler3: { [key: string]: string };
@@ -40,7 +42,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     handler5: { [key: string]: string };
     handler6: { [key: string]: string };
     handler7: { [key: string]: string };
-    handler8: { [key: string]: string };
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
@@ -163,37 +164,37 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.controller.selectionService.topLeftHandler,
                 this.controller.selectionService.bottomRightHandler,
             );
+            this.handler0 = {
+                left: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+            };
             this.handler1 = {
-                left: this.controller.selectionService.handlersPositions[0].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[0].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler2 = {
-                left: this.controller.selectionService.handlersPositions[1].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[1].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler3 = {
-                left: this.controller.selectionService.handlersPositions[2].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[2].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler4 = {
-                left: this.controller.selectionService.handlersPositions[3].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[3].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler5 = {
-                left: this.controller.selectionService.handlersPositions[4].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[4].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler6 = {
-                left: this.controller.selectionService.handlersPositions[5].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[5].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             this.handler7 = {
-                left: this.controller.selectionService.handlersPositions[6].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[6].y - 5 + 'px',
-            };
-            this.handler8 = {
-                left: this.controller.selectionService.handlersPositions[7].x - 5 + 'px',
-                top: this.controller.selectionService.handlersPositions[7].y - 5 + 'px',
+                left: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
+                top: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
             };
             return true;
         } else {
