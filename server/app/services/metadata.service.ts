@@ -2,15 +2,17 @@ import { inject, injectable } from "inversify";
 import { Metadata } from "../classes/metadata";
 import { Collection, UpdateQuery, FilterQuery, FindOneOptions, FindAndModifyWriteOpResultObject } from "mongodb";
 import "reflect-metadata";
-import { HttpException } from "src/classes/http.exception";
+import { HttpException } from "../classes/http.exceptions";
 import { DatabaseService } from "./database.service";
-import TYPES from "../types";
+import { TYPES } from '@app/types';
 
 // CHANGE the URL for your database information
 const DATABASE_COLLECTION = "metadata";
+const MAX_SIZE_TAG = 20;
+const MIN_SIZE_TAG = 4;
 
 @injectable()
-export class CoursesService {
+export class MetadataService {
 
   constructor(
     @inject(TYPES.DatabaseService) private databaseService: DatabaseService
@@ -32,7 +34,7 @@ export class CoursesService {
       });
   }
 
-  async getMetadata(aCode: string): Promise<Metadata> {
+  async getMetadataByCode(aCode: string): Promise<Metadata> {
     // TODO: This can return null if the metadata does not exist, need to handle it
     return this.collection
       .findOne({ code: aCode })
@@ -40,6 +42,48 @@ export class CoursesService {
         return metadata;
       });
   }
+  async getMetadataByName(aName: string): Promise<Metadata[]> {
+    let filterQuery: FilterQuery<Metadata> = { name: aName };
+    return this.collection
+      .find(filterQuery)
+      .toArray()
+      .then((metadatas: Metadata[]) => {
+        return metadatas;
+      })
+    
+      .catch(() => {
+        throw new Error("Failed to get data");
+      });
+  }
+  // TODO getMetadataByTag
+  async getMetadataByTag(tag: string): Promise<Metadata[]> {
+    let filterQuery: FilterQuery<Metadata> = { tags: tag };
+    return this.collection
+      .find(filterQuery)
+      .toArray()
+      .then((metadatas: Metadata[]) => {
+        return metadatas;
+      })
+    
+      .catch(() => {
+        throw new Error("Failed to get data");
+      });
+  }
+  // TODO getMetadataByTags
+  async getMetadataByTags(receivedTags: string[]): Promise<Metadata[]> {
+    let filterQuery: FilterQuery<Metadata> = { tags: receivedTags };
+    return this.collection
+      .find(filterQuery)
+      .toArray()
+      .then((metadatas: Metadata[]) => {
+        return metadatas;
+      })
+    
+      .catch(() => {
+        throw new Error("Failed to get data");
+      });
+  }
+  // TODO getMetadataByNameAndTags
 
   async addMetadata(data: Metadata): Promise<void> {
     if (this.validateMetadata(data)) {
@@ -63,23 +107,26 @@ export class CoursesService {
         throw new Error("Failed to delete metadata");
       });
   }
-    // TODO modifier ca pour gerer les arrays de tags
+    // TODO is this necessary?
   async modifyMetadata(metadata: Metadata): Promise<void> {
-    let filterQuery: FilterQuery<Metadata> = { code: metadata.code };
-    let updateQuery: UpdateQuery<Metadata> = {
-      $set: {
-        code: metadata.code,
-        name: metadata.name,
-        tags: metadata.tags,
-      },
-    };
-    // Can also use replaceOne if we want to replace the entire object
-    return this.collection
-      .updateOne(filterQuery, updateQuery)
-      .then(() => {})
-      .catch(() => {
-        throw new Error("Failed to update document");
-      });
+    if (this.validateMetadata(metadata)) {
+      let filterQuery: FilterQuery<Metadata> = { code: metadata.code };
+      let updateQuery: UpdateQuery<Metadata> = {
+        $set: {
+          code: metadata.code,
+          name: metadata.name,
+          tags: metadata.tags,
+        },
+    
+      };
+      // Can also use replaceOne if we want to replace the entire object
+      return this.collection
+        .updateOne(filterQuery, updateQuery)
+        .then(() => {})
+        .catch(() => {
+          throw new Error("Failed to update document");
+        });
+    }
   }
 
   async getMetadataName(aCode: string): Promise<string> {
@@ -107,9 +154,6 @@ export class CoursesService {
         throw new Error("No codes for that name");
       });
   }
-  // TODO getCodesBy tags
-
-  // TODO getcodesBy name + tags
 
   private validateMetadata(metadata: Metadata): boolean {
     return (
@@ -123,8 +167,39 @@ export class CoursesService {
   }
 
   // TODO define tags acceptance rules
-  private validateTags(tag: string[]): boolean {
-    return true;
-    //credits > 0 && credits <= 6;
+  private validateTags(tags: string[]): boolean {
+    if(tags.length==0){
+      // il est accepter qu'un dessin peut ne pas avoir de tag
+      return true;
+    }
+    else{
+      if(this.verifyTagsNotNull(tags) && this.verifyTagsTooLong(tags) 
+              && this.verifyTagsTooShort(tags) && this.verifyTagsNoSpecialChracter(tags)){
+        return true;
+      }
+      return false;
+    }
   }
+  private verifyTagsNotNull(tags: string[]): boolean{
+    return tags.every(elem=> elem.length>0);
+  }
+  private verifyTagsTooLong(tags: string[]): boolean{
+    return tags.every(elem=> elem.length<=MAX_SIZE_TAG);
+  }
+  private verifyTagsTooShort(tags: string[]): boolean{
+    return tags.every(elem=> elem.length>=MIN_SIZE_TAG);
+  }
+/*
+    RÉFÉRENCES POUR LE CODE DE LA METHODE  verifyTagsNoSpecialChracter :
+    Le présent code est tiré du tutoriel "Check wheter String contains Special Characters using JavaScript" de Mudassar Khan, 
+    publié le 28 Decembre 2018
+    disponible à l'adresse suivante : "https://www.aspsnippets.com/Articles/Check-whether-String-contains-Special-Characters-using-JavaScript.aspx"
+    Quelques modifications y ont été apportées
+*/
+  private verifyTagsNoSpecialChracter(tags: string[]): boolean{
+    // only accepts letters and numbers
+    let regex = /^[A-Za-z0-9]+$/
+    return tags.every(elem=> regex.test(elem));
+  }
+  
 }

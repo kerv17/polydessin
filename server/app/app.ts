@@ -9,7 +9,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import { DateController } from './controllers/date.controller';
 import { IndexController } from './controllers/index.controller';
 import { MetadataController } from './controllers/metadata.controller';
-import { TYPES } from './types';
+import { TYPES } from '@app/types';
 
 @injectable()
 export class Application {

@@ -8,7 +8,7 @@ import { DatabaseService } from "./services/database.service";
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
-import { TYPES } from './types';
+import { TYPES } from '@app/types';
 
 export const containerBootstrapper: () => Promise<Container> = async () => {
     const container: Container = new Container();

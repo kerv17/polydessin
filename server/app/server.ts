@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { inject, injectable } from 'inversify';
 import { Application } from './app';
-import { TYPES } from './types';
+import { TYPES } from '@app/types';
 import { DatabaseService } from "./services/database.service";
 
 @injectable()
@@ -15,7 +15,7 @@ export class Server {
         @inject(TYPES.DatabaseService) private databaseService: DatabaseService
         ) {}
 
-    init(): void {
+    async init(): Promise<void> {
         this.application.app.set('port', this.appPort);
 
         this.server = http.createServer(this.application.app);
@@ -23,6 +23,13 @@ export class Server {
         this.server.listen(this.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
+        try {
+            await this.databaseService.start();
+            console.log("Database connection successful !");
+        } catch {
+            console.error("Database connection failed !");
+            process.exit(1);
+        }
     }
 
     private normalizePort(val: number | string): number | string | boolean {

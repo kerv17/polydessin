@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Metadata } from "../classes/metadata";
+//import { Metadata } from "../classes/metadata";
 import { MongoClient, MongoClientOptions, Db } from "mongodb";
 import "reflect-metadata";
 
@@ -7,7 +7,7 @@ import "reflect-metadata";
 const DATABASE_URL =
     "mongodb+srv://admin:DB2990T312@cluster0.iuq28.mongodb.net/projet2990?retryWrites=true&w=majority";
 const DATABASE_NAME = "projet2990";
-const DATABASE_COLLECTION = "metadata";
+//const DATABASE_COLLECTION = "metadata";
 
 @injectable()
 export class DatabaseService {
@@ -27,20 +27,20 @@ export class DatabaseService {
     } catch {
       throw new Error("Database connection error")
     }
-
-    if (
+    // TODO is this necessary
+    /*if (
       (await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0
     ) {
-      await this.populateDB();
-    }
+      //await this.populateDB();
+    }*/
     return this.client;
   }
 
   async closeConnection(): Promise<void> {
     return this.client.close();
   }
-
-  async populateDB(): Promise<void> {
+  // TODO remove when done testing
+  /*async populateDB(): Promise<void> {
     let metaDatas: Metadata[] = [
       {
         code: ""
@@ -69,7 +69,7 @@ export class DatabaseService {
     for (const metadata of metaDatas) {
       await this.db.collection(DATABASE_COLLECTION).insertOne(metadata);
     }
-  }
+  }*/
 
   get database(): Db {
     return this.db;

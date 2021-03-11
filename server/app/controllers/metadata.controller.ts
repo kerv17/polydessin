@@ -2,9 +2,9 @@ import { NextFunction, Request, Response, Router } from "express";
 import * as Httpstatus from "http-status-codes";
 import { inject, injectable } from "inversify";
 
-import TYPES from "../types";
+import { TYPES } from "../types";
 import { Metadata } from "../classes/metadata";
-import { MetadataService } from "src/services/metadata.service";
+import { MetadataService } from "app/services/metadata.service";
 
 @injectable()
 export class MetadataController {
@@ -41,14 +41,41 @@ export class MetadataController {
         // }
       }
     );
-      // TODO change when change service
+  
     this.router.get(
-      "/:subjectCode",
+      "/:code",
       async (req: Request, res: Response, next: NextFunction) => {
         this.metadataService
-          .getMetadata(req.params.subjectCode)
+          .getMetadataByCode(req.params.code)
           .then((metadata: Metadata) => {
             res.json(metadata);
+          })
+          .catch((error: Error) => {
+            res.status(Httpstatus.NOT_FOUND).send(error.message);
+          });
+      }
+    );
+
+    this.router.get(
+      "/:name",
+      async (req: Request, res: Response, next: NextFunction) => {
+        this.metadataService
+          .getMetadataByName(req.params.name)
+          .then((metadata: Metadata[]) => {
+            res.json(metadata);
+          })
+          .catch((error: Error) => {
+            res.status(Httpstatus.NOT_FOUND).send(error.message);
+          });
+      }
+    );
+    this.router.get(
+      "/:tag",
+      async (req: Request, res: Response, next: NextFunction) => {
+        this.metadataService
+          .getMetadataByTag(req.params.tag)
+          .then((metadatas: Metadata[]) => {
+            res.json(metadatas);
           })
           .catch((error: Error) => {
             res.status(Httpstatus.NOT_FOUND).send(error.message);
@@ -70,7 +97,7 @@ export class MetadataController {
           });
       }
     );
-
+    
     this.router.patch(
       "/",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -84,12 +111,12 @@ export class MetadataController {
           });
       }
     );
-      // TODO change after change to service
+      
     this.router.delete(
-      "/:subjectCode",
+      "/:code",
       async (req: Request, res: Response, next: NextFunction) => {
         this.metadataService
-          .deleteMetadata(req.params.subjectCode)
+          .deleteMetadata(req.params.code)
           .then(() => {
             res.sendStatus(Httpstatus.NO_CONTENT).send();
           })
@@ -98,8 +125,8 @@ export class MetadataController {
           });
       }
     );
-       // TODO change after change to service
-    this.router.get(
+       // TODO get qui prend des tags
+    /*this.router.get(
       "/teachers/code/:subjectCode",
       async (req: Request, res: Response, next: NextFunction) => {
         this.metadataService
@@ -112,7 +139,7 @@ export class MetadataController {
           });
       }
     );
-
+      // TODO get qui prend des tags+noms
     this.router.get(
       "/teachers/name/:name",
       async (req: Request, res: Response, next: NextFunction) => {
@@ -125,6 +152,6 @@ export class MetadataController {
             res.status(Httpstatus.NOT_FOUND).send(error.message);
           });
       }
-    );
+    );*/
   }
 }

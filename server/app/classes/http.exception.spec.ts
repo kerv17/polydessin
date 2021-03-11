@@ -1,4 +1,4 @@
-import { HttpException } from "./http.exception";
+import { HttpException } from "./http.exceptions";
 import { expect } from "chai";
 import { describe } from "mocha";
 
