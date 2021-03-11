@@ -20,13 +20,10 @@ export class UndoRedoService {
         */
         addEventListener('action', (event: CustomEvent) => {
             this.addAction(event.detail);
-
         });
         addEventListener('keypress', (event: KeyboardEvent) => {
             this.onKeyPress(event);
-
         });
-
     }
 
     onKeyPress(event: KeyboardEvent): void {
@@ -47,14 +44,15 @@ export class UndoRedoService {
             for (let i = 1; i <= this.currentLocation; i++) {
                 this.doAction(this.pile[i]);
             }
-            console.log(this.pile, this.currentLocation);
         }
     }
 
     redo(): void {
-        this.currentLocation++;
-        const action = this.pile[this.currentLocation];
-        this.doAction(action);
+        if (this.currentLocation < this.pile.length - 1) {
+            this.currentLocation++;
+            const action = this.pile[this.currentLocation];
+            this.doAction(action);
+        }
     }
 
     addAction(action: DrawAction): void {
@@ -64,7 +62,6 @@ export class UndoRedoService {
         }
         this.pile.push(action);
         this.currentLocation++;
-        console.log(this.pile, this.currentLocation);
     }
 
     doAction(action: DrawAction): void {
