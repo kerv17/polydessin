@@ -33,6 +33,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private viewInitialized: boolean = false;
 
     selectionBox: { [key: string]: string };
+    handler1: { [key: string]: string };
+    handler2: { [key: string]: string };
+    handler3: { [key: string]: string };
+    handler4: { [key: string]: string };
+    handler5: { [key: string]: string };
+    handler6: { [key: string]: string };
+    handler7: { [key: string]: string };
+    handler8: { [key: string]: string };
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
@@ -62,6 +70,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     this.previewCanvas.nativeElement.height = this.heightPrev;
                 }
             } else {
+                if (this.controller.selectionService.inSelection) {
+                    this.controller.selectionService.onEscape();
+                }
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
                 this.newCanvasSize = { x: this.widthPrev, y: this.heightPrev };
                 const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
@@ -128,6 +139,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         return this.controller.currentTool;
     }
 
+    // A deplacer dans service
     drawSelectionBox(): boolean {
         if (this.controller.selectionService.inSelection) {
             this.selectionBox = {
@@ -135,11 +147,57 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 width: this.controller.selectionService.selectedArea.width + 'px',
                 border: '1px solid blue',
                 position: 'absolute',
-                left: this.controller.selectionService.topLeftHandler.x + 'px',
-                top: this.controller.selectionService.topLeftHandler.y + 'px',
+                left: this.controller.selectionService.topLeftHandler.x + 1 + 'px',
+                top: this.controller.selectionService.topLeftHandler.y + 1 + 'px',
             };
             return true;
         }
         return false;
+    }
+
+    // afficher handlers
+    // A deplacer dans service
+    drawHandlers(): boolean {
+        if (this.controller.selectionService.inSelection) {
+            this.controller.selectionService.setHandlersPositions(
+                this.controller.selectionService.topLeftHandler,
+                this.controller.selectionService.bottomRightHandler,
+            );
+            this.handler1 = {
+                left: this.controller.selectionService.handlersPositions[0].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[0].y - 5 + 'px',
+            };
+            this.handler2 = {
+                left: this.controller.selectionService.handlersPositions[1].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[1].y - 5 + 'px',
+            };
+            this.handler3 = {
+                left: this.controller.selectionService.handlersPositions[2].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[2].y - 5 + 'px',
+            };
+            this.handler4 = {
+                left: this.controller.selectionService.handlersPositions[3].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[3].y - 5 + 'px',
+            };
+            this.handler5 = {
+                left: this.controller.selectionService.handlersPositions[4].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[4].y - 5 + 'px',
+            };
+            this.handler6 = {
+                left: this.controller.selectionService.handlersPositions[5].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[5].y - 5 + 'px',
+            };
+            this.handler7 = {
+                left: this.controller.selectionService.handlersPositions[6].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[6].y - 5 + 'px',
+            };
+            this.handler8 = {
+                left: this.controller.selectionService.handlersPositions[7].x - 5 + 'px',
+                top: this.controller.selectionService.handlersPositions[7].y - 5 + 'px',
+            };
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -3,7 +3,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionHandlerService } from '@app/services/selectionHandler/selection-handler.service';
 import { RectangleService } from './rectangle-service';
 
 @Injectable({
@@ -22,13 +21,14 @@ export class SelectionService extends Tool {
     initialSelectionPosition: Vec2;
     firstCorner: Vec2;
     oppositeCorner: Vec2;
+    handlersPositions: Vec2[] = [];
 
     leftArrow: boolean = false;
     downArrow: boolean = false;
     rightArrow: boolean = false;
     upArrow: boolean = false;
 
-    constructor(drawingService: DrawingService, private selectionHandler: SelectionHandlerService) {
+    constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
@@ -49,8 +49,7 @@ export class SelectionService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         const mousePosition = this.getPositionFromMouse(event);
         if (this.inSelection) {
-            if (this.onMouseDownSelection(event, mousePosition)) {
-            } else {
+            if (!this.onMouseDownSelection(event, mousePosition)) {
                 this.onEscape();
             }
         } else {
@@ -86,10 +85,8 @@ export class SelectionService extends Tool {
             if (this.inMovement) {
                 this.onMouseUpSelection(event);
                 this.inMovement = false;
-                // this.drawSelectionBox(this.drawingService.previewCtx);
             } else if (this.firstCorner.x !== mousePosition.x && this.firstCorner.y !== mousePosition.x) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                // this.drawSelectionBox(this.drawingService.previewCtx);
                 this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
                 this.inSelection = true;
             }
@@ -118,6 +115,7 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
+            this.handlersPositions = [];
         }
     }
 
@@ -162,7 +160,7 @@ export class SelectionService extends Tool {
 
         ctx.strokeStyle = 'black';
         ctx.beginPath();
-        ctx.setLineDash([10, 10]);
+        ctx.setLineDash([Globals.LINE_DASH, Globals.LINE_DASH]);
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
@@ -183,43 +181,10 @@ export class SelectionService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.topLeftHandler = { x: 0, y: 0 };
         this.bottomRightHandler = { x: width, y: height };
-        this.drawSelectionBox(this.drawingService.previewCtx);
         this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
         this.inSelection = true;
         this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
     }
-
-    // cadre avec les 8 pts de selection
-    private drawSelectionBox(ctx: CanvasRenderingContext2D): void {
-        this.selectionHandler.setHandlersPositions(this.topLeftHandler, this.bottomRightHandler);
-        ctx.lineWidth = 1;
-        this.drawHandles(ctx);
-        ctx.strokeStyle = 'blue';
-        ctx.beginPath();
-        for (const point of this.selectionHandler.handlersPositions) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-        ctx.strokeStyle = 'black';
-    }
-
-    private drawHandles(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = 'black';
-        // 4 coins
-        ctx.fillRect(this.selectionHandler.handlersPositions[0].x - 5, this.selectionHandler.handlersPositions[0].y - 5, 10, 10); // coin haut gauche
-        ctx.fillRect(this.selectionHandler.handlersPositions[1].x - 5, this.selectionHandler.handlersPositions[1].y - 5, 10, 10); // coin bas gauche
-        ctx.fillRect(this.selectionHandler.handlersPositions[2].x - 5, this.selectionHandler.handlersPositions[2].y - 5, 10, 10); // coin bas droit
-        ctx.fillRect(this.selectionHandler.handlersPositions[3].x - 5, this.selectionHandler.handlersPositions[3].y - 5, 10, 10); // coin haut gauche
-
-        // 4 pts centraux
-        ctx.fillRect(this.selectionHandler.handlersPositions[4].x - 5, this.selectionHandler.handlersPositions[4].y - 5, 10, 10); // coin haut gauche
-        ctx.fillRect(this.selectionHandler.handlersPositions[5].x - 5, this.selectionHandler.handlersPositions[5].y - 5, 10, 10); // coin bas gauche
-        ctx.fillRect(this.selectionHandler.handlersPositions[6].x - 5, this.selectionHandler.handlersPositions[6].y - 5, 10, 10); // coin bas droit
-        ctx.fillRect(this.selectionHandler.handlersPositions[7].x - 5, this.selectionHandler.handlersPositions[7].y - 5, 10, 10); // coin haut gauche
-    }
-
-    // mouseoverhandler pour curseur souris resize
 
     private onMouseDownSelection(event: MouseEvent, mousePosition: Vec2): boolean {
         if (
@@ -283,20 +248,20 @@ export class SelectionService extends Tool {
 
     private positionArrows(): void {
         if (this.leftArrow) {
-            this.topLeftHandler.x -= 3;
-            this.bottomRightHandler.x -= 3;
+            this.topLeftHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
+            this.bottomRightHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.upArrow) {
-            this.topLeftHandler.y -= 3;
-            this.bottomRightHandler.y -= 3;
+            this.topLeftHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
+            this.bottomRightHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.rightArrow) {
-            this.topLeftHandler.x += 3;
-            this.bottomRightHandler.x += 3;
+            this.topLeftHandler.x += Globals.N_PIXELS_DEPLACEMENT;
+            this.bottomRightHandler.x += Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.downArrow) {
-            this.topLeftHandler.y += 3;
-            this.bottomRightHandler.y += 3;
+            this.topLeftHandler.y += Globals.N_PIXELS_DEPLACEMENT;
+            this.bottomRightHandler.y += Globals.N_PIXELS_DEPLACEMENT;
         }
     }
 
@@ -314,10 +279,27 @@ export class SelectionService extends Tool {
             if (event.key === 'ArrowDown') {
                 this.downArrow = false;
             }
-
-            if (!this.leftArrow && !this.upArrow && !this.rightArrow && !this.downArrow) {
-                // this.drawSelectionBox(this.drawingService.previewCtx);
-            }
         }
+    }
+
+    // calcul position des 8 handlers
+    setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
+        this.handlersPositions = [];
+        // coin haut gauche
+        this.handlersPositions.push(topLeft);
+        // centre haut
+        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: topLeft.y });
+        // coin haut droite
+        this.handlersPositions.push({ x: bottomRight.x, y: topLeft.y });
+        // centre droite
+        this.handlersPositions.push({ x: bottomRight.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
+        // coin bas droite
+        this.handlersPositions.push(bottomRight);
+        // centre bas
+        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: bottomRight.y });
+        // coin bas gauche
+        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y });
+        // centre gauche
+        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
     }
 }

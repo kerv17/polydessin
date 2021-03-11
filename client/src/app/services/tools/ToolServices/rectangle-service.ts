@@ -70,9 +70,8 @@ export class RectangleService extends Tool {
         // Determiner si on doit faire la bordure
         if (this.toolMode === 'border' || this.toolMode === 'fillBorder') {
             this.drawBorder(ctx, path);
+            ctx.stroke();
         }
-
-        ctx.stroke();
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

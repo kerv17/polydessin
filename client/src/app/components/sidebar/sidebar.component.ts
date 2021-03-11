@@ -67,8 +67,8 @@ export class SidebarComponent {
     }
 
     selectCanvas(): void {
-        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.openTool(false, false);
+        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.selection = Globals.BACKGROUND_GAINSBORO;
         this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
     }
@@ -85,6 +85,9 @@ export class SidebarComponent {
         this.showline = showline;
         this.resetAttributes = !this.resetAttributes;
         this.setButtonWhite();
+        if (this.toolcontroller.selectionService.inSelection) {
+            this.toolcontroller.selectionService.onEscape();
+        }
     }
 
     newCanvas(): void {
