@@ -27,10 +27,10 @@ export class UndoRedoService {
     }
 
     onKeyPress(event: KeyboardEvent): void {
-        if (event.key === 'z' && event.ctrlKey) {
+        if (event.key === 'z' && event.ctrlKey && !event.shiftKey) {
             this.undo();
         }
-        if (event.key === 'y' && event.ctrlKey) {
+        if (event.key === 'z' && event.ctrlKey && event.shiftKey) {
             this.redo();
         }
     }
