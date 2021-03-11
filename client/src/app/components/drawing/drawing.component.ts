@@ -146,7 +146,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             this.selectionBox = {
                 height: this.controller.selectionService.selectedArea.height + 'px',
                 width: this.controller.selectionService.selectedArea.width + 'px',
-                border: '1px solid blue',
+                border: '2px solid blue',
                 position: 'absolute',
                 left: this.controller.selectionService.topLeftHandler.x + 1 + 'px',
                 top: this.controller.selectionService.topLeftHandler.y + 1 + 'px',

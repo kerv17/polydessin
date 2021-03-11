@@ -63,7 +63,7 @@ export const TEST_MAT_SLIDER_VALUE = 12;
 // constante pour outil sélection
 export const N_PIXELS_DEPLACEMENT = 3;
 export const LINE_DASH = 10;
-export const HANDLERS_POSITION = 5;
+export const HANDLERS_POSITION = 4;
 
 // Position des 8 handlers (sens horaire à partir du coin sup gauche)
 export const TOP_LEFT_HANDLER = 0; // coin haut gauche
