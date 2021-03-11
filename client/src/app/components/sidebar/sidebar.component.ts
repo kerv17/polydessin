@@ -114,6 +114,7 @@ export class SidebarComponent {
             .set(Globals.CRAYON_SHORTCUT, this.openCrayon)
             .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
             .set(Globals.LINE_SHORTCUT, this.openLine)
-            .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis);
+            .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
+            .set(Globals.AEROSOL_SHORTCUT, this.openAerosol);
     }
 }

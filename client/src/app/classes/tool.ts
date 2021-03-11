@@ -49,6 +49,7 @@ export abstract class Tool {
     clearPreviewCtx(): void {
         if (this.drawingService.previewCtx != undefined) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.beginPath();
         }
     }
 
