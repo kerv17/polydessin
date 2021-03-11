@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
@@ -38,8 +39,9 @@ export class RectangleService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
 
             // Va chercher les 4 coins du rectangle
-            const vec: Vec2[] = this.getRectanglePoints(mousePosition);
-            this.drawRectangle(this.drawingService.baseCtx, vec);
+            this.pathData = this.getRectanglePoints(mousePosition);
+            this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+            this.dispatchAction(this.createAction());
         }
         this.mouseDown = false;
         this.clearPath();
@@ -66,7 +68,8 @@ export class RectangleService extends Tool {
 
     private drawRectangle(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
-
+        ctx.fillStyle = this.color || 'black';
+        ctx.strokeStyle = this.color2 || 'black';
         // Determiner si on doit fill le rectangle
         if (this.toolMode === 'fill' || this.toolMode === 'fillBorder') {
             this.fill(ctx, path);
@@ -81,7 +84,6 @@ export class RectangleService extends Tool {
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.strokeStyle = this.color2 || 'black';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
@@ -91,7 +93,7 @@ export class RectangleService extends Tool {
 
     private fill(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         const widhtHeight: Vec2 = { x: path[2].x - path[0].x, y: path[2].y - path[0].y };
-        ctx.fillStyle = this.color || 'black';
+
         ctx.fillRect(path[0].x, path[0].y, widhtHeight.x, widhtHeight.y);
     }
 
@@ -113,5 +115,12 @@ export class RectangleService extends Tool {
         list.push(a, b, c, d);
 
         return list;
+    }
+
+    doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.drawRectangle(this.drawingService.baseCtx, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }
