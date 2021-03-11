@@ -1,11 +1,11 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -28,6 +28,7 @@ export class SidebarComponent {
         private router: Router,
         private colorService: ColorService,
         public exportService: ExportService,
+        public carouselService: CarouselService,
     ) {
         this.openCrayon();
         this.colorService.resetColorValues();
@@ -35,7 +36,7 @@ export class SidebarComponent {
         this.functionMap = new Map();
         this.initMap();
     }
-
+    // TODO REFACTOR ALL TOOLS
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
@@ -93,6 +94,9 @@ export class SidebarComponent {
             this.drawing.newCanvas();
         } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
             this.openExport();
+        } else if ($event.ctrlKey && $event.key === Globals.CAROUSEL_SHORTCUT) {
+            $event.preventDefault();
+            this.carouselService.openCarousel();
         } else if (this.toolcontroller.focused) {
             this.functionMap.get($event.key)?.call(this);
         }

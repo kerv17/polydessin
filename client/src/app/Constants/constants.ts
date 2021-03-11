@@ -4,6 +4,7 @@ export const BACKGROUND_WHITE = { backgroundColor: 'white' };
 
 // Button inputs;
 export const NEW_DRAWING_EVENT = 'o';
+export const CAROUSEL_SHORTCUT = 'g';
 export const CRAYON_SHORTCUT = 'c';
 export const LINE_SHORTCUT = 'l';
 export const RECTANGLE_SHORTCUT = '1';

@@ -5,7 +5,7 @@
             <p>Veuillez choisir le type du fichier exporté</p>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'png' ? 'gainsboro' : 'white'
+                    backgroundColor: exportMode == 'png' ? 'gainsboro' : 'white'
                 }"
                 (click)="toggleMode('png')"
             >

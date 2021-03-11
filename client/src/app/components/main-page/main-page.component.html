@@ -3,7 +3,7 @@
 
     <div id="server-message">
         <button class="button" (click)="goToEditor()">Créer un nouveau dessin</button>
-        <button class="button" (click)="ouvrirCaroussel()">Ouvrir le carrousel de dessins</button>
+        <button class="button" (click)="carouselSerivce.openCarousel()">Ouvrir le carrousel de dessins</button>
         <button class="button" *ngIf="verifDessinExistant()">Continuer un dessin.</button>
     </div>
 
@@ -13,4 +13,4 @@
     </div>
 </div>
 
-<app-caroussel *ngIf="showCaroussel"></app-caroussel>
+<app-caroussel *ngIf="carouselSerivce.showCarousel"></app-caroussel>

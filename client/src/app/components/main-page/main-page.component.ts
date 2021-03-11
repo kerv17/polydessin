@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { IndexService } from '@app/services/index/index.service';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 @Component({
     selector: 'app-main-page',
     templateUrl: './main-page.component.html',
@@ -13,8 +14,8 @@ import { map } from 'rxjs/operators';
 export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    showCaroussel: boolean = false;
-    constructor(private basicService: IndexService, private router: Router) {}
+
+    constructor(private basicService: IndexService, private router: Router, public carouselSerivce: CarouselService) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -44,8 +45,11 @@ export class MainPageComponent {
     verifDessinExistant(): boolean {
         return false;
     }
-
-    ouvrirCaroussel(): void {
-        this.showCaroussel = true;
+    @HostListener('window:keydown', ['$event'])
+    onKeyPress(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === Globals.CAROUSEL_SHORTCUT) {
+            event.preventDefault();
+            this.carouselSerivce.openCarousel();
+        }
     }
 }

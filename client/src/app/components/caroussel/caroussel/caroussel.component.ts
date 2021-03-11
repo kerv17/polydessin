@@ -1,58 +1,31 @@
-import { Component } from '@angular/core';
-import { OwlOptions } from 'ngx-owl-carousel-o';
-
+import { Component, HostListener, ViewChild } from '@angular/core';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
+import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
     styleUrls: ['./caroussel.component.scss'],
 })
 export class CarousselComponent {
-    slides = [
-        { image: '../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png' },
-        { image: '../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png' },
-        { image: '../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png' },
-        { image: 'https://via.placeholder.com/800/5342ac' },
-        { image: 'https://via.placeholder.com/800/5342ac' },
-    ];
-    dynamicSlides = [
-        {
-            id: 1,
-            src: 'https://via.placeholder.com/800/842acf',
-            alt: 'Side 1',
-            title: 'Side 1',
-        },
-        {
-            id: 2,
-            src: 'https://via.placeholder.com/800/842acf',
-            alt: 'Side 2',
-            title: 'Side 2',
-        },
-        {
-            id: 3,
-            src: 'https://via.placeholder.com/800/842acf',
-            alt: 'Side 3',
-            title: 'Side 3',
-        },
-        {
-            id: 4,
-            src: 'https://via.placeholder.com/800/d32776',
-            alt: 'Side 4',
-            title: 'Side 4',
-        },
-        {
-            id: 5,
-            src: 'https://via.placeholder.com/800/d32776',
-            alt: 'Side 5',
-            title: 'Side 5',
-        },
+    constructor(public carouselService: CarouselService) {}
+    @ViewChild('owlCar') owlCar: CarouselComponent;
+    slides: string[] = [
+        '../../../SavedCanvas/dessin1.jpeg',
+        '../../../SavedCanvas/dessin2.jpeg',
+        '../../../SavedCanvas/dessin3.jpeg',
+        '../../../SavedCanvas/dessin4.jpeg',
+        '../../../SavedCanvas/dessin5.jpeg',
     ];
     customOptions: OwlOptions = {
         loop: true,
-        mouseDrag: false,
+        mouseDrag: true,
+
         merge: true,
         touchDrag: true,
+
+        pullDrag: true,
         margin: 20,
-        pullDrag: false,
+
         dots: true,
         navSpeed: 600,
         navText: ['&#8249', '&#8250;'],
@@ -61,4 +34,10 @@ export class CarousselComponent {
         autoWidth: true,
         nav: true,
     };
+    @HostListener('window:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'ArrowRight') {
+            this.owlCar.next();
+        } else if (event.key === 'ArrowLeft') this.owlCar.prev();
+    }
 }

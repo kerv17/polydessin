@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ExportService } from '@app/services/export/export.service';
+
 const CONSTANTE_DIVISION_FENETRE = 4;
 @Component({
     selector: 'app-export',

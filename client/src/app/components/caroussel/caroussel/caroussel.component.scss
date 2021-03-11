@@ -19,7 +19,7 @@
     background-color: slategray;
     margin: 5% auto auto auto; /* 15% from the top and centered */
     padding: 20px;
-    //overflow: hidden;
+
     width: 90%; /* Could be more or less, depending on screen size */
     height: 70%;
     border: 10px solid black;
@@ -27,10 +27,12 @@
 
 /* The Close Button */
 .close {
+    display: flex;
     color: #aaa;
-    float: right;
+    justify-content: flex-end;
     font-size: 28px;
     font-weight: bold;
+    z-index: 3;
 }
 
 .close:hover,
@@ -45,8 +47,25 @@
 
     height: 60vh;
 }
+.carousel:hover {
+    cursor: pointer;
+}
 
 .carouselContainer {
     height: 60vh;
     border: 2px solid black;
+}
+.delete {
+    display: flex;
+    position: absolute;
+    margin-top: 90%;
+
+    margin-left: 10%;
+    margin-bottom: 10%;
+    width: 5px;
+    height: 100px;
+    z-index: 2;
+}
+.delete:hover {
+    cursor: col-resize;
 }
