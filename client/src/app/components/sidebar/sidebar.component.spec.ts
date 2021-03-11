@@ -14,6 +14,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { SidebarComponent } from './sidebar.component';
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
@@ -45,7 +46,13 @@ describe('SidebarComponent', () => {
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as SelectionService,
+        );
         colorService = new ColorService();
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],

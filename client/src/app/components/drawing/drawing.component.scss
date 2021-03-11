@@ -21,3 +21,15 @@ canvas {
 #previewLayer {
     border-style: dashed;
 }
+
+.selection-box {
+    pointer-events: none;
+}
+
+.handlers {
+    height: 10px;
+    width: 10px;
+    background-color: gainsboro;
+    position: absolute;
+    border: 1px solid blue;
+}

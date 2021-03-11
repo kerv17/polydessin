@@ -1,6 +1,6 @@
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PRIMARY_COLOR } from '@app/Constants/constants';
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { ColorModalComponent } from './color-modal/color-modal.component';
 import { ColorComponent } from './color.component';
@@ -37,6 +37,13 @@ describe('ColorComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('get visibility should return the visibility value from the colorService', () => {
+        colorService.modalVisibility = true;
+        expect(component.visibility).toEqual(true);
+        colorService.modalVisibility = false;
+        expect(component.visibility).toEqual(false);
+    });
+
     it('ngAfterViewInit should call updateColor', () => {
         updateSpy = spyOn(component, 'updateColor');
         component.ngAfterViewInit();
@@ -67,32 +74,43 @@ describe('ColorComponent', () => {
         expect(updateSpy).not.toHaveBeenCalled();
     });
 
-    it(' invert should swap primaryColor value with secondaryColor value ', () => {
+    it(' invert should swap primaryColor value with secondaryColor value if color modal is not open', () => {
+        colorService.modalVisibility = false;
         component.primaryColor = 'rgba(23,4,56,1)';
         component.secondaryColor = 'rgba(5,78,fa,0.5)';
         component.invert();
         expect(component.primaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(component.secondaryColor).toEqual('rgba(23,4,56,1)');
-    });
-
-    it(' invert should update primaryColor & secondaryColor value with correct values ', () => {
-        component.primaryColor = 'rgba(23,4,56,1)';
-        component.secondaryColor = 'rgba(5,78,fa,0.5)';
-        component.invert();
         expect(colorService.primaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(colorService.secondaryColor).toEqual('rgba(23,4,56,1)');
     });
 
-    it(' openModal should toggle visibility attribute to true ', () => {
-        const colorType = PRIMARY_COLOR;
-        component.openModal(colorType);
+    it(' invert should not swap primaryColor value with secondaryColor value if color modal is currently open', () => {
+        colorService.modalVisibility = true;
+        component.primaryColor = 'rgba(23,4,56,1)';
+        component.secondaryColor = 'rgba(5,78,fa,0.5)';
+        component.invert();
+        expect(component.primaryColor).toEqual('rgba(23,4,56,1)');
+        expect(component.secondaryColor).toEqual('rgba(5,78,fa,0.5)');
+    });
+
+    it(' openModal should toggle visibility attribute to true if modal was not open', () => {
+        colorService.modalVisibility = false;
+        component.openModal(PRIMARY_COLOR);
         expect(colorService.modalVisibility).toEqual(true);
     });
 
-    it(' openModal should retrieve which color was clicked ', () => {
-        const colorType = PRIMARY_COLOR;
-        component.openModal(colorType);
-        expect(colorService.currentColor).toEqual(colorType);
+    it(' openModal should retrieve which color was clicked if modal was not open', () => {
+        colorService.modalVisibility = false;
+        component.openModal(PRIMARY_COLOR);
+        expect(colorService.currentColor).toEqual(PRIMARY_COLOR);
+    });
+
+    it(' openModal should not retrieve which color was clicked if modal is already open', () => {
+        colorService.modalVisibility = true;
+        colorService.currentColor = SECONDARY_COLOR;
+        component.openModal(PRIMARY_COLOR);
+        expect(colorService.currentColor).not.toEqual(PRIMARY_COLOR);
     });
 
     it(' closeModal should toggle visibility attribute to false ', () => {
