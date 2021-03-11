@@ -21,3 +21,7 @@ canvas {
 #previewLayer {
     border-style: dashed;
 }
+
+.selection-box {
+    pointer-events: none;
+}

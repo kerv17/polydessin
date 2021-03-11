@@ -8,6 +8,7 @@
     width: 470px;
     //padding: 0 5px 0 5px;
 }
+
 //J'utilise ca pour faire la rangé de bouton a gauche
 .sidebar-container {
     display: flex;
@@ -19,11 +20,13 @@
     background-color: black;
     justify-content: start-flex;
 }
+
 .services {
     flex-direction: column;
     margin-left: 50px;
     width: 350px;
 }
+
 .function {
     display: flex;
     width: 50px;
@@ -36,9 +39,11 @@
     border-color: black;
     flex-grow: 0.1;
 }
+
 .function:focus {
     background-color: gainsboro;
 }
+
 .infobulle {
     visibility: hidden;
     width: 120px;
@@ -48,7 +53,6 @@
     padding: 5px 0;
     border-radius: 6px;
     left: 60px;
-
     position: absolute;
 }
 

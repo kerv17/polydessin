@@ -32,6 +32,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
+    selectionBox: { [key: string]: string };
+
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
@@ -124,5 +126,20 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     getCurrentTool(): Tool {
         return this.controller.currentTool;
+    }
+
+    drawSelectionBox(): boolean {
+        if (this.controller.selectionService.inSelection) {
+            this.selectionBox = {
+                height: this.controller.selectionService.selectedArea.height + 'px',
+                width: this.controller.selectionService.selectedArea.width + 'px',
+                border: '1px solid blue',
+                position: 'absolute',
+                left: this.controller.selectionService.topLeftHandler.x + 'px',
+                top: this.controller.selectionService.topLeftHandler.y + 'px',
+            };
+            return true;
+        }
+        return false;
     }
 }

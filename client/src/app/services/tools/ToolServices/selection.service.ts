@@ -32,7 +32,7 @@ export class SelectionService extends Tool {
         super(drawingService);
         this.clearPath();
         this.width = 1;
-        this.rectangleService = new RectangleService(drawingService);
+        this.rectangleService = new RectangleService(this.drawingService);
 
         this.onEscape();
 
@@ -86,10 +86,10 @@ export class SelectionService extends Tool {
             if (this.inMovement) {
                 this.onMouseUpSelection(event);
                 this.inMovement = false;
-                this.drawSelectionBox(this.drawingService.previewCtx);
+                // this.drawSelectionBox(this.drawingService.previewCtx);
             } else if (this.firstCorner.x !== mousePosition.x && this.firstCorner.y !== mousePosition.x) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.drawSelectionBox(this.drawingService.previewCtx);
+                // this.drawSelectionBox(this.drawingService.previewCtx);
                 this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
                 this.inSelection = true;
             }
@@ -116,6 +116,7 @@ export class SelectionService extends Tool {
             this.initialSelectionPosition = { x: 0, y: 0 };
             this.initialMousePosition = { x: 0, y: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.clearPath();
             this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
         }
     }
@@ -315,7 +316,7 @@ export class SelectionService extends Tool {
             }
 
             if (!this.leftArrow && !this.upArrow && !this.rightArrow && !this.downArrow) {
-                this.drawSelectionBox(this.drawingService.previewCtx);
+                // this.drawSelectionBox(this.drawingService.previewCtx);
             }
         }
     }
