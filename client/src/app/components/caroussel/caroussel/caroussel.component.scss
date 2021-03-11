@@ -21,7 +21,7 @@
     padding: 20px;
 
     width: 90%; /* Could be more or less, depending on screen size */
-    height: 70%;
+    height: min-content;
     border: 10px solid black;
 }
 
@@ -57,13 +57,10 @@
 }
 .delete {
     display: flex;
-    position: absolute;
-    margin-top: 90%;
-
-    margin-left: 10%;
-    margin-bottom: 10%;
-    width: 5px;
-    height: 100px;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    left: 30%;
     z-index: 2;
 }
 .delete:hover {

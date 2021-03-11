@@ -1,6 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
+import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
@@ -9,17 +10,12 @@ import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 export class CarousselComponent {
     constructor(public carouselService: CarouselService) {}
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    slides: string[] = [
-        '../../../SavedCanvas/dessin1.jpeg',
-        '../../../SavedCanvas/dessin2.jpeg',
-        '../../../SavedCanvas/dessin3.jpeg',
-        '../../../SavedCanvas/dessin4.jpeg',
-        '../../../SavedCanvas/dessin5.jpeg',
-    ];
+    slides = ['../../../SavedCanvas/dessin1.jpeg', '../../../SavedCanvas/dessin2.jpeg', '../../../SavedCanvas/dessin2.jpeg'];
+
     customOptions: OwlOptions = {
         loop: true,
         mouseDrag: true,
-
+        // TODO gèrer les cas ou moins de 2
         merge: true,
         touchDrag: true,
 
@@ -29,9 +25,10 @@ export class CarousselComponent {
         dots: true,
         navSpeed: 600,
         navText: ['&#8249', '&#8250;'],
-        center: true,
-        items: 3,
-        autoWidth: true,
+        center: this.slides.length % 2 == 0 ? false : true,
+        items: this.slides.length >= 3 ? 3 : this.slides.length,
+        autoWidth: false,
+
         nav: true,
     };
     @HostListener('window:keydown', ['$event'])
@@ -39,5 +36,10 @@ export class CarousselComponent {
         if (event.key === 'ArrowRight') {
             this.owlCar.next();
         } else if (event.key === 'ArrowLeft') this.owlCar.prev();
+    }
+    delete(canvas: SlideModel): void {
+        window.alert(canvas.id);
+        window.alert(this.slides.length);
+        window.alert(this.customOptions.items);
     }
 }
