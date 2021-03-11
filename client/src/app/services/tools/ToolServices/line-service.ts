@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -53,6 +54,8 @@ export class LineService extends Tool {
             }
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.dispatchAction(this.createAction());
+
             this.clearPath();
         }
     }
@@ -144,5 +147,12 @@ export class LineService extends Tool {
         } else {
             return mousePosition;
         }
+    }
+
+    doAction(action: DrawAction): void {
+        const previousSetting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.drawLine(action.canvas, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }
