@@ -18,6 +18,6 @@ export class CarouselService {
     }
 
     delete(): void {
-        this.indexService.basicDelete('test').subscribe((x) => window.alert(x.text()));
+        this.indexService.basicDelete('test').subscribe();
     }
 }

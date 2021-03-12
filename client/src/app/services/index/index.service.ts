@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -21,8 +20,8 @@ export class IndexService {
         return this.http.post<void>(this.BASE_URL + '/send', message).pipe(catchError(this.handleError<void>('basicPost')));
     }
 
-    basicDelete(message: string): Observable<Response> {
-        return this.http.delete<Response>(this.BASE_URL + '/' + message).pipe(catchError(this.handleError<Response>('basicDelete')));
+    basicDelete(message: string): Observable<Message> {
+        return this.http.delete<Message>(this.BASE_URL + '/' + message).pipe(catchError(this.handleError<Message>('basicDelete')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
