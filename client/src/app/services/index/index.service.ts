@@ -20,9 +20,8 @@ export class IndexService {
         return this.http.post<void>(this.BASE_URL + '/send', message).pipe(catchError(this.handleError<void>('basicPost')));
     }
 
-    basicDelete(message: Message): Observable<void | Object> {
-        this.http.post;
-        return this.http.delete(this.BASE_URL + '/delete' + message.body).pipe(catchError(this.handleError<void>('basicDelete')));
+    basicDelete(message: string): Observable<void | Object> {
+        return this.http.delete(this.BASE_URL + message).pipe(catchError(this.handleError<void>('basicDelete')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

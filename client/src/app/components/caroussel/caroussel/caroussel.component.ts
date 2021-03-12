@@ -1,7 +1,7 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
-import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
+
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
@@ -10,7 +10,13 @@ import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
 export class CarousselComponent {
     constructor(public carouselService: CarouselService) {}
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    slides = ['../../../SavedCanvas/dessin1.jpeg', '../../../SavedCanvas/dessin2.jpeg', '../../../SavedCanvas/dessin2.jpeg'];
+    slides = [
+        '../../../SavedCanvas/dessin1.jpeg',
+        '../../../SavedCanvas/dessin2.jpeg',
+        '../../../SavedCanvas/dessin3.jpeg',
+        '../../../SavedCanvas/dessin4.jpeg',
+        '../../../SavedCanvas/dessin5.jpeg',
+    ];
 
     customOptions: OwlOptions = {
         loop: true,
@@ -37,9 +43,5 @@ export class CarousselComponent {
             this.owlCar.next();
         } else if (event.key === 'ArrowLeft') this.owlCar.prev();
     }
-    delete(canvas: SlideModel): void {
-        window.alert(canvas.id);
-        window.alert(this.slides.length);
-        window.alert(this.customOptions.items);
-    }
+    delete(): void {}
 }
