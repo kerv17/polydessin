@@ -1,7 +1,8 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
-
+const nombreImage = 3;
+const nombreImagePair = 2;
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
@@ -9,6 +10,7 @@ import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 })
 export class CarousselComponent {
     constructor(public carouselService: CarouselService) {}
+
     @ViewChild('owlCar') owlCar: CarouselComponent;
     slides = [
         '../../../SavedCanvas/dessin1.jpeg',
@@ -31,8 +33,8 @@ export class CarousselComponent {
         dots: true,
         navSpeed: 600,
         navText: ['&#8249', '&#8250;'],
-        center: this.slides.length % 2 == 0 ? false : true,
-        items: this.slides.length >= 3 ? 3 : this.slides.length,
+        center: this.slides.length % nombreImagePair === 0 ? false : true,
+        items: this.slides.length >= nombreImage ? nombreImage : this.slides.length,
         autoWidth: false,
 
         nav: true,
