@@ -49,11 +49,11 @@ export class DrawingService {
         newCanvasSize = this.setSizeCanva(newCanvasSize);
 
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-            if (this.canvasNotEmpty(image)) {
-                if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
-                    return;
-                }
+        if (this.canvasNotEmpty(image)) {
+            if (!confirm('Êtes vous sur de supprimez votre dessin courant?')) {
+                return;
             }
+        }
         this.canvas.height = newCanvasSize.y;
         this.canvas.width = newCanvasSize.x;
 
@@ -61,12 +61,11 @@ export class DrawingService {
         this.previewCanvas.width = newCanvasSize.x;
         this.clearCanvas(this.previewCtx);
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
-
-
+        this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    resetCanvas():void {
+    resetCanvas(): void {
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.clearCanvas(this.previewCtx);
