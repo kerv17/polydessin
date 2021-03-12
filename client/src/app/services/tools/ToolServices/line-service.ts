@@ -104,12 +104,11 @@ export class LineService extends Tool {
         const solution: Vec2 = { x: p1.x, y: p1.y };
 
         const NOT_IN_INDEX = -1;
-        const SEVEN = 7;
-        const THREE = 3;
-        const FOUR = 4;
 
-        const X_QUADRANTS: number[] = [0, SEVEN];
-        const Y_QUADRANTS: number[] = [THREE, FOUR];
+        // tslint:disable: no-magic-numbers
+        const X_QUADRANTS: number[] = [0, 7];
+        const Y_QUADRANTS: number[] = [3, 4];
+        // tslint:enable: no-magic-numbers
         const HALF_QUADRANTS = 22.5;
         const angle = this.getAngle(p1, p2);
         const octant = Math.floor(Math.abs(angle / HALF_QUADRANTS));
