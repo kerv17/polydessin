@@ -11,7 +11,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     showWidth: boolean = false;
-    showAerosol:boolean = false;
+    showAerosol: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
     resetAttributes: boolean = false;
@@ -19,7 +19,7 @@ export class SidebarComponent {
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    aerosol:{ backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    aerosol: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     functionMap: Map<string, () => void>;
 
     constructor(
@@ -69,7 +69,7 @@ export class SidebarComponent {
 
     openAerosol(): void {
         this.toolcontroller.setTool(Globals.AEROSOL_SHORTCUT);
-        this.openTool(false,true);
+        this.openTool(false, true);
         this.showAerosol = true;
         this.aerosol = Globals.BACKGROUND_GAINSBORO;
     }

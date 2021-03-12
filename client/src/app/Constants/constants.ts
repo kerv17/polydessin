@@ -58,6 +58,5 @@ export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
 
 export const TEST_MAT_SLIDER_VALUE = 12;
 
-
 // Constante pour timer
 export const MILS_TO_SEC = 1000;
