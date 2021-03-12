@@ -1,6 +1,6 @@
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, UpdateQuery } from 'mongodb';
+import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, ObjectId, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
@@ -89,7 +89,7 @@ export class MetadataService {
 
     async deleteMetadata(aCode: string): Promise<void> {
         return this.collection
-            .findOneAndDelete({ code: aCode })
+            .findOneAndDelete({ codeID: new ObjectId(aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
                     throw new Error('Failed to delete metadata');
@@ -102,10 +102,10 @@ export class MetadataService {
     // TODO is this necessary?
     async modifyMetadata(metadata: Metadata): Promise<void> {
         if (this.validateMetadata(metadata)) {
-            const filterQuery: FilterQuery<Metadata> = { code: metadata.code };
+            const filterQuery: FilterQuery<Metadata> = { code: metadata.codeID };
             const updateQuery: UpdateQuery<Metadata> = {
                 $set: {
-                    code: metadata.code,
+                    code: metadata.codeID,
                     name: metadata.name,
                     tags: metadata.tags,
                 },
@@ -121,7 +121,7 @@ export class MetadataService {
     }
 
     async getMetadataName(aCode: string): Promise<string> {
-        const filterQuery: FilterQuery<Metadata> = { code: aCode };
+        const filterQuery: FilterQuery<Metadata> = { codeID: new ObjectId(aCode) };
         // Only get the name and not any of the other fields
         const projection: FindOneOptions = { projection: { name: 1, _id: 0 } };
         return this.collection

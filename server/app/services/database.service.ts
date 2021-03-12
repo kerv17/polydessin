@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Db, MongoClient, MongoClientOptions } from 'mongodb';
+import { Db, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { Metadata } from '../classes/metadata';
 
@@ -20,7 +20,7 @@ export class DatabaseService {
 
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            let client = await MongoClient.connect(url, this.options);
+            const client = await MongoClient.connect(url, this.options);
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
@@ -38,9 +38,9 @@ export class DatabaseService {
     }
     // TODO remove when done testing
     async populateDB(): Promise<void> {
-        let metaDatas: Metadata[] = [
+        const metaDatas: Metadata[] = [
             {
-                code: 'test',
+                codeID: new ObjectId('test'),
                 name: 'Object Oriented Programming',
                 tags: ['Samuel Kadoury'],
             },

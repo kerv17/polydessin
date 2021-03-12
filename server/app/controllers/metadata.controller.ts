@@ -1,3 +1,4 @@
+import { Message } from '@common/communication/message';
 import { MetadataService } from 'app/services/metadata.service';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
@@ -94,11 +95,18 @@ export class MetadataController {
             this.metadataService
                 .deleteMetadata(req.params.code)
                 .then(() => {
-                    console.log('test');
-                    res.status(Httpstatus.StatusCodes.OK).send('test');
+                    const msg: Message = req.body;
+                    msg.title = "L'image a ete supprimer";
+                    msg.body = Httpstatus.StatusCodes.NO_CONTENT.toString();
+                    res.send(msg);
+                    res.status(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                    const msg: Message = req.body;
+                    msg.title = "L'image ne se trouve pas sur la base de données";
+                    msg.body = Httpstatus.StatusCodes.NOT_FOUND.toString();
+                    res.send(msg);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND);
                 });
         });
         // TODO get qui prend des tags

@@ -53,7 +53,13 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
-
+// Server response
+export class Metadata {
+    _id: string;
+    codeID: string;
+    name: string;
+    tags: string[];
+}
 // Constante affichage éditeur et canvas
 export const CORRECTION_CONTROL_MARGIN = 2.5;
 export const CANVAS_SIZE_MIN = 250;
