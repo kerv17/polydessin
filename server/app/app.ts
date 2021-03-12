@@ -1,3 +1,4 @@
+import { TYPES } from '@app/types';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -9,7 +10,6 @@ import * as swaggerUi from 'swagger-ui-express';
 import { DateController } from './controllers/date.controller';
 import { IndexController } from './controllers/index.controller';
 import { MetadataController } from './controllers/metadata.controller';
-import { TYPES } from '@app/types';
 
 @injectable()
 export class Application {
@@ -20,7 +20,7 @@ export class Application {
     constructor(
         @inject(TYPES.IndexController) private indexController: IndexController,
         @inject(TYPES.DateController) private dateController: DateController,
-        @inject(TYPES.MetadataController) private metadataController: MetadataController
+        @inject(TYPES.MetadataController) private metadataController: MetadataController,
     ) {
         this.app = express();
 

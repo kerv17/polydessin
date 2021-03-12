@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IndexService } from '@app/services/index/index.service';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -13,10 +14,10 @@ export class CarouselService {
         this.showCarousel = false;
     }
     test(test: string): void {
-        window.alert(test);
+        // window.alert(test);
     }
 
     delete(): void {
-        this.indexService.basicDelete('test');
+        this.indexService.basicDelete('test').subscribe((x) => window.alert(x.text()));
     }
 }

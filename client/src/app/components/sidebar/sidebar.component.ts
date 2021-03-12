@@ -104,6 +104,7 @@ export class SidebarComponent {
     openExport(): void {
         this.exportService.showModalExport = true;
     }
+
     setButtonWhite(): void {
         this.crayon = Globals.BACKGROUND_WHITE;
         this.rectangle = Globals.BACKGROUND_WHITE;
