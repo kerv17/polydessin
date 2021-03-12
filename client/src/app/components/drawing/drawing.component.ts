@@ -25,6 +25,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     @Input()
     mouseDown: boolean;
 
+    mouseOut: boolean = false;
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
@@ -96,6 +98,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
+        this.mouseDown = true;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.controller.currentTool.onMouseDown(event);
@@ -103,9 +106,26 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     @HostListener('document:mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
+        this.mouseDown = false;
         this.controller.currentTool.onMouseUp(event);
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
+    }
+
+    @HostListener('mouseout', ['$event'])
+    onMouseOut(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseOut = true;
+        }
+    }
+
+    @HostListener('document:mousemove', ['$event'])
+    onMouseMoveDocument(event: MouseEvent): void {
+        if (this.mouseOut) {
+            this.controller.currentTool.color = this.colorService.primaryColor;
+            this.controller.currentTool.color2 = this.colorService.secondaryColor;
+            this.controller.currentTool.onMouseMove(event);
+        }
     }
 
     @HostListener('click', ['$event'])

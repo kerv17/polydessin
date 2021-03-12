@@ -38,7 +38,17 @@ export abstract class Tool {
     onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
-        return { x: event.offsetX, y: event.offsetY };
+        let mousePosition = { x: event.offsetX, y: event.offsetY };
+        if (this.mouseDown) {
+            if (mousePosition.x > this.drawingService.canvas.width && mousePosition.y > this.drawingService.canvas.height) {
+                mousePosition = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
+            } else if (mousePosition.x > this.drawingService.canvas.width) {
+                mousePosition = { x: this.drawingService.canvas.width, y: mousePosition.y };
+            } else if (mousePosition.y > this.drawingService.canvas.height) {
+                mousePosition = { x: mousePosition.x, y: this.drawingService.canvas.height };
+            }
+        }
+        return mousePosition;
     }
 
     clearPath(): void {

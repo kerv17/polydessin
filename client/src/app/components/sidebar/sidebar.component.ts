@@ -19,6 +19,7 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     selection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     functionMap: Map<string, () => void>;
 
     constructor(
@@ -76,7 +77,7 @@ export class SidebarComponent {
     openSelection(): void {
         this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
         this.openTool(false, false);
-        this.selection = Globals.BACKGROUND_GAINSBORO;
+        this.rectangleSelection = Globals.BACKGROUND_GAINSBORO;
     }
 
     openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
@@ -120,6 +121,7 @@ export class SidebarComponent {
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
         this.selection = Globals.BACKGROUND_WHITE;
+        this.rectangleSelection = Globals.BACKGROUND_WHITE;
     }
     initMap(): void {
         this.functionMap
@@ -127,6 +129,7 @@ export class SidebarComponent {
             .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
             .set(Globals.LINE_SHORTCUT, this.openLine)
             .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
-            .set(Globals.CANVAS_SELECTION_EVENT, this.selectCanvas);
+            .set(Globals.CANVAS_SELECTION_EVENT, this.selectCanvas)
+            .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.openSelection);
     }
 }
