@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
+import {AerosolService} from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
-import {AerosolService} from '@app/services/tools/ToolServices/aerosol-service.service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -22,7 +23,8 @@ export class ToolControllerService {
         private rectangleService: RectangleService,
         public lineService: LineService,
         private ellipsisService: EllipsisService,
-        private aerosolService: AerosolService
+        private aerosolService: AerosolService,
+        public selectionService: SelectionService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
@@ -44,7 +46,8 @@ export class ToolControllerService {
             .set(Globals.LINE_SHORTCUT, this.lineService)
             .set(Globals.RECTANGLE_SHORTCUT, this.rectangleService)
             .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService)
-            .set(Globals.AEROSOL_SHORTCUT, this.aerosolService);
+            .set(Globals.AEROSOL_SHORTCUT, this.aerosolService)
+            .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.selectionService);
 
         this.functionMap
             .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {
@@ -125,11 +128,10 @@ export class ToolControllerService {
         Array.from(this.toolMap.values()).forEach((value) => (value.width = 1));
     }
 
-    getTool(toolShortcut: string):Tool{
-        if(this.toolMap.has(toolShortcut)){
-          return this.toolMap.get(toolShortcut) as Tool;
-        }
-        else return this.pencilService;
+    getTool(toolShortcut: string): Tool {
+        if (this.toolMap.has(toolShortcut)) {
+            return this.toolMap.get(toolShortcut) as Tool;
+        } else return this.pencilService;
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));

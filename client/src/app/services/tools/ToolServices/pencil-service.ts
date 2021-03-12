@@ -4,7 +4,6 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
 @Injectable({
     providedIn: 'root',
 })

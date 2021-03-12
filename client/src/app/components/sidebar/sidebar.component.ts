@@ -20,6 +20,7 @@ export class SidebarComponent {
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     aerosol: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    selection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     functionMap: Map<string, () => void>;
 
     constructor(
@@ -73,6 +74,18 @@ export class SidebarComponent {
         this.showAerosol = true;
         this.aerosol = Globals.BACKGROUND_GAINSBORO;
     }
+    selectCanvas(): void {
+        this.openTool(false, false);
+        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.selection = Globals.BACKGROUND_GAINSBORO;
+        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+    }
+
+    openSelection(): void {
+        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+        this.openTool(false, false);
+        this.selection = Globals.BACKGROUND_GAINSBORO;
+    }
 
     openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
         this.fillBorder = fillBorder;
@@ -81,6 +94,9 @@ export class SidebarComponent {
         this.resetAttributes = !this.resetAttributes;
         this.showAerosol = false;
         this.setButtonWhite();
+        if (this.toolcontroller.selectionService.inSelection) {
+            this.toolcontroller.selectionService.onEscape();
+        }
     }
 
     newCanvas(): void {
@@ -97,6 +113,11 @@ export class SidebarComponent {
         if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
             this.drawing.newCanvas();
+        } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
+            $event.preventDefault();
+            this.selectCanvas();
+        } else if ($event.key === Globals.RECTANGLE_SELECTION_SHORTCUT) {
+            this.openSelection();
         } else if (this.toolcontroller.focused) {
             this.functionMap.get($event.key)?.call(this);
         }
@@ -108,6 +129,7 @@ export class SidebarComponent {
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
         this.aerosol = Globals.BACKGROUND_WHITE;
+        this.selection = Globals.BACKGROUND_WHITE;
     }
     initMap(): void {
         this.functionMap
@@ -115,6 +137,7 @@ export class SidebarComponent {
             .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
             .set(Globals.LINE_SHORTCUT, this.openLine)
             .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
-            .set(Globals.AEROSOL_SHORTCUT, this.openAerosol);
+            .set(Globals.AEROSOL_SHORTCUT, this.openAerosol)
+            .set(Globals.CANVAS_SELECTION_EVENT, this.selectCanvas);
     }
 }

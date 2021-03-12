@@ -9,6 +9,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
@@ -34,6 +35,7 @@ describe('DrawingComponent', () => {
             {} as LineService,
             {} as EllipsisService,
             {} as AerosolService,
+            {} as SelectionService,
         );
 
         TestBed.configureTestingModule({

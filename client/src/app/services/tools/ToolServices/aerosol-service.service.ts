@@ -17,6 +17,7 @@ export class AerosolService extends Tool {
     sprayAmountPerSecond: number = 10;
     lastPosition: Vec2;
     mouseDown: boolean = false;
+    timeoutID: any;
     // Fonction servant a generer un nombre aleatoire entre -max et max
     rng(max: number): number {
         return Math.floor((Math.random() - 1.0 / 2.0) * 2 * max);
@@ -25,7 +26,7 @@ export class AerosolService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.lastPosition = this.getPositionFromMouse(event);
         this.mouseDown = true;
-        setInterval(() => {
+        this.timeoutID = setInterval(() => {
             this.onTimeout();
         }, MILS_TO_SEC);
         this.onTimeout();
@@ -48,7 +49,7 @@ export class AerosolService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearPath();
         this.mouseDown = false;
-        clearTimeout();
+        clearTimeout(this.timeoutID);
         this.onMouseMove(event);
     }
 

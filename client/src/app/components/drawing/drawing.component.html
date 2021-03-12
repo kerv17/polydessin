@@ -1,7 +1,16 @@
-
 <div id="canvas-container">
-    
 
     <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
     <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
+    <div class='selection-box' *ngIf="drawSelectionBox()" [ngStyle]="selectionBox"></div>
+    <div *ngIf='drawHandlers()'>
+        <div class='handlers' [ngStyle]='handler0'></div>
+        <div class='handlers' [ngStyle]='handler1'></div>
+        <div class='handlers' [ngStyle]='handler2'></div>
+        <div class='handlers' [ngStyle]='handler3'></div>
+        <div class='handlers' [ngStyle]='handler4'></div>
+        <div class='handlers' [ngStyle]='handler5'></div>
+        <div class='handlers' [ngStyle]='handler6'></div>
+        <div class='handlers' [ngStyle]='handler7'></div>
+    </div>
 </div>

@@ -12,6 +12,8 @@ export const AEROSOL_SHORTCUT = 'a';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
+export const RECTANGLE_SELECTION_SHORTCUT = 'r';
+export const CANVAS_SELECTION_EVENT = 'a';
 
 // Variables d'editor
 export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;
@@ -48,15 +50,30 @@ export enum MouseButton {
     Back = 3,
     Forward = 4,
 }
+
 // Constante affichage éditeur et canvas
 export const CORRECTION_CONTROL_MARGIN = 2.5;
 export const CANVAS_SIZE_MIN = 250;
 export const SIDEBAR_WIDTH = 470;
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
-// Constante pour test
 
+// Constante pour test
 export const TEST_MAT_SLIDER_VALUE = 12;
 
 // Constante pour timer
 export const MILS_TO_SEC = 1000;
+// constante pour outil sélection
+export const N_PIXELS_DEPLACEMENT = 3;
+export const LINE_DASH = 10;
+export const HANDLERS_POSITION = 4;
+
+// Position des 8 handlers (sens horaire à partir du coin sup gauche)
+export const TOP_LEFT_HANDLER = 0; // coin haut gauche
+export const TOP_HANDLER = 1; // centre haut
+export const TOP_RIGHT_HANDLER = 2; // coin haut droite
+export const RIGHT_HANDLER = 3; // centre droite
+export const BOTTOM_RIGHT_HANDLER = 4; // coin bas droite
+export const BOTTOM_HANDLER = 5; // centre bas
+export const BOTTOM_LEFT_HANDLER = 6; // coin bas gauche
+export const LEFT_HANDLER = 7; // centre gauche

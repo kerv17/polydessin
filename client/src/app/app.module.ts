@@ -20,6 +20,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+
 @NgModule({
     declarations: [
         AppComponent,

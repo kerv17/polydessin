@@ -26,7 +26,12 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
+            <div class="infobulle">Ce bouton crée un nouveau dessin. Le raccourci est 'Ctrl+o'</div>
             <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
+            <img src="../../../assets/selection.png" [ngStyle]="selection" (click)="selectCanvas()" class="function" tabindex="0" />
         </div>
     </div>
     <div class="BackgroundServices">
