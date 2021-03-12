@@ -27,10 +27,11 @@ export class UndoRedoService {
     }
 
     onKeyPress(event: KeyboardEvent): void {
-        if (event.key === 'z' && event.ctrlKey && !event.shiftKey) {
+        const keypressed = event.key.toLocaleLowerCase();
+        if (keypressed === 'z' && event.ctrlKey && !event.shiftKey) {
             this.undo();
         }
-        if (event.key === 'z' && event.ctrlKey && event.shiftKey) {
+        if (keypressed === 'z' && event.ctrlKey && event.shiftKey) {
             this.redo();
         }
     }
@@ -45,6 +46,7 @@ export class UndoRedoService {
                 this.doAction(this.pile[i]);
             }
         }
+        this.sendUndoButtonState();
     }
 
     redo(): void {
@@ -53,15 +55,23 @@ export class UndoRedoService {
             const action = this.pile[this.currentLocation];
             this.doAction(action);
         }
+        this.sendUndoButtonState();
+    }
+
+    sendUndoButtonState(): void {
+        const c: CustomEvent = new CustomEvent('undoRedoState', {
+            detail: [this.currentLocation > 0, this.currentLocation < this.pile.length - 1],
+        });
+        dispatchEvent(c);
     }
 
     addAction(action: DrawAction): void {
-        console.log(action);
         if (this.currentLocation < this.pile.length - 1) {
             this.pile = this.pile.slice(0, this.currentLocation + 1);
         }
         this.pile.push(action);
         this.currentLocation++;
+        this.sendUndoButtonState();
     }
 
     doAction(action: DrawAction): void {

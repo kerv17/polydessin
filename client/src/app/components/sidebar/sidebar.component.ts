@@ -4,6 +4,7 @@ import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -11,15 +12,18 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     showWidth: boolean = false;
-    showAerosol:boolean = false;
+    showAerosol: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
+
     resetAttributes: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    aerosol:{ backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    aerosol: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    undo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
+    redo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
     functionMap: Map<string, () => void>;
 
     constructor(
@@ -27,12 +31,18 @@ export class SidebarComponent {
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
+        private undoRedoService: UndoRedoService,
     ) {
         this.openCrayon();
         this.colorService.resetColorValues();
         this.toolcontroller.resetWidth();
         this.functionMap = new Map();
         this.initMap();
+
+        addEventListener('undoRedoState', (event: CustomEvent) => {
+            this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
+            this.redo = event.detail[1] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
+        });
     }
 
     goBack(): void {
@@ -69,7 +79,7 @@ export class SidebarComponent {
 
     openAerosol(): void {
         this.toolcontroller.setTool(Globals.AEROSOL_SHORTCUT);
-        this.openTool(false,true);
+        this.openTool(false, true);
         this.showAerosol = true;
         this.aerosol = Globals.BACKGROUND_GAINSBORO;
     }
@@ -116,5 +126,13 @@ export class SidebarComponent {
             .set(Globals.LINE_SHORTCUT, this.openLine)
             .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
             .set(Globals.AEROSOL_SHORTCUT, this.openAerosol);
+    }
+
+    undoAction(): void {
+        this.undoRedoService.undo();
+    }
+
+    redoAction(): void {
+        this.undoRedoService.redo();
     }
 }

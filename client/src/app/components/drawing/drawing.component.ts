@@ -4,7 +4,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
 
 @Component({
     selector: 'app-drawing',
@@ -34,7 +33,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
-    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService, private undoRedoService:UndoRedoService) {
+    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
 

@@ -1,6 +1,7 @@
 // Buttons in sidebar
 export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
+export const BACKGROUND_DARKGREY = { backgroundColor: 'DimGray' }
 
 // Button inputs;
 export const NEW_DRAWING_EVENT = 'o';
