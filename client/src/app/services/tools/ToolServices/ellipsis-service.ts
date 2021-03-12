@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
 
@@ -49,6 +50,7 @@ export class EllipsisService extends Tool {
             this.getPathForEllipsis(mousePosition);
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.dispatchAction(this.createAction());
         }
         this.mouseDown = false;
         this.clearPath();
@@ -162,5 +164,12 @@ export class EllipsisService extends Tool {
         const s: Vec2 = { x, y };
 
         return s;
+    }
+
+    doAction(action: DrawAction): void {
+      const previousSetting = this.saveSetting();
+      this.loadSetting(action.setting);
+      this.drawEllipse(action.canvas, this.pathData);
+      this.loadSetting(previousSetting);
     }
 }

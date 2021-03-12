@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MILS_TO_SEC } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -37,20 +38,25 @@ export class AerosolService extends Tool {
         this.showRadius(this.getPositionFromMouse(event), this.sprayRadius);
     }
 
-    onTimeout(): void {
+    onTimeout() {
         if (this.mouseDown) {
             this.sprayPoints(this.lastPosition, this.sprayRadius, this.sprayAmountPerSecond);
-            this.drawSpray(this.drawingService.previewCtx);
+            this.drawSpray(this.drawingService.previewCtx, this.pathData);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.drawSpray(this.drawingService.baseCtx);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearPath();
-        this.mouseDown = false;
-        clearTimeout(this.timeoutID);
-        this.onMouseMove(event);
+        if (this.mouseDown) {
+            this.drawSpray(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+            this.dispatchAction(this.createAction());
+
+            this.clearPath();
+            this.mouseDown = false;
+            clearTimeout(this.timeoutID);
+            this.onMouseMove(event);
+        }
     }
 
     private showRadius(pos: Vec2, radius: number): void {
@@ -58,7 +64,7 @@ export class AerosolService extends Tool {
         this.drawingService.previewCtx.beginPath();
         this.drawingService.previewCtx.ellipse(pos.x, pos.y, radius, radius, 0, 0, 2 * Math.PI);
         this.drawingService.previewCtx.stroke();
-        this.drawSpray(this.drawingService.previewCtx);
+        this.drawSpray(this.drawingService.previewCtx, this.pathData);
     }
 
     sprayPoints(position: Vec2, radius: number, amount: number): void {
@@ -79,10 +85,10 @@ export class AerosolService extends Tool {
         return pointToAdd;
     }
 
-    drawSpray(ctx: CanvasRenderingContext2D): void {
+    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]):void {
         ctx.strokeStyle = ctx.strokeStyle = this.color || 'black';
         ctx.fillStyle = this.color || 'black';
-        for (const point of this.pathData) {
+        for (const point of points) {
             ctx.beginPath();
             ctx.ellipse(point.x, point.y, this.width, this.width, 0, 0, 2 * Math.PI);
             ctx.fill();
@@ -93,5 +99,12 @@ export class AerosolService extends Tool {
     distance(x: number, y: number): number {
         const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         return distance;
+    }
+
+    doAction(action: DrawAction): void {
+        const previousSetting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.drawSpray(action.canvas, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }

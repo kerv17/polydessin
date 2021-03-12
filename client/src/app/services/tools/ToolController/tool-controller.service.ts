@@ -16,7 +16,6 @@ export class ToolControllerService {
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
     focused: boolean = true;
-
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
         private pencilService: PencilService,

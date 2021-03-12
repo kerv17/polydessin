@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -42,9 +43,12 @@ export class PencilService extends Tool {
             }
 
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            const action: DrawAction = this.createAction();
+            this.dispatchAction(action);
         }
         this.mouseDown = false;
         this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -101,5 +105,13 @@ export class PencilService extends Tool {
         if (this.color !== undefined && this.color !== '') {
             ctx.strokeStyle = this.color;
         }
+    }
+
+    doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+
+        this.drawLine(action.canvas, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }
