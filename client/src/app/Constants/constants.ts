@@ -1,6 +1,7 @@
 // Buttons in sidebar
 export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
+export const BACKGROUND_DARKGREY = { backgroundColor: 'DimGray' };
 
 // Button inputs;
 export const NEW_DRAWING_EVENT = 'o';
@@ -9,6 +10,7 @@ export const CRAYON_SHORTCUT = 'c';
 export const LINE_SHORTCUT = 'l';
 export const RECTANGLE_SHORTCUT = '1';
 export const ELLIPSIS_SHORTCUT = '2';
+export const AEROSOL_SHORTCUT = 'a';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
@@ -62,6 +64,8 @@ export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
 // Constante pour test
 export const TEST_MAT_SLIDER_VALUE = 12;
 
+// Constante pour timer
+export const MILS_TO_SEC = 1000;
 // constante pour outil sélection
 export const N_PIXELS_DEPLACEMENT = 3;
 export const LINE_DASH = 10;

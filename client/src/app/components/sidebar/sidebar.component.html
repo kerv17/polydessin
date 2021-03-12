@@ -21,6 +21,22 @@
             <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
         </div>
         <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil d'aerosol. Le raccourci est 'a'</div>
+            <img src="../../../assets/aerosol.png" [ngStyle]="aerosol" class="function" (click)="openAerosol()" tabindex="0" />
+        </div>
+
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton annule la derniere action. Le raccourci est 'Ctrl+z'</div>
+            <img src="../../../assets/undo.png" [ngStyle]="undo" class="function" (click)="undoAction()" tabindex="0" />
+        </div>
+
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton refait la prochaine action. Le raccourci est 'Ctrl+Shift+z'</div>
+            <img src="../../../assets/redo.png" [ngStyle]="redo" class="function" (click)="redoAction()" tabindex="0" />
+        </div>
+
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton crée un nouveau dessin . Le raccourci est 'Ctrl+o'</div>
             <div class="infobulle">Ce bouton crée un nouveau dessin. Le raccourci est 'Ctrl+o'</div>
             <img src="../../../assets/New.png" (click)="newCanvas()" class="function" tabindex="0" />
         </div>
@@ -44,6 +60,11 @@
                 <app-width-slider [change]="resetAttributes"></app-width-slider>
             </div>
             <br />
+            <div *ngIf="showAerosol">
+                <radius-slider [change]="resetAttributes"></radius-slider>
+                <spray-amount-slider [change]="resetAttributes"></spray-amount-slider>
+            </div>
+
             <div>
                 <app-color [reset]="resetAttributes"></app-color>
             </div>

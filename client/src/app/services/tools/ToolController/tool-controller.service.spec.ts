@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -16,12 +17,14 @@ describe('ToolControllerService', () => {
     let ellipsisServiceSpy: jasmine.SpyObj<EllipsisService>;
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
+    let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
 
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', {}, { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', {}, { color: 'test' });
         rectangleServiceSpy = jasmine.createSpyObj('RectangleService', {}, { color: 'test' });
         lineServiceSpy = jasmine.createSpyObj('LineService', {}, { color: 'test' });
+        aerosolServiceSpy = jasmine.createSpyObj('AerosolService', {}, { color: 'test' });
 
         TestBed.configureTestingModule({
             providers: [
@@ -29,6 +32,7 @@ describe('ToolControllerService', () => {
                 { provide: EllipsisService, useValue: ellipsisServiceSpy },
                 { provide: RectangleService, useValue: rectangleServiceSpy },
                 { provide: LineService, useValue: lineServiceSpy },
+                { provide: AerosolService, useValue: aerosolServiceSpy },
             ],
         });
         TestBed.configureTestingModule({});

@@ -4,6 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -33,6 +34,7 @@ describe('DrawingComponent', () => {
             {} as RectangleService,
             {} as LineService,
             {} as EllipsisService,
+            {} as AerosolService,
             {} as SelectionService,
         );
 
