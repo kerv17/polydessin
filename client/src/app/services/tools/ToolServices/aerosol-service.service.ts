@@ -45,16 +45,20 @@ export class AerosolService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.drawSpray(this.drawingService.baseCtx, this.pathData);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.dispatchAction(this.createAction());
-        this.clearPath();
-        this.mouseDown = false;
-        clearTimeout(this.timeoutID);
-        this.onMouseMove(event);
+        if (this.mouseDown) {
+            this.drawSpray(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+            this.dispatchAction(this.createAction());
+
+            this.clearPath();
+            this.mouseDown = false;
+            clearTimeout(this.timeoutID);
+            this.onMouseMove(event);
+        }
     }
 
-    private showRadius(pos:Vec2, radius:number){
+    private showRadius(pos: Vec2, radius: number) {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawingService.previewCtx.beginPath();
         this.drawingService.previewCtx.ellipse(pos.x, pos.y, radius, radius, 0, 0, 2 * Math.PI);
@@ -97,9 +101,9 @@ export class AerosolService extends Tool {
     }
 
     doAction(action: DrawAction): void {
-      const previousSetting = this.saveSetting();
-      this.loadSetting(action.setting);
-      this.drawSpray(action.canvas, this.pathData);
-      this.loadSetting(previousSetting);
+        const previousSetting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.drawSpray(action.canvas, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }
