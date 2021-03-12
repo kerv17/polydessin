@@ -135,11 +135,11 @@ describe('RectangleService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('drawRectangle calls stroke', () => {
+    /*it('drawRectangle calls stroke', () => {
         const spy = spyOn<any>(previewCtxStub, 'stroke').and.callThrough();
         (service as any).drawRectangle(previewCtxStub, testPath);
         expect(spy).toHaveBeenCalled();
-    });
+    });*/
 
     // Exemple de test d'intégration qui est quand même utile
     it(' Setting the tool mode to border should call drawBorder ', () => {

@@ -10,6 +10,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { WidthSliderComponent } from './width-slider.component';
 
 describe('WidthSliderComponent', () => {
@@ -22,7 +23,13 @@ describe('WidthSliderComponent', () => {
     const defaultToolValue = 5;
 
     beforeEach(async(() => {
-        toolController = new ToolControllerService({} as PencilService, {} as RectangleService, {} as LineService, {} as EllipsisService);
+        toolController = new ToolControllerService(
+            {} as PencilService,
+            {} as RectangleService,
+            {} as LineService,
+            {} as EllipsisService,
+            {} as SelectionService,
+        );
 
         pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({

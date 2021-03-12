@@ -4,31 +4,10 @@
     </div>
 
     <div class="drawing-container">
-        <app-drawing
-            class="drawing"
-            tabindex="0"
-            [widthPrev]="drawingService.resizePoint.posX"
-            [heightPrev]="drawingService.resizePoint.posY"
-            [mouseDown]="drawingService.resizePoint.mouseDown"
-        ></app-drawing>
-
-        <div
-            class="resizer"
-            *ngIf="hideResizer()"
-            [ngStyle]="drawingService.resizePoint.resizerBottomRight"
-            (mousedown)="mouseDownHandler($event, 0)"
-        ></div>
-        <div
-            class="resizer"
-            *ngIf="hideResizer()"
-            [ngStyle]="drawingService.resizePoint.resizerBottomLine"
-            (mousedown)="mouseDownHandler($event, 1)"
-        ></div>
-        <div
-            class="resizer"
-            *ngIf="hideResizer()"
-            [ngStyle]="drawingService.resizePoint.resizerRightLine"
-            (mousedown)="mouseDownHandler($event, 2)"
-        ></div>
+        <app-drawing class="drawing" tabindex="0" [widthPrev]="drawingService.resizePoint.posX" [heightPrev]="drawingService.resizePoint.posY" [mouseDown]="drawingService.resizePoint.mouseDown"></app-drawing>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="drawingService.resizePoint.resizerBottomRight" (mousedown)="mouseDownHandler($event, 0)"></div>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="drawingService.resizePoint.resizerBottomLine" (mousedown)="mouseDownHandler($event, 1)"></div>
+        <div class="resizer" *ngIf="hideResizer()" [ngStyle]="drawingService.resizePoint.resizerRightLine" (mousedown)="mouseDownHandler($event, 2)"></div>
     </div>
+
 </div>
