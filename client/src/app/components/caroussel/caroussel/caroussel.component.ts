@@ -9,6 +9,8 @@ const nombreImagePair = 2;
     styleUrls: ['./caroussel.component.scss'],
 })
 export class CarousselComponent {
+    currentTag: string;
+    fileName: string;
     constructor(public carouselService: CarouselService) {
         this.resetOptions();
     }
@@ -49,10 +51,12 @@ export class CarousselComponent {
             // Very useful for when im gonna have to do the update
             this.owlCar.next();
             this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
-            for (let i = 0; i < this.slides.length - 1; i++) {
-                this.slides.pop();
-            }
-            // this.slides[0] = '../../../SavedCanvas/dessin1.jpeg';
+            this.slides = [];
+            // for (let i = 0; i < this.slides.length - 1; i++) {
+            //   this.slides.pop();
+            // }
+            this.slides[0] = '../../../SavedCanvas/dessin1.jpeg';
+            this.slides[1] = '../../../SavedCanvas/dessin1.jpeg';
 
             console.log(this.owlCar.slidesData);
             console.log(this.slides);

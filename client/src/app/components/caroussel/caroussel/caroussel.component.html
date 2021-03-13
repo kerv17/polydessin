@@ -13,5 +13,7 @@
             </owl-carousel-o>
         </div>
         <button class="delete" (click)="carouselService.delete()">Delete selected canvas</button>
+        <input [(ngModel)]="currentTag" />
+        <input [(ngModel)]="fileName" />
     </div>
 </div>
