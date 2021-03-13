@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +22,7 @@ export class SelectionService extends Tool {
     initialSelectionPosition: Vec2;
     firstCorner: Vec2;
     oppositeCorner: Vec2;
+    position: Vec2;
     handlersPositions: Vec2[] = [];
 
     leftArrow: boolean = false;
@@ -68,14 +70,13 @@ export class SelectionService extends Tool {
                 this.onMouseMoveSelection(event, this.drawingService.previewCtx);
             } else {
                 const mousePosition = this.getPositionFromMouse(event);
-                const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
-                this.oppositeCorner = vec[2];
+                this.pathData = this.rectangleService.getRectanglePoints(mousePosition);
+                this.oppositeCorner = this.pathData[2];
                 this.setTopLeftHandler();
-                this.drawBorder(this.drawingService.previewCtx, vec);
-                this.selectArea(this.drawingService.baseCtx, vec);
+                this.drawBorder(this.drawingService.previewCtx, this.pathData);
+                this.selectArea(this.drawingService.baseCtx, this.pathData);
             }
-            this.clearPath();
-            this.pathData.push(this.topLeftHandler);
+            // this.clearPath();
         }
     }
 
@@ -92,7 +93,7 @@ export class SelectionService extends Tool {
             }
         }
         this.mouseDown = false;
-        this.clearPath();
+        // this.clearPath();
     }
 
     onShift(shifted: boolean): void {
@@ -103,6 +104,9 @@ export class SelectionService extends Tool {
     onEscape(): void {
         if (this.inSelection) {
             this.confirmSelectionMove();
+            console.log(this.pathData);
+            this.dispatchAction(this.createAction());
+
             this.inSelection = false;
             this.mouseDown = false;
             this.inMovement = false;
@@ -138,14 +142,14 @@ export class SelectionService extends Tool {
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
-        ctx.fillRect(this.initialSelectionPosition.x, this.initialSelectionPosition.y, this.selectedArea.width, this.selectedArea.height);
+        ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.selectedArea.width, this.selectedArea.height);
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
     }
 
     private confirmSelectionMove(): void {
         this.updateCanvasOnMove(this.drawingService.baseCtx);
-        this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+        this.drawingService.baseCtx.putImageData(this.selectedArea, this.pathData[4].x, this.pathData[4].y);
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -204,19 +208,23 @@ export class SelectionService extends Tool {
 
     private onMouseMoveSelection(event: MouseEvent, ctx: CanvasRenderingContext2D): void {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-        const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-        ctx.putImageData(this.selectedArea, position.x, position.y);
+        this.position = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
+        ctx.putImageData(this.selectedArea, this.position.x, this.position.y);
     }
 
     private onMouseUpSelection(event: MouseEvent): void {
         if (this.inMovement) {
             const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-            const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-            this.topLeftHandler = position;
+            this.position = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
+            this.topLeftHandler = this.position;
             this.bottomRightHandler = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
             this.inMovement = false;
             this.initialMousePosition = { x: 0, y: 0 };
             this.inSelection = true;
+            if (this.pathData.length > 4) {
+                this.pathData.pop();
+            }
+            this.pathData.push(this.position);
         }
     }
 
@@ -301,5 +309,13 @@ export class SelectionService extends Tool {
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y });
         // centre gauche
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
+    }
+
+    doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.selectArea(this.drawingService.baseCtx, this.pathData);
+        this.confirmSelectionMove();
+        this.loadSetting(previousSetting);
     }
 }
