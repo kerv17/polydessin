@@ -1,0 +1,36 @@
+<div id="myModal" class="modal">
+  <div class="modal-content">
+      <div class="close" (click)="close()">&times;</div>
+      <div>
+          <p>Veuillez choisir le type du fichier exporté</p>
+          <button
+              [ngStyle]="{
+                  backgroundColor: exportMode == 'png' ? 'gainsboro' : 'white'
+              }"
+              (click)="toggleMode('png')"
+          >
+              Png
+          </button>
+          <button
+              [ngStyle]="{
+                  backgroundColor: exportMode == 'jpeg' ? 'gainsboro' : 'white'
+              }"
+              (click)="toggleMode('jpeg')"
+          >
+              Jpeg
+          </button>
+          <div *ngIf="exportMode != undefined">
+              <p>Le format choisi est de {{ exportMode }}</p>
+          </div>
+      </div>
+      <div>
+          <p>Veuillez choisir le nom du fichier</p>
+          <input [(ngModel)]="fileName" />
+      </div>
+      <div>
+          <p>Vous pouvez ajouter des tags</p>
+          <canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas>
+      </div>
+      <button class="save" (click)="remoteSaveService.post()">sauvegarder le canvas</button>
+  </div>
+</div>

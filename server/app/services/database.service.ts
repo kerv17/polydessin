@@ -20,7 +20,7 @@ export class DatabaseService {
 
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            let client = await MongoClient.connect(url, this.options);
+            const client = await MongoClient.connect(url, this.options);
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
@@ -38,14 +38,14 @@ export class DatabaseService {
     }
     // TODO remove when done testing
     async populateDB(): Promise<void> {
-        let metaDatas: Metadata[] = [
+        const metaDatas: Metadata[] = [
             {
-                code: new ObjectId(),
+                codeID: new ObjectId(),
                 name: 'Object Oriented Programming',
                 tags: ['Samuel Kadoury'],
             },
             {
-                code: new ObjectId(),
+                codeID: new ObjectId(),
                 name: 'Object Oriented Programming',
                 tags: ['Samuel Kadoury'],
             },

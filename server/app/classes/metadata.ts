@@ -1,7 +1,7 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
 
 export interface Metadata {
-    code: ObjectId;
+    codeID: ObjectId;
     name: string;
     tags: string[];
 }
