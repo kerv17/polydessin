@@ -3,10 +3,11 @@
     <div class="modal-content">
         <div class="close" (click)="carouselService.close()">&times;</div>
         <div class="carouselContainer">
-            <owl-carousel-o id="carousel" [options]="customOptions" class="test" #owlCar>
+            <owl-carousel-o id="carousel" [options]="customOptions" #owlCar>
                 <ng-container *ngFor="let slide of slides" class="container">
-                    <ng-template carouselSlide>
-                        <img class="carousel" (click)="carouselService.test(slide)" [src]="slide" alt="test" />
+                    <ng-template carouselSlide [id]="slide">
+                        <div><img class="carousel" (click)="carouselService.test(slide)" [src]="slide" alt="test" /></div>
+                        <div class="info"><p>Test</p></div>
                     </ng-template>
                 </ng-container>
             </owl-carousel-o>

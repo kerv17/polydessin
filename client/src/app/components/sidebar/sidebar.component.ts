@@ -124,24 +124,25 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if (this.exportService.showModalExport || this.carouselService.showCarousel) {
-            $event.stopImmediatePropagation();
-        } else if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
-            $event.preventDefault();
+        if (!this.exportService.showModalExport && !this.carouselService.showCarousel) {
+            // $event.stopImmediatePropagation();
+            if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
+                $event.preventDefault();
 
-            this.drawing.newCanvas();
-        } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
-            this.openExport();
-        } else if ($event.ctrlKey && $event.key === Globals.CAROUSEL_SHORTCUT) {
-            $event.preventDefault();
-            this.carouselService.openCarousel();
-        } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
-            $event.preventDefault();
-            this.selectCanvas();
-        } else if ($event.key === Globals.RECTANGLE_SELECTION_SHORTCUT) {
-            this.openSelection();
-        } else if (this.toolcontroller.focused) {
-            this.functionMap.get($event.key)?.call(this);
+                this.drawing.newCanvas();
+            } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
+                this.openExport();
+            } else if ($event.ctrlKey && $event.key === Globals.CAROUSEL_SHORTCUT) {
+                $event.preventDefault();
+                this.carouselService.openCarousel();
+            } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
+                $event.preventDefault();
+                this.selectCanvas();
+            } else if ($event.key === Globals.RECTANGLE_SELECTION_SHORTCUT) {
+                this.openSelection();
+            } else if (this.toolcontroller.focused) {
+                this.functionMap.get($event.key)?.call(this);
+            }
         }
     }
     openExport(): void {

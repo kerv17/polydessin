@@ -7,7 +7,9 @@ import { IndexService } from '@app/services/index/index.service';
 export class CarouselService {
     showCarousel: boolean = false;
     private pictures: Metadata[] = [];
-    constructor(private indexService: IndexService) {}
+    constructor(private indexService: IndexService) {
+        this.initialiserCanvas();
+    }
     openCarousel(): void {
         this.showCarousel = true;
     }
@@ -15,12 +17,11 @@ export class CarouselService {
         this.showCarousel = false;
     }
     test(test: string): void {
-        // window.alert(test);
+        window.alert(test);
     }
 
     delete(): void {
-        this.initialiserCanvas();
-        // this.indexService.basicDelete('test').subscribe((x) => window.alert(x.title));
+        this.indexService.basicDelete('test').subscribe((x) => window.alert(x.title));
     }
     initialiserCanvas(): void {
         this.indexService.basicGet().subscribe((x) => {

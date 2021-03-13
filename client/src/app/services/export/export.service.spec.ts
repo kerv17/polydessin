@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ExportService } from './export.service';
-describe('ExportService', () => {
+fdescribe('ExportService', () => {
     let service: ExportService;
     let drawingService: DrawingService;
     let confirmSpy: jasmine.Spy;
