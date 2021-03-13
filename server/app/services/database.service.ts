@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { Db, MongoClient, MongoClientOptions } from 'mongodb';
+import { Db, MongoClient, MongoClientOptions, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { Metadata } from '../classes/metadata';
 
@@ -40,7 +40,12 @@ export class DatabaseService {
     async populateDB(): Promise<void> {
         let metaDatas: Metadata[] = [
             {
-                code: 'test',
+                code: new ObjectId(),
+                name: 'Object Oriented Programming',
+                tags: ['Samuel Kadoury'],
+            },
+            {
+                code: new ObjectId(),
                 name: 'Object Oriented Programming',
                 tags: ['Samuel Kadoury'],
             },

@@ -1,6 +1,6 @@
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, UpdateQuery } from 'mongodb';
+import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, ObjectId, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
@@ -30,7 +30,7 @@ export class MetadataService {
 
     async getMetadataByCode(aCode: string): Promise<Metadata> {
         // TODO: This can return null if the metadata does not exist, need to handle it
-        return this.collection.findOne({ code: aCode }).then((metadata: Metadata) => {
+        return this.collection.findOne({ code: new ObjectId (aCode) }).then((metadata: Metadata) => {
             return metadata;
         });
     }
@@ -89,7 +89,7 @@ export class MetadataService {
 
     async deleteMetadata(aCode: string): Promise<void> {
         return this.collection
-            .findOneAndDelete({ code: aCode })
+            .findOneAndDelete({ code: new ObjectId (aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
                     throw new Error('Failed to delete metadata');
@@ -121,7 +121,7 @@ export class MetadataService {
     }
 
     async getMetadataName(aCode: string): Promise<string> {
-        const filterQuery: FilterQuery<Metadata> = { code: aCode };
+        const filterQuery: FilterQuery<Metadata> = { code: new ObjectId(aCode) };
         // Only get the name and not any of the other fields
         const projection: FindOneOptions = { projection: { name: 1, _id: 0 } };
         return this.collection
