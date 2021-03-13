@@ -16,6 +16,8 @@ describe('AerosolServiceService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
 
+    let points: Vec2[];
+
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
@@ -46,6 +48,8 @@ describe('AerosolServiceService', () => {
             x: mouseEvent.offsetX,
             y: mouseEvent.offsetY,
         } as Vec2;
+
+        points = [];
     });
 
     it('should be created', () => {
@@ -156,7 +160,7 @@ describe('AerosolServiceService', () => {
         const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
 
-        service.drawSpray(previewCtxStub);
+        service.drawSpray(previewCtxStub,points);
         expect(ellipseSpy).toHaveBeenCalledTimes(10);
         expect(strokeSpy).toHaveBeenCalledTimes(10);
     });
