@@ -36,6 +36,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private viewInitialized: boolean = false;
 
     selectionBox: { [key: string]: string };
+    cursor: { [key: string]: string };
     handler0: { [key: string]: string };
     handler1: { [key: string]: string };
     handler2: { [key: string]: string };
@@ -160,6 +161,24 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         return this.controller.currentTool;
     }
 
+    cursorChange(event: MouseEvent): void {
+        if (
+            event.offsetX > this.controller.selectionService.topLeftHandler.x &&
+            event.offsetX < this.controller.selectionService.bottomRightHandler.x &&
+            event.offsetY > this.controller.selectionService.topLeftHandler.y &&
+            event.offsetY < this.controller.selectionService.bottomRightHandler.y &&
+            this.controller.selectionService.inSelection
+        ) {
+            this.cursor = {
+                cursor: 'all-scroll',
+            };
+        } else {
+            this.cursor = {
+                cursor: 'crosshair',
+            };
+        }
+    }
+
     // A deplacer dans service
     drawSelectionBox(): boolean {
         if (this.controller.selectionService.inSelection) {
@@ -187,34 +206,42 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             this.handler0 = {
                 left: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'nw-resize',
             };
             this.handler1 = {
                 left: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'n-resize',
             };
             this.handler2 = {
                 left: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'ne-resize',
             };
             this.handler3 = {
                 left: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'e-resize',
             };
             this.handler4 = {
                 left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'nw-resize',
             };
             this.handler5 = {
                 left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'n-resize',
             };
             this.handler6 = {
                 left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'ne-resize',
             };
             this.handler7 = {
                 left: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
+                cursor: 'e-resize',
             };
             return true;
         } else {
