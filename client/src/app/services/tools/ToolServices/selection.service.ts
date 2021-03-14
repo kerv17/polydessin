@@ -15,14 +15,13 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     inMovement: boolean = false;
 
-    bottomRightHandler: Vec2;
-    topLeftHandler: Vec2;
-    initialMousePosition: Vec2;
-    initialSelectionPosition: Vec2;
     firstCorner: Vec2;
-    oppositeCorner: Vec2;
+    topLeftHandler: Vec2;
+    initialSelectionPosition: Vec2;
     handlersPositions: Vec2[] = [];
 
+    // pour déplacement
+    initialMousePosition: Vec2;
     leftArrow: boolean = false;
     downArrow: boolean = false;
     rightArrow: boolean = false;
@@ -33,8 +32,6 @@ export class SelectionService extends Tool {
         this.clearPath();
         this.width = 1;
         this.rectangleService = new RectangleService(this.drawingService);
-
-        this.onEscape();
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkArrowKeyDown(event);
@@ -69,8 +66,7 @@ export class SelectionService extends Tool {
             } else {
                 const mousePosition = this.getPositionFromMouse(event);
                 const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
-                this.oppositeCorner = vec[2];
-                this.setTopLeftHandler();
+                this.setTopLeftHandler(vec);
                 this.drawBorder(this.drawingService.previewCtx, vec);
                 this.selectArea(this.drawingService.baseCtx, vec);
             }
@@ -107,9 +103,7 @@ export class SelectionService extends Tool {
             this.mouseDown = false;
             this.inMovement = false;
             this.firstCorner = { x: 0, y: 0 };
-            this.oppositeCorner = { x: 0, y: 0 };
             this.topLeftHandler = { x: 0, y: 0 };
-            this.bottomRightHandler = { x: 0, y: 0 };
             this.initialSelectionPosition = { x: 0, y: 0 };
             this.initialMousePosition = { x: 0, y: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -119,19 +113,15 @@ export class SelectionService extends Tool {
         }
     }
 
-    private setTopLeftHandler(): void {
-        if (this.firstCorner.x < this.oppositeCorner.x && this.firstCorner.y < this.oppositeCorner.y) {
+    private setTopLeftHandler(corners: Vec2[]): void {
+        if (this.firstCorner.x < corners[2].x && this.firstCorner.y < corners[2].y) {
             this.topLeftHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-            this.bottomRightHandler = { x: this.oppositeCorner.x, y: this.oppositeCorner.y };
-        } else if (this.firstCorner.x < this.oppositeCorner.x && this.firstCorner.y > this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: this.oppositeCorner.y };
-            this.bottomRightHandler = { x: this.oppositeCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x > this.oppositeCorner.x && this.firstCorner.y > this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.oppositeCorner.x, y: this.oppositeCorner.y };
-            this.bottomRightHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x > this.oppositeCorner.x && this.firstCorner.y < this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.oppositeCorner.x, y: this.firstCorner.y };
-            this.bottomRightHandler = { x: this.firstCorner.x, y: this.oppositeCorner.y };
+        } else if (this.firstCorner.x < corners[2].x && this.firstCorner.y > corners[2].y) {
+            this.topLeftHandler = { x: this.firstCorner.x, y: corners[2].y };
+        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y > corners[2].y) {
+            this.topLeftHandler = { x: corners[2].x, y: corners[2].y };
+        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y < corners[2].y) {
+            this.topLeftHandler = { x: corners[2].x, y: this.firstCorner.y };
         }
     }
 
@@ -180,18 +170,18 @@ export class SelectionService extends Tool {
     selectCanvas(width: number, height: number): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.topLeftHandler = { x: 0, y: 0 };
-        this.bottomRightHandler = { x: width, y: height };
         this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
         this.inSelection = true;
         this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
     }
 
     private onMouseDownSelection(event: MouseEvent, mousePosition: Vec2): boolean {
+        const bottomRight = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
         if (
             mousePosition.x > this.topLeftHandler.x &&
-            mousePosition.x < this.bottomRightHandler.x &&
+            mousePosition.x < bottomRight.x &&
             mousePosition.y > this.topLeftHandler.y &&
-            mousePosition.y < this.bottomRightHandler.y
+            mousePosition.y < bottomRight.y
         ) {
             this.initialMousePosition = { x: event.x, y: event.y };
             this.inMovement = true;
@@ -213,7 +203,6 @@ export class SelectionService extends Tool {
             const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
             const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
             this.topLeftHandler = position;
-            this.bottomRightHandler = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
             this.inMovement = false;
             this.initialMousePosition = { x: 0, y: 0 };
             this.inSelection = true;
@@ -249,19 +238,15 @@ export class SelectionService extends Tool {
     private positionArrows(): void {
         if (this.leftArrow) {
             this.topLeftHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.upArrow) {
             this.topLeftHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.rightArrow) {
             this.topLeftHandler.x += Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.x += Globals.N_PIXELS_DEPLACEMENT;
         }
         if (this.downArrow) {
             this.topLeftHandler.y += Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.y += Globals.N_PIXELS_DEPLACEMENT;
         }
     }
 
@@ -283,7 +268,8 @@ export class SelectionService extends Tool {
     }
 
     // calcul position des 8 handlers
-    setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
+    setHandlersPositions(topLeft: Vec2): void {
+        const bottomRight = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
         this.handlersPositions = [];
         // coin haut gauche
         this.handlersPositions.push(topLeft);

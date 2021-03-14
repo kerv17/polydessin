@@ -162,11 +162,15 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     cursorChange(event: MouseEvent): void {
+        const bottomRight = {
+            x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
+            y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
+        };
         if (
             event.offsetX > this.controller.selectionService.topLeftHandler.x &&
-            event.offsetX < this.controller.selectionService.bottomRightHandler.x &&
+            event.offsetX < bottomRight.x &&
             event.offsetY > this.controller.selectionService.topLeftHandler.y &&
-            event.offsetY < this.controller.selectionService.bottomRightHandler.y &&
+            event.offsetY < bottomRight.y &&
             this.controller.selectionService.inSelection
         ) {
             this.cursor = {
@@ -199,10 +203,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     // A deplacer dans service
     drawHandlers(): boolean {
         if (this.controller.selectionService.inSelection) {
-            this.controller.selectionService.setHandlersPositions(
-                this.controller.selectionService.topLeftHandler,
-                this.controller.selectionService.bottomRightHandler,
-            );
+            this.controller.selectionService.setHandlersPositions(this.controller.selectionService.topLeftHandler);
             this.handler0 = {
                 left: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
                 top: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
