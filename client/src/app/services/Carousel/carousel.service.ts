@@ -10,9 +10,7 @@ export class CarouselService {
     constructor(private indexService: IndexService) {
         this.initialiserCanvas();
     }
-    openCarousel(): void {
-        this.showCarousel = true;
-    }
+
     close(): void {
         this.showCarousel = false;
     }

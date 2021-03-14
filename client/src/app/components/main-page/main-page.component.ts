@@ -28,6 +28,9 @@ export class MainPageComponent {
     goToEditor(): void {
         this.router.navigate(['/editor']);
     }
+    openCarousel(): void {
+        this.carouselSerivce.showCarousel = true;
+    }
 
     verifDessinExistant(): boolean {
         return false;
@@ -36,7 +39,7 @@ export class MainPageComponent {
     onKeyPress(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === Globals.CAROUSEL_SHORTCUT) {
             event.preventDefault();
-            this.carouselSerivce.openCarousel();
+            this.openCarousel();
         }
     }
 }
