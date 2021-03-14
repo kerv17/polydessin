@@ -116,6 +116,7 @@ export class SidebarComponent {
 
             if (this.toolcontroller.focused) {
                 this.handleShortcuts($event);
+                $event.preventDefault();
             }
         }
     }
