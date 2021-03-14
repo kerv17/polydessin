@@ -142,7 +142,7 @@ export class SidebarComponent {
             .set([true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
             .set([true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
             .set([true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
-            .set([false, Globals.CRAYON_SHORTCUT].join(), this.openSelection);
+            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection);
     }
 
     handleShortcuts(event: KeyboardEvent): void {
