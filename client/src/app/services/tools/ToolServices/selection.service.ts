@@ -64,10 +64,10 @@ export class SelectionService extends Tool {
                 this.updateCanvasOnMove(this.drawingService.previewCtx);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.topLeftHandler, this.selectedArea);
             } else {
-                const vec: Vec2[] = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
-                this.setTopLeftHandler(vec);
-                this.drawBorder(this.drawingService.previewCtx, vec);
-                this.selectArea(this.drawingService.baseCtx, vec);
+                this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
+                this.setTopLeftHandler();
+                this.drawBorder(this.drawingService.previewCtx);
+                this.selectArea(this.drawingService.baseCtx);
             }
             this.clearPath();
             this.pathData.push(this.topLeftHandler);
@@ -121,10 +121,10 @@ export class SelectionService extends Tool {
     }
 
     // selection des pixels
-    private selectArea(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const width: number = path[2].x - path[0].x;
-        const height: number = path[2].y - path[0].y;
-        this.selectedArea = ctx.getImageData(path[0].x, path[0].y, width, height);
+    private selectArea(ctx: CanvasRenderingContext2D): void {
+        const width: number = this.pathData[2].x - this.pathData[0].x;
+        const height: number = this.pathData[2].y - this.pathData[0].y;
+        this.selectedArea = ctx.getImageData(this.pathData[0].x, this.pathData[0].y, width, height);
     }
 
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
@@ -140,11 +140,11 @@ export class SelectionService extends Tool {
         this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawBorder(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (const point of path) {
+        for (const point of this.pathData) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -153,7 +153,7 @@ export class SelectionService extends Tool {
         ctx.strokeStyle = 'black';
         ctx.beginPath();
         ctx.setLineDash([Globals.LINE_DASH, Globals.LINE_DASH]);
-        for (const point of path) {
+        for (const point of this.pathData) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -161,15 +161,15 @@ export class SelectionService extends Tool {
         ctx.setLineDash([]);
     }
 
-    private setTopLeftHandler(corners: Vec2[]): void {
-        if (this.firstCorner.x < corners[2].x && this.firstCorner.y < corners[2].y) {
+    private setTopLeftHandler(): void {
+        if (this.firstCorner.x < this.pathData[2].x && this.firstCorner.y < this.pathData[2].y) {
             this.topLeftHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x < corners[2].x && this.firstCorner.y > corners[2].y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: corners[2].y };
-        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y > corners[2].y) {
-            this.topLeftHandler = { x: corners[2].x, y: corners[2].y };
-        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y < corners[2].y) {
-            this.topLeftHandler = { x: corners[2].x, y: this.firstCorner.y };
+        } else if (this.firstCorner.x < this.pathData[2].x && this.firstCorner.y > this.pathData[2].y) {
+            this.topLeftHandler = { x: this.firstCorner.x, y: this.pathData[2].y };
+        } else if (this.firstCorner.x > this.pathData[2].x && this.firstCorner.y > this.pathData[2].y) {
+            this.topLeftHandler = { x: this.pathData[2].x, y: this.pathData[2].y };
+        } else if (this.firstCorner.x > this.pathData[2].x && this.firstCorner.y < this.pathData[2].y) {
+            this.topLeftHandler = { x: this.pathData[2].x, y: this.firstCorner.y };
         }
     }
 }
