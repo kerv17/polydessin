@@ -12,8 +12,6 @@ export class SelectionMovementService {
     rightArrow: boolean = false;
     upArrow: boolean = false;
 
-    constructor() {}
-
     onMouseDown(event: MouseEvent, mousePosition: Vec2, topLeft: Vec2, width: number, height: number): boolean {
         const bottomRight = { x: topLeft.x + width, y: topLeft.y + height };
         if (mousePosition.x > topLeft.x && mousePosition.x < bottomRight.x && mousePosition.y > topLeft.y && mousePosition.y < bottomRight.y) {
