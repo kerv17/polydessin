@@ -9,41 +9,60 @@ const nombreImagePair = 2;
     styleUrls: ['./caroussel.component.scss'],
 })
 export class CarousselComponent {
-    constructor(public carouselService: CarouselService) {}
-
+    currentTag: string;
+    fileName: string;
+    constructor(public carouselService: CarouselService) {
+        this.resetOptions();
+    }
+    customOptions: OwlOptions;
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    slides = [
+    slides: string[] = [
         '../../../SavedCanvas/dessin1.jpeg',
         '../../../SavedCanvas/dessin2.jpeg',
         '../../../SavedCanvas/dessin3.jpeg',
         '../../../SavedCanvas/dessin4.jpeg',
         '../../../SavedCanvas/dessin5.jpeg',
     ];
+    resetOptions(): void {
+        this.customOptions = {
+            loop: true,
+            mouseDrag: true,
+            // TODO gèrer les cas ou moins de 2
+            merge: true,
+            touchDrag: true,
 
-    customOptions: OwlOptions = {
-        loop: true,
-        mouseDrag: true,
-        // TODO gèrer les cas ou moins de 2
-        merge: true,
-        touchDrag: true,
+            pullDrag: true,
+            margin: 20,
 
-        pullDrag: true,
-        margin: 20,
+            dots: true,
+            navSpeed: 600,
+            navText: ['&#8249', '&#8250;'],
+            center: this.slides.length % nombreImagePair === 0 ? false : true,
+            items: this.slides.length >= nombreImage ? nombreImage : this.slides.length,
+            autoWidth: true,
 
-        dots: true,
-        navSpeed: 600,
-        navText: ['&#8249', '&#8250;'],
-        center: this.slides.length % nombreImagePair === 0 ? false : true,
-        items: this.slides.length >= nombreImage ? nombreImage : this.slides.length,
-        autoWidth: false,
-
-        nav: true,
-    };
+            responsive: { 0: { items: 3 }, 400: { items: 3 }, 740: { items: 3 }, 960: { items: 3 } },
+            nav: true,
+        };
+    }
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'ArrowRight') {
+            // Very useful for when im gonna have to do the update
             this.owlCar.next();
+            this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
+            this.slides = [];
+            // for (let i = 0; i < this.slides.length - 1; i++) {
+            //   this.slides.pop();
+            // }
+            this.slides[0] = '../../../SavedCanvas/dessin1.jpeg';
+            this.slides[1] = '../../../SavedCanvas/dessin1.jpeg';
+
+            console.log(this.owlCar.slidesData);
+            console.log(this.slides);
+
+            this.customOptions.center = false;
+            //  this.resetOptions();
         } else if (event.key === 'ArrowLeft') this.owlCar.prev();
     }
-    delete(): void {}
 }
