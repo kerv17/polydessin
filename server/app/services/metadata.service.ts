@@ -25,6 +25,7 @@ export class MetadataService {
             .find({})
             .toArray()
             .then((metadata: Metadata[]) => {
+                
                 return metadata;
             });
     }

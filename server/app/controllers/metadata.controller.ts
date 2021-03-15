@@ -1,5 +1,6 @@
 import { Message } from '@common/communication/message';
 import { MetadataService } from 'app/services/metadata.service';
+import { ServerSaveService } from 'app/services/server-save.service';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
@@ -10,7 +11,7 @@ import { TYPES } from '../types';
 export class MetadataController {
     router: Router;
 
-    constructor(@inject(TYPES.MetadataService) private metadataService: MetadataService) {
+    constructor(@inject(TYPES.MetadataService) private metadataService: MetadataService,@inject(TYPES.ServerSaveService)private serverSaveService:ServerSaveService) {
         this.configureRouter();
     }
 
@@ -21,7 +22,8 @@ export class MetadataController {
             this.metadataService
                 .getAllMetadata()
                 .then((metadata: Metadata[]) => {
-                    res.json(metadata);
+                    let information =this.serverSaveService.createCanvasInformation(metadata);
+                    res.json(information);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);
