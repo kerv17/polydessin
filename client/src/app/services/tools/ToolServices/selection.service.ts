@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { RectangleService } from './rectangle-service';
 
 @Injectable({
@@ -13,32 +14,28 @@ export class SelectionService extends Tool {
     selectedArea: ImageData;
 
     inSelection: boolean = false;
-    inMovement: boolean = false;
+    private inMovement: boolean = false;
 
-    firstCorner: Vec2;
+    private firstCorner: Vec2;
     topLeftHandler: Vec2;
-    initialSelectionPosition: Vec2;
-    handlersPositions: Vec2[] = [];
+    private initialSelectionPosition: Vec2;
 
-    // pour déplacement
-    initialMousePosition: Vec2;
-    leftArrow: boolean = false;
-    downArrow: boolean = false;
-    rightArrow: boolean = false;
-    upArrow: boolean = false;
-
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.checkArrowKeyDown(event);
-            this.onMoveArrows();
+            this.selectionMove.onArrowKeyDown(event, this.inSelection);
+            this.topLeftHandler = this.selectionMove.moveSelection(this.topLeftHandler);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
         });
+
         document.addEventListener('keyup', (event: KeyboardEvent) => {
-            this.checkArrowKeyUp(event);
+            this.selectionMove.onArrowKeyUp(event, this.inSelection);
         });
     }
 
@@ -46,7 +43,10 @@ export class SelectionService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         const mousePosition = this.getPositionFromMouse(event);
         if (this.inSelection) {
-            if (!this.onMouseDownSelection(event, mousePosition)) {
+            if (this.selectionMove.onMouseDown(event, mousePosition, this.topLeftHandler, this.selectedArea.width, this.selectedArea.height)) {
+                this.inMovement = true;
+                this.inSelection = false;
+            } else {
                 this.onEscape();
             }
         } else {
@@ -62,10 +62,9 @@ export class SelectionService extends Tool {
 
             if (this.inMovement) {
                 this.updateCanvasOnMove(this.drawingService.previewCtx);
-                this.onMouseMoveSelection(event, this.drawingService.previewCtx);
+                this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.topLeftHandler, this.selectedArea);
             } else {
-                const mousePosition = this.getPositionFromMouse(event);
-                const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
+                const vec: Vec2[] = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
                 this.setTopLeftHandler(vec);
                 this.drawBorder(this.drawingService.previewCtx, vec);
                 this.selectArea(this.drawingService.baseCtx, vec);
@@ -79,8 +78,9 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
-                this.onMouseUpSelection(event);
+                this.topLeftHandler = this.selectionMove.onMouseUp(event, this.topLeftHandler);
                 this.inMovement = false;
+                this.inSelection = true;
             } else if (this.firstCorner.x !== mousePosition.x && this.firstCorner.y !== mousePosition.x) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
@@ -105,24 +105,26 @@ export class SelectionService extends Tool {
             this.firstCorner = { x: 0, y: 0 };
             this.topLeftHandler = { x: 0, y: 0 };
             this.initialSelectionPosition = { x: 0, y: 0 };
-            this.initialMousePosition = { x: 0, y: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
-            this.handlersPositions = [];
         }
     }
 
-    private setTopLeftHandler(corners: Vec2[]): void {
-        if (this.firstCorner.x < corners[2].x && this.firstCorner.y < corners[2].y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x < corners[2].x && this.firstCorner.y > corners[2].y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: corners[2].y };
-        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y > corners[2].y) {
-            this.topLeftHandler = { x: corners[2].x, y: corners[2].y };
-        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y < corners[2].y) {
-            this.topLeftHandler = { x: corners[2].x, y: this.firstCorner.y };
-        }
+    // selectionner tout le canvas avec Ctrl + A
+    selectCanvas(width: number, height: number): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.topLeftHandler = { x: 0, y: 0 };
+        this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
+        this.inSelection = true;
+        this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
+    }
+
+    // selection des pixels
+    private selectArea(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        const width: number = path[2].x - path[0].x;
+        const height: number = path[2].y - path[0].y;
+        this.selectedArea = ctx.getImageData(path[0].x, path[0].y, width, height);
     }
 
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
@@ -159,133 +161,15 @@ export class SelectionService extends Tool {
         ctx.setLineDash([]);
     }
 
-    // selection des pixels
-    private selectArea(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const width: number = path[2].x - path[0].x;
-        const height: number = path[2].y - path[0].y;
-        this.selectedArea = ctx.getImageData(path[0].x, path[0].y, width, height);
-    }
-
-    // selectionner tout le canvas avec Ctrl + A
-    selectCanvas(width: number, height: number): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.topLeftHandler = { x: 0, y: 0 };
-        this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
-        this.inSelection = true;
-        this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
-    }
-
-    private onMouseDownSelection(event: MouseEvent, mousePosition: Vec2): boolean {
-        const bottomRight = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
-        if (
-            mousePosition.x > this.topLeftHandler.x &&
-            mousePosition.x < bottomRight.x &&
-            mousePosition.y > this.topLeftHandler.y &&
-            mousePosition.y < bottomRight.y
-        ) {
-            this.initialMousePosition = { x: event.x, y: event.y };
-            this.inMovement = true;
-            this.inSelection = false;
-            return true;
-        } else {
-            return false;
+    private setTopLeftHandler(corners: Vec2[]): void {
+        if (this.firstCorner.x < corners[2].x && this.firstCorner.y < corners[2].y) {
+            this.topLeftHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
+        } else if (this.firstCorner.x < corners[2].x && this.firstCorner.y > corners[2].y) {
+            this.topLeftHandler = { x: this.firstCorner.x, y: corners[2].y };
+        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y > corners[2].y) {
+            this.topLeftHandler = { x: corners[2].x, y: corners[2].y };
+        } else if (this.firstCorner.x > corners[2].x && this.firstCorner.y < corners[2].y) {
+            this.topLeftHandler = { x: corners[2].x, y: this.firstCorner.y };
         }
-    }
-
-    private onMouseMoveSelection(event: MouseEvent, ctx: CanvasRenderingContext2D): void {
-        const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-        const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-        ctx.putImageData(this.selectedArea, position.x, position.y);
-    }
-
-    private onMouseUpSelection(event: MouseEvent): void {
-        if (this.inMovement) {
-            const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-            const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-            this.topLeftHandler = position;
-            this.inMovement = false;
-            this.initialMousePosition = { x: 0, y: 0 };
-            this.inSelection = true;
-        }
-    }
-
-    private checkArrowKeyDown(event: KeyboardEvent): void {
-        if (this.inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = true;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = true;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = true;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = true;
-            }
-        }
-    }
-
-    private onMoveArrows(): void {
-        if (this.leftArrow || this.upArrow || this.rightArrow || this.downArrow) {
-            this.positionArrows();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
-        }
-    }
-
-    private positionArrows(): void {
-        if (this.leftArrow) {
-            this.topLeftHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.upArrow) {
-            this.topLeftHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.rightArrow) {
-            this.topLeftHandler.x += Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.downArrow) {
-            this.topLeftHandler.y += Globals.N_PIXELS_DEPLACEMENT;
-        }
-    }
-
-    private checkArrowKeyUp(event: KeyboardEvent): void {
-        if (this.inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = false;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = false;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = false;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = false;
-            }
-        }
-    }
-
-    // calcul position des 8 handlers
-    setHandlersPositions(topLeft: Vec2): void {
-        const bottomRight = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
-        this.handlersPositions = [];
-        // coin haut gauche
-        this.handlersPositions.push(topLeft);
-        // centre haut
-        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: topLeft.y });
-        // coin haut droite
-        this.handlersPositions.push({ x: bottomRight.x, y: topLeft.y });
-        // centre droite
-        this.handlersPositions.push({ x: bottomRight.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
-        // coin bas droite
-        this.handlersPositions.push(bottomRight);
-        // centre bas
-        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: bottomRight.y });
-        // coin bas gauche
-        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y });
-        // centre gauche
-        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
     }
 }

@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 
 @Component({
@@ -35,18 +35,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
-    selectionBox: { [key: string]: string };
     cursor: { [key: string]: string };
-    handler0: { [key: string]: string };
-    handler1: { [key: string]: string };
-    handler2: { [key: string]: string };
-    handler3: { [key: string]: string };
-    handler4: { [key: string]: string };
-    handler5: { [key: string]: string };
-    handler6: { [key: string]: string };
-    handler7: { [key: string]: string };
 
-    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
+    constructor(
+        private drawingService: DrawingService,
+        private colorService: ColorService,
+        private controller: ToolControllerService,
+        public selectionBoxLayout: SelectionBoxService,
+    ) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
 
@@ -183,67 +179,26 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    // A deplacer dans service
     drawSelectionBox(): boolean {
         if (this.controller.selectionService.inSelection) {
-            this.selectionBox = {
-                height: this.controller.selectionService.selectedArea.height + 'px',
-                width: this.controller.selectionService.selectedArea.width + 'px',
-                border: '2px solid blue',
-                position: 'absolute',
-                left: this.controller.selectionService.topLeftHandler.x + 1 + 'px',
-                top: this.controller.selectionService.topLeftHandler.y + 1 + 'px',
-            };
+            this.selectionBoxLayout.drawSelectionBox(
+                this.controller.selectionService.topLeftHandler,
+                this.controller.selectionService.selectedArea.width,
+                this.controller.selectionService.selectedArea.height,
+            );
             return true;
         }
         return false;
     }
 
-    // afficher handlers
-    // A deplacer dans service
     drawHandlers(): boolean {
         if (this.controller.selectionService.inSelection) {
-            this.controller.selectionService.setHandlersPositions(this.controller.selectionService.topLeftHandler);
-            this.handler0 = {
-                left: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.TOP_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'nw-resize',
+            const bottomRight = {
+                x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
+                y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
             };
-            this.handler1 = {
-                left: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.TOP_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'n-resize',
-            };
-            this.handler2 = {
-                left: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.TOP_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'ne-resize',
-            };
-            this.handler3 = {
-                left: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'e-resize',
-            };
-            this.handler4 = {
-                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'nw-resize',
-            };
-            this.handler5 = {
-                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'n-resize',
-            };
-            this.handler6 = {
-                left: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'ne-resize',
-            };
-            this.handler7 = {
-                left: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-                top: this.controller.selectionService.handlersPositions[Globals.LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-                cursor: 'e-resize',
-            };
+            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.topLeftHandler, bottomRight);
+            this.selectionBoxLayout.drawHandlers();
             return true;
         } else {
             return false;
