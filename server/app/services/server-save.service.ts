@@ -20,20 +20,26 @@ export class ServerSaveService {
 
     createCanvasInformation(metadata: Metadata[]): CanvasInformation[] {
         const information: CanvasInformation[] = new Array(metadata.length);
-
+        let j = 0;
+        console.log(metadata);
         for (let i = 0; i < metadata.length; i++) {
             if (fs.existsSync(metadata[i].codeID + '.' + metadata[i].format)) {
-                information[i] = {} as CanvasInformation;
-                information[i].imageData = fs.readFileSync(metadata[i].codeID + '.' + metadata[i].format, 'base64');
+                information[j] = {} as CanvasInformation;
+                information[j].imageData = fs.readFileSync(metadata[i].codeID + '.' + metadata[i].format, 'base64');
                 console.log('test');
 
-                information[i].name = metadata[i].name;
-                information[i].codeID = metadata[i].codeID.toHexString();
-                information[i].height = metadata[i].height;
-                information[i].tags = metadata[i].tags;
-                information[i].width = metadata[i].width;
-                information[i].format = metadata[i].format;
+                information[j].name = metadata[i].name;
+                information[j].codeID = metadata[i].codeID.toHexString();
+                information[j].height = metadata[i].height;
+                information[j].tags = metadata[i].tags;
+                information[j].width = metadata[i].width;
+                information[j].format = metadata[i].format;
+                j++;
             }
+        }
+
+        for (; j < metadata.length; j++) {
+            information.pop();
         }
 
         return information;

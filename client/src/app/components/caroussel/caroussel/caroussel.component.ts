@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
@@ -8,21 +8,15 @@ const nombreImagePair = 2;
     templateUrl: './caroussel.component.html',
     styleUrls: ['./caroussel.component.scss'],
 })
-export class CarousselComponent {
+export class CarousselComponent implements AfterViewInit {
+    @ViewChild('owlCar') owlCar: CarouselComponent;
     currentTag: string;
-    fileName: string;
+
     constructor(public carouselService: CarouselService) {
         this.resetOptions();
     }
     customOptions: OwlOptions;
-    @ViewChild('owlCar') owlCar: CarouselComponent;
-    slides: string[] = [
-        '../../../SavedCanvas/dessin1.jpeg',
-        '../../../SavedCanvas/dessin2.jpeg',
-        '../../../SavedCanvas/dessin3.jpeg',
-        '../../../SavedCanvas/dessin4.jpeg',
-        '../../../SavedCanvas/dessin5.jpeg',
-    ];
+
     resetOptions(): void {
         this.customOptions = {
             loop: true,
@@ -34,32 +28,37 @@ export class CarousselComponent {
             pullDrag: true,
             margin: 20,
 
-            dots: true,
+            dots: false,
             navSpeed: 600,
-            navText: ['&#8249', '&#8250;'],
-            center: this.slides.length % nombreImagePair === 0 ? false : true,
-            items: this.slides.length >= nombreImage ? nombreImage : this.slides.length,
-            autoWidth: true,
+
+            center: this.carouselService.pictures.length % nombreImagePair === 0 ? false : true,
+            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length,
+            autoWidth: false,
 
             responsive: { 0: { items: 3 }, 400: { items: 3 }, 740: { items: 3 }, 960: { items: 3 } },
-            nav: true,
+            // I disactivate the provided nav because it doesnt work if the number of items is equal to amount of images
+            nav: false,
         };
     }
+
+    ngAfterViewInit(): void {
+        this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
+        this.resetOptions();
+    }
+
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'ArrowRight') {
             // Very useful for when im gonna have to do the update
+
             this.owlCar.next();
-            this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
-            this.slides = [];
+            this.resetOptions();
+
             // for (let i = 0; i < this.slides.length - 1; i++) {
             //   this.slides.pop();
             // }
-            this.slides[0] = '../../../SavedCanvas/dessin1.jpeg';
-            this.slides[1] = '../../../SavedCanvas/dessin1.jpeg';
 
             console.log(this.owlCar.slidesData);
-            console.log(this.slides);
 
             this.customOptions.center = false;
             //  this.resetOptions();

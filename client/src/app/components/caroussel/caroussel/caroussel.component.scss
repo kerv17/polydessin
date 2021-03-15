@@ -64,11 +64,31 @@
 .delete {
     display: flex;
     position: relative;
-    margin-top: 60px;
+
     margin-bottom: 20px;
 
     z-index: 2;
 }
 .delete:hover {
-    cursor: col-resize;
+    cursor: pointer;
+}
+.button {
+    text-align: center;
+    margin-top: 60px;
+    z-index: 3;
+}
+
+.left {
+    position: relative;
+    margin-right: 40px;
+    scale: 1.5;
+}
+.right {
+    position: relative;
+
+    margin-left: 10px;
+    scale: 1.5;
+}
+.info {
+    z-index: 0;
 }
