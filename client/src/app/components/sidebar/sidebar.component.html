@@ -108,6 +108,10 @@
                 tabindex="0"
             />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton sauvegarde le dessin sur le serveur. Le raccourci est 'Ctrl+s'</div>
+            <img src="../../../assets/save.png" class="function" (click)="openSave()" tabindex="0" />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
@@ -136,5 +140,8 @@
     </div>
     <div *ngIf="carouselService.showCarousel">
         <app-caroussel></app-caroussel>
+    </div>
+    <div *ngIf="remoteSaveService.showModalSave">
+        <app-remote-save></app-remote-save>
     </div>
 </div>

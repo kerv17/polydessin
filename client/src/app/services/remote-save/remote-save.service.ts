@@ -16,7 +16,8 @@ export class RemoteSaveService {
                                 format:"png",
                                 width:this.drawingService.canvas.width,
                                 height:this.drawingService.canvas.height,
-                                imageData:data}as CanvasInformation);
+                                imageData:data}as CanvasInformation).subscribe();
+      
   }
 }
 

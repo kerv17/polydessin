@@ -5,6 +5,7 @@ import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
 
@@ -39,6 +40,7 @@ export class SidebarComponent {
         public exportService: ExportService,
         public carouselService: CarouselService,
         private undoRedoService: UndoRedoService,
+        public remoteSaveService: RemoteSaveService,
     ) {
         this.colorService.resetColorValues();
         this.toolcontroller.resetWidth();
@@ -71,6 +73,9 @@ export class SidebarComponent {
     }
     openCarousel(): void {
         this.carouselService.showCarousel = true;
+    }
+    openSave(): void {
+        this.remoteSaveService.showModalSave = true;
     }
     openSelection(): void {
         this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);

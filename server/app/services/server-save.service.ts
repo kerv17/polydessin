@@ -1,5 +1,5 @@
+import * as fs from 'fs';
 import { injectable } from 'inversify';
-
 @injectable()
 export class ServerSaveService {
     constructor() {}
@@ -7,12 +7,12 @@ export class ServerSaveService {
 
     saveImage(type: string, name: string,data:string): void {
         if (type != undefined && name !== '') {
-            
-                const a = document.createElement('a');
-                a.href=data;
-                a.download = name;
-                document.body.appendChild(a);
-                a.click();
+            const base64Data= data.replace(/^data:image\/(png|jpg);base64,/, "");
+            fs.writeFile('./'+name+'.'+type, base64Data, 'base64',function (err) {
+              if (err) return console.log(err);
+              console.log(name);
+            });    
+             
         }
     }
 }

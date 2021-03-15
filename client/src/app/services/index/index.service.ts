@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Metadata } from '@app/Constants/constants';
+import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CanvasInformation } from '@common/communication/canvas-information';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +19,8 @@ export class IndexService {
     }
 
     basicPost(info: CanvasInformation): Observable<CanvasInformation> {
-        return this.http.post<CanvasInformation>(this.BASE_URL + '/send', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
+        debugger
+        return this.http.post<CanvasInformation>(this.BASE_URL + '/', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
     }
 
     basicDelete(message: string): Observable<Message> {

@@ -80,14 +80,19 @@ export class MetadataService {
 
     async addMetadata(information: CanvasInformation): Promise<void> {
         //parse pour appeler sauvegarde et cree objet data(avec code unique)
+        
         let data: Metadata= {codeID: new ObjectId(),
                              name:information.name, 
                              tags:information.tags,
                              height:information.height,
                              width:information.width} as Metadata;
+                             console.log("arriver");
         if (this.validateMetadata(data)) {
+            //console.log("arriver3");
             this.serverSaveService.saveImage(information.format,data.codeID.toHexString(),information.imageData);
+            console.log("arriver2");
             await this.collection.insertOne(data).catch((error: Error) => {
+                console.log("arriver3");
                 throw new HttpException(500, 'Failed to insert metadata');
             })
             .catch((error: Error) => {
