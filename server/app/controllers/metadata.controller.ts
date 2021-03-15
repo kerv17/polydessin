@@ -11,7 +11,10 @@ import { TYPES } from '../types';
 export class MetadataController {
     router: Router;
 
-    constructor(@inject(TYPES.MetadataService) private metadataService: MetadataService,@inject(TYPES.ServerSaveService)private serverSaveService:ServerSaveService) {
+    constructor(
+        @inject(TYPES.MetadataService) private metadataService: MetadataService,
+        @inject(TYPES.ServerSaveService) private serverSaveService: ServerSaveService,
+    ) {
         this.configureRouter();
     }
 
@@ -22,7 +25,8 @@ export class MetadataController {
             this.metadataService
                 .getAllMetadata()
                 .then((metadata: Metadata[]) => {
-                    let information =this.serverSaveService.createCanvasInformation(metadata);
+                    const information = this.serverSaveService.createCanvasInformation(metadata);
+                    console.log('here');
                     res.json(information);
                 })
                 .catch((error: Error) => {

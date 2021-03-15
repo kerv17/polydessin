@@ -12,13 +12,13 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor( private router: Router, public carouselSerivce: CarouselService) {}
+    constructor(private router: Router, public carouselSerivce: CarouselService) {}
 
     goToEditor(): void {
         this.router.navigate(['/editor']);
     }
     openCarousel(): void {
-        this.carouselSerivce.showCarousel = true;
+        this.carouselSerivce.initialiserCarousel();
     }
 
     verifDessinExistant(): boolean {

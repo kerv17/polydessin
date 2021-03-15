@@ -14,7 +14,10 @@ const MIN_SIZE_TAG = 4;
 
 @injectable()
 export class MetadataService {
-    constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService,@inject(TYPES.ServerSaveService)private serverSaveService:ServerSaveService) {}
+    constructor(
+        @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
+        @inject(TYPES.ServerSaveService) private serverSaveService: ServerSaveService,
+    ) {}
 
     get collection(): Collection<Metadata> {
         return this.databaseService.database.collection(DATABASE_COLLECTION);
@@ -25,14 +28,13 @@ export class MetadataService {
             .find({})
             .toArray()
             .then((metadata: Metadata[]) => {
-                
                 return metadata;
             });
     }
 
     async getMetadataByCode(aCode: string): Promise<Metadata> {
         // TODO: This can return null if the metadata does not exist, need to handle it
-        return this.collection.findOne({ code: new ObjectId (aCode) }).then((metadata: Metadata) => {
+        return this.collection.findOne({ code: new ObjectId(aCode) }).then((metadata: Metadata) => {
             return metadata;
         });
     }
@@ -81,24 +83,29 @@ export class MetadataService {
 
     async addMetadata(information: CanvasInformation): Promise<void> {
         //parse pour appeler sauvegarde et cree objet data(avec code unique)
-        
-        let data: Metadata= {codeID: new ObjectId(),
-                             name:information.name, 
-                             tags:information.tags,
-                             height:information.height,
-                             width:information.width} as Metadata;
-                             console.log("arriver");
+
+        let data: Metadata = {
+            codeID: new ObjectId(),
+            name: information.name,
+            tags: information.tags,
+            height: information.height,
+            format: information.format,
+            width: information.width,
+        } as Metadata;
+        console.log('arriver');
         if (this.validateMetadata(data)) {
             //console.log("arriver3");
-            this.serverSaveService.saveImage(information.format,data.codeID.toHexString(),information.imageData);
-            console.log("arriver2");
-            await this.collection.insertOne(data).catch((error: Error) => {
-                console.log("arriver3");
-                throw new HttpException(500, 'Failed to insert metadata');
-            })
-            .catch((error: Error) => {
-                throw new Error(error.message);
-            });
+            this.serverSaveService.saveImage(information.format, data.codeID.toHexString(), information.imageData);
+            console.log('arriver2');
+            await this.collection
+                .insertOne(data)
+                .catch((error: Error) => {
+                    console.log('arriver3');
+                    throw new HttpException(500, 'Failed to insert metadata');
+                })
+                .catch((error: Error) => {
+                    throw new Error(error.message);
+                });
         } else {
             throw new Error('Invalid metadata');
         }

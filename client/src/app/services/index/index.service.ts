@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Metadata } from '@app/Constants/constants';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -14,12 +13,11 @@ export class IndexService {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<Metadata[]> {
-        return this.http.get<Metadata[]>(this.BASE_URL).pipe(catchError(this.handleError<Metadata[]>('basicGet')));
+    basicGet(): Observable<CanvasInformation[]> {
+        return this.http.get<CanvasInformation[]>(this.BASE_URL).pipe(catchError(this.handleError<CanvasInformation[]>('basicGet')));
     }
 
     basicPost(info: CanvasInformation): Observable<CanvasInformation> {
-        debugger
         return this.http.post<CanvasInformation>(this.BASE_URL + '/', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
     }
 

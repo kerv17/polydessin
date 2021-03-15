@@ -72,7 +72,7 @@ export class SidebarComponent {
         this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
     }
     openCarousel(): void {
-        this.carouselService.showCarousel = true;
+        this.carouselService.initialiserCarousel();
     }
     openSave(): void {
         this.remoteSaveService.showModalSave = true;
