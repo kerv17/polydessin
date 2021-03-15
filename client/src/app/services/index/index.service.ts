@@ -4,6 +4,7 @@ import { Metadata } from '@app/Constants/constants';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { CanvasInformation } from '@common/communication/canvas-information';
 
 @Injectable({
     providedIn: 'root',
@@ -17,8 +18,8 @@ export class IndexService {
         return this.http.get<Metadata[]>(this.BASE_URL).pipe(catchError(this.handleError<Metadata[]>('basicGet')));
     }
 
-    basicPost(message: Message): Observable<void> {
-        return this.http.post<void>(this.BASE_URL + '/send', message).pipe(catchError(this.handleError<void>('basicPost')));
+    basicPost(info: CanvasInformation): Observable<CanvasInformation> {
+        return this.http.post<CanvasInformation>(this.BASE_URL + '/send', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
     }
 
     basicDelete(message: string): Observable<Message> {

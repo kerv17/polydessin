@@ -4,11 +4,12 @@ import { MetadataController } from '@app/controllers/metadata.controller';
 import { DateService } from '@app/services/date.service';
 import { IndexService } from '@app/services/index.service';
 import { MetadataService } from '@app/services/metadata.service';
-import { DatabaseService } from "./services/database.service";
+import { TYPES } from '@app/types';
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
-import { TYPES } from '@app/types';
+import { DatabaseService } from "./services/database.service";
+import { ServerSaveService } from "./services/server-save.service";
 
 export const containerBootstrapper: () => Promise<Container> = async () => {
     const container: Container = new Container();
@@ -23,6 +24,8 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.DateService).to(DateService);
     
     container.bind(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
+
+    container.bind(TYPES.ServerSaveService).to(ServerSaveService).inSingletonScope();
 
     container.bind(TYPES.MetadataController).to(MetadataController);
     container.bind(TYPES.MetadataService).to(MetadataService);
