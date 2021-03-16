@@ -8,8 +8,9 @@ import { TYPES } from '@app/types';
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
-import { DatabaseService } from "./services/database.service";
-import { ServerSaveService } from "./services/server-save.service";
+import { DataAccessService } from './services/data-access.service';
+import { DatabaseService } from './services/database.service';
+import { ServerSaveService } from './services/server-save.service';
 
 export const containerBootstrapper: () => Promise<Container> = async () => {
     const container: Container = new Container();
@@ -29,6 +30,8 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
 
     container.bind(TYPES.MetadataController).to(MetadataController);
     container.bind(TYPES.MetadataService).to(MetadataService);
+
+    container.bind( TYPES.DataAccessService).to(DataAccessService);
 
     return container;
 };

@@ -1,6 +1,7 @@
+import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
+import { DataAccessService } from 'app/services/data-access.service';
 import { MetadataService } from 'app/services/metadata.service';
-import { ServerSaveService } from 'app/services/server-save.service';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
@@ -13,7 +14,7 @@ export class MetadataController {
 
     constructor(
         @inject(TYPES.MetadataService) private metadataService: MetadataService,
-        @inject(TYPES.ServerSaveService) private serverSaveService: ServerSaveService,
+        @inject(TYPES.DataAccessService) private dataAccessService: DataAccessService,
     ) {
         this.configureRouter();
     }
@@ -22,11 +23,9 @@ export class MetadataController {
         this.router = Router();
 
         this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .getAllMetadata()
-                .then((metadata: Metadata[]) => {
-                    const information = this.serverSaveService.createCanvasInformation(metadata);
-                    console.log('here');
+            this.dataAccessService
+                .getAllData()
+                .then((information: CanvasInformation[]) => {
                     res.json(information);
                 })
                 .catch((error: Error) => {
@@ -42,7 +41,7 @@ export class MetadataController {
             //   res.status(Httpstatus.NOT_FOUND).send(error.message);
             // }
         });
-
+        // TODO verifier si necessaire
         this.router.get('/:code', async (req: Request, res: Response, next: NextFunction) => {
             this.metadataService
                 .getMetadataByCode(req.params.code)
@@ -53,7 +52,7 @@ export class MetadataController {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);
                 });
         });
-
+        // TODO verifier si necessaire
         this.router.get('/:name', async (req: Request, res: Response, next: NextFunction) => {
             this.metadataService
                 .getMetadataByName(req.params.name)
@@ -76,8 +75,8 @@ export class MetadataController {
         });
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .addMetadata(req.body)
+            this.dataAccessService
+                .addData(req.body)
                 .then(() => {
                     res.sendStatus(Httpstatus.CREATED).send();
                 })
@@ -98,8 +97,8 @@ export class MetadataController {
         });
 
         this.router.delete('/:code', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .deleteMetadata(req.params.code)
+            this.dataAccessService
+                .deleteData(req.params.code)
                 .then(() => {
                     const msg: Message = req.body;
                     msg.title = "L'image a ete supprimer";
