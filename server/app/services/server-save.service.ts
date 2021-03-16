@@ -1,5 +1,4 @@
 import { CanvasInformation } from '@common/communication/canvas-information';
-import { ObjectId } from 'bson';
 import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Metadata } from '../classes/metadata';
@@ -18,7 +17,7 @@ export class ServerSaveService {
             });
         }
     }
-    deleteCanvasInformation(canvaToDelete: ObjectId): void{
+    deleteCanvasInformation(canvaToDelete: string): void{
         if (fs.existsSync(canvaToDelete + '.png')) {
             try{
                 fs.unlinkSync(canvaToDelete + '.png');

@@ -1,13 +1,11 @@
 import { TYPES } from '@app/types';
-import { CanvasInformation } from '@common/communication/canvas-information';
 import { inject, injectable } from 'inversify';
 import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, ObjectId, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
 import { DatabaseService } from './database.service';
-import { ServerSaveService } from './server-save.service';
-// CHANGE the URL for your database information
+
 const DATABASE_COLLECTION = 'metadata';
 const MAX_SIZE_TAG = 20;
 const MIN_SIZE_TAG = 4;
@@ -16,7 +14,6 @@ const MIN_SIZE_TAG = 4;
 export class MetadataService {
     constructor(
         @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
-        @inject(TYPES.ServerSaveService) private serverSaveService: ServerSaveService,
     ) {}
 
     get collection(): Collection<Metadata> {
@@ -81,21 +78,13 @@ export class MetadataService {
     }
     // TODO getMetadataByNameAndTags
 
-    async addMetadata(information: CanvasInformation): Promise<void> {
+    async addMetadata(metadata: Metadata): Promise<void> {
         //parse pour appeler sauvegarde et cree objet data(avec code unique)
 
-        let data: Metadata = {
-            codeID: new ObjectId(),
-            name: information.name,
-            tags: information.tags,
-            height: information.height,
-            format: information.format,
-            width: information.width,
-        } as Metadata;
-        if (this.validateMetadata(data)) {
-            this.serverSaveService.saveImage(information.format, data.codeID.toHexString(), information.imageData);
+       
+        if (this.validateMetadata(metadata)) {
             await this.collection
-                .insertOne(data)
+                .insertOne(metadata)
                 .catch((error: Error) => {
                     throw new HttpException(500, 'Failed to insert metadata');
                 })

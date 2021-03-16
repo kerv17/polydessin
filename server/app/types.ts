@@ -9,4 +9,5 @@ export const TYPES = {
     DatabaseService: Symbol("DatabaseService"),
     MetadataService: Symbol("MetadataService"),
     ServerSaveService: Symbol("ServerSaveService"),
+    DataAccessService: Symbol("DataAccessService"),
 };
