@@ -28,7 +28,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
-
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
@@ -46,6 +45,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
+        window.alert('test2');
     }
 
     ngAfterViewInit(): void {
@@ -128,8 +128,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     onMouseEnter(event: MouseEvent): void {
         this.controller.currentTool.onMouseEnter(event);
     }
-
-
 
     get width(): number {
         return this.canvasSize.x;

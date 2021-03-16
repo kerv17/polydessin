@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
@@ -10,7 +11,7 @@ export class CarouselService {
     showCarousel: boolean = false;
     pictures: CanvasInformation[] = [];
 
-    constructor(private indexService: IndexService, private drawingService: DrawingService) {}
+    constructor(private indexService: IndexService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
         this.showCarousel = false;
@@ -46,8 +47,11 @@ export class CarouselService {
         }
     }
     loadCanvas(info: CanvasInformation): void {
-        this.drawingService.loadOldCanvas(info);
-        this.close();
+        this.router.navigate(['/editor']).then((x) => {
+            window.alert('test');
+            this.drawingService.loadOldCanvas(info);
+            this.close();
+        });
     }
     initialiserCarousel(): void {
         this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
