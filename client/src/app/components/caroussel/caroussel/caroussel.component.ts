@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
-const nombreImagePair = 2;
+//const nombreImagePair = 2;
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
@@ -31,8 +31,8 @@ export class CarousselComponent implements AfterViewInit {
             dots: false,
             navSpeed: 600,
 
-            center: this.carouselService.pictures.length % nombreImagePair === 0 ? false : true,
-            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length,
+            center: true,
+            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1,
             autoWidth: false,
 
             responsive: { 0: { items: 3 }, 400: { items: 3 }, 740: { items: 3 }, 960: { items: 3 } },
@@ -42,7 +42,7 @@ export class CarousselComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
+        // this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
         this.resetOptions();
     }
 
@@ -60,7 +60,6 @@ export class CarousselComponent implements AfterViewInit {
 
             console.log(this.owlCar.slidesData);
 
-            this.customOptions.center = false;
             //  this.resetOptions();
         } else if (event.key === 'ArrowLeft') this.owlCar.prev();
     }

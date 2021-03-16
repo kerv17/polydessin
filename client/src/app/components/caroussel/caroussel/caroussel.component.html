@@ -5,7 +5,7 @@
         <div class="carouselContainer">
             <owl-carousel-o id="carousel" [options]="customOptions" #owlCar>
                 <ng-container *ngFor="let slide of carouselService.pictures" class="container">
-                    <ng-template carouselSlide [id]="slide.codeID">
+                    <ng-template carouselSlide>
                         <div>
                             <img class="carousel" (click)="carouselService.test(slide.codeID)" [src]="slide.imageData" alt="test" />
                         </div>
