@@ -88,46 +88,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    @HostListener('mousemove', ['$event'])
-    onMouseMove(event: MouseEvent): void {
-        this.controller.currentTool.color = this.colorService.primaryColor;
-        this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        this.controller.currentTool.onMouseMove(event);
-    }
-
-    @HostListener('mousedown', ['$event'])
-    onMouseDown(event: MouseEvent): void {
-        this.controller.currentTool.color = this.colorService.primaryColor;
-        this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        this.controller.currentTool.onMouseDown(event);
-    }
-
-    @HostListener('document:mouseup', ['$event'])
-    onMouseUp(event: MouseEvent): void {
-        this.controller.currentTool.onMouseUp(event);
-        this.controller.currentTool.color = this.colorService.primaryColor;
-        this.controller.currentTool.color2 = this.colorService.secondaryColor;
-    }
-
-    @HostListener('click', ['$event'])
-    onClick(event: MouseEvent): void {
-        this.controller.currentTool.onClick(event);
-    }
-
-    @HostListener('dblclick', ['$event'])
-    ondbClick(event: MouseEvent): void {
-        this.controller.currentTool.ondbClick(event);
-    }
-
-    @HostListener('mouseleave', ['$event'])
-    onMouseLeave(event: MouseEvent): void {
-        this.controller.currentTool.onMouseLeave(event);
-    }
-
-    @HostListener('mouseenter', ['$event'])
-    onMouseEnter(event: MouseEvent): void {
-        this.controller.currentTool.onMouseEnter(event);
-    }
 
 
 
