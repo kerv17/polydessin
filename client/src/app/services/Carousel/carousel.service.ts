@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
@@ -9,7 +10,7 @@ export class CarouselService {
     showCarousel: boolean = false;
     pictures: CanvasInformation[] = [];
 
-    constructor(private indexService: IndexService) {}
+    constructor(private indexService: IndexService, private drawingService: DrawingService) {}
 
     close(): void {
         this.showCarousel = false;
@@ -21,21 +22,33 @@ export class CarouselService {
     delete(activeSlides: SlideModel[] | undefined): void {
         if (activeSlides != undefined) {
             const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
+
             if (confirm('Voulez-vous supprimez ce dessin')) {
-                this.indexService.basicDelete(selectedSlide.id).subscribe((x) => window.alert(x.title));
+                this.indexService.basicDelete(selectedSlide.id).subscribe((x) => {
+                    if (x != undefined) {
+                        window.alert(x.title);
+                    } else {
+                        window.alert('Connexion impossible avec le serveur');
+                        this.close();
+                    }
+                });
                 this.removeCanvasInformation(selectedSlide.id);
             }
         }
     }
     removeCanvasInformation(codeID: string): void {
-        for (let elem of this.pictures) {
-            if (elem.codeID === codeID) {
-                elem = this.pictures[this.pictures.length - 1];
+        for (let i = 0; i < this.pictures.length; i++) {
+            if (this.pictures[i].codeID === codeID) {
+                this.pictures[i] = this.pictures[this.pictures.length - 1];
+
                 this.pictures.pop();
             }
         }
     }
-
+    loadCanvas(info: CanvasInformation): void {
+        this.drawingService.loadOldCanvas(info);
+        this.close();
+    }
     initialiserCarousel(): void {
         this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
             // this.pictures = new Array(x.length);

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-
+import { CanvasInformation } from '@common/communication/canvas-information';
 @Injectable({
     providedIn: 'root',
 })
@@ -54,17 +54,27 @@ export class DrawingService {
                 return;
             }
         }
-        this.canvas.height = newCanvasSize.y;
-        this.canvas.width = newCanvasSize.x;
-
-        this.previewCanvas.height = newCanvasSize.y;
-        this.previewCanvas.width = newCanvasSize.x;
+        this.setCanvassSize(newCanvasSize);
         this.clearCanvas(this.previewCtx);
-        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
+    loadOldCanvas(oldCanvas: CanvasInformation): void {
+        const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
+        this.setCanvassSize(newSize);
+        const image = new Image();
+        image.src = oldCanvas.imageData;
+        this.baseCtx.drawImage(image, 0, 0);
+    }
 
+    setCanvassSize(newCanvasSize: Vec2): void {
+        this.canvas.height = newCanvasSize.y;
+        this.canvas.width = newCanvasSize.x;
+        this.previewCanvas.height = newCanvasSize.y;
+        this.previewCanvas.width = newCanvasSize.x;
+        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+    }
     resetCanvas(): void {
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);

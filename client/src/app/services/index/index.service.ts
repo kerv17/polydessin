@@ -22,10 +22,8 @@ export class IndexService {
     }
 
     basicDelete(message: string): Observable<Message> {
-        const test = this.http.delete<Message>(this.BASE_URL + '/' + message);
+        return this.http.delete<Message>(this.BASE_URL + '/' + message).pipe(catchError(this.handleError<Message>('basicDelete')));
         // Cette étape transforme le Message en un seul string
-
-        return test;
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
