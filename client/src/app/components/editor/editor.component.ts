@@ -1,7 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { ResizedEvent } from 'angular-resize-event';
 @Component({
     selector: 'app-editor',
@@ -14,7 +16,7 @@ export class EditorComponent {
     editorSizeY: number;
     editorSizeX: number;
 
-    constructor(public drawingService: DrawingService) {
+    constructor(public drawingService: DrawingService, public controller: ToolControllerService, public colorService: ColorService) {
         this.sizeCanvasOnReset = this.drawingService.setSizeCanva();
         this.drawingService.resizePoint.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
@@ -45,6 +47,7 @@ export class EditorComponent {
         this.drawingService.resizePoint.mouseDown = true;
         this.drawingService.resizePoint.resizerId = pos;
     }
+
     @HostListener('mousemove', ['$event'])
     mouseMoveHandler(event: MouseEvent): void {
         switch (this.drawingService.resizePoint.resizerId) {
@@ -58,6 +61,48 @@ export class EditorComponent {
                 this.drawingService.resizePoint.mouseMoveHandlerRight(event);
                 break;
         }
+    }
+
+    @HostListener('mousemove', ['$event'])
+    onMouseMove(event: MouseEvent): void {
+        this.controller.currentTool.color = this.colorService.primaryColor;
+        this.controller.currentTool.color2 = this.colorService.secondaryColor;
+        this.controller.currentTool.onMouseMove(event);
+        console.log('drawing-component mouseMove');
+    }
+
+    @HostListener('mousedown', ['$event'])
+    onMouseDown(event: MouseEvent): void {
+        this.controller.currentTool.color = this.colorService.primaryColor;
+        this.controller.currentTool.color2 = this.colorService.secondaryColor;
+        this.controller.currentTool.onMouseDown(event);
+    }
+
+    @HostListener('document:mouseup', ['$event'])
+    onMouseUp(event: MouseEvent): void {
+        this.controller.currentTool.onMouseUp(event);
+        this.controller.currentTool.color = this.colorService.primaryColor;
+        this.controller.currentTool.color2 = this.colorService.secondaryColor;
+    }
+
+    @HostListener('click', ['$event'])
+    onClick(event: MouseEvent): void {
+        this.controller.currentTool.onClick(event);
+    }
+
+    @HostListener('dblclick', ['$event'])
+    ondbClick(event: MouseEvent): void {
+        this.controller.currentTool.ondbClick(event);
+    }
+
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.controller.currentTool.onMouseLeave(event);
+    }
+
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(event: MouseEvent): void {
+        this.controller.currentTool.onMouseEnter(event);
     }
 
     @HostListener('mouseup', ['$event'])

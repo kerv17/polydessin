@@ -1,6 +1,7 @@
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { Vec2 } from './vec2';
+import * as Globals from '@app/Constants/constants';
 
 // Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
 // tslint:disable:no-empty
@@ -39,17 +40,9 @@ export abstract class Tool {
     onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
-        let mousePosition = { x: event.offsetX, y: event.offsetY };
-        if (this.mouseDown) {
-            if (mousePosition.x > this.drawingService.canvas.width && mousePosition.y > this.drawingService.canvas.height) {
-                mousePosition = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
-            } else if (mousePosition.x > this.drawingService.canvas.width) {
-                mousePosition = { x: this.drawingService.canvas.width, y: mousePosition.y };
-            } else if (mousePosition.y > this.drawingService.canvas.height) {
-                mousePosition = { x: mousePosition.x, y: this.drawingService.canvas.height };
-            }
-        }
-        return mousePosition;
+        console.log(event.y);
+        return { x: event.screenX - Globals.SIDEBAR_WIDTH, y: event.screenY -135};
+
     }
 
     clearPath(): void {
