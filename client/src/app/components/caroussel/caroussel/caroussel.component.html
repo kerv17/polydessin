@@ -5,7 +5,7 @@
         <div class="carouselContainer">
             <owl-carousel-o id="carousel" [options]="customOptions" #owlCar>
                 <ng-container *ngFor="let slide of carouselService.pictures" class="container">
-                    <ng-template carouselSlide>
+                    <ng-template carouselSlide [id]="slide.codeID">
                         <div>
                             <img class="carousel" (click)="carouselService.test(slide.codeID)" [src]="slide.imageData" alt="test" />
                         </div>
@@ -20,7 +20,9 @@
             <button class="left" (click)="this.owlCar.prev()">&#8249;</button>
             <button class="right" (click)="this.owlCar.next()">&#8250;</button>
         </div>
-        <button class="delete" (click)="carouselService.delete()">Delete selected canvas</button>
-        <input [(ngModel)]="currentTag" />
+        <div class="carouselActions">
+            <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Delete selected canvas</button>
+            <input [(ngModel)]="currentTag" />
+        </div>
     </div>
 </div>

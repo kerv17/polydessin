@@ -61,14 +61,7 @@
     min-width: 200px;
     min-height: 400px;
 }
-.delete {
-    display: flex;
-    position: relative;
 
-    margin-bottom: 20px;
-
-    z-index: 2;
-}
 .delete:hover {
     cursor: pointer;
 }
@@ -83,6 +76,10 @@
     margin-right: 40px;
     scale: 1.5;
 }
+.left:hover,
+.right:hover {
+    cursor: pointer;
+}
 .right {
     position: relative;
 
@@ -91,4 +88,7 @@
 }
 .info {
     z-index: 0;
+}
+.carouselAction {
+    text-align: center;
 }
