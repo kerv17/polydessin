@@ -62,8 +62,13 @@ export class DrawingService {
         this.clearCanvas(this.previewCtx);
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
         this.baseCtx.fillStyle = 'white';
-
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    resetCanvas(): void {
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.clearCanvas(this.previewCtx);
     }
 
     canvasNotEmpty(image: ImageData): boolean {

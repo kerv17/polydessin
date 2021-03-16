@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
+import {AerosolService} from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -15,13 +16,13 @@ export class ToolControllerService {
     private escapeIsDown: boolean = false;
     private backspaceIsDown: boolean = false;
     focused: boolean = true;
-
     functionMap: Map<string, (event: KeyboardEvent) => void> = new Map();
     constructor(
         private pencilService: PencilService,
         private rectangleService: RectangleService,
         public lineService: LineService,
         private ellipsisService: EllipsisService,
+        private aerosolService: AerosolService,
         public selectionService: SelectionService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -44,6 +45,7 @@ export class ToolControllerService {
             .set(Globals.LINE_SHORTCUT, this.lineService)
             .set(Globals.RECTANGLE_SHORTCUT, this.rectangleService)
             .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService)
+            .set(Globals.AEROSOL_SHORTCUT, this.aerosolService)
             .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.selectionService);
 
         this.functionMap
@@ -64,6 +66,7 @@ export class ToolControllerService {
     }
 
     setTool(shortcut: string): void {
+        this.currentTool.clearPreviewCtx();
         const tempTool: Tool | undefined = this.toolMap.get(shortcut);
         if (tempTool != undefined) this.currentTool = tempTool;
     }
@@ -109,13 +112,8 @@ export class ToolControllerService {
 
     private checkKeyEvent(event: KeyboardEvent): void {
         if (this.focused) {
-            if (this.toolMap.has(event.key)) {
-                this.setTool(event.key);
-                return;
-            } else {
-                this.functionMap.get(event.key)?.call(this, event);
-                return;
-            }
+            this.functionMap.get(event.key)?.call(this, event);
+            return;
         }
         return;
     }
@@ -124,6 +122,11 @@ export class ToolControllerService {
         Array.from(this.toolMap.values()).forEach((value) => (value.width = 1));
     }
 
+    getTool(toolShortcut: string): Tool {
+        if (this.toolMap.has(toolShortcut)) {
+            return this.toolMap.get(toolShortcut) as Tool;
+        } else return this.pencilService;
+    }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
     }

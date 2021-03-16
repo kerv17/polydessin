@@ -3,19 +3,25 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { CarousselComponent } from './components/caroussel/caroussel/caroussel.component';
 import { ColorModalComponent } from './components/color/color-modal/color-modal.component';
 import { ColorPaletteComponent } from './components/color/color-palette/color-palette.component';
 import { ColorSliderComponent } from './components/color/color-slider/color-slider.component';
 import { ColorComponent } from './components/color/color.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
+import { ExportComponent } from './components/export/export/export.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { PointWidthSliderComponent } from './components/point-width-slider/point-width-slider/point-width-slider.component';
+import { RadiusSliderComponent } from './components/radius-slider/radius-slider/radius-slider.component';
 import { LineOptionsComponent } from './components/sidebar/lineOptions/line-options/line-options.component';
 import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
 
@@ -34,9 +40,14 @@ import { ColorService } from './services/color/color.service';
         PointWidthSliderComponent,
         ShapeOptionsComponent,
         LineOptionsComponent,
+        CarousselComponent,
+        ExportComponent,
+        RadiusSliderComponent,
+        SprayAmountSliderComponent,
     ],
-    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule],
+    imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
     providers: [ColorService],
     bootstrap: [AppComponent],
+    exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })
 export class AppModule {}

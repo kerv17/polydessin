@@ -1,0 +1,16 @@
+<!--Code tiré pour le model window de  https://www.w3schools.com/howto/howto_css_modals.asp-->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="close" (click)="carouselService.close()">&times;</div>
+        <div class="carouselContainer">
+            <owl-carousel-o id="carousel" [options]="customOptions" class="test" #owlCar>
+                <ng-container *ngFor="let slide of slides" class="container">
+                    <ng-template carouselSlide>
+                        <img class="carousel" (click)="carouselService.test(slide)" [src]="slide" alt="test" />
+                    </ng-template>
+                </ng-container>
+            </owl-carousel-o>
+        </div>
+        <button class="delete" (click)="carouselService.delete()">Delete selected canvas</button>
+    </div>
+</div>

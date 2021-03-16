@@ -1,9 +1,12 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
@@ -11,15 +14,20 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 })
 export class SidebarComponent {
     showWidth: boolean = false;
+    showAerosol: boolean = false;
     fillBorder: boolean = false;
     showline: boolean = false;
+
     resetAttributes: boolean = false;
     crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    aerosol: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     selection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
     rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+    undo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
+    redo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
     functionMap: Map<string, () => void>;
 
     constructor(
@@ -27,14 +35,22 @@ export class SidebarComponent {
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
+        public exportService: ExportService,
+        public carouselService: CarouselService,
+        private undoRedoService: UndoRedoService,
     ) {
         this.openCrayon();
         this.colorService.resetColorValues();
         this.toolcontroller.resetWidth();
         this.functionMap = new Map();
         this.initMap();
-    }
 
+        addEventListener('undoRedoState', (event: CustomEvent) => {
+            this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
+            this.redo = event.detail[1] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
+        });
+    }
+    // TODO REFACTOR ALL TOOLS
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
@@ -67,6 +83,12 @@ export class SidebarComponent {
         this.ellipsis = Globals.BACKGROUND_GAINSBORO;
     }
 
+    openAerosol(): void {
+        this.toolcontroller.setTool(Globals.AEROSOL_SHORTCUT);
+        this.openTool(false, true);
+        this.showAerosol = true;
+        this.aerosol = Globals.BACKGROUND_GAINSBORO;
+    }
     selectCanvas(): void {
         this.openTool(false, false);
         this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
@@ -85,6 +107,7 @@ export class SidebarComponent {
         this.showWidth = showWidth;
         this.showline = showline;
         this.resetAttributes = !this.resetAttributes;
+        this.showAerosol = false;
         this.setButtonWhite();
         if (this.toolcontroller.selectionService.inSelection) {
             this.toolcontroller.selectionService.onEscape();
@@ -102,9 +125,17 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
+        if (this.exportService.showModalExport || this.carouselService.showCarousel) {
+            $event.stopImmediatePropagation();
+        } else if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
             $event.preventDefault();
+
             this.drawing.newCanvas();
+        } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
+            this.openExport();
+        } else if ($event.ctrlKey && $event.key === Globals.CAROUSEL_SHORTCUT) {
+            $event.preventDefault();
+            this.carouselService.openCarousel();
         } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
             $event.preventDefault();
             this.selectCanvas();
@@ -114,12 +145,16 @@ export class SidebarComponent {
             this.functionMap.get($event.key)?.call(this);
         }
     }
+    openExport(): void {
+        this.exportService.showModalExport = true;
+    }
 
     setButtonWhite(): void {
         this.crayon = Globals.BACKGROUND_WHITE;
         this.rectangle = Globals.BACKGROUND_WHITE;
         this.ellipsis = Globals.BACKGROUND_WHITE;
         this.line = Globals.BACKGROUND_WHITE;
+        this.aerosol = Globals.BACKGROUND_WHITE;
         this.selection = Globals.BACKGROUND_WHITE;
         this.rectangleSelection = Globals.BACKGROUND_WHITE;
     }
@@ -130,6 +165,15 @@ export class SidebarComponent {
             .set(Globals.LINE_SHORTCUT, this.openLine)
             .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
             .set(Globals.CANVAS_SELECTION_EVENT, this.selectCanvas)
+            .set(Globals.AEROSOL_SHORTCUT, this.openAerosol)
             .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.openSelection);
+    }
+
+    undoAction(): void {
+        this.undoRedoService.undo();
+    }
+
+    redoAction(): void {
+        this.undoRedoService.redo();
     }
 }

@@ -34,6 +34,7 @@ describe('DrawingService', () => {
     it('setSizeCanva should set canvasSize to 250 by 250 if drawing vue is inferior to 970 by 500 (500+470)', () => {
         const width = 700;
         const height = 500;
+
         global.innerWidth = width;
         global.innerHeight = height;
         const expectedResult = 250;

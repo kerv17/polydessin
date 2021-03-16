@@ -28,10 +28,14 @@ export class SelectionMovementService {
         ctx.putImageData(selectedArea, position.x, position.y);
     }
 
-    onMouseUp(event: MouseEvent, topLeft: Vec2): Vec2 {
+    onMouseUp(event: MouseEvent, topLeft: Vec2, path: Vec2[]): Vec2 {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
         this.initialMousePosition = { x: 0, y: 0 };
+        if (path.length > 4) {
+            path.pop();
+        }
+        path.push(position);
         return position;
     }
 
@@ -84,27 +88,4 @@ export class SelectionMovementService {
         }
         return topLeft;
     }
-
-    /*arrowKeySelected(): boolean {
-        if (this.leftArrow || this.upArrow || this.rightArrow || this.downArrow) {
-            return true;
-        }
-        return false;
-    }
-
-    getKey(): string {
-        if (this.leftArrow) {
-            return 'ArrowLeft';
-        }
-        if (this.upArrow) {
-            return 'ArrowUp';
-        }
-        if (this.rightArrow) {
-            return 'ArrowRight';
-        }
-        if (this.downArrow) {
-            return 'ArrowDown';
-        }
-        return '';
-    }*/
 }

@@ -30,6 +30,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
+
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
@@ -144,6 +145,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     onMouseEnter(event: MouseEvent): void {
         this.controller.currentTool.onMouseEnter(event);
     }
+
+
 
     get width(): number {
         return this.canvasSize.x;
