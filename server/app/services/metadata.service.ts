@@ -92,15 +92,11 @@ export class MetadataService {
             format: information.format,
             width: information.width,
         } as Metadata;
-        console.log('arriver');
         if (this.validateMetadata(data)) {
-            //console.log("arriver3");
             this.serverSaveService.saveImage(information.format, data.codeID.toHexString(), information.imageData);
-            console.log('arriver2');
             await this.collection
                 .insertOne(data)
                 .catch((error: Error) => {
-                    console.log('arriver3');
                     throw new HttpException(500, 'Failed to insert metadata');
                 })
                 .catch((error: Error) => {

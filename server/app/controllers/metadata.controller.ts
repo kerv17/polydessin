@@ -26,7 +26,6 @@ export class MetadataController {
                 .getAllMetadata()
                 .then((metadata: Metadata[]) => {
                     const information = this.serverSaveService.createCanvasInformation(metadata);
-                    console.log('here');
                     res.json(information);
                 })
                 .catch((error: Error) => {
@@ -42,7 +41,7 @@ export class MetadataController {
             //   res.status(Httpstatus.NOT_FOUND).send(error.message);
             // }
         });
-
+        // TODO verifier si necessaire
         this.router.get('/:code', async (req: Request, res: Response, next: NextFunction) => {
             this.metadataService
                 .getMetadataByCode(req.params.code)
@@ -53,7 +52,7 @@ export class MetadataController {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);
                 });
         });
-
+        // TODO verifier si necessaire
         this.router.get('/:name', async (req: Request, res: Response, next: NextFunction) => {
             this.metadataService
                 .getMetadataByName(req.params.name)
