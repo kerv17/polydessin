@@ -40,7 +40,6 @@ export abstract class Tool {
     onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
-        console.log(event.y);
         return { x: event.screenX - Globals.SIDEBAR_WIDTH, y: event.screenY -135};
 
     }
