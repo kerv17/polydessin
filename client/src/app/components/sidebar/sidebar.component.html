@@ -53,6 +53,10 @@
             <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
             <img src="../../../assets/selection.png" [ngStyle]="selection" (click)="selectCanvas()" class="function" tabindex="0" />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire une sélection rectangulaire. Le raccourci est 'r'</div>
+            <img src="../../../assets/Rectangleselection.png" [ngStyle]="rectangleSelection" (click)="openSelection()" class="function" tabindex="0" />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
