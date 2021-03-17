@@ -2,29 +2,74 @@ import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+
+const MAX_SIZE_TAG = 20;
+const MIN_SIZE_TAG = 3;
 @Injectable({
   providedIn: 'root'
 })
 export class RemoteSaveService {
   constructor(public drawingService: DrawingService, private indexService: IndexService) {}
   showModalSave: boolean = false;
-  post(): void {
-    let data:string = this.drawingService.canvas.toDataURL();
+  
+  post(information: CanvasInformation): void {
+    let data:string = this.drawingService.canvas.toDataURL('image/'+information.format);
+    information.imageData= data;
+    information.height=this.drawingService.canvas.height;
+    information.width=this.drawingService.canvas.width;
     
-    this.indexService.basicPost({name:"Dessin13",
-                                tags:["action"],
-                                format:"png",
-                                width:this.drawingService.canvas.width,
-                                height:this.drawingService.canvas.height,
-                                imageData:data}as CanvasInformation).subscribe();
+    this.indexService.basicPost(information).subscribe();
       
   }
-}
+  public validateMetadata(name:string,tags:string[]): boolean {
+    return this.validateName(name) || this.validateTags(tags);
+  }
+  // TODO define name acceptance rules
+  private validateName(name: string): boolean {
+    return name.startsWith('Dessin');
+  }
 
-/*delete(): void {
-  this.initialiserCanvas();
-  // this.indexService.basicDelete('test').subscribe((x) => window.alert(x.title));
+  // TODO define tags acceptance rules
+  private validateTags(tags: string[]): boolean {
+    if (tags.length == 0) {
+        // il est accepter qu'un dessin peut ne pas avoir de tag
+        return true;
+    } else {
+        if (
+            this.verifyTagsNotNull(tags) &&
+            this.verifyTagsTooLong(tags) &&
+            this.verifyTagsTooShort(tags) &&
+            this.verifyTagsNoSpecialChracter(tags)
+        ) {
+            return true;
+        }
+        return false;
+    }
+  }
+  private verifyTagsNotNull(tags: string[]): boolean {
+    return tags.every((elem) => elem.length > 0);
+  }
+  private verifyTagsTooLong(tags: string[]): boolean {
+    return tags.every((elem) => elem.length <= MAX_SIZE_TAG);
+  }
+  private verifyTagsTooShort(tags: string[]): boolean {
+    return tags.every((elem) => elem.length >= MIN_SIZE_TAG);
+  }
+  /*
+  RÉFÉRENCES POUR LE CODE DE LA METHODE  verifyTagsNoSpecialChracter :
+  Le présent code est tiré du tutoriel "Check wheter String contains Special Characters using JavaScript" de Mudassar Khan,
+  publié le 28 Decembre 2018
+  disponible à l'adresse suivante : "https://www.aspsnippets.com/Articles/Check-whether-String-contains-Special-Characters-using-JavaScript.aspx"
+  Quelques modifications y ont été apportées
+  */
+  private verifyTagsNoSpecialChracter(tags: string[]): boolean {
+    // only accepts letters and numbers
+    const regex = /^[A-Za-z0-9]+$/;
+    return tags.every((elem) => regex.test(elem));
+  }
+
 }
+/*
 initialiserCanvas(): void {
   this.indexService.basicGet().subscribe((x) => {
       this.pictures = new Array(x.length);
@@ -37,19 +82,4 @@ initialiserCanvas(): void {
       }
       console.log(this.pictures[0]);
   });
-}
-
-//metre dans le serveur
-saveImage(type: string, name: string): void {
-  if (type != undefined && name !== '') {
-      if (confirm('Êtes-vous sûr de vouloir exporter le dessin')) {
-          const a = document.createElement('a');
-          a.href = this.drawingService.canvas.toDataURL('image/' + type);
-          a.download = name;
-          document.body.appendChild(a);
-          a.click();
-      }
-  } else {
-      window.alert('Veuillez entrer un nom et choisir le type de fichier ');
-  }
 }*/
