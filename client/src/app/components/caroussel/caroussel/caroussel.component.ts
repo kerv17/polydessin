@@ -10,7 +10,6 @@ const nombreImage = 3;
 })
 export class CarousselComponent implements AfterViewInit {
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    currentTags: string;
 
     constructor(public carouselService: CarouselService) {
         this.resetOptions();

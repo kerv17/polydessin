@@ -48,12 +48,25 @@ export class CarouselService {
         }
     }
     loadCanvas(info: CanvasInformation): void {
+        //   if (this.router.url === '/editor'){
+        //     if()
+        //   }
+
         this.router.navigate(['/editor']).finally(() => {
             setTimeout(() => {
+                const image: ImageData = this.drawingService.baseCtx.getImageData(
+                    0,
+                    0,
+                    this.drawingService.canvas.width,
+                    this.drawingService.canvas.height,
+                );
+                if (this.drawingService.canvasNotEmpty(image) && !confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
+                    return;
+                }
                 this.drawingService.loadOldCanvas(info);
-                this.close();
             });
         });
+        this.close();
     }
     initialiserCarousel(): void {
         this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
@@ -77,9 +90,8 @@ export class CarouselService {
     }
 
     setSlides(): void {
-        for (let element of this.pictures) {
+        for (const element of this.pictures) {
             element.imageData = 'data:image/png;base64,' + element.imageData;
-            element = element;
         }
 
         this.showCarousel = true;
