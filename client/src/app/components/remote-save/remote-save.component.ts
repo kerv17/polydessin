@@ -24,8 +24,6 @@ export class RemoteSaveComponent {
     let tags:string[]=this.tagsName.split(",");
     if(!this.remoteSaveService.validateMetadata(this.fileName,tags)){
       
-    
-    
      let information= {name:this.fileName,
                                 tags:tags,
                                 format:this.saveMode,
@@ -33,7 +31,6 @@ export class RemoteSaveComponent {
                                 height:0,
                                 imageData:""}as CanvasInformation
     
-
      this.remoteSaveService.post(information);
     }  
 }
