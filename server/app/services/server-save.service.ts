@@ -17,26 +17,25 @@ export class ServerSaveService {
             });
         }
     }
-    deleteCanvasInformation(canvaToDelete: string): void{
+    deleteCanvasInformation(canvaToDelete: string): void {
         if (fs.existsSync(canvaToDelete + '.png')) {
-            try{
+            try {
                 fs.unlinkSync(canvaToDelete + '.png');
-            } catch(err){
-                if(err.code==='ENOENT'){
+            } catch (err) {
+                if (err.code === 'ENOENT') {
                     throw new Error('Canva not found');
-                } else{
+                } else {
                     throw new Error('Could not delete the Canva');
                 }
             }
         }
         if (fs.existsSync(canvaToDelete + '.jpeg')) {
-            try{
+            try {
                 fs.unlinkSync(canvaToDelete + '.jpeg');
-            } catch(err){
-                
-                if(err.code==='ENOENT'){
+            } catch (err) {
+                if (err.code === 'ENOENT') {
                     throw new Error('Canva not found');
-                } else{
+                } else {
                     throw new Error('Could not delete the Canva');
                 }
             }
@@ -48,9 +47,9 @@ export class ServerSaveService {
         for (let i = 0; i < metadata.length; i++) {
             if (fs.existsSync(metadata[i].codeID + '.' + metadata[i].format)) {
                 information[j] = {} as CanvasInformation;
-                try{
-                information[j].imageData = fs.readFileSync(metadata[i].codeID + '.' + metadata[i].format, 'base64');
-                } catch(err){
+                try {
+                    information[j].imageData = fs.readFileSync(metadata[i].codeID + '.' + metadata[i].format, 'base64');
+                } catch (err) {
                     throw new Error('Could not create the save');
                 }
 

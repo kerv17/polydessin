@@ -10,14 +10,11 @@ import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
 export class CarouselService {
     showCarousel: boolean = false;
     pictures: CanvasInformation[] = [];
-
+    currentTags: string;
     constructor(private indexService: IndexService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
         this.showCarousel = false;
-    }
-    test(test: string): void {
-        window.alert(test);
     }
 
     delete(activeSlides: SlideModel[] | undefined): void {
@@ -33,7 +30,11 @@ export class CarouselService {
                         this.close();
                     }
                 });
+
                 this.removeCanvasInformation(selectedSlide.id);
+                if (this.pictures.length === 0) {
+                    window.alert('Il ne reste plus de dessin');
+                }
             }
         }
     }
@@ -47,10 +48,11 @@ export class CarouselService {
         }
     }
     loadCanvas(info: CanvasInformation): void {
-        this.router.navigate(['/editor']).then((x) => {
-            window.alert('test');
-            this.drawingService.loadOldCanvas(info);
-            this.close();
+        this.router.navigate(['/editor']).finally(() => {
+            setTimeout(() => {
+                this.drawingService.loadOldCanvas(info);
+                this.close();
+            });
         });
     }
     initialiserCarousel(): void {
@@ -68,7 +70,7 @@ export class CarouselService {
 
                 this.setSlides();
             } else {
-                window.alert('Aucun connection avec le server');
+                window.alert('Aucune connection avec le server');
                 this.close();
             }
         });

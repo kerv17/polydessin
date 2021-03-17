@@ -45,7 +45,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
         this.canvasSize = this.drawingService.setSizeCanva();
-        window.alert('test2');
     }
 
     ngAfterViewInit(): void {

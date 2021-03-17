@@ -10,7 +10,7 @@ const nombreImage = 3;
 })
 export class CarousselComponent implements AfterViewInit {
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    currentTag: string;
+    currentTags: string;
 
     constructor(public carouselService: CarouselService) {
         this.resetOptions();
@@ -54,18 +54,7 @@ export class CarousselComponent implements AfterViewInit {
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'ArrowRight') {
-            // Very useful for when im gonna have to do the update
-
             this.owlCar.next();
-            this.resetOptions();
-
-            // for (let i = 0; i < this.slides.length - 1; i++) {
-            //   this.slides.pop();
-            // }
-
-            console.log(this.owlCar.slidesData);
-
-            //  this.resetOptions();
         } else if (event.key === 'ArrowLeft') this.owlCar.prev();
     }
 }

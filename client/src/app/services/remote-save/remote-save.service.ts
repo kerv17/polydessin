@@ -3,22 +3,25 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class RemoteSaveService {
-  constructor(public drawingService: DrawingService, private indexService: IndexService) {}
-  showModalSave: boolean = false;
-  post(): void {
-    let data:string = this.drawingService.canvas.toDataURL();
-    
-    this.indexService.basicPost({name:"Dessin13",
-                                tags:["action"],
-                                format:"png",
-                                width:this.drawingService.canvas.width,
-                                height:this.drawingService.canvas.height,
-                                imageData:data}as CanvasInformation).subscribe();
-      
-  }
+    constructor(public drawingService: DrawingService, private indexService: IndexService) {}
+    showModalSave: boolean = false;
+    post(): void {
+        let data: string = this.drawingService.canvas.toDataURL();
+
+        this.indexService
+            .basicPost({
+                name: 'Dessin13',
+                tags: ['action'],
+                format: 'png',
+                width: this.drawingService.canvas.width,
+                height: this.drawingService.canvas.height,
+                imageData: data,
+            } as CanvasInformation)
+            .subscribe();
+    }
 }
 
 /*delete(): void {
