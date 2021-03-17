@@ -8,7 +8,7 @@ import { DatabaseService } from './database.service';
 
 const DATABASE_COLLECTION = 'metadata';
 const MAX_SIZE_TAG = 20;
-const MIN_SIZE_TAG = 4;
+const MIN_SIZE_TAG = 3;
 
 @injectable()
 export class MetadataService {
@@ -156,7 +156,7 @@ export class MetadataService {
     }
 
     private validateMetadata(metadata: Metadata): boolean {
-        return this.validateName(metadata.name) || this.validateTags(metadata.tags);
+        return this.validateName(metadata.name) && this.validateTags(metadata.tags);
     }
     // TODO define name acceptance rules
     private validateName(name: string): boolean {

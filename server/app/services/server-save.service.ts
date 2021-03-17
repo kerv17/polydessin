@@ -10,7 +10,7 @@ export class ServerSaveService {
 
     saveImage(type: string, name: string, data: string): void {
         if (type != undefined && name !== '') {
-            const base64Data = data.replace(/^data:image\/(png|jpg);base64,/, '');
+            const base64Data = data.replace(/^data:image\/(png|jpeg);base64,/, '');
             fs.writeFile('./' + name + '.' + type, base64Data, 'base64', function (err) {
                 if (err) return console.log(err);
                 console.log(name);
