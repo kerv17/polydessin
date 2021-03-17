@@ -85,7 +85,7 @@ export class AerosolService extends Tool {
         return pointToAdd;
     }
 
-    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]):void {
+    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
         ctx.strokeStyle = ctx.strokeStyle = this.color || 'black';
         ctx.fillStyle = this.color || 'black';
         for (const point of points) {

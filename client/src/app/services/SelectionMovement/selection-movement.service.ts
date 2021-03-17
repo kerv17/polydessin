@@ -32,7 +32,7 @@ export class SelectionMovementService {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
         this.initialMousePosition = { x: 0, y: 0 };
-        if (path.length > 4) {
+        if (path.length > Globals.CURRENT_SELECTION_POSITION) {
             path.pop();
         }
         path.push(position);
@@ -54,7 +54,7 @@ export class SelectionMovementService {
                 this.downArrow = true;
             }
         }
-        if (path.length > 4) {
+        if (path.length > Globals.CURRENT_SELECTION_POSITION) {
             path.pop();
         }
         path.push(this.moveSelection(topLeft));

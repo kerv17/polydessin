@@ -12,9 +12,7 @@ describe('CarousselComponent', () => {
         carouselService = new CarouselService({} as IndexService);
         TestBed.configureTestingModule({
             declarations: [CarousselComponent],
-            providers:[
-              {provide: CarouselService, useValue: carouselService}
-            ]
+            providers: [{ provide: CarouselService, useValue: carouselService }],
         }).compileComponents();
     }));
 

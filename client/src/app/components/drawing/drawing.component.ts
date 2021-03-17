@@ -35,8 +35,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
-    cursor: { [key: string]: string };
-
     constructor(
         private drawingService: DrawingService,
         private colorService: ColorService,
@@ -162,22 +160,12 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
             y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
         };
-
-        if (
-            event.offsetX > this.controller.selectionService.getActualPosition().x &&
-            event.offsetX < bottomRight.x &&
-            event.offsetY > this.controller.selectionService.getActualPosition().y &&
-            event.offsetY < bottomRight.y &&
-            this.controller.selectionService.inSelection
-        ) {
-            this.cursor = {
-                cursor: 'all-scroll',
-            };
-        } else {
-            this.cursor = {
-                cursor: 'crosshair',
-            };
-        }
+        this.selectionBoxLayout.cursorChange(
+            event,
+            this.controller.selectionService.inSelection,
+            this.controller.selectionService.getActualPosition(),
+            bottomRight,
+        );
     }
 
     drawSelectionBox(): boolean {

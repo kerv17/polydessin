@@ -11,6 +11,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
@@ -42,7 +43,8 @@ describe('SidebarComponent', () => {
     let setWhiteSpy: jasmine.Spy;
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
-    let carouselService:CarouselService;
+    let carouselService: CarouselService;
+    let selectionMovement : SelectionMovementService;
 
     let eventSpy: jasmine.Spy;
     const router = {
@@ -57,7 +59,7 @@ describe('SidebarComponent', () => {
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
-            new SelectionService(drawingStub),
+            new SelectionService(drawingStub,selectionMovement),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as IndexService);
@@ -70,7 +72,7 @@ describe('SidebarComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ColorService, useValue: colorService },
-                { provide: CarouselService, useValue: carouselService},
+                { provide: CarouselService, useValue: carouselService },
                 { provide: Router, useValue: router },
             ],
         }).compileComponents();

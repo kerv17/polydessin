@@ -9,7 +9,7 @@ import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { ToolControllerService } from './tool-controller.service';
 // tslint:disable:no-any
-fdescribe('ToolControllerService', () => {
+describe('ToolControllerService', () => {
     let service: ToolControllerService;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
     let drawingService: DrawingService;

@@ -16,6 +16,7 @@ export class SelectionBoxService {
     handler6: { [key: string]: string };
     handler7: { [key: string]: string };
     selectionBox: { [key: string]: string };
+    cursor: { [key: string]: string };
 
     // calcul position des 8 handlers
     setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
@@ -90,5 +91,17 @@ export class SelectionBoxService {
             left: topLeft.x + 1 + 'px',
             top: topLeft.y + 1 + 'px',
         };
+    }
+
+    cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, bottomRight: Vec2): void {
+        if (event.offsetX > topLeft.x && event.offsetX < bottomRight.x && event.offsetY > topLeft.y && event.offsetY < bottomRight.y && inSelection) {
+            this.cursor = {
+                cursor: 'all-scroll',
+            };
+        } else {
+            this.cursor = {
+                cursor: 'crosshair',
+            };
+        }
     }
 }

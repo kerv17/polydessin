@@ -22,10 +22,14 @@ export class SelectionService extends Tool {
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.selectionMove.onArrowKeyDown(event, this.inSelection, this.pathData, this.pathData[4]);
+            this.selectionMove.onArrowKeyDown(event, this.inSelection, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.selectedArea, this.pathData[4].x, this.pathData[4].y);
+            this.drawingService.previewCtx.putImageData(
+                this.selectedArea,
+                this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+                this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+            );
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
@@ -35,7 +39,7 @@ export class SelectionService extends Tool {
 
     getActualPosition(): Vec2 {
         if (this.pathData.length !== 0) {
-            return { x: this.pathData[4].x, y: this.pathData[4].y };
+            return { x: this.pathData[Globals.CURRENT_SELECTION_POSITION].x, y: this.pathData[Globals.CURRENT_SELECTION_POSITION].y };
         }
         return { x: 0, y: 0 };
     }
@@ -59,7 +63,15 @@ export class SelectionService extends Tool {
 
         if (this.inSelection) {
             const mousePosition = this.getPositionFromMouse(event);
-            if (this.selectionMove.onMouseDown(event, mousePosition, this.pathData[4], this.selectedArea.width, this.selectedArea.height)) {
+            if (
+                this.selectionMove.onMouseDown(
+                    event,
+                    mousePosition,
+                    this.pathData[Globals.CURRENT_SELECTION_POSITION],
+                    this.selectedArea.width,
+                    this.selectedArea.height,
+                )
+            ) {
                 this.inMovement = true;
                 this.inSelection = false;
             } else {
@@ -78,7 +90,12 @@ export class SelectionService extends Tool {
 
             if (this.inMovement) {
                 this.updateCanvasOnMove(this.drawingService.previewCtx);
-                this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.pathData[4], this.selectedArea);
+                this.selectionMove.onMouseMove(
+                    event,
+                    this.drawingService.previewCtx,
+                    this.pathData[Globals.CURRENT_SELECTION_POSITION],
+                    this.selectedArea,
+                );
             } else {
                 this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
                 this.drawBorder(this.drawingService.previewCtx);
@@ -91,7 +108,7 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
-                this.selectionMove.onMouseUp(event, this.pathData[4], this.pathData);
+                this.selectionMove.onMouseUp(event, this.pathData[Globals.CURRENT_SELECTION_POSITION], this.pathData);
                 this.inMovement = false;
                 this.inSelection = true;
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
@@ -158,7 +175,11 @@ export class SelectionService extends Tool {
 
     private confirmSelectionMove(): void {
         this.updateCanvasOnMove(this.drawingService.baseCtx);
-        this.drawingService.baseCtx.putImageData(this.selectedArea, this.pathData[4].x, this.pathData[4].y);
+        this.drawingService.baseCtx.putImageData(
+            this.selectedArea,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+        );
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D): void {
