@@ -11,13 +11,9 @@ import { RectangleService } from './rectangle-service';
 })
 export class SelectionService extends Tool {
     rectangleService: RectangleService;
-    selectedArea: ImageData;
-
     inSelection: boolean = false;
     private inMovement: boolean = false;
-
-    topLeftHandler: Vec2;
-    initialSelectionPosition: Vec2;
+    private selectedArea: ImageData;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -26,15 +22,10 @@ export class SelectionService extends Tool {
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.selectionMove.onArrowKeyDown(event, this.inSelection);
-            this.topLeftHandler = this.selectionMove.moveSelection(this.topLeftHandler);
-            if (this.pathData.length > 4) {
-                this.pathData.pop();
-            }
-            this.pathData.push(this.topLeftHandler);
+            this.selectionMove.onArrowKeyDown(event, this.inSelection, this.pathData, this.pathData[4]);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+            this.drawingService.previewCtx.putImageData(this.selectedArea, this.pathData[4].x, this.pathData[4].y);
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
@@ -42,22 +33,41 @@ export class SelectionService extends Tool {
         });
     }
 
+    getActualPosition(): Vec2 {
+        if (this.pathData.length !== 0) {
+            return { x: this.pathData[4].x, y: this.pathData[4].y };
+        }
+        return { x: 0, y: 0 };
+    }
+
+    getSelectionWidth(): number {
+        if (this.selectedArea !== undefined) {
+            return this.selectedArea.width;
+        }
+        return 0;
+    }
+
+    getSelectionHeight(): number {
+        if (this.selectedArea !== undefined) {
+            return this.selectedArea.height;
+        }
+        return 0;
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === Globals.MouseButton.Left;
-        const mousePosition = this.getPositionFromMouse(event);
+
         if (this.inSelection) {
-            if (this.selectionMove.onMouseDown(event, mousePosition, this.topLeftHandler, this.selectedArea.width, this.selectedArea.height)) {
+            const mousePosition = this.getPositionFromMouse(event);
+            if (this.selectionMove.onMouseDown(event, mousePosition, this.pathData[4], this.selectedArea.width, this.selectedArea.height)) {
                 this.inMovement = true;
                 this.inSelection = false;
             } else {
-                if (this.pathData.length > 4) {
-                    this.pathData.pop();
-                }
-                this.pathData.push(this.topLeftHandler);
                 this.onEscape();
             }
         } else {
             this.rectangleService.onMouseDown(event);
+            this.pathData.push(this.rectangleService.getPath()[0]);
         }
     }
 
@@ -68,10 +78,9 @@ export class SelectionService extends Tool {
 
             if (this.inMovement) {
                 this.updateCanvasOnMove(this.drawingService.previewCtx);
-                this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.topLeftHandler, this.selectedArea);
+                this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.pathData[4], this.selectedArea);
             } else {
                 this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
-                this.setTopLeftHandler();
                 this.drawBorder(this.drawingService.previewCtx);
                 this.selectArea(this.drawingService.baseCtx);
             }
@@ -82,12 +91,12 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
-                this.topLeftHandler = this.selectionMove.onMouseUp(event, this.topLeftHandler, this.pathData);
+                this.selectionMove.onMouseUp(event, this.pathData[4], this.pathData);
                 this.inMovement = false;
                 this.inSelection = true;
-            } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.x) {
+            } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
+                this.setTopLeftHandler();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
                 this.inSelection = true;
             }
         }
@@ -106,7 +115,6 @@ export class SelectionService extends Tool {
             this.inSelection = false;
             this.mouseDown = false;
             this.inMovement = false;
-            this.topLeftHandler = { x: 0, y: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
@@ -116,13 +124,21 @@ export class SelectionService extends Tool {
     // selectionner tout le canvas avec Ctrl + A
     selectCanvas(width: number, height: number): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.topLeftHandler = { x: 0, y: 0 };
         this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
         this.inSelection = true;
-        this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
-        this.pathData.push(this.topLeftHandler);
+        this.pathData.push({ x: 0, y: 0 });
         this.rectangleService.setPath(this.pathData);
         this.pathData = this.rectangleService.getRectanglePoints({ x: width, y: height });
+        this.pathData.push({ x: 0, y: 0 });
+    }
+
+    // undoredo
+    doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.selectArea(this.drawingService.baseCtx);
+        this.confirmSelectionMove();
+        this.loadSetting(previousSetting);
     }
 
     // selection des pixels
@@ -135,7 +151,7 @@ export class SelectionService extends Tool {
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
-        ctx.fillRect(this.initialSelectionPosition.x, this.initialSelectionPosition.y, this.selectedArea.width, this.selectedArea.height);
+        ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.selectedArea.width, this.selectedArea.height);
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
     }
@@ -166,23 +182,28 @@ export class SelectionService extends Tool {
         ctx.setLineDash([]);
     }
 
+    // Ajuste le pathData pour permettre la selection à partir de n'importe quel coin
+    // donc pour tracer le rectangle de selection dans n'importe quelle direction
     private setTopLeftHandler(): void {
-        if (this.pathData[0].x < this.pathData[2].x && this.pathData[0].y < this.pathData[2].y) {
-            this.topLeftHandler = { x: this.pathData[0].x, y: this.pathData[0].y };
-        } else if (this.pathData[0].x < this.pathData[2].x && this.pathData[0].y > this.pathData[2].y) {
-            this.topLeftHandler = { x: this.pathData[0].x, y: this.pathData[2].y };
-        } else if (this.pathData[0].x > this.pathData[2].x && this.pathData[0].y > this.pathData[2].y) {
-            this.topLeftHandler = { x: this.pathData[2].x, y: this.pathData[2].y };
-        } else if (this.pathData[0].x > this.pathData[2].x && this.pathData[0].y < this.pathData[2].y) {
-            this.topLeftHandler = { x: this.pathData[2].x, y: this.pathData[0].y };
-        }
-    }
+        const firstCorner = { x: this.pathData[0].x, y: this.pathData[0].y };
+        const oppositeCorner = { x: this.pathData[2].x, y: this.pathData[2].y };
 
-    doAction(action: DrawAction): void {
-        const previousSetting: Setting = this.saveSetting();
-        this.loadSetting(action.setting);
-        this.selectArea(this.drawingService.baseCtx);
-        this.confirmSelectionMove();
-        this.loadSetting(previousSetting);
+        if (firstCorner.x < oppositeCorner.x && firstCorner.y > oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: firstCorner.x, y: oppositeCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: oppositeCorner.x, y: firstCorner.y });
+        } else if (firstCorner.x > oppositeCorner.x && firstCorner.y > oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: oppositeCorner.x, y: oppositeCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: firstCorner.y });
+        } else if (firstCorner.x > oppositeCorner.x && firstCorner.y < oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: oppositeCorner.x, y: firstCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: oppositeCorner.y });
+        }
+        this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
     }
 }

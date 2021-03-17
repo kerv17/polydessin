@@ -39,7 +39,7 @@ export class SelectionMovementService {
         return position;
     }
 
-    onArrowKeyDown(event: KeyboardEvent, inSelection: boolean): void {
+    onArrowKeyDown(event: KeyboardEvent, inSelection: boolean, path: Vec2[], topLeft: Vec2): void {
         if (inSelection) {
             if (event.key === 'ArrowLeft') {
                 this.leftArrow = true;
@@ -54,6 +54,10 @@ export class SelectionMovementService {
                 this.downArrow = true;
             }
         }
+        if (path.length > 4) {
+            path.pop();
+        }
+        path.push(this.moveSelection(topLeft));
     }
 
     onArrowKeyUp(event: KeyboardEvent, inSelection: boolean): void {

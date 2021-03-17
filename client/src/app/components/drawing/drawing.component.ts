@@ -30,7 +30,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
-
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
@@ -146,8 +145,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.onMouseEnter(event);
     }
 
-
-
     get width(): number {
         return this.canvasSize.x;
     }
@@ -162,13 +159,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     cursorChange(event: MouseEvent): void {
         const bottomRight = {
-            x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
-            y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
+            x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
+            y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
         };
+
         if (
-            event.offsetX > this.controller.selectionService.topLeftHandler.x &&
+            event.offsetX > this.controller.selectionService.getActualPosition().x &&
             event.offsetX < bottomRight.x &&
-            event.offsetY > this.controller.selectionService.topLeftHandler.y &&
+            event.offsetY > this.controller.selectionService.getActualPosition().y &&
             event.offsetY < bottomRight.y &&
             this.controller.selectionService.inSelection
         ) {
@@ -185,9 +183,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     drawSelectionBox(): boolean {
         if (this.controller.selectionService.inSelection) {
             this.selectionBoxLayout.drawSelectionBox(
-                this.controller.selectionService.topLeftHandler,
-                this.controller.selectionService.selectedArea.width,
-                this.controller.selectionService.selectedArea.height,
+                this.controller.selectionService.getActualPosition(),
+                this.controller.selectionService.getSelectionWidth(),
+                this.controller.selectionService.getSelectionHeight(),
             );
             return true;
         }
@@ -197,10 +195,10 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     drawHandlers(): boolean {
         if (this.controller.selectionService.inSelection) {
             const bottomRight = {
-                x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
-                y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
+                x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
+                y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
             };
-            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.topLeftHandler, bottomRight);
+            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.getActualPosition(), bottomRight);
             this.selectionBoxLayout.drawHandlers();
             return true;
         } else {
