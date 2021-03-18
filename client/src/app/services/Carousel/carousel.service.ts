@@ -11,6 +11,9 @@ export class CarouselService {
     showCarousel: boolean = false;
     pictures: CanvasInformation[] = [];
     currentTags: string;
+    loadImage: boolean = false;
+    imageToLoad: CanvasInformation = {} as CanvasInformation;
+
     constructor(private indexService: IndexService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
@@ -48,30 +51,18 @@ export class CarouselService {
         }
     }
     loadCanvas(info: CanvasInformation): void {
-        //   if (this.router.url === '/editor'){
-        //     if()
-        //   }
+        if (this.router.url.includes('/editor')) {
+            this.drawingService.loadOldCanvas(info);
 
-        this.router.navigate(['/editor']).finally(() => {
-            setTimeout(() => {
-                const image: ImageData = this.drawingService.baseCtx.getImageData(
-                    0,
-                    0,
-                    this.drawingService.canvas.width,
-                    this.drawingService.canvas.height,
-                );
-                if (this.drawingService.canvasNotEmpty(image) && !confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
-                    return;
-                }
-                this.drawingService.loadOldCanvas(info);
-            });
-        });
-        this.close();
+            this.close();
+        } else {
+            this.router.navigate(['/editor']);
+            this.loadImage = true;
+            this.imageToLoad = info;
+        }
     }
     initialiserCarousel(): void {
         this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
-            // this.pictures = new Array(x.length);
-
             if (x !== undefined) {
                 if (x.length === 0) {
                     window.alert('Aucun dessin enregistrer le server');
@@ -88,7 +79,13 @@ export class CarouselService {
             }
         });
     }
-
+    findCanvasInformationPosition(canvas: CanvasInformation): number {
+        let i = 0;
+        for (; i < this.pictures.length; i++) {
+            if (canvas.codeID === this.pictures[i].codeID) break;
+        }
+        return i;
+    }
     setSlides(): void {
         for (const element of this.pictures) {
             element.imageData = 'data:image/png;base64,' + element.imageData;
@@ -96,4 +93,6 @@ export class CarouselService {
 
         this.showCarousel = true;
     }
+
+    filterdesssin(): void {}
 }

@@ -113,7 +113,7 @@ export class SidebarComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
-        if (!this.exportService.showModalExport && !this.carouselService.showCarousel) {
+        if (!this.exportService.showModalExport && !this.carouselService.showCarousel && !this.remoteSaveService.showModalSave) {
             if (this.functionMap.has([$event.ctrlKey, $event.key].join())) {
                 this.functionMap.get([$event.ctrlKey, $event.key].join())?.call(this);
                 $event.preventDefault();
@@ -121,7 +121,6 @@ export class SidebarComponent {
 
             if (this.toolcontroller.focused) {
                 this.handleShortcuts($event);
-                $event.preventDefault();
             }
         }
     }
@@ -147,7 +146,8 @@ export class SidebarComponent {
             .set([true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
             .set([true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
             .set([true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
-            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection);
+            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection)
+            .set([true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave);
     }
 
     handleShortcuts(event: KeyboardEvent): void {
@@ -156,6 +156,7 @@ export class SidebarComponent {
         if (currentToolOptions != undefined) {
             this.setTool(currentToolOptions.toolName);
             this.openTool(currentToolOptions.showWidth, currentToolOptions.toolName);
+            event.preventDefault();
         }
     }
 

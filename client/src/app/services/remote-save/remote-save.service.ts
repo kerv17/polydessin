@@ -30,7 +30,7 @@ export class RemoteSaveService {
 
     // TODO define tags acceptance rules
     private validateTags(tags: string[]): boolean {
-        if (tags.length == 0) {
+        if (tags.length === 0) {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {

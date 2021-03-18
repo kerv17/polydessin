@@ -2,10 +2,10 @@ import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, S
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -43,7 +43,12 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     handler6: { [key: string]: string };
     handler7: { [key: string]: string };
 
-    constructor(private drawingService: DrawingService, private colorService: ColorService, private controller: ToolControllerService) {
+    constructor(
+        private drawingService: DrawingService,
+        private colorService: ColorService,
+        private controller: ToolControllerService,
+        private carousel: CarouselService,
+    ) {
         this.canvasSize = this.drawingService.setSizeCanva();
     }
 
@@ -59,6 +64,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.viewInitialized = true;
+        this.loadCarouselCanvas();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -199,6 +205,13 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             return true;
         } else {
             return false;
+        }
+    }
+    loadCarouselCanvas(): void {
+        if (this.carousel.loadImage) {
+            this.carousel.loadImage = false;
+            this.drawingService.loadOldCanvas(this.carousel.imageToLoad);
+            this.carousel.close();
         }
     }
 }

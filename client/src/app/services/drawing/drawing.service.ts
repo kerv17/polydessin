@@ -61,6 +61,11 @@ export class DrawingService {
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
     loadOldCanvas(oldCanvas: CanvasInformation): void {
+        const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        if (this.canvasNotEmpty(data) && !confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
+            return;
+        }
+
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
         this.setCanvassSize(newSize);
         const image = new Image();
