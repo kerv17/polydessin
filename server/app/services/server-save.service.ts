@@ -5,13 +5,13 @@ import { Metadata } from '../classes/metadata';
 
 @injectable()
 export class ServerSaveService {
-    constructor() {}
     showModalExport: boolean = false;
 
     saveImage(type: string, name: string, data: string): void {
         if (type != undefined && name !== '') {
-            const base64Data = data.replace(/^data:image\/(png|jpeg);base64,/, '');
-            fs.writeFile('./' + name + '.' + type, base64Data, 'base64', function (err) {
+            const base64Data = data.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+
+            fs.writeFile('./' + name + '.' + type, base64Data, 'base64', (err) => {
                 if (err) return console.log(err);
                 console.log(name);
             });
@@ -44,21 +44,21 @@ export class ServerSaveService {
     createCanvasInformation(metadata: Metadata[]): CanvasInformation[] {
         const information: CanvasInformation[] = new Array(metadata.length);
         let j = 0;
-        for (let i = 0; i < metadata.length; i++) {
-            if (fs.existsSync(metadata[i].codeID + '.' + metadata[i].format)) {
+        for (const elem of metadata) {
+            if (fs.existsSync(elem.codeID + '.' + elem.format)) {
                 information[j] = {} as CanvasInformation;
                 try {
-                    information[j].imageData = fs.readFileSync(metadata[i].codeID + '.' + metadata[i].format, 'base64');
+                    information[j].imageData = fs.readFileSync(elem.codeID + '.' + elem.format, 'base64');
                 } catch (err) {
                     throw new Error('Could not create the save');
                 }
 
-                information[j].name = metadata[i].name;
-                information[j].codeID = metadata[i].codeID.toHexString();
-                information[j].height = metadata[i].height;
-                information[j].tags = metadata[i].tags;
-                information[j].width = metadata[i].width;
-                information[j].format = metadata[i].format;
+                information[j].name = elem.name;
+                information[j].codeID = elem.codeID.toHexString();
+                information[j].height = elem.height;
+                information[j].tags = elem.tags;
+                information[j].width = elem.width;
+                information[j].format = elem.format;
                 j++;
             }
         }

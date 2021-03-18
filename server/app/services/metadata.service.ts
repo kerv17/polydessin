@@ -12,9 +12,7 @@ const MIN_SIZE_TAG = 3;
 
 @injectable()
 export class MetadataService {
-    constructor(
-        @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
-    ) {}
+    constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {}
 
     get collection(): Collection<Metadata> {
         return this.databaseService.database.collection(DATABASE_COLLECTION);
@@ -79,9 +77,8 @@ export class MetadataService {
     // TODO getMetadataByNameAndTags
 
     async addMetadata(metadata: Metadata): Promise<void> {
-        //parse pour appeler sauvegarde et cree objet data(avec code unique)
+        // parse pour appeler sauvegarde et cree objet data(avec code unique)
 
-       
         if (this.validateMetadata(metadata)) {
             await this.collection
                 .insertOne(metadata)

@@ -87,8 +87,9 @@ export class CarouselService {
         return i;
     }
     setSlides(): void {
-        for (const element of this.pictures) {
-            element.imageData = 'data:image/png;base64,' + element.imageData;
+        for (let element of this.pictures) {
+            element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
+            element = element;
         }
 
         this.showCarousel = true;

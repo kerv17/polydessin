@@ -12,6 +12,14 @@ export class RemoteSaveService {
     constructor(public drawingService: DrawingService, private indexService: IndexService) {}
     showModalSave: boolean = false;
 
+    validateMetadata(name: string, tags: string[]): boolean {
+        return this.validateName(name) && this.validateTags(tags);
+    }
+    // TODO define name acceptance rules
+    private validateName(name: string): boolean {
+        return name.startsWith('Dessin');
+    }
+
     post(information: CanvasInformation): void {
         const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
         information.imageData = data;
@@ -19,13 +27,6 @@ export class RemoteSaveService {
         information.width = this.drawingService.canvas.width;
 
         this.indexService.basicPost(information).subscribe();
-    }
-    validateMetadata(name: string, tags: string[]): boolean {
-        return this.validateName(name) || this.validateTags(tags);
-    }
-    // TODO define name acceptance rules
-    private validateName(name: string): boolean {
-        return name.startsWith('Dessin');
     }
 
     // TODO define tags acceptance rules

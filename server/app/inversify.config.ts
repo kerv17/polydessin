@@ -17,13 +17,13 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
 
     container.bind(TYPES.Server).to(Server);
     container.bind(TYPES.Application).to(Application);
-    
+
     container.bind(TYPES.IndexController).to(IndexController);
     container.bind(TYPES.IndexService).to(IndexService);
 
     container.bind(TYPES.DateController).to(DateController);
     container.bind(TYPES.DateService).to(DateService);
-    
+
     container.bind(TYPES.DatabaseService).to(DatabaseService).inSingletonScope();
 
     container.bind(TYPES.ServerSaveService).to(ServerSaveService).inSingletonScope();
@@ -31,7 +31,7 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.MetadataController).to(MetadataController);
     container.bind(TYPES.MetadataService).to(MetadataService);
 
-    container.bind( TYPES.DataAccessService).to(DataAccessService);
+    container.bind(TYPES.DataAccessService).to(DataAccessService);
 
     return container;
 };
