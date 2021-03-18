@@ -24,12 +24,22 @@
           </div>
       </div>
       <div>
-          <p>Veuillez choisir le nom du fichier</p>
+          <p>Veuillez choisir le nom du fichier en commencant par "Dessin"</p>
           <input [(ngModel)]="fileName" />
       </div>
       <div>
           <p>Vous pouvez ajouter des tags</p>
+          <ul>
+            <li>les tags doivent être séparés par des &lsaquo;,&rsaquo;</li>
+            <li>il peut ne pas y avoir de tags, mais pas de tag vide</li>
+            <li>les tags doivent faire entre 3 et 20 character</li>
+            <li>les tags ne doivent pas avoir de character speciaux ou espaces</li>
+          </ul>  
       </div>
+      <div>
+            <p>Veuillez choisir les tags pour le fichier</p>
+            <input [(ngModel)]="tagsName" />
+       </div>
       <button class="save" (click)="savePicture()">sauvegarder le canvas</button>
   </div>
 </div>
