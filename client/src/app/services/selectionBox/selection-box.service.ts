@@ -11,7 +11,11 @@ export class SelectionBoxService {
     cursor: { [key: string]: string };
 
     // calcul position des 8 handlers
-    setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
+    setHandlersPositions(topLeft: Vec2, width: number, height: number): void {
+        const bottomRight = {
+            x: topLeft.x + width,
+            y: topLeft.y + height,
+        };
         this.handlersPositions = [];
         // coin haut gauche
         this.handlersPositions.push(topLeft);
@@ -58,7 +62,11 @@ export class SelectionBoxService {
         };
     }
 
-    cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, bottomRight: Vec2): void {
+    cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
+        const bottomRight = {
+            x: topLeft.x + width,
+            y: topLeft.y + height,
+        };
         if (event.offsetX > topLeft.x && event.offsetX < bottomRight.x && event.offsetY > topLeft.y && event.offsetY < bottomRight.y && inSelection) {
             this.cursor = {
                 cursor: 'all-scroll',

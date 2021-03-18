@@ -156,15 +156,12 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     cursorChange(event: MouseEvent): void {
-        const bottomRight = {
-            x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
-            y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
-        };
         this.selectionBoxLayout.cursorChange(
             event,
             this.controller.selectionService.inSelection,
             this.controller.selectionService.getActualPosition(),
-            bottomRight,
+            this.controller.selectionService.getSelectionWidth(),
+            this.controller.selectionService.getSelectionHeight(),
         );
     }
 
@@ -175,11 +172,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.controller.selectionService.getSelectionWidth(),
                 this.controller.selectionService.getSelectionHeight(),
             );
-            const bottomRight = {
-                x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
-                y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
-            };
-            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.getActualPosition(), bottomRight);
+            this.selectionBoxLayout.setHandlersPositions(
+                this.controller.selectionService.getActualPosition(),
+                this.controller.selectionService.getSelectionWidth(),
+                this.controller.selectionService.getSelectionHeight(),
+            );
             return true;
         }
         return false;
