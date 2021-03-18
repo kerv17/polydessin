@@ -24,7 +24,7 @@ export class MetadataController {
                     res.json(information);
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
 
             // Can also use the async/await syntax
@@ -44,7 +44,7 @@ export class MetadataController {
                     res.json(information);
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
 
@@ -52,10 +52,10 @@ export class MetadataController {
             this.dataAccessService
                 .addData(req.body)
                 .then(() => {
-                    res.sendStatus(Httpstatus.CREATED).send();
+                    res.sendStatus(Httpstatus.StatusCodes.CREATED).send();
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
 
