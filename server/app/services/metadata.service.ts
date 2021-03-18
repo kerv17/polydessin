@@ -1,6 +1,6 @@
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, ObjectId } from 'mongodb';
+import { Collection, FindAndModifyWriteOpResultObject, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
@@ -29,9 +29,8 @@ export class MetadataService {
 
     // TODO getMetadataByTags
     async getMetadataByTags(tagsToFind: string[]): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { $or: [{ tags: tagsToFind }] };
         return this.collection
-            .find(filterQuery)
+            .find({ tags: { $in: tagsToFind } })
             .toArray()
             .then((metadatas: Metadata[]) => {
                 return metadatas;
