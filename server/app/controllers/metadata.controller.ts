@@ -1,21 +1,16 @@
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { DataAccessService } from 'app/services/data-access.service';
-import { MetadataService } from 'app/services/metadata.service';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
-import { Metadata } from '../classes/metadata';
 import { TYPES } from '../types';
 
 @injectable()
 export class MetadataController {
     router: Router;
 
-    constructor(
-        @inject(TYPES.MetadataService) private metadataService: MetadataService,
-        @inject(TYPES.DataAccessService) private dataAccessService: DataAccessService,
-    ) {
+    constructor(@inject(TYPES.DataAccessService) private dataAccessService: DataAccessService) {
         this.configureRouter();
     }
 
@@ -43,10 +38,10 @@ export class MetadataController {
         });
 
         this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .getMetadataByTags(req.params.tags)
-                .then((metadatas: Metadata[]) => {
-                    res.json(metadatas);
+            this.dataAccessService
+                .getDataByTags(req.params.tags)
+                .then((information: CanvasInformation[]) => {
+                    res.json(information);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);

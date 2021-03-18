@@ -25,7 +25,18 @@ export class DataAccessService {
                 throw new Error(error.message);
             });
     }
-    // getDataByTags() {}
+    async getDataByTags(receivedTags: string): Promise<CanvasInformation[]> {
+        const tagsToFind: string[] = receivedTags.split(',');
+        return this.metadataService
+            .getMetadataByTags(tagsToFind)
+            .then((metadata: Metadata[]) => {
+                const information = this.serverSaveService.createCanvasInformation(metadata);
+                return information;
+            })
+            .catch((error: Error) => {
+                throw new Error(error.message);
+            });
+    }
     async addData(information: CanvasInformation): Promise<void> {
         const data: Metadata = {
             codeID: new ObjectId(),

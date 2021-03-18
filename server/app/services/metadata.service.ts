@@ -48,8 +48,7 @@ export class MetadataService {
     }
 
     // TODO getMetadataByTags
-    async getMetadataByTags(receivedTags: string): Promise<Metadata[]> {
-        const tagsToFind: string[] = receivedTags.split(',');
+    async getMetadataByTags(tagsToFind: string[]): Promise<Metadata[]> {
         const filterQuery: FilterQuery<Metadata> = { tags: tagsToFind };
         return this.collection
             .find(filterQuery)
