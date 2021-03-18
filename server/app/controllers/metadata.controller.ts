@@ -17,6 +17,17 @@ export class MetadataController {
     private configureRouter(): void {
         this.router = Router();
 
+        this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
+            this.dataAccessService
+                .getDataByTags(req.params.tags)
+                .then((information: CanvasInformation[]) => {
+                    res.json(information);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                });
+        });
+
         this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
             this.dataAccessService
                 .getAllData()
@@ -35,17 +46,6 @@ export class MetadataController {
             // catch(error){
             //   res.status(Httpstatus.NOT_FOUND).send(error.message);
             // }
-        });
-
-        this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
-            this.dataAccessService
-                .getDataByTags(req.params.tags)
-                .then((information: CanvasInformation[]) => {
-                    res.json(information);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
-                });
         });
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {

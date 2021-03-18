@@ -97,6 +97,7 @@ export class CarouselService {
 
     filterdessin(): void {
         this.indexService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
+            console.log(x);
             if (x !== undefined) {
                 if (x.length === 0) {
                     window.alert('Aucun dessin enregistrer le server');

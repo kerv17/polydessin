@@ -17,7 +17,7 @@ export class IndexService {
         return this.http.get<CanvasInformation[]>(this.BASE_URL).pipe(catchError(this.handleError<CanvasInformation[]>('basicGet')));
     }
     getSome(tags: string): Observable<CanvasInformation[]> {
-        return this.http.get<CanvasInformation[]>(this.BASE_URL + '/:tags' + tags).pipe(catchError(this.handleError<CanvasInformation[]>('getSome')));
+        return this.http.get<CanvasInformation[]>(this.BASE_URL + '/' + tags).pipe(catchError(this.handleError<CanvasInformation[]>('getSome')));
     }
 
     basicPost(info: CanvasInformation): Observable<CanvasInformation> {
