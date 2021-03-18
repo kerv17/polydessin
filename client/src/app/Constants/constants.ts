@@ -70,7 +70,7 @@ export const MILS_TO_SEC = 1000;
 // constante pour outil sélection
 export const N_PIXELS_DEPLACEMENT = 3;
 export const LINE_DASH = 10;
-export const HANDLERS_POSITION = 4;
+export const HANDLERS_POSITION = 5;
 export const CURRENT_SELECTION_POSITION = 4;
 
 // Position des 8 handlers (sens horaire à partir du coin sup gauche)

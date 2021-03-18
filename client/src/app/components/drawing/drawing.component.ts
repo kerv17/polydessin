@@ -175,22 +175,17 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.controller.selectionService.getSelectionWidth(),
                 this.controller.selectionService.getSelectionHeight(),
             );
+            const bottomRight = {
+                x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
+                y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
+            };
+            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.getActualPosition(), bottomRight);
             return true;
         }
         return false;
     }
 
     drawHandlers(): boolean {
-        if (this.controller.selectionService.inSelection) {
-            const bottomRight = {
-                x: this.controller.selectionService.getActualPosition().x + this.controller.selectionService.getSelectionWidth(),
-                y: this.controller.selectionService.getActualPosition().y + this.controller.selectionService.getSelectionHeight(),
-            };
-            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.getActualPosition(), bottomRight);
-            this.selectionBoxLayout.drawHandlers();
-            return true;
-        } else {
-            return false;
-        }
+        return this.controller.selectionService.inSelection;
     }
 }
