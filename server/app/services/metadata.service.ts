@@ -1,6 +1,6 @@
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, ObjectId, UpdateQuery } from 'mongodb';
+import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, ObjectId, UpdateQuery } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
@@ -46,23 +46,11 @@ export class MetadataService {
                 throw new Error('Failed to get data');
             });
     }
-    // TODO getMetadataByTag
-    async getMetadataByTag(tag: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { tags: tag };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
 
-            .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
     // TODO getMetadataByTags
-    async getMetadataByTags(receivedTags: string[]): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { tags: receivedTags };
+    async getMetadataByTags(receivedTags: string): Promise<Metadata[]> {
+        const tagsToFind: string[] = receivedTags.split(',');
+        const filterQuery: FilterQuery<Metadata> = { tags: tagsToFind };
         return this.collection
             .find(filterQuery)
             .toArray()
@@ -77,8 +65,6 @@ export class MetadataService {
     // TODO getMetadataByNameAndTags
 
     async addMetadata(metadata: Metadata): Promise<void> {
-        // parse pour appeler sauvegarde et cree objet data(avec code unique)
-
         if (this.validateMetadata(metadata)) {
             await this.collection
                 .insertOne(metadata)
@@ -124,32 +110,6 @@ export class MetadataService {
                     throw new Error('Failed to update document');
                 });
         }
-    }
-
-    async getMetadataName(aCode: string): Promise<string> {
-        const filterQuery: FilterQuery<Metadata> = { codeID: new ObjectId(aCode) };
-        // Only get the name and not any of the other fields
-        const projection: FindOneOptions = { projection: { name: 1, _id: 0 } };
-        return this.collection
-            .findOne(filterQuery, projection)
-            .then((metadata: Metadata) => {
-                return metadata.name;
-            })
-            .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
-    async getCodesByName(aName: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { name: aName };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
-            .catch(() => {
-                throw new Error('No codes for that name');
-            });
     }
 
     private validateMetadata(metadata: Metadata): boolean {

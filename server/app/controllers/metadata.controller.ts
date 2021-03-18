@@ -41,31 +41,10 @@ export class MetadataController {
             //   res.status(Httpstatus.NOT_FOUND).send(error.message);
             // }
         });
-        // TODO verifier si necessaire
-        this.router.get('/:code', async (req: Request, res: Response, next: NextFunction) => {
+
+        this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
             this.metadataService
-                .getMetadataByCode(req.params.code)
-                .then((metadata: Metadata) => {
-                    res.json(metadata);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
-                });
-        });
-        // TODO verifier si necessaire
-        this.router.get('/:name', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .getMetadataByName(req.params.name)
-                .then((metadata: Metadata[]) => {
-                    res.json(metadata);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
-                });
-        });
-        this.router.get('/:tag', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .getMetadataByTag(req.params.tag)
+                .getMetadataByTags(req.params.tags)
                 .then((metadatas: Metadata[]) => {
                     res.json(metadatas);
                 })
@@ -79,17 +58,6 @@ export class MetadataController {
                 .addData(req.body)
                 .then(() => {
                     res.sendStatus(Httpstatus.CREATED).send();
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
-                });
-        });
-
-        this.router.patch('/', async (req: Request, res: Response, next: NextFunction) => {
-            this.metadataService
-                .modifyMetadata(req.body)
-                .then(() => {
-                    res.sendStatus(Httpstatus.OK);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.NOT_FOUND).send(error.message);
@@ -114,33 +82,5 @@ export class MetadataController {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND);
                 });
         });
-        // TODO get qui prend des tags
-        /*this.router.get(
-      "/teachers/code/:subjectCode",
-      async (req: Request, res: Response, next: NextFunction) => {
-        this.metadataService
-          .getCourseTeacher(req.params.subjectCode)
-          .then((teacher: string) => {
-            res.send(teacher);
-          })
-          .catch((error: Error) => {
-            res.status(Httpstatus.NOT_FOUND).send(error.message);
-          });
-      }
-    );
-      // TODO get qui prend des tags+noms
-    this.router.get(
-      "/teachers/name/:name",
-      async (req: Request, res: Response, next: NextFunction) => {
-        this.metadataService
-          .getCoursesByTeacher(req.params.name)
-          .then((courses: Course[]) => {
-            res.send(courses);
-          })
-          .catch((error: Error) => {
-            res.status(Httpstatus.NOT_FOUND).send(error.message);
-          });
-      }
-    );*/
     }
 }
