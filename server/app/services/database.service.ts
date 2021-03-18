@@ -5,7 +5,7 @@ import 'reflect-metadata';
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://admin:DB2990T312@cluster0.iuq28.mongodb.net/projet2990?retryWrites=true&w=majority';
 const DATABASE_NAME = 'projet2990';
-//const DATABASE_COLLECTION = 'metadata';
+// const DATABASE_COLLECTION = 'metadata';
 
 @injectable()
 export class DatabaseService {
@@ -26,7 +26,7 @@ export class DatabaseService {
             throw new Error('Database connection error');
         }
         // TODO is this necessary
-       /* if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
+        /* if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
             await this.populateDB();
         }*/
         return this.client;
@@ -36,7 +36,7 @@ export class DatabaseService {
         return this.client.close();
     }
     // TODO remove when done testing
-   /* async populateDB(): Promise<void> {
+    /* async populateDB(): Promise<void> {
         const metaDatas: Metadata[] = [
             {
                 codeID: new ObjectId(),

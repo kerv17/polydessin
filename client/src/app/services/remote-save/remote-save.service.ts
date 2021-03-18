@@ -19,7 +19,7 @@ export class RemoteSaveService {
     information.width=this.drawingService.canvas.width;
     
     this.indexService.basicPost(information).subscribe();
-      
+   
   }
   public validateMetadata(name:string,tags:string[]): boolean {
     return this.validateName(name) && this.validateTags(tags);
