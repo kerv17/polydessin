@@ -1,6 +1,6 @@
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, ObjectId, UpdateQuery } from 'mongodb';
+import { Collection, FindAndModifyWriteOpResultObject, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
@@ -27,31 +27,10 @@ export class MetadataService {
             });
     }
 
-    async getMetadataByCode(aCode: string): Promise<Metadata> {
-        // TODO: This can return null if the metadata does not exist, need to handle it
-        return this.collection.findOne({ code: new ObjectId(aCode) }).then((metadata: Metadata) => {
-            return metadata;
-        });
-    }
-    async getMetadataByName(aName: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { name: aName };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
-
-            .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
-
     // TODO getMetadataByTags
     async getMetadataByTags(tagsToFind: string[]): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { tags: tagsToFind };
         return this.collection
-            .find(filterQuery)
+            .find({ tags: { $in: tagsToFind } })
             .toArray()
             .then((metadatas: Metadata[]) => {
                 return metadatas;
@@ -90,6 +69,7 @@ export class MetadataService {
                 throw new Error('Failed to delete metadata');
             });
     }
+    /*
     // TODO is this necessary?
     async modifyMetadata(metadata: Metadata): Promise<void> {
         if (this.validateMetadata(metadata)) {
@@ -110,7 +90,7 @@ export class MetadataService {
                 });
         }
     }
-
+    */
     private validateMetadata(metadata: Metadata): boolean {
         return this.validateName(metadata.name) && this.validateTags(metadata.tags);
     }
@@ -121,7 +101,7 @@ export class MetadataService {
 
     // TODO define tags acceptance rules
     private validateTags(tags: string[]): boolean {
-        if (tags.length == 0) {
+        if (tags.length === 0) {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {

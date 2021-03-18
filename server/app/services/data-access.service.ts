@@ -27,10 +27,12 @@ export class DataAccessService {
     }
     async getDataByTags(receivedTags: string): Promise<CanvasInformation[]> {
         const tagsToFind: string[] = receivedTags.split(',');
+
         return this.metadataService
             .getMetadataByTags(tagsToFind)
             .then((metadata: Metadata[]) => {
                 const information = this.serverSaveService.createCanvasInformation(metadata);
+
                 return information;
             })
             .catch((error: Error) => {
