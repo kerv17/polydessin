@@ -25,6 +25,7 @@
             <div class="tags">
                 <input [(ngModel)]="carouselService.currentTags" />
                 <button (click)="carouselService.filterdessin()">Enregistrer Tags</button>
+                <button (click)="carouselService.loadImageButton(owlCar.slidesOutputData.slides)">Charger Canvas</button>
             </div>
         </div>
     </div>

@@ -41,6 +41,14 @@ export class CarouselService {
             }
         }
     }
+    loadImageButton(activeSlides: SlideModel[] | undefined): void {
+        if (activeSlides != undefined) {
+            const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
+            const canvas = this.findCanvasInformation(selectedSlide.id);
+            this.loadCanvas(canvas);
+        }
+    }
+
     removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
             if (this.pictures[i].codeID === codeID) {
@@ -79,12 +87,11 @@ export class CarouselService {
             }
         });
     }
-    findCanvasInformationPosition(canvas: CanvasInformation): number {
-        let i = 0;
-        for (; i < this.pictures.length; i++) {
-            if (canvas.codeID === this.pictures[i].codeID) break;
+    findCanvasInformation(id: string): CanvasInformation {
+        for (let i = 0; i < this.pictures.length; i++) {
+            if (id === this.pictures[i].codeID) return this.pictures[i];
         }
-        return i;
+        return {} as CanvasInformation;
     }
     setSlides(): void {
         for (let element of this.pictures) {
