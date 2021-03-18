@@ -22,7 +22,10 @@
         </div>
         <div class="carouselActions">
             <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Delete selected canvas</button>
-            <input [(ngModel)]="carouselService.currentTags" />
+            <div class="tags">
+                <input [(ngModel)]="carouselService.currentTags" />
+                <button (click)="carouselService.filterdessin()">Enregistrer Tags</button>
+            </div>
         </div>
     </div>
 </div>
