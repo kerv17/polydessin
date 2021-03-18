@@ -95,5 +95,22 @@ export class CarouselService {
         this.showCarousel = true;
     }
 
-    filterdesssin(): void {}
+    filterdessin(): void {
+        this.indexService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
+            if (x !== undefined) {
+                if (x.length === 0) {
+                    window.alert('Aucun dessin enregistrer le server');
+                    this.close();
+                    return;
+                }
+
+                this.pictures = x;
+
+                this.setSlides();
+            } else {
+                window.alert('Aucune connection avec le server');
+                this.close();
+            }
+        });
+    }
 }
