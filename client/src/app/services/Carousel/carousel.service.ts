@@ -80,13 +80,13 @@ export class CarouselService {
             }
         });
     }
-    findCanvasInformationPosition(canvas: CanvasInformation): number {
+    /*  findCanvasInformationPosition(canvas: CanvasInformation): number {
         let i = 0;
         for (; i < this.pictures.length; i++) {
             if (canvas.codeID === this.pictures[i].codeID) break;
         }
         return i;
-    }
+    }*/
     setSlides(): void {
         for (let element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;

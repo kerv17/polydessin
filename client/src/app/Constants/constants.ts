@@ -56,7 +56,7 @@ export enum MouseButton {
 }
 // Server response
 export class Metadata {
-    _id: string;
+    id: string;
     codeID: string;
     name: string;
     tags: string[];
