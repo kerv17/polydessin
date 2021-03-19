@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Tool } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
@@ -9,10 +10,11 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { IndexService } from '@app/services/index/index.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ResizedEvent } from 'angular-resize-event';
 import { EditorComponent } from './editor.component';
+
 class ToolStub extends Tool {}
 
 describe('EditorComponent', () => {
@@ -22,11 +24,12 @@ describe('EditorComponent', () => {
     let drawingStub: DrawingService;
     let resizeStub: ResizePoint;
     let carouselService: CarouselService;
+    const router = jasmine.createSpyObj(Router, ['navigate']);
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
-        carouselService = new CarouselService({} as IndexService);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         drawingStub.resizePoint = resizeStub;
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],

@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
 })
-export class IndexService {
+export class ServerRequestService {
     private readonly BASE_URL: string = 'http://localhost:3000/api/metadata';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(private http: HttpClient) {}

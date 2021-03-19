@@ -20,10 +20,10 @@ type ToolParam = {
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    showWidth: boolean = false;
+    showWidth: boolean = true;
     showAerosol: boolean = false;
     shapeOptions: boolean = false;
-    showline: boolean = false;
+    showLine: boolean = false;
     currentTool: string;
     resetAttributes: boolean = false;
 
@@ -34,7 +34,7 @@ export class SidebarComponent {
     rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(
-        private toolcontroller: ToolControllerService,
+        private toolController: ToolControllerService,
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
@@ -44,7 +44,7 @@ export class SidebarComponent {
         public remoteSaveService: RemoteSaveService,
     ) {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
         this.toolParamMap = new Map();
         this.functionMap = new Map();
         this.initToolMap();
@@ -63,14 +63,14 @@ export class SidebarComponent {
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
     }
     setTool(tool: string): void {
-        this.toolcontroller.setTool(tool);
+        this.toolController.setTool(tool);
     }
 
     selectCanvas(): void {
-        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
     }
     openCarousel(): void {
         this.carouselService.initialiserCarousel();
@@ -79,16 +79,25 @@ export class SidebarComponent {
         this.remoteSaveService.showModalSave = true;
     }
     openSelection(): void {
-        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+        this.toolController.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
     }
     showAerosolInterface(): void {
         this.showAerosol = this.currentTool === Globals.AEROSOL_SHORTCUT;
     }
     showLineOptions(): void {
-        this.showline = this.currentTool === Globals.LINE_SHORTCUT;
+        this.showLine = this.currentTool === Globals.LINE_SHORTCUT;
+    }
+    openExport(): void {
+        this.exportService.showModalExport = true;
     }
     showShapeOptions(): void {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
+    }
+
+    annulerSelection(): void {
+        if (this.toolController.selectionService.inSelection) {
+            this.toolController.selectionService.onEscape();
+        }
     }
     openTool(showWidth: boolean, toolname: string): void {
         this.showWidth = showWidth;
@@ -98,17 +107,14 @@ export class SidebarComponent {
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
-        if (this.toolcontroller.selectionService.inSelection) {
-            this.toolcontroller.selectionService.onEscape();
-        }
     }
 
     newCanvas(): void {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
-        this.toolcontroller.resetToolsMode();
+        this.toolController.resetWidth();
+        this.toolController.resetToolsMode();
         this.drawing.newCanvas();
-        this.toolcontroller.lineService.clearPath();
+        this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
     }
 
@@ -120,13 +126,10 @@ export class SidebarComponent {
                 $event.preventDefault();
             }
 
-            if (this.toolcontroller.focused) {
+            if (this.toolController.focused) {
                 this.handleShortcuts($event);
             }
         }
-    }
-    openExport(): void {
-        this.exportService.showModalExport = true;
     }
 
     initToolMap(): void {

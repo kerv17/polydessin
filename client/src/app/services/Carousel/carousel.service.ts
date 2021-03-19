@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { IndexService } from '@app/services/index/index.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
 @Injectable({
@@ -14,7 +14,7 @@ export class CarouselService {
     loadImage: boolean = false;
     imageToLoad: CanvasInformation = {} as CanvasInformation;
     showLoad: boolean = false;
-    constructor(private indexService: IndexService, private drawingService: DrawingService, private router: Router) {}
+    constructor(private requestService: ServerRequestService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
         this.showCarousel = false;
@@ -25,7 +25,7 @@ export class CarouselService {
             const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
 
             if (confirm('Voulez-vous supprimez ce dessin')) {
-                this.indexService.basicDelete(selectedSlide.id).subscribe((x) => {
+                this.requestService.basicDelete(selectedSlide.id).subscribe((x) => {
                     if (x != undefined) {
                         window.alert(x.title);
                     } else {
@@ -72,7 +72,7 @@ export class CarouselService {
     }
     initialiserCarousel(): void {
         this.currentTags = '';
-        this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
+        this.requestService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
             if (x !== undefined) {
                 if (x.length === 0) {
                     window.alert('Aucun dessin enregistrer le serveur');
@@ -107,7 +107,7 @@ export class CarouselService {
 
     filterdessin(): void {
         this.showLoad = true;
-        this.indexService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
+        this.requestService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
             console.log(x);
             if (x !== undefined) {
                 if (x.length === 0) {

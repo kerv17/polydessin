@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { IndexService } from '../index/index.service';
+import { ServerRequestService } from '../index/server-request.service';
 import { CarouselService } from './carousel.service';
 
 describe('CarouselService', () => {
     let service: CarouselService;
-    let indexServiceSpy: jasmine.SpyObj<IndexService>;
+    let indexServiceSpy: jasmine.SpyObj<ServerRequestService>;
 
     beforeEach(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet']);
         TestBed.configureTestingModule({
-            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+            providers: [{ provide: ServerRequestService, useValue: indexServiceSpy }],
         });
         service = TestBed.inject(CarouselService);
     });

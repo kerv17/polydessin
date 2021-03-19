@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { IndexService } from '@app/services/index/index.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
 const MAX_SIZE_TAG = 10;
@@ -10,7 +10,7 @@ const MAX_NUMBER_TAG = 5;
     providedIn: 'root',
 })
 export class RemoteSaveService {
-    constructor(public drawingService: DrawingService, private indexService: IndexService) {}
+    constructor(public drawingService: DrawingService, private requestService: ServerRequestService) {}
     showModalSave: boolean = false;
 
     validateMetadata(name: string, tags: string[]): boolean {
@@ -27,7 +27,7 @@ export class RemoteSaveService {
         information.height = this.drawingService.canvas.height;
         information.width = this.drawingService.canvas.width;
 
-        this.indexService.basicPost(information).subscribe();
+        this.requestService.basicPost(information).subscribe();
     }
 
     // TODO define tags acceptance rules
