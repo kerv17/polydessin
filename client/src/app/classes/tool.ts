@@ -40,7 +40,7 @@ export abstract class Tool {
     onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
-        return { x: event.screenX - Globals.SIDEBAR_WIDTH, y: event.screenY -135};
+        return { x: event.pageX - Globals.SIDEBAR_WIDTH, y: event.pageY};
 
     }
 
@@ -88,6 +88,7 @@ export abstract class Tool {
 
     protected createAction(): DrawAction {
         const drawAction: DrawAction = {
+            type: 'Draw',
             tool: this as Tool,
             setting: this.saveSetting(),
             canvas: this.drawingService.baseCtx,
