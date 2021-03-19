@@ -10,9 +10,11 @@ import { ResizedEvent } from 'angular-resize-event';
 export class UndoRedoService {
     pile: CanvasAction[];
     currentLocation: number = 0;
+    startImage: ImageData;
 
     constructor(private drawingService: DrawingService) {
         this.pile = [{} as CanvasAction];
+        this.startImage = { data: new Uint8ClampedArray([0, 0, 0, 0]), width: 1, height: 1 };
 
         /*
         To avoid using recursive dependencies, we should look into
@@ -22,13 +24,13 @@ export class UndoRedoService {
         */
         addEventListener('action', (event: CustomEvent) => {
             this.addAction(event.detail);
-            console.log('sent');
         });
         addEventListener('keypress', (event: KeyboardEvent) => {
             this.onKeyPress(event);
         });
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
             this.pile = [{} as CanvasAction];
+            this.sendUndoButtonState();
         });
     }
 
@@ -47,6 +49,7 @@ export class UndoRedoService {
             this.currentLocation--;
 
             this.drawingService.resetCanvas();
+            this.drawingService.baseCtx.putImageData(this.startImage,0,0);
             for (let i = 1; i <= this.currentLocation; i++) {
                 this.doAction(this.pile[i]);
             }
