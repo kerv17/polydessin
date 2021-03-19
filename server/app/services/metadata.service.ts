@@ -1,4 +1,5 @@
 import { TYPES } from '@app/types';
+import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import { Collection, FindAndModifyWriteOpResultObject, ObjectId } from 'mongodb';
 import 'reflect-metadata';
@@ -7,8 +8,9 @@ import { Metadata } from '../classes/metadata';
 import { DatabaseService } from './database.service';
 
 const DATABASE_COLLECTION = 'metadata';
-const MAX_SIZE_TAG = 20;
+const MAX_SIZE_TAG = 10;
 const MIN_SIZE_TAG = 3;
+const MAX_NUMBER_TAG = 5;
 
 @injectable()
 export class MetadataService {
@@ -37,7 +39,7 @@ export class MetadataService {
             })
 
             .catch(() => {
-                throw new Error('Failed to get data');
+                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "aucunne donnée n'a été trouvée");
             });
     }
     // TODO getMetadataByNameAndTags
@@ -47,13 +49,13 @@ export class MetadataService {
             await this.collection
                 .insertOne(metadata)
                 .catch((error: Error) => {
-                    throw new HttpException(500, 'Failed to insert metadata');
+                    throw new HttpException(Httpstatus.StatusCodes.INTERNAL_SERVER_ERROR, "Le serveur n'a pas pu insérer la donnée");
                 })
                 .catch((error: Error) => {
                     throw new Error(error.message);
                 });
         } else {
-            throw new Error('Invalid metadata');
+            throw new HttpException(Httpstatus.StatusCodes.BAD_REQUEST, "n'a pas pu insérer la donnée, format érroné");
         }
     }
 
@@ -62,35 +64,14 @@ export class MetadataService {
             .findOneAndDelete({ codeID: new ObjectId(aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
-                    throw new Error('Failed to delete metadata');
+                    throw new HttpException(Httpstatus.StatusCodes.INTERNAL_SERVER_ERROR, "Le serveur n'a pas pu enlevé la donnée");
                 }
             })
             .catch(() => {
-                throw new Error('Failed to delete metadata');
+                throw new HttpException(Httpstatus.StatusCodes.BAD_REQUEST, "n'a pas pu enlevé la donnée, format érroné");
             });
     }
-    /*
-    // TODO is this necessary?
-    async modifyMetadata(metadata: Metadata): Promise<void> {
-        if (this.validateMetadata(metadata)) {
-            const filterQuery: FilterQuery<Metadata> = { code: metadata.codeID };
-            const updateQuery: UpdateQuery<Metadata> = {
-                $set: {
-                    code: metadata.codeID,
-                    name: metadata.name,
-                    tags: metadata.tags,
-                },
-            };
-            // Can also use replaceOne if we want to replace the entire object
-            return this.collection
-                .updateOne(filterQuery, updateQuery)
-                .then(() => {})
-                .catch(() => {
-                    throw new Error('Failed to update document');
-                });
-        }
-    }
-    */
+
     private validateMetadata(metadata: Metadata): boolean {
         return this.validateName(metadata.name) && this.validateTags(metadata.tags);
     }
@@ -105,16 +86,18 @@ export class MetadataService {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {
-            if (
+            return (
                 this.verifyTagsNotNull(tags) &&
                 this.verifyTagsTooLong(tags) &&
                 this.verifyTagsTooShort(tags) &&
-                this.verifyTagsNoSpecialChracter(tags)
-            ) {
-                return true;
-            }
-            return false;
+                this.verifyTagsNoSpecialChracter(tags) &&
+                this.verifyTagsNumber(tags)
+            );
         }
+    }
+
+    private verifyTagsNumber(tags: string[]): boolean {
+        return tags.length <= MAX_NUMBER_TAG;
     }
     private verifyTagsNotNull(tags: string[]): boolean {
         return tags.every((elem) => elem.length > 0);
@@ -131,7 +114,7 @@ export class MetadataService {
     publié le 28 Decembre 2018
     disponible à l'adresse suivante : "https://www.aspsnippets.com/Articles/Check-whether-String-contains-Special-Characters-using-JavaScript.aspx"
     Quelques modifications y ont été apportées
-*/
+    */
     private verifyTagsNoSpecialChracter(tags: string[]): boolean {
         // only accepts letters and numbers
         const regex = /^[A-Za-z0-9]+$/;
