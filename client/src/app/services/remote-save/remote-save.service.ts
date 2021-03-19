@@ -13,8 +13,8 @@ export class RemoteSaveService {
     constructor(public drawingService: DrawingService, private indexService: IndexService) {}
     showModalSave: boolean = false;
 
-    validateMetadata(name: string, tags: string[]): boolean {
-        return this.validateName(name) && this.validateTags(tags);
+    validateMetadata(information: CanvasInformation): boolean {
+        return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
     }
     // TODO define name acceptance rules
     private validateName(name: string): boolean {
@@ -22,12 +22,22 @@ export class RemoteSaveService {
     }
 
     post(information: CanvasInformation): void {
-        const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
-        information.imageData = data;
-        information.height = this.drawingService.canvas.height;
-        information.width = this.drawingService.canvas.width;
+        if (!this.validateMetadata(information)) {
+            return;
+        }
 
-        this.indexService.basicPost(information).subscribe();
+        if (confirm('Êtes-vous sûr de vouloir sauvegarder le dessin')) {
+            try {
+                const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
+                information.imageData = data;
+                information.height = this.drawingService.canvas.height;
+                information.width = this.drawingService.canvas.width;
+
+                this.indexService.basicPost(information).subscribe();
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        }
     }
 
     // TODO define tags acceptance rules
@@ -45,7 +55,9 @@ export class RemoteSaveService {
             );
         }
     }
-
+    private verifySaveMode(saveMode: string): boolean {
+        return saveMode === 'jpeg' || saveMode === 'png';
+    }
     private verifyTagsNumber(tags: string[]): boolean {
         return tags.length <= MAX_NUMBER_TAG;
     }
@@ -71,17 +83,3 @@ export class RemoteSaveService {
         return tags.every((elem) => regex.test(elem));
     }
 }
-/*
-initialiserCanvas(): void {
-  this.indexService.basicGet().subscribe((x) => {
-      this.pictures = new Array(x.length);
-      console.log(x);
-      let i = 0;
-      for (const element of x) {
-          this.pictures[i] = element;
-
-          i++;
-      }
-      console.log(this.pictures[0]);
-  });
-}*/

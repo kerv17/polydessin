@@ -5,5 +5,5 @@ export interface CanvasInformation {
     height: number;
     tags: string[];
     format: string;
-    imageData:string;
+    imageData: string;
 }
