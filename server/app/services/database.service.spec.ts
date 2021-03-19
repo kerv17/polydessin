@@ -1,4 +1,4 @@
-/* tslint:disable:no-unused-variable */
+/* tslint:disable:no-unused-variable 
 
 import { inject, TestBed } from '@angular/core/testing';
 import { DatabaseService } from './database.service';
@@ -13,4 +13,4 @@ describe('Service: Database', () => {
   it('should ...', inject([DatabaseService], (service: DatabaseService) => {
     expect(service).toBeTruthy();
   }));
-});
+});*/
