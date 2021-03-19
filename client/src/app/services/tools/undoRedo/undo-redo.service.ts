@@ -27,6 +27,9 @@ export class UndoRedoService {
         addEventListener('keypress', (event: KeyboardEvent) => {
             this.onKeyPress(event);
         });
+        addEventListener('undoRedoWipe', (event: CustomEvent) => {
+            this.pile = [{} as CanvasAction];
+        });
     }
 
     onKeyPress(event: KeyboardEvent): void {
