@@ -5,6 +5,8 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 
 const MAX_SIZE_TAG = 10;
 const MIN_SIZE_TAG = 3;
+const MAX_SIZE_NAME = 20;
+const MIN_SIZE_NAME = 6;
 const MAX_NUMBER_TAG = 5;
 @Injectable({
     providedIn: 'root',
@@ -12,14 +14,6 @@ const MAX_NUMBER_TAG = 5;
 export class RemoteSaveService {
     constructor(public drawingService: DrawingService, private indexService: IndexService) {}
     showModalSave: boolean = false;
-
-    validateMetadata(information: CanvasInformation): boolean {
-        return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
-    }
-    // TODO define name acceptance rules
-    private validateName(name: string): boolean {
-        return name.startsWith('Dessin');
-    }
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
@@ -39,24 +33,39 @@ export class RemoteSaveService {
             }
         }
     }
+    validateMetadata(information: CanvasInformation): boolean {
+        return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
+    }
 
-    // TODO define tags acceptance rules
+    tagsHangler(tags: string): string[] {
+        if (tags === undefined) {
+            const emptyArray: string[] = [];
+            return emptyArray;
+        } else {
+            const tagInArray: string[] = tags.split(',');
+            return tagInArray;
+        }
+    }
+
+    private validateName(name: string): boolean {
+        return name.startsWith('Dessin') && this.verifyNameLength(name);
+    }
+    private verifyNameLength(name: string): boolean {
+        return name.length >= MIN_SIZE_NAME && name.length <= MAX_SIZE_NAME;
+    }
+    private verifySaveMode(saveMode: string): boolean {
+        return saveMode === 'jpeg' || saveMode === 'png';
+    }
+
     private validateTags(tags: string[]): boolean {
         if (tags.length === 0) {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {
             return (
-                this.verifyTagsNotNull(tags) &&
-                this.verifyTagsTooLong(tags) &&
-                this.verifyTagsTooShort(tags) &&
-                this.verifyTagsNoSpecialChracter(tags) &&
-                this.verifyTagsNumber(tags)
+                this.verifyTagsNotNull(tags) && this.verifyTagsLength(tags) && this.verifyTagsNoSpecialChracter(tags) && this.verifyTagsNumber(tags)
             );
         }
-    }
-    private verifySaveMode(saveMode: string): boolean {
-        return saveMode === 'jpeg' || saveMode === 'png';
     }
     private verifyTagsNumber(tags: string[]): boolean {
         return tags.length <= MAX_NUMBER_TAG;
@@ -64,11 +73,8 @@ export class RemoteSaveService {
     private verifyTagsNotNull(tags: string[]): boolean {
         return tags.every((elem) => elem.length > 0);
     }
-    private verifyTagsTooLong(tags: string[]): boolean {
-        return tags.every((elem) => elem.length <= MAX_SIZE_TAG);
-    }
-    private verifyTagsTooShort(tags: string[]): boolean {
-        return tags.every((elem) => elem.length >= MIN_SIZE_TAG);
+    private verifyTagsLength(tags: string[]): boolean {
+        return tags.every((elem) => elem.length <= MAX_SIZE_TAG) && tags.every((elem) => elem.length >= MIN_SIZE_TAG);
     }
     /*
   RÉFÉRENCES POUR LE CODE DE LA METHODE  verifyTagsNoSpecialChracter :

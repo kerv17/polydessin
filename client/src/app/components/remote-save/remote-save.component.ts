@@ -10,21 +10,23 @@ export class RemoteSaveComponent {
     png: string = 'png';
     jpeg: string = 'jpeg';
     saveMode: string;
-    width: number;
-    height: number;
     fileName: string;
     tagsName: string;
+    inSave: boolean = false;
     constructor(private remoteSaveService: RemoteSaveService) {}
 
     toggleMode(mode: string): void {
         this.saveMode = mode;
     }
     savePicture(): void {
-        const tags: string[] = this.tagsName.split(',');
+        console.log(this.tagsName);
+        const tags: string[] = this.remoteSaveService.tagsHangler(this.tagsName);
 
         const information = { name: this.fileName, tags, format: this.saveMode, width: 0, height: 0, imageData: '' } as CanvasInformation;
 
+        this.inSave = true;
         this.remoteSaveService.post(information);
+        this.inSave = false;
     }
     close(): void {
         this.remoteSaveService.showModalSave = false;

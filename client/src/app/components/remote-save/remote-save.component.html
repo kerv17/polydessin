@@ -2,7 +2,7 @@
   <div class="modal-content">
       <div class="close" (click)="close()">&times;</div>
       <div>
-          <p>Veuillez choisir le type du fichier exporté</p>
+          <p>Veuillez choisir le type du fichier sauvegardé</p>
           <button
               [ngStyle]="{
                   backgroundColor: saveMode == 'png' ? 'gainsboro' : 'white'
@@ -25,12 +25,15 @@
       </div>
       <div>
           <p>Veuillez choisir le nom du fichier en commencant par "Dessin"</p>
+          <ul>
+                <li>Le nom du fichier doit faire entre 6 et 20 caracter</li>
+          </ul>  
           <input [(ngModel)]="fileName" />
       </div>
       <div>
           <p>Vous pouvez ajouter des tags</p>
           <ul>
-            <li>Les tags doivent être séparés par des &lsaquo;,&rsaquo;</li>
+            <li>Les tags doivent être séparés par des ","</li>
             <li>Il peut ne pas y avoir de tags, mais pas de tag vide</li>
             <li>Les tags doivent faire entre 3 et 10 caracter</li>
             <li>Les tags ne doivent pas avoir de caractères speciaux ou espaces</li>
@@ -41,6 +44,6 @@
             <p>Veuillez choisir les tags pour le fichier</p>
             <input [(ngModel)]="tagsName" />
        </div>
-      <button class="save" (click)="savePicture()">sauvegarder le canvas</button>
+      <button class="save" (click)="savePicture()" [disabled]="inSave">sauvegarder le canvas</button>
   </div>
 </div>
