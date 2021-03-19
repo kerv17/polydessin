@@ -1,12 +1,11 @@
 import { injectable } from 'inversify';
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
-import { Metadata } from '../classes/metadata';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://admin:DB2990T312@cluster0.iuq28.mongodb.net/projet2990?retryWrites=true&w=majority';
 const DATABASE_NAME = 'projet2990';
-const DATABASE_COLLECTION = 'metadata';
+// const DATABASE_COLLECTION = 'metadata';
 
 @injectable()
 export class DatabaseService {
@@ -20,16 +19,16 @@ export class DatabaseService {
 
     async start(url: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            let client = await MongoClient.connect(url, this.options);
+            const client = await MongoClient.connect(url, this.options);
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
         }
         // TODO is this necessary
-        if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
+        /* if ((await this.db.collection(DATABASE_COLLECTION).countDocuments()) === 0) {
             await this.populateDB();
-        }
+        }*/
         return this.client;
     }
 
@@ -37,10 +36,15 @@ export class DatabaseService {
         return this.client.close();
     }
     // TODO remove when done testing
-    async populateDB(): Promise<void> {
-        let metaDatas: Metadata[] = [
+    /* async populateDB(): Promise<void> {
+        const metaDatas: Metadata[] = [
             {
-                code: 'test',
+                codeID: new ObjectId(),
+                name: 'Object Oriented Programming',
+                tags: ['Samuel Kadoury'],
+            },
+            {
+                codeID: new ObjectId(),
                 name: 'Object Oriented Programming',
                 tags: ['Samuel Kadoury'],
             },
@@ -50,7 +54,7 @@ export class DatabaseService {
         for (const metadata of metaDatas) {
             await this.db.collection(DATABASE_COLLECTION).insertOne(metadata);
         }
-    }
+    }*/
 
     get database(): Db {
         return this.db;

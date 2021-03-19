@@ -1,16 +1,16 @@
 /* tslint:disable:no-unused-variable */
 
 import { inject, TestBed } from '@angular/core/testing';
-import { DatabaseService } from './database.service';
+import { ServerSaveService } from './server-save.service';
 
-describe('Service: Database', () => {
+describe('Service: ServerSave', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [DatabaseService]
+      providers: [ServerSaveService]
     });
   });
 
-  it('should ...', inject([DatabaseService], (service: DatabaseService) => {
+  it('should ...', inject([ServerSaveService], (service: ServerSaveService) => {
     expect(service).toBeTruthy();
   }));
 });

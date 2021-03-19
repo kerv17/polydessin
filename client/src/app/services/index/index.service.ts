@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -12,31 +13,25 @@ export class IndexService {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<Message> {
-        return this.http.get<Message>(this.BASE_URL).pipe(catchError(this.handleError<Message>('basicGet')));
+    basicGet(): Observable<CanvasInformation[]> {
+        return this.http.get<CanvasInformation[]>(this.BASE_URL).pipe(catchError(this.handleError<CanvasInformation[]>('basicGet')));
+    }
+    getSome(tags: string): Observable<CanvasInformation[]> {
+        return this.http.get<CanvasInformation[]>(this.BASE_URL + '/' + tags).pipe(catchError(this.handleError<CanvasInformation[]>('getSome')));
     }
 
-    basicPost(message: Message): Observable<void> {
-        return this.http.post<void>(this.BASE_URL + '/send', message).pipe(catchError(this.handleError<void>('basicPost')));
+    basicPost(info: CanvasInformation): Observable<CanvasInformation> {
+        return this.http.post<CanvasInformation>(this.BASE_URL + '/', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
     }
 
     basicDelete(message: string): Observable<Message> {
         return this.http.delete<Message>(this.BASE_URL + '/' + message).pipe(catchError(this.handleError<Message>('basicDelete')));
+        // Cette étape transforme le Message en un seul string
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
             return of(result as T);
         };
-    }
-    getMessagesFromServer(): void {
-        this.basicGet()
-            .pipe(
-                // Cette étape transforme le Message en un seul string
-                map((message: Message) => {
-                    return `${message.title} ${message.body}`;
-                }),
-            )
-            .subscribe(this.message);
     }
 }

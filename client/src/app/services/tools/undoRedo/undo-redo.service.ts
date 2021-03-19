@@ -88,7 +88,7 @@ export class UndoRedoService {
             drawAction.tool.doAction(drawAction);
         } else if (action.type === 'Resize') {
             const resizeAction: ResizeAction = action as ResizeAction;
-            resizeAction.resizer.onResize(resizeAction.event, true);
+            resizeAction.resizer.onResize(resizeAction.event);
             // console.log(this.pile);
         }
     }

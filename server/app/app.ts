@@ -39,7 +39,7 @@ export class Application {
 
         this.bindRoutes();
 
-        this.errorHandling;
+        this.errorHandling();
     }
 
     private config(): void {

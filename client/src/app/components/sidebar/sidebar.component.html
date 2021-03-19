@@ -6,23 +6,68 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
-            <img src="../../../assets/pencil.png/" [ngStyle]="crayon" class="function" (click)="openCrayon()" tabindex="0" />
+            <img
+                src="../../../assets/pencil.png/"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'c' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('c')"
+                (click)="this.openTool(true, 'c')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
-            <img src="../../../assets/line.png" [ngStyle]="line" class="function" (click)="openLine()" tabindex="0" />
+            <img
+                src="../../../assets/line.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'l' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('l')"
+                (click)="this.openTool(true, 'l')"
+                class="function"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
-            <img src="../../../assets/rectangle.png" [ngStyle]="rectangle" class="function" (click)="openRectangle()" tabindex="0" />
+            <img
+                src="../../../assets/rectangle.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == '1' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('1')"
+                (click)="this.openTool(true, '1')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
-            <img src="../../../assets/oval.png" [ngStyle]="ellipsis" class="function" (click)="openEllipsis()" tabindex="0" />
+            <img
+                src="../../../assets/oval.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == '2' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('2')"
+                (click)="this.openTool(true, '2')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'aerosol. Le raccourci est 'a'</div>
-            <img src="../../../assets/aerosol.png" [ngStyle]="aerosol" class="function" (click)="openAerosol()" tabindex="0" />
+            <img
+                src="../../../assets/aerosol.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'a' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('a')"
+                (click)="this.openTool(true, 'a')"
+                tabindex="0"
+            />
         </div>
 
         <div class="ToolContainer">
@@ -47,11 +92,25 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton ouvre le carousel . Le raccourci est 'Ctrl+g'</div>
-            <img src="../../../assets/carousellogo.png" (click)="carouselService.openCarousel()" class="function" tabindex="0" />
+            <img src="../../../assets/carousellogo.png" (click)="openCarousel()" class="function" tabindex="0" />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
-            <img src="../../../assets/selection.png" [ngStyle]="selection" (click)="selectCanvas()" class="function" tabindex="0" />
+            <img
+                src="../../../assets/selection.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'r' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('r')"
+                (click)="this.openTool(false, 'r')"
+                (click)="selectCanvas()"
+                class="function"
+                tabindex="0"
+            />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton sauvegarde le dessin sur le serveur. Le raccourci est 'Ctrl+s'</div>
+            <img src="../../../assets/save.png" class="function" (click)="openSave()" tabindex="0" />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de faire une sélection rectangulaire. Le raccourci est 'r'</div>
@@ -72,7 +131,7 @@
             <div>
                 <app-color [reset]="resetAttributes"></app-color>
             </div>
-            <div *ngIf="fillBorder">
+            <div *ngIf="shapeOptions">
                 <app-shape-options [change]="resetAttributes"></app-shape-options>
             </div>
             <div *ngIf="showline">
@@ -85,5 +144,8 @@
     </div>
     <div *ngIf="carouselService.showCarousel">
         <app-caroussel></app-caroussel>
+    </div>
+    <div *ngIf="remoteSaveService.showModalSave">
+        <app-remote-save></app-remote-save>
     </div>
 </div>

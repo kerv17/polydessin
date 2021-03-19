@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -30,7 +30,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
-
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
@@ -42,6 +41,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private drawingService: DrawingService,
         private colorService: ColorService,
         private controller: ToolControllerService,
+        private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
     ) {
         this.canvasSize = this.drawingService.setSizeCanva();
@@ -59,6 +59,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.viewInitialized = true;
+        this.loadCarouselCanvas();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -86,7 +87,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             }
         }
     }
-
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent): void {
@@ -186,6 +186,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             return true;
         } else {
             return false;
+        }
+    }
+    loadCarouselCanvas(): void {
+        if (this.carousel.loadImage) {
+            this.carousel.loadImage = false;
+            this.drawingService.loadOldCanvas(this.carousel.imageToLoad);
+            this.carousel.showLoad = false;
+            this.carousel.close();
         }
     }
 }
