@@ -29,7 +29,7 @@ export class AerosolService extends Tool {
         this.mouseDown = true;
         this.timeoutID = setInterval(() => {
             this.onTimeout();
-        }, MILS_TO_SEC);
+        }, MILS_TO_SEC / this.sprayAmountPerSecond);
         this.onTimeout();
     }
 
@@ -68,9 +68,7 @@ export class AerosolService extends Tool {
     }
 
     sprayPoints(position: Vec2, radius: number, amount: number): void {
-        for (let i = 0; i < amount; i++) {
-            this.pathData.push(this.addPoint(position, radius));
-        }
+        this.pathData.push(this.addPoint(position, radius));
     }
 
     addPoint(position: Vec2, radius: number): Vec2 {

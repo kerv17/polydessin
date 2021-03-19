@@ -2,6 +2,7 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="close" (click)="carouselService.close()">&times;</div>
+
         <div class="carouselContainer">
             <owl-carousel-o id="carousel" [options]="customOptions" #owlCar>
                 <ng-container *ngFor="let slide of carouselService.pictures" class="container">
@@ -10,22 +11,24 @@
                             <img class="carousel" (click)="carouselService.loadCanvas(slide)" [src]="slide.imageData" alt="test" />
                         </div>
                         <div class="info">
-                            <p>{{ slide.name }} Tags:{{ slide.tags }}</p>
+                            <p>Nom: {{ slide.name }} Tags: {{ slide.tags }}</p>
                         </div>
                     </ng-template>
                 </ng-container>
             </owl-carousel-o>
         </div>
+
         <div class="button">
             <button class="left" (click)="this.owlCar.prev()">&#8249;</button>
             <button class="right" (click)="this.owlCar.next()">&#8250;</button>
         </div>
+        <div *ngIf="carouselService.showLoad"><img class="loading" src="../../../../assets/loading.gif" /></div>
         <div class="carouselActions">
             <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Delete selected canvas</button>
             <div class="tags">
-                <input [(ngModel)]="carouselService.currentTags" />
-                <button (click)="carouselService.filterdessin()">Enregistrer Tags</button>
-                <button (click)="carouselService.loadImageButton(owlCar.slidesOutputData.slides)">Charger Canvas</button>
+                <p style="display: inline-block">Veuillez entrez les tags recherché(séparé par une virgule)</p>
+                <input style="display: inline-block" [(ngModel)]="carouselService.currentTags" />
+                <button style="display: inline-block" (click)="carouselService.filterdessin()">Enregistrer Tags</button>
             </div>
         </div>
     </div>

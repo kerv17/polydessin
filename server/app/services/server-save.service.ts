@@ -13,7 +13,6 @@ export class ServerSaveService {
 
             fs.writeFile('./' + name + '.' + type, base64Data, 'base64', (err) => {
                 if (err) return console.log(err);
-                console.log(name);
             });
         }
     }

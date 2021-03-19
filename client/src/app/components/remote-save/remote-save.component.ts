@@ -22,7 +22,7 @@ export class RemoteSaveComponent {
     savePicture(): void {
         const tags: string[] = this.tagsName.split(',');
         if (this.remoteSaveService.validateMetadata(this.fileName, tags)) {
-            let information = { name: this.fileName, tags: tags, format: this.saveMode, width: 0, height: 0, imageData: '' } as CanvasInformation;
+            const information = { name: this.fileName, tags, format: this.saveMode, width: 0, height: 0, imageData: '' } as CanvasInformation;
 
             this.remoteSaveService.post(information);
         }

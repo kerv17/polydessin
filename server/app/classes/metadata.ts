@@ -4,7 +4,7 @@ export interface Metadata {
     codeID: ObjectId;
     name: string;
     tags: string[];
-    format:string;
+    format: string;
     height: number;
-    width:number;
+    width: number;
 }

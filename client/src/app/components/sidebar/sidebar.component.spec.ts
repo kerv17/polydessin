@@ -6,9 +6,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ColorComponent } from '@app/components/color/color.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { IndexService } from '@app/services/index/index.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
@@ -40,6 +43,8 @@ describe('SidebarComponent', () => {
     let setWhiteSpy: jasmine.Spy;
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
+    let carouselService:CarouselService;
+    let selectionMovementService:SelectionMovementService
 
     let eventSpy: jasmine.Spy;
     const router = {
@@ -48,15 +53,17 @@ describe('SidebarComponent', () => {
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
+        selectionMovementService = new SelectionMovementService();
         toolController = new ToolControllerService(
-            {} as PencilService,
-            {} as RectangleService,
-            {} as LineService,
-            {} as EllipsisService,
-            {} as AerosolService,
-            {} as SelectionService,
+            new PencilService(drawingStub),
+            new RectangleService(drawingStub),
+            new LineService(drawingStub),
+            new EllipsisService(drawingStub),
+            new AerosolService(drawingStub),
+            new SelectionService(drawingStub,selectionMovementService),
         );
         colorService = new ColorService();
+        carouselService = new CarouselService({} as IndexService);
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
@@ -66,6 +73,7 @@ describe('SidebarComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ColorService, useValue: colorService },
+                { provide: CarouselService, useValue: carouselService},
                 { provide: Router, useValue: router },
             ],
         }).compileComponents();

@@ -13,7 +13,7 @@ export class CarouselService {
     currentTags: string;
     loadImage: boolean = false;
     imageToLoad: CanvasInformation = {} as CanvasInformation;
-
+    showLoad: boolean = false;
     constructor(private indexService: IndexService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
@@ -70,10 +70,11 @@ export class CarouselService {
         }
     }
     initialiserCarousel(): void {
+        this.currentTags = '';
         this.indexService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
             if (x !== undefined) {
                 if (x.length === 0) {
-                    window.alert('Aucun dessin enregistrer le server');
+                    window.alert('Aucun dessin enregistrer le serveur');
                     this.close();
                     return;
                 }
@@ -87,12 +88,22 @@ export class CarouselService {
             }
         });
     }
+<<<<<<< HEAD
     findCanvasInformation(id: string): CanvasInformation {
         for (let i = 0; i < this.pictures.length; i++) {
             if (id === this.pictures[i].codeID) return this.pictures[i];
         }
         return {} as CanvasInformation;
     }
+=======
+    /*  findCanvasInformationPosition(canvas: CanvasInformation): number {
+        let i = 0;
+        for (; i < this.pictures.length; i++) {
+            if (canvas.codeID === this.pictures[i].codeID) break;
+        }
+        return i;
+    }*/
+>>>>>>> feature/filter
     setSlides(): void {
         for (let element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
@@ -103,21 +114,23 @@ export class CarouselService {
     }
 
     filterdessin(): void {
+        this.showLoad = true;
         this.indexService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
+            console.log(x);
             if (x !== undefined) {
                 if (x.length === 0) {
-                    window.alert('Aucun dessin enregistrer le server');
-                    this.close();
+                    window.alert('Aucun dessin rencontre ces critères');
+                    this.showLoad = false;
                     return;
                 }
 
                 this.pictures = x;
-
                 this.setSlides();
             } else {
                 window.alert('Aucune connection avec le server');
                 this.close();
             }
+            this.showLoad = false;
         });
     }
 }

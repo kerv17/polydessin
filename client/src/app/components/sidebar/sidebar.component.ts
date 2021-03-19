@@ -31,6 +31,7 @@ export class SidebarComponent {
     redo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
     private toolParamMap: Map<string, ToolParam>;
     private functionMap: Map<string, () => void>;
+    rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(
         private toolcontroller: ToolControllerService,

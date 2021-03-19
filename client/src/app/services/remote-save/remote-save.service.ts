@@ -3,8 +3,9 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { IndexService } from '@app/services/index/index.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
-const MAX_SIZE_TAG = 20;
+const MAX_SIZE_TAG = 10;
 const MIN_SIZE_TAG = 3;
+const MAX_NUMBER_TAG = 5;
 @Injectable({
     providedIn: 'root',
 })
@@ -35,16 +36,18 @@ export class RemoteSaveService {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {
-            if (
+            return (
                 this.verifyTagsNotNull(tags) &&
                 this.verifyTagsTooLong(tags) &&
                 this.verifyTagsTooShort(tags) &&
-                this.verifyTagsNoSpecialChracter(tags)
-            ) {
-                return true;
-            }
-            return false;
+                this.verifyTagsNoSpecialChracter(tags) &&
+                this.verifyTagsNumber(tags)
+            );
         }
+    }
+
+    private verifyTagsNumber(tags: string[]): boolean {
+        return tags.length <= MAX_NUMBER_TAG;
     }
     private verifyTagsNotNull(tags: string[]): boolean {
         return tags.every((elem) => elem.length > 0);
