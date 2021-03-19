@@ -21,6 +21,8 @@ export class SelectionService extends Tool {
         this.width = 1;
         this.rectangleService = new RectangleService(this.drawingService);
 
+        // keyDown est appelé de façon répétée à environ chaque 100ms si une touche est maintenue enfoncée
+        // un délai initial d'environ 500ms est automatiquement maintenue si une touche reste enfoncée
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.selectionMove.onArrowKeyDown(event, this.inSelection, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
