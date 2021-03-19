@@ -29,6 +29,7 @@ export class UndoRedoService {
         });
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
             this.pile = [{} as CanvasAction];
+            this.sendUndoButtonState();
         });
     }
 

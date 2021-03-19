@@ -41,13 +41,13 @@ export class CarouselService {
             }
         }
     }
-    loadImageButton(activeSlides: SlideModel[] | undefined): void {
+    /*  loadImageButton(activeSlides: SlideModel[] | undefined): void {
         if (activeSlides != undefined) {
             const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
             const canvas = this.findCanvasInformation(selectedSlide.id);
             this.loadCanvas(canvas);
         }
-    }
+    }*/
 
     removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
@@ -61,7 +61,8 @@ export class CarouselService {
     loadCanvas(info: CanvasInformation): void {
         if (this.router.url.includes('/editor')) {
             this.drawingService.loadOldCanvas(info);
-
+            const event: CustomEvent = new CustomEvent('undoRedoWipe');
+            dispatchEvent(event);
             this.close();
         } else {
             this.router.navigate(['/editor']);
@@ -88,14 +89,6 @@ export class CarouselService {
             }
         });
     }
-<<<<<<< HEAD
-    findCanvasInformation(id: string): CanvasInformation {
-        for (let i = 0; i < this.pictures.length; i++) {
-            if (id === this.pictures[i].codeID) return this.pictures[i];
-        }
-        return {} as CanvasInformation;
-    }
-=======
     /*  findCanvasInformationPosition(canvas: CanvasInformation): number {
         let i = 0;
         for (; i < this.pictures.length; i++) {
@@ -103,7 +96,6 @@ export class CarouselService {
         }
         return i;
     }*/
->>>>>>> feature/filter
     setSlides(): void {
         for (let element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
