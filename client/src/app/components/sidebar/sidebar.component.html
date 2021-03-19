@@ -112,6 +112,10 @@
             <div class="infobulle">Ce bouton sauvegarde le dessin sur le serveur. Le raccourci est 'Ctrl+s'</div>
             <img src="../../../assets/save.png" class="function" (click)="openSave()" tabindex="0" />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire une sélection rectangulaire. Le raccourci est 'r'</div>
+            <img src="../../../assets/Rectangleselection.png" [ngStyle]="rectangleSelection" (click)="openSelection()" class="function" tabindex="0" />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
