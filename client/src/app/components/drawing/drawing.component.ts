@@ -211,6 +211,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         if (this.carousel.loadImage) {
             this.carousel.loadImage = false;
             this.drawingService.loadOldCanvas(this.carousel.imageToLoad);
+            this.carousel.showLoad = false;
             this.carousel.close();
         }
     }
