@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Setting, Tool } from '@app/classes/tool';
+import { EditorComponent } from '@app/components/editor/editor.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizedEvent } from 'angular-resize-event';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UndoRedoService {
-    pile: DrawAction[];
+    pile: CanvasAction[];
     currentLocation: number = 0;
 
-    constructor() {
-        this.pile = [{} as DrawAction];
+    constructor(private drawingService: DrawingService) {
+        this.pile = [{} as CanvasAction];
 
         /*
         To avoid using recursive dependencies, we should look into
@@ -20,6 +22,7 @@ export class UndoRedoService {
         */
         addEventListener('action', (event: CustomEvent) => {
             this.addAction(event.detail);
+            console.log('sent');
         });
         addEventListener('keypress', (event: KeyboardEvent) => {
             this.onKeyPress(event);
@@ -40,8 +43,7 @@ export class UndoRedoService {
         if (this.currentLocation > 0) {
             this.currentLocation--;
 
-            const drawingService: DrawingService = this.pile[1].tool.drawingService;
-            drawingService.resetCanvas();
+            this.drawingService.resetCanvas();
             for (let i = 1; i <= this.currentLocation; i++) {
                 this.doAction(this.pile[i]);
             }
@@ -74,14 +76,30 @@ export class UndoRedoService {
         this.sendUndoButtonState();
     }
 
-    doAction(action: DrawAction): void {
-        const tool = action.tool;
-        tool.doAction(action);
+    doAction(action: CanvasAction): void {
+        if (action.type === 'Draw') {
+            const drawAction: DrawAction = action as DrawAction;
+            drawAction.tool.doAction(drawAction);
+        } else if (action.type === 'Resize') {
+            const resizeAction: ResizeAction = action as ResizeAction;
+            resizeAction.resizer.onResize(resizeAction.event, true);
+            // console.log(this.pile);
+        }
     }
+    // function doAction(action: ResizeAction):void
 }
 
-export interface DrawAction {
+export interface CanvasAction {
+    type: string;
+}
+
+export interface DrawAction extends CanvasAction {
     tool: Tool;
     setting: Setting;
     canvas: CanvasRenderingContext2D;
+}
+
+export interface ResizeAction extends CanvasAction {
+    resizer: EditorComponent;
+    event: ResizedEvent;
 }
