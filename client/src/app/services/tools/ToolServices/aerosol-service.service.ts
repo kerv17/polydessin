@@ -35,12 +35,12 @@ export class AerosolService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         this.lastPosition = this.getPositionFromMouse(event);
-        this.showRadius(this.getPositionFromMouse(event), this.sprayRadius);
+        this.showRadius(this.lastPosition, this.sprayRadius);
     }
 
     onTimeout() {
         if (this.mouseDown) {
-            this.sprayPoints(this.lastPosition, this.sprayRadius, this.sprayAmountPerSecond);
+            this.sprayPoints(this.lastPosition, this.sprayRadius);
             this.drawSpray(this.drawingService.previewCtx, this.pathData);
         }
     }
@@ -67,7 +67,7 @@ export class AerosolService extends Tool {
         this.drawSpray(this.drawingService.previewCtx, this.pathData);
     }
 
-    sprayPoints(position: Vec2, radius: number, amount: number): void {
+    sprayPoints(position: Vec2, radius: number): void {
         this.pathData.push(this.addPoint(position, radius));
     }
 
