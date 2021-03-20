@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
@@ -16,8 +16,10 @@ export class ServerRequestService {
     basicGet(): Observable<CanvasInformation[]> {
         return this.http.get<CanvasInformation[]>(this.BASE_URL).pipe(catchError(this.handleError<CanvasInformation[]>('basicGet')));
     }
-    getSome(tags: string): Observable<CanvasInformation[]> {
-        return this.http.get<CanvasInformation[]>(this.BASE_URL + '/' + tags).pipe(catchError(this.handleError<CanvasInformation[]>('getSome')));
+    getSome(tags: string): Observable<HttpResponse<CanvasInformation[]>> {
+        return this.http
+            .get<CanvasInformation[]>(this.BASE_URL + '/' + tags, { observe: 'response' })
+            .pipe(catchError(this.handleError<HttpResponse<CanvasInformation[]>>('getSome')));
     }
 
     basicPost(info: CanvasInformation): Observable<CanvasInformation> {

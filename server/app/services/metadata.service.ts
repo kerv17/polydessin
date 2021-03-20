@@ -39,7 +39,7 @@ export class MetadataService {
             })
 
             .catch(() => {
-                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "aucunne donnée n'a été trouvée");
+                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "aucune donnée n'a été trouvée");
             });
     }
     // TODO getMetadataByNameAndTags

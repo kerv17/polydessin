@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/index/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+import * as Httpstatus from 'http-status-codes';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
 @Injectable({
     providedIn: 'root',
@@ -14,6 +15,7 @@ export class CarouselService {
     loadImage: boolean = false;
     imageToLoad: CanvasInformation = {} as CanvasInformation;
     showLoad: boolean = false;
+    currentSearch: string = '';
     constructor(private requestService: ServerRequestService, private drawingService: DrawingService, private router: Router) {}
 
     close(): void {
@@ -71,6 +73,8 @@ export class CarouselService {
     }
     initialiserCarousel(): void {
         this.currentTags = '';
+        this.currentSearch = '';
+
         this.requestService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
             if (x !== undefined) {
                 if (x.length === 0) {
@@ -106,21 +110,26 @@ export class CarouselService {
 
     filterdessin(): void {
         this.showLoad = true;
-        this.requestService.getSome(this.currentTags).subscribe((x: CanvasInformation[] | undefined) => {
-            console.log(x);
-            if (x !== undefined) {
-                if (x.length === 0) {
-                    window.alert('Aucun dessin rencontre ces critères');
-                    this.showLoad = false;
-                    return;
-                }
 
-                this.pictures = x;
-                this.setSlides();
-            } else {
+        this.requestService.getSome(this.currentTags).subscribe((response) => {
+            console.log(response);
+            if (response === undefined) {
                 window.alert('Aucune connection avec le server');
                 this.close();
+                return;
             }
+
+            if (response.status === Httpstatus.StatusCodes.NOT_FOUND) {
+                window.alert('Aucun dessin rencontre ces critères');
+                this.showLoad = false;
+                this.currentTags = '';
+                return;
+            }
+
+            //this.pictures = response.body | ([] as CanvasInformation[]);
+            this.setSlides();
+
+            this.currentSearch = this.currentTags;
             this.showLoad = false;
         });
     }
