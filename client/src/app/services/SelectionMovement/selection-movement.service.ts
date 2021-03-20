@@ -6,11 +6,11 @@ import * as Globals from '@app/Constants/constants';
     providedIn: 'root',
 })
 export class SelectionMovementService {
-    initialMousePosition: Vec2;
-    leftArrow: boolean = false;
-    downArrow: boolean = false;
-    rightArrow: boolean = false;
-    upArrow: boolean = false;
+    private initialMousePosition: Vec2;
+    private leftArrow: boolean = false;
+    private downArrow: boolean = false;
+    private rightArrow: boolean = false;
+    private upArrow: boolean = false;
 
     onMouseDown(event: MouseEvent, mousePosition: Vec2, topLeft: Vec2, width: number, height: number): boolean {
         const bottomRight = { x: topLeft.x + width, y: topLeft.y + height };
@@ -39,20 +39,18 @@ export class SelectionMovementService {
         return position;
     }
 
-    onArrowKeyDown(event: KeyboardEvent, inSelection: boolean, path: Vec2[], topLeft: Vec2): void {
-        if (inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = true;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = true;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = true;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = true;
-            }
+    onArrowKeyDown(event: KeyboardEvent, path: Vec2[], topLeft: Vec2): void {
+        if (event.key === 'ArrowLeft') {
+            this.leftArrow = true;
+        }
+        if (event.key === 'ArrowUp') {
+            this.upArrow = true;
+        }
+        if (event.key === 'ArrowRight') {
+            this.rightArrow = true;
+        }
+        if (event.key === 'ArrowDown') {
+            this.downArrow = true;
         }
         if (path.length > Globals.CURRENT_SELECTION_POSITION) {
             path.pop();
@@ -60,20 +58,18 @@ export class SelectionMovementService {
         path.push(this.moveSelection(topLeft));
     }
 
-    onArrowKeyUp(event: KeyboardEvent, inSelection: boolean): void {
-        if (inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = false;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = false;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = false;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = false;
-            }
+    onArrowKeyUp(event: KeyboardEvent): void {
+        if (event.key === 'ArrowLeft') {
+            this.leftArrow = false;
+        }
+        if (event.key === 'ArrowUp') {
+            this.upArrow = false;
+        }
+        if (event.key === 'ArrowRight') {
+            this.rightArrow = false;
+        }
+        if (event.key === 'ArrowDown') {
+            this.downArrow = false;
         }
     }
 

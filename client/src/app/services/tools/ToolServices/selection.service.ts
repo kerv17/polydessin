@@ -14,6 +14,10 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     private inMovement: boolean = false;
     private selectedArea: ImageData;
+    private timeout: number;
+    private interval: number;
+    private keyDown: boolean = false;
+    private firstTime: boolean = true;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -21,27 +25,32 @@ export class SelectionService extends Tool {
         this.width = 1;
         this.rectangleService = new RectangleService(this.drawingService);
 
-        // keyDown est appelé de façon répétée à environ chaque 100ms si une touche est maintenue enfoncée
-        // un délai initial d'environ 500ms est automatiquement maintenue si une touche reste enfoncée
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.selectionMove.onArrowKeyDown(event, this.inSelection, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(
-                this.selectedArea,
-                this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
-                this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
-            );
+            if (this.inSelection) {
+                if (event.repeat) {
+                    this.setKeyMovementDelays(event);
+                } else {
+                    this.onArrowDown(event);
+                }
+            }
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
-            this.selectionMove.onArrowKeyUp(event, this.inSelection);
+            if (this.inSelection) {
+                this.keyDown = false;
+                this.firstTime = true;
+                clearInterval(this.interval);
+                clearTimeout(this.timeout);
+                this.selectionMove.onArrowKeyUp(event);
+            }
         });
     }
 
     getActualPosition(): Vec2 {
-        if (this.pathData.length !== 0) {
+        if (this.pathData.length > Globals.CURRENT_SELECTION_POSITION) {
             return { x: this.pathData[Globals.CURRENT_SELECTION_POSITION].x, y: this.pathData[Globals.CURRENT_SELECTION_POSITION].y };
+        } else if (this.pathData.length > 0) {
+            return { x: this.pathData[0].x, y: this.pathData[0].y };
         }
         return { x: 0, y: 0 };
     }
@@ -164,7 +173,9 @@ export class SelectionService extends Tool {
     private selectArea(ctx: CanvasRenderingContext2D): void {
         const width: number = this.pathData[2].x - this.pathData[0].x;
         const height: number = this.pathData[2].y - this.pathData[0].y;
-        this.selectedArea = ctx.getImageData(this.pathData[0].x, this.pathData[0].y, width, height);
+        if (width !== 0 && height !== 0) {
+            this.selectedArea = ctx.getImageData(this.pathData[0].x, this.pathData[0].y, width, height);
+        }
     }
 
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
@@ -228,5 +239,31 @@ export class SelectionService extends Tool {
             this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: oppositeCorner.y });
         }
         this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
+    }
+
+    private setKeyMovementDelays(event: KeyboardEvent): void {
+        if (this.keyDown) {
+            if (this.firstTime) {
+                this.firstTime = false;
+                this.interval = setInterval(() => {
+                    this.onArrowDown(event);
+                }, Globals.INTERVAL_MS);
+            }
+        } else {
+            this.timeout = setTimeout(() => {
+                this.keyDown = true;
+            }, Globals.TIMEOUT_MS);
+        }
+    }
+
+    private onArrowDown(event: KeyboardEvent): void {
+        this.selectionMove.onArrowKeyDown(event, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.updateCanvasOnMove(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.putImageData(
+            this.selectedArea,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+        );
     }
 }
