@@ -1,3 +1,4 @@
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -76,22 +77,21 @@ export class CarouselService {
         this.currentTags = '';
         this.currentSearch = '';
 
-        this.requestService.basicGet().subscribe((x: CanvasInformation[] | undefined) => {
-            if (x !== undefined) {
-                if (x.length === 0) {
-                    window.alert('Aucun dessin enregistrer le serveur');
-                    this.close();
-                    return;
-                }
+        this.requestService.basicGet().subscribe(
+            (response: HttpResponse<CanvasInformation[]>) => {
+                this.getImages(response);
 
-                this.pictures = x;
-
-                this.setSlides();
-            } else {
-                window.alert('Aucune connection avec le server');
+                // this.setSlides();
+                // else {
+                // window.alert('Aucune connection avec le server');
+                // this.close();
+                //     }
+            },
+            (err: HttpErrorResponse) => {
+                this.handleCarouselErrors(err);
                 this.close();
-            }
-        });
+            },
+        );
     }
     /*  findCanvasInformationPosition(canvas: CanvasInformation): number {
         let i = 0;
@@ -113,25 +113,30 @@ export class CarouselService {
         this.showLoad = true;
 
         this.requestService.getSome(this.currentTags).subscribe(
-            (response) => {
-                if (response.body != null) {
-                    this.pictures = response.body;
-                    this.setSlides();
-                }
+            (response: HttpResponse<CanvasInformation[]>) => {
+                this.getImages(response);
                 this.currentSearch = this.currentTags;
                 this.showLoad = false;
             },
-            (err) => {
-                console.log(err);
-                if (err.status === Httpstatus.StatusCodes.NOT_FOUND) {
-                    window.alert(err.error);
-                } else if (err.status === 0) {
-                    window.alert('Aucune connection avec le serveur');
-                    this.close();
-                }
+            (err: HttpErrorResponse) => {
+                this.handleCarouselErrors(err);
                 this.showLoad = false;
                 this.currentTags = '';
             },
         );
+    }
+    getImages(response: HttpResponse<CanvasInformation[]>): void {
+        if (response.body != null) {
+            this.pictures = response.body;
+            this.setSlides();
+        }
+    }
+    handleCarouselErrors(err: HttpErrorResponse): void {
+        if (err.status === Httpstatus.StatusCodes.NOT_FOUND) {
+            window.alert(err.error);
+        } else if (err.status === 0) {
+            window.alert('Aucune connection avec le serveur');
+            this.close();
+        }
     }
 }

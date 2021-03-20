@@ -13,8 +13,8 @@ export class ServerRequestService {
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
     constructor(private http: HttpClient) {}
 
-    basicGet(): Observable<CanvasInformation[]> {
-        return this.http.get<CanvasInformation[]>(this.BASE_URL).pipe(catchError(this.handleError<CanvasInformation[]>('basicGet')));
+    basicGet(): Observable<HttpResponse<CanvasInformation[]>> {
+        return this.http.get<CanvasInformation[]>(this.BASE_URL, { observe: 'response' });
     }
     getSome(tags: string): Observable<HttpResponse<CanvasInformation[]>> {
         return this.http.get<CanvasInformation[]>(this.BASE_URL + '/' + tags, { observe: 'response' });
