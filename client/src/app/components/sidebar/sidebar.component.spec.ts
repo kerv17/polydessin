@@ -33,7 +33,7 @@ type ToolParam = {
     showWidth: boolean;
     toolName: string;
 };
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
