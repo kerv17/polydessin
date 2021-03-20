@@ -26,22 +26,23 @@ export class SelectionService extends Tool {
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (this.inSelection) {
+            if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 if (event.repeat) {
-                    this.setKeyMovementDelays(event);
+                    this.setKeyMovementDelays();
                 } else {
-                    this.onArrowDown(event);
+                    this.onArrowDown();
                 }
             }
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
-            if (this.inSelection) {
+            if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.keyDown = false;
                 this.firstTime = true;
                 clearInterval(this.interval);
                 clearTimeout(this.timeout);
                 this.selectionMove.onArrowKeyUp(event);
+                console.log(this.pathData);
             }
         });
     }
@@ -241,23 +242,23 @@ export class SelectionService extends Tool {
         this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
     }
 
-    private setKeyMovementDelays(event: KeyboardEvent): void {
+    private setKeyMovementDelays(): void {
         if (this.keyDown) {
             if (this.firstTime) {
                 this.firstTime = false;
-                this.interval = setInterval(() => {
-                    this.onArrowDown(event);
+                this.interval = window.setInterval(() => {
+                    this.onArrowDown();
                 }, Globals.INTERVAL_MS);
             }
         } else {
-            this.timeout = setTimeout(() => {
+            this.timeout = window.setTimeout(() => {
                 this.keyDown = true;
             }, Globals.TIMEOUT_MS);
         }
     }
 
-    private onArrowDown(event: KeyboardEvent): void {
-        this.selectionMove.onArrowKeyDown(event, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
+    private onArrowDown(): void {
+        this.selectionMove.moveSelection(this.pathData);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.updateCanvasOnMove(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(

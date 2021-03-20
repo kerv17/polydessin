@@ -39,23 +39,25 @@ export class SelectionMovementService {
         return position;
     }
 
-    onArrowKeyDown(event: KeyboardEvent, path: Vec2[], topLeft: Vec2): void {
+    isArrowKeyDown(event: KeyboardEvent): boolean {
+        let isKeyEvent = false;
         if (event.key === 'ArrowLeft') {
             this.leftArrow = true;
+            isKeyEvent = true;
         }
         if (event.key === 'ArrowUp') {
             this.upArrow = true;
+            isKeyEvent = true;
         }
         if (event.key === 'ArrowRight') {
             this.rightArrow = true;
+            isKeyEvent = true;
         }
         if (event.key === 'ArrowDown') {
             this.downArrow = true;
+            isKeyEvent = true;
         }
-        if (path.length > Globals.CURRENT_SELECTION_POSITION) {
-            path.pop();
-        }
-        path.push(this.moveSelection(topLeft));
+        return isKeyEvent;
     }
 
     onArrowKeyUp(event: KeyboardEvent): void {
@@ -73,7 +75,12 @@ export class SelectionMovementService {
         }
     }
 
-    moveSelection(topLeft: Vec2): Vec2 {
+    moveSelection(path: Vec2[]): void {
+        let topLeft = { x: path[0].x, y: path[0].y };
+        if (path.length > Globals.CURRENT_SELECTION_POSITION) {
+            topLeft = { x: path[Globals.CURRENT_SELECTION_POSITION].x, y: path[Globals.CURRENT_SELECTION_POSITION].y };
+            path.pop();
+        }
         if (this.leftArrow) {
             topLeft.x -= Globals.N_PIXELS_DEPLACEMENT;
         }
@@ -86,6 +93,6 @@ export class SelectionMovementService {
         if (this.downArrow) {
             topLeft.y += Globals.N_PIXELS_DEPLACEMENT;
         }
-        return topLeft;
+        path.push(topLeft);
     }
 }

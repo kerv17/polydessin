@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-
 import { SelectionService } from './selection.service';
 
-describe('SelectionService', () => {
+fdescribe('SelectionService', () => {
     let service: SelectionService;
 
     beforeEach(() => {
