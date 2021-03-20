@@ -8,7 +8,7 @@ import { CanvasTestHelper } from './canvas-test-helper';
 import { Setting, Tool } from './tool';
 import { Vec2 } from './vec2';
 
-fdescribe('Tool', () => {
+describe('Tool', () => {
   let service: Tool;
   let drawServiceSpy: jasmine.SpyObj<DrawingService>;
   let testSetting:Setting
