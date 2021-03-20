@@ -29,7 +29,6 @@ export class MetadataService {
             });
     }
 
-    // TODO getMetadataByTags
     async getMetadataByTags(tagsToFind: string[]): Promise<Metadata[]> {
         return this.collection
             .find({ tags: { $in: tagsToFind } })
@@ -64,11 +63,11 @@ export class MetadataService {
             .findOneAndDelete({ codeID: new ObjectId(aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
-                    throw new HttpException(Httpstatus.StatusCodes.INTERNAL_SERVER_ERROR, "Le serveur n'a pas pu enlevé la donnée");
+                    throw new Error("Le serveur n'a pas pu enlevé la donnée");
                 }
             })
-            .catch(() => {
-                throw new HttpException(Httpstatus.StatusCodes.BAD_REQUEST, "n'a pas pu enlevé la donnée, format érroné");
+            .catch((error: Error) => {
+                throw new Error(error.message);
             });
     }
 
