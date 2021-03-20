@@ -28,12 +28,6 @@ export class PencilService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.outOfBounds) {
-            this.mouseDown = false;
-            this.clearPath();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
-
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
@@ -45,6 +39,7 @@ export class PencilService extends Tool {
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             const action: DrawAction = this.createAction();
             this.dispatchAction(action);
+            console.log('hit');
         }
         this.mouseDown = false;
         this.clearPath();
@@ -52,7 +47,7 @@ export class PencilService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && !this.outOfBounds) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
@@ -64,9 +59,6 @@ export class PencilService extends Tool {
 
     onMouseLeave(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
-            this.clearPath();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.outOfBounds = true;
         }
     }
