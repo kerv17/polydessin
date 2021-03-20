@@ -23,22 +23,10 @@ export class UndoRedoService {
         addEventListener('action', (event: CustomEvent) => {
             this.addAction(event.detail);
         });
-        addEventListener('keypress', (event: KeyboardEvent) => {
-            this.onKeyPress(event);
-        });
+
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
             this.resetPile(event.detail);
         });
-    }
-
-    onKeyPress(event: KeyboardEvent): void {
-        const keypressed = event.key.toLocaleLowerCase();
-        if (keypressed === 'z' && event.ctrlKey && !event.shiftKey) {
-            this.undo();
-        }
-        if (keypressed === 'z' && event.ctrlKey && event.shiftKey) {
-            this.redo();
-        }
     }
 
     undo(): void {

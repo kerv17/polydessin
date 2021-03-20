@@ -272,7 +272,7 @@ fdescribe('SidebarComponent', () => {
     });
 
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
-        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
@@ -285,14 +285,14 @@ fdescribe('SidebarComponent', () => {
 
     it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
         component.initToolMap();
-        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false };
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         component.currentTool = Globals.CRAYON_SHORTCUT;
         mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = true;
 
         window.dispatchEvent(keyDownEvent);
-        expect(mapSpy).toHaveBeenCalledWith([false, Globals.ELLIPSIS_SHORTCUT].join());
+        expect(mapSpy).toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
         expect(component.currentTool).toEqual(Globals.ELLIPSIS_SHORTCUT);
     });
 

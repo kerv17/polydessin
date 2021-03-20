@@ -121,8 +121,8 @@ export class SidebarComponent {
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
         if (!this.exportService.showModalExport && !this.carouselService.showCarousel && !this.remoteSaveService.showModalSave) {
-            if (this.functionMap.has([$event.ctrlKey, $event.key].join())) {
-                this.functionMap.get([$event.ctrlKey, $event.key].join())?.call(this);
+            if (this.functionMap.has([$event.shiftKey, $event.ctrlKey, $event.key].join())) {
+                this.functionMap.get([$event.shiftKey, $event.ctrlKey, $event.key].join())?.call(this);
                 $event.preventDefault();
             }
 
@@ -134,28 +134,30 @@ export class SidebarComponent {
 
     initToolMap(): void {
         this.toolParamMap
-            .set([false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
-            .set([false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
-            .set([false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
-            .set([false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
-            .set([false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
-            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
+            .set([false, false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
             } as ToolParam);
     }
     initFunctionMap(): void {
         this.functionMap
-            .set([true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
-            .set([true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
-            .set([true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
-            .set([true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
-            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection)
-            .set([true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave);
+            .set([false, true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
+            .set([false, true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
+            .set([false, true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
+            .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
+            .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection)
+            .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
+            .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
+            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);
     }
 
     handleShortcuts(event: KeyboardEvent): void {
-        const key: string = [event.ctrlKey, event.key].join();
+        const key: string = [event.shiftKey, event.ctrlKey, event.key].join();
         const currentToolOptions = this.toolParamMap.get(key);
         if (currentToolOptions != undefined) {
             this.setTool(currentToolOptions.toolName);
