@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Setting, Tool } from '@app/classes/tool';
-import { EditorComponent } from '@app/components/editor/editor.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizedEvent } from 'angular-resize-event';
+import { CanvasInformation } from '@common/communication/canvas-information';
 
 @Injectable({
     providedIn: 'root',
@@ -10,11 +9,10 @@ import { ResizedEvent } from 'angular-resize-event';
 export class UndoRedoService {
     pile: CanvasAction[];
     currentLocation: number = 0;
-    startImage: ImageData;
+    startImage: CanvasInformation;
 
     constructor(private drawingService: DrawingService) {
         this.pile = [{} as CanvasAction];
-        this.startImage = { data: new Uint8ClampedArray([0, 0, 0, 0]), width: 1, height: 1 };
 
         /*
         To avoid using recursive dependencies, we should look into
@@ -29,8 +27,7 @@ export class UndoRedoService {
             this.onKeyPress(event);
         });
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
-            this.pile = [{} as CanvasAction];
-            this.sendUndoButtonState();
+            this.resetPile(event.detail);
         });
     }
 
@@ -47,13 +44,12 @@ export class UndoRedoService {
     undo(): void {
         if (this.currentLocation > 0) {
             this.currentLocation--;
-
-            this.drawingService.resetCanvas();
-            this.drawingService.baseCtx.putImageData(this.startImage,0,0);
-            for (let i = 1; i <= this.currentLocation; i++) {
+            this.drawingService.setCanvassSize(this.drawingService.setSizeCanva());
+            for (let i = 0; i <= this.currentLocation; i++) {
                 this.doAction(this.pile[i]);
             }
         }
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.sendUndoButtonState();
     }
 
@@ -63,6 +59,12 @@ export class UndoRedoService {
             const action = this.pile[this.currentLocation];
             this.doAction(action);
         }
+        this.sendUndoButtonState();
+    }
+
+    resetPile(info: DrawingAction): void {
+        this.pile = [info];
+        this.currentLocation = 0;
         this.sendUndoButtonState();
     }
 
@@ -83,13 +85,22 @@ export class UndoRedoService {
     }
 
     doAction(action: CanvasAction): void {
-        if (action.type === 'Draw') {
-            const drawAction: DrawAction = action as DrawAction;
-            drawAction.tool.doAction(drawAction);
-        } else if (action.type === 'Resize') {
-            const resizeAction: ResizeAction = action as ResizeAction;
-            resizeAction.resizer.onResize(resizeAction.event);
-            // console.log(this.pile);
+        switch (action.type) {
+            case 'Draw':
+                const drawAction: DrawAction = action as DrawAction;
+                drawAction.tool.doAction(drawAction);
+                break;
+            case 'Drawing':
+                const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
+                dispatchEvent(event);
+                const drawingAction: DrawingAction = action as DrawingAction;
+                this.drawingService.resetCanvas({ x: drawingAction.width, y: drawingAction.height });
+                this.drawingService.resizePoint.resetControlPoints(drawingAction.width, drawingAction.height);
+                this.drawingService.baseCtx.putImageData(drawingAction.drawing, 0, 0);
+
+                break;
+            default:
+                break;
         }
     }
     // function doAction(action: ResizeAction):void
@@ -104,8 +115,8 @@ export interface DrawAction extends CanvasAction {
     setting: Setting;
     canvas: CanvasRenderingContext2D;
 }
-
-export interface ResizeAction extends CanvasAction {
-    resizer: EditorComponent;
-    event: ResizedEvent;
+export interface DrawingAction extends CanvasAction {
+    drawing: ImageData;
+    width: number;
+    height: number;
 }

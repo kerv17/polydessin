@@ -34,7 +34,7 @@ export class SelectionService extends Tool {
             this.topLeftHandler = this.selectionMove.moveSelection(this.topLeftHandler);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+            // this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
