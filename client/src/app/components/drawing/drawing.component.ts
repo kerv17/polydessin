@@ -6,6 +6,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -35,6 +36,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     private newCanvasSize: Vec2;
     private viewInitialized: boolean = false;
 
+    private allowUndoCall: boolean = true;
+
     cursor: { [key: string]: string };
 
     constructor(
@@ -45,6 +48,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         public selectionBoxLayout: SelectionBoxService,
     ) {
         this.canvasSize = this.drawingService.setSizeCanva();
+        addEventListener('allowUndoCall', (event: CustomEvent) => {
+            this.allowUndoCall = event.detail;
+        });
     }
 
     ngAfterViewInit(): void {
@@ -59,6 +65,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.viewInitialized = true;
+        const action: DrawingAction = {
+            type: 'Drawing',
+            drawing: this.baseCtx.getImageData(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y),
+            width: this.drawingService.canvasSize.x,
+            height: this.drawingService.canvasSize.y,
+        };
+        const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
+        dispatchEvent(event);
         this.loadCarouselCanvas();
     }
 
@@ -77,13 +91,28 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 }
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
                 this.newCanvasSize = { x: this.widthPrev, y: this.heightPrev };
+
                 const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
+
                 this.baseCanvas.nativeElement.width = this.widthPrev;
                 this.baseCanvas.nativeElement.height = this.heightPrev;
+                this.previewCanvas.nativeElement.width = this.widthPrev;
+                this.previewCanvas.nativeElement.height = this.heightPrev;
 
                 this.baseCtx.putImageData(dessin, 0, 0);
-
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
+                if (this.allowUndoCall) {
+                    const drawingAction: DrawingAction = {
+                        type: 'Drawing',
+                        drawing: this.drawingService.baseCtx.getImageData(0, 0, this.newCanvasSize.x, this.newCanvasSize.y),
+                        width: this.newCanvasSize.x,
+                        height: this.newCanvasSize.y,
+                    };
+                    const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
+                    dispatchEvent(event);
+                    console.log('shouldnt hit this');
+                }
+                this.allowUndoCall = true;
             }
         }
     }

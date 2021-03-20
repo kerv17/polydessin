@@ -63,8 +63,6 @@ export class EditorComponent {
         }
     }
 
-
-
     @HostListener('mouseup', ['$event'])
     mouseUpHandler(event: MouseEvent): void {
         this.drawingService.resizePoint.mouseDown = false;

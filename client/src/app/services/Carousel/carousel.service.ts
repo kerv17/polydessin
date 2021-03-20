@@ -61,8 +61,7 @@ export class CarouselService {
     loadCanvas(info: CanvasInformation): void {
         if (this.router.url.includes('/editor')) {
             this.drawingService.loadOldCanvas(info);
-            const event: CustomEvent = new CustomEvent('undoRedoWipe');
-            dispatchEvent(event);
+
             this.close();
         } else {
             this.router.navigate(['/editor']);
