@@ -39,7 +39,6 @@ export class PencilService extends Tool {
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             const action: DrawAction = this.createAction();
             this.dispatchAction(action);
-            console.log('hit');
         }
         this.mouseDown = false;
         this.clearPath();
@@ -47,7 +46,7 @@ export class PencilService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && !this.outOfBounds) {
+        if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
@@ -77,12 +76,33 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         this.applyAttributes(ctx);
-
-        ctx.beginPath();
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
+        const listOfPathsToDraw = this.separatePathLists(path);
+        for (const list of listOfPathsToDraw) {
+            ctx.beginPath();
+            for (const point of list) {
+                ctx.lineTo(point.x, point.y);
+            }
+            ctx.stroke();
         }
-        ctx.stroke();
+    }
+
+    separatePathLists(path: Vec2[]): Vec2[][] {
+        const pathList: Vec2[][] = [[]];
+        for (const point of path) {
+            if (this.isPointInRange(point)) {
+                pathList[pathList.length - 1].push(point);
+            } else {
+                pathList.push([]);
+            }
+        }
+
+        return pathList;
+    }
+
+    isPointInRange(point: Vec2): boolean {
+        const x = point.x > 0 && point.x < this.drawingService.canvas.width;
+        const y = point.y > 0 && point.y < this.drawingService.canvas.height;
+        return x && y;
     }
 
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
