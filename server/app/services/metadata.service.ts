@@ -35,11 +35,14 @@ export class MetadataService {
             .find({ tags: { $in: tagsToFind } })
             .toArray()
             .then((metadatas: Metadata[]) => {
+                if (metadatas.length === 0) {
+                    throw new Error();
+                }
                 return metadatas;
             })
 
             .catch(() => {
-                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "aucune donnée n'a été trouvée");
+                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée");
             });
     }
     // TODO getMetadataByNameAndTags

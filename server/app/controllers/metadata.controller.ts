@@ -24,7 +24,7 @@ export class MetadataController {
                     res.json(information);
                 })
                 .catch((error: Error) => {
-                    res.status(Httpstatus.NOT_FOUND).send(error.message);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
 
