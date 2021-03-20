@@ -97,6 +97,22 @@ fdescribe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should add two event listeners in the constructor', () => {
+        const c: CustomEvent = new CustomEvent('undoRedoState', {
+            detail: [false, true],
+        });
+        dispatchEvent(c);
+        expect(component.redo).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.undo).toEqual(Globals.BACKGROUND_DARKGREY);
+    });
+    it('should add two event listeners in the constructor', () => {
+        const c: CustomEvent = new CustomEvent('undoRedoState', {
+            detail: [true, false],
+        });
+        dispatchEvent(c);
+        expect(component.undo).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.redo).toEqual(Globals.BACKGROUND_DARKGREY);
+    });
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
         expect(component.resetAttributes).toEqual(false);
