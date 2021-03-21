@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RemoteSaveComponent } from './remote-save.component';
 
-describe('RemoteSaveComponent', () => {
+xdescribe('RemoteSaveComponent', () => {
     let component: RemoteSaveComponent;
     let fixture: ComponentFixture<RemoteSaveComponent>;
 

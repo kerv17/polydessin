@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ServerRequestService } from '../index/server-request.service';
 import { CarouselService } from './carousel.service';
 
-describe('CarouselService', () => {
+xdescribe('CarouselService', () => {
     let service: CarouselService;
     let indexServiceSpy: jasmine.SpyObj<ServerRequestService>;
 

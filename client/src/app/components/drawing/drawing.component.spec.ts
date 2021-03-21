@@ -16,7 +16,7 @@ class ToolStub extends Tool {}
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
