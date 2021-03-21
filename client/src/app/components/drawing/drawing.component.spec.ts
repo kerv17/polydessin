@@ -1,6 +1,7 @@
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -15,7 +16,7 @@ class ToolStub extends Tool {}
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-describe('DrawingComponent', () => {
+fdescribe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
@@ -25,6 +26,7 @@ describe('DrawingComponent', () => {
     let putImageDataSpy: jasmine.Spy;
     const resizePointStub: ResizePoint = new ResizePoint();
     let toolController: ToolControllerService;
+    let carouselService: CarouselService;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
@@ -37,6 +39,7 @@ describe('DrawingComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
         );
+        carouselService = {} as CarouselService;
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -44,6 +47,7 @@ describe('DrawingComponent', () => {
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolControllerService, useValue: toolController },
+                { provide: CarouselService, useValue:carouselService}
             ],
         }).compileComponents();
     }));
