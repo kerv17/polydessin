@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '../undoRedo/undo-redo.service';
 import { AerosolService } from './aerosol-service.service';
 
-fdescribe('AerosolService', () => {
+describe('AerosolService', () => {
     let service: AerosolService;
     let mouseEvent: MouseEvent;
     let pos: Vec2;
@@ -189,7 +189,5 @@ fdescribe('AerosolService', () => {
       service.clearPath();
       service.doAction(action);
       expect(drawSpraySpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
-
-
-  });
+    });
 });
