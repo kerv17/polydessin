@@ -7,18 +7,15 @@ import * as Globals from '@app/Constants/constants';
 })
 export class SelectionBoxService {
     handlersPositions: Vec2[] = [];
-    handler0: { [key: string]: string };
-    handler1: { [key: string]: string };
-    handler2: { [key: string]: string };
-    handler3: { [key: string]: string };
-    handler4: { [key: string]: string };
-    handler5: { [key: string]: string };
-    handler6: { [key: string]: string };
-    handler7: { [key: string]: string };
     selectionBox: { [key: string]: string };
+    cursor: { [key: string]: string };
 
     // calcul position des 8 handlers
-    setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
+    setHandlersPositions(topLeft: Vec2, width: number, height: number): void {
+        const bottomRight = {
+            x: topLeft.x + width,
+            y: topLeft.y + height,
+        };
         this.handlersPositions = [];
         // coin haut gauche
         this.handlersPositions.push(topLeft);
@@ -38,47 +35,20 @@ export class SelectionBoxService {
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
     }
 
-    drawHandlers(): void {
-        this.handler0 = {
-            left: this.handlersPositions[Globals.TOP_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.TOP_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'nw-resize',
-        };
-        this.handler1 = {
-            left: this.handlersPositions[Globals.TOP_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.TOP_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'n-resize',
-        };
-        this.handler2 = {
-            left: this.handlersPositions[Globals.TOP_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.TOP_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'ne-resize',
-        };
-        this.handler3 = {
-            left: this.handlersPositions[Globals.RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'e-resize',
-        };
-        this.handler4 = {
-            left: this.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'nw-resize',
-        };
-        this.handler5 = {
-            left: this.handlersPositions[Globals.BOTTOM_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.BOTTOM_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'n-resize',
-        };
-        this.handler6 = {
-            left: this.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.BOTTOM_LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'ne-resize',
-        };
-        this.handler7 = {
-            left: this.handlersPositions[Globals.LEFT_HANDLER].x - Globals.HANDLERS_POSITION + 'px',
-            top: this.handlersPositions[Globals.LEFT_HANDLER].y - Globals.HANDLERS_POSITION + 'px',
-            cursor: 'e-resize',
-        };
+    getCursor(pos: number): string {
+        if (pos === Globals.TOP_LEFT_HANDLER || pos === Globals.BOTTOM_RIGHT_HANDLER) return 'nw-resize';
+        if (pos === Globals.TOP_HANDLER || pos === Globals.BOTTOM_HANDLER) return 'n-resize';
+        if (pos === Globals.TOP_RIGHT_HANDLER || pos === Globals.BOTTOM_LEFT_HANDLER) return 'ne-resize';
+        if (pos === Globals.RIGHT_HANDLER || pos === Globals.LEFT_HANDLER) return 'e-resize';
+        else return 'all-scroll';
+    }
+
+    getLeftPosition(pos: number): string {
+        return this.handlersPositions[pos].x - Globals.HANDLERS_POSITION + 'px';
+    }
+
+    getTopPosition(pos: number): string {
+        return this.handlersPositions[pos].y - Globals.HANDLERS_POSITION + 'px';
     }
 
     drawSelectionBox(topLeft: Vec2, width: number, height: number): void {
@@ -87,8 +57,24 @@ export class SelectionBoxService {
             width: width + 'px',
             border: '2px solid blue',
             position: 'absolute',
-            left: topLeft.x + 1 + 'px',
-            top: topLeft.y + 1 + 'px',
+            left: topLeft.x + 'px',
+            top: topLeft.y + 'px',
         };
+    }
+
+    cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
+        const bottomRight = {
+            x: topLeft.x + width,
+            y: topLeft.y + height,
+        };
+        if (event.offsetX > topLeft.x && event.offsetX < bottomRight.x && event.offsetY > topLeft.y && event.offsetY < bottomRight.y && inSelection) {
+            this.cursor = {
+                cursor: 'all-scroll',
+            };
+        } else {
+            this.cursor = {
+                cursor: 'crosshair',
+            };
+        }
     }
 }

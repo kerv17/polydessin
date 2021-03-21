@@ -71,6 +71,12 @@ export class SidebarComponent {
 
     selectCanvas(): void {
         this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+
+        //    const keyEventData = { isTrusted: true, key: Globals.RECTANGLE_SELECTION_SHORTCUT, ctrlKey: false, shiftKey: false };
+        //   const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        //   window.dispatchEvent(keyDownEvent);
     }
     openCarousel(): void {
         this.carouselService.initialiserCarousel();
@@ -78,9 +84,7 @@ export class SidebarComponent {
     openSave(): void {
         this.remoteSaveService.showModalSave = true;
     }
-    openSelection(): void {
-        this.toolController.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
-    }
+
     showAerosolInterface(): void {
         this.showAerosol = this.currentTool === Globals.AEROSOL_SHORTCUT;
     }
@@ -107,6 +111,7 @@ export class SidebarComponent {
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
+        this.annulerSelection();
     }
 
     newCanvas(): void {
@@ -150,7 +155,6 @@ export class SidebarComponent {
             .set([false, true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
             .set([false, true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
             .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
-            .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection)
             .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
             .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
             .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);

@@ -19,6 +19,10 @@ export class RectangleService extends Tool {
         return this.pathData;
     }
 
+    setPath(path: Vec2[]): void {
+        this.pathData = path;
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {

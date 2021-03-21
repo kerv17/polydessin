@@ -24,9 +24,8 @@ export class ServerRequestService {
         return this.http.post<CanvasInformation>(this.BASE_URL + '/', info).pipe(catchError(this.handleError<CanvasInformation>('basicPost')));
     }
 
-    basicDelete(message: string): Observable<Message> {
-        return this.http.delete<Message>(this.BASE_URL + '/' + message).pipe(catchError(this.handleError<Message>('basicDelete')));
-        // Cette étape transforme le Message en un seul string
+    basicDelete(message: string): Observable<HttpResponse<Message>> {
+        return this.http.delete<Message>(this.BASE_URL + '/' + message, { observe: 'response' });
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

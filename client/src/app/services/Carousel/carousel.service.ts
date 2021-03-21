@@ -29,19 +29,19 @@ export class CarouselService {
             const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
 
             if (confirm('Voulez-vous supprimez ce dessin')) {
-                this.requestService.basicDelete(selectedSlide.id).subscribe((x) => {
-                    if (x != undefined) {
-                        window.alert(x.title);
-                    } else {
-                        window.alert('Connexion impossible avec le serveur');
-                        this.close();
-                    }
-                });
+                this.requestService.basicDelete(selectedSlide.id).subscribe(
+                    (response) => {
+                        window.alert(response.body?.title);
 
-                this.removeCanvasInformation(selectedSlide.id);
-                if (this.pictures.length === 0) {
-                    window.alert('Il ne reste plus de dessin');
-                }
+                        this.removeCanvasInformation(selectedSlide.id);
+                        if (this.pictures.length === 0) {
+                            window.alert('Il ne reste plus de dessin avec ces critères');
+                        }
+                    },
+                    (err: HttpErrorResponse) => {
+                        this.handleCarouselErrors(err);
+                    },
+                );
             }
         }
     }
@@ -80,12 +80,6 @@ export class CarouselService {
         this.requestService.basicGet().subscribe(
             (response: HttpResponse<CanvasInformation[]>) => {
                 this.getImages(response);
-
-                // this.setSlides();
-                // else {
-                // window.alert('Aucune connection avec le server');
-                // this.close();
-                //     }
             },
             (err: HttpErrorResponse) => {
                 this.handleCarouselErrors(err);
@@ -101,9 +95,8 @@ export class CarouselService {
         return i;
     }*/
     setSlides(): void {
-        for (let element of this.pictures) {
+        for (const element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
-            element = element;
         }
 
         this.showCarousel = true;

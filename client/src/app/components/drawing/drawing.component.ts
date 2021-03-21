@@ -38,8 +38,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     private allowUndoCall: boolean = true;
 
-    cursor: { [key: string]: string };
-
     constructor(
         private drawingService: DrawingService,
         private colorService: ColorService,
@@ -171,33 +169,26 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     cursorChange(event: MouseEvent): void {
-        const bottomRight = {
-            x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
-            y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
-        };
-        if (
-            event.offsetX > this.controller.selectionService.topLeftHandler.x &&
-            event.offsetX < bottomRight.x &&
-            event.offsetY > this.controller.selectionService.topLeftHandler.y &&
-            event.offsetY < bottomRight.y &&
-            this.controller.selectionService.inSelection
-        ) {
-            this.cursor = {
-                cursor: 'all-scroll',
-            };
-        } else {
-            this.cursor = {
-                cursor: 'crosshair',
-            };
-        }
+        this.selectionBoxLayout.cursorChange(
+            event,
+            this.controller.selectionService.inSelection,
+            this.controller.selectionService.getActualPosition(),
+            this.controller.selectionService.getSelectionWidth(),
+            this.controller.selectionService.getSelectionHeight(),
+        );
     }
 
     drawSelectionBox(): boolean {
         if (this.controller.selectionService.inSelection) {
             this.selectionBoxLayout.drawSelectionBox(
-                this.controller.selectionService.topLeftHandler,
-                this.controller.selectionService.selectedArea.width,
-                this.controller.selectionService.selectedArea.height,
+                this.controller.selectionService.getActualPosition(),
+                this.controller.selectionService.getSelectionWidth(),
+                this.controller.selectionService.getSelectionHeight(),
+            );
+            this.selectionBoxLayout.setHandlersPositions(
+                this.controller.selectionService.getActualPosition(),
+                this.controller.selectionService.getSelectionWidth(),
+                this.controller.selectionService.getSelectionHeight(),
             );
             return true;
         }
@@ -205,17 +196,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     drawHandlers(): boolean {
-        if (this.controller.selectionService.inSelection) {
-            const bottomRight = {
-                x: this.controller.selectionService.topLeftHandler.x + this.controller.selectionService.selectedArea.width,
-                y: this.controller.selectionService.topLeftHandler.y + this.controller.selectionService.selectedArea.height,
-            };
-            this.selectionBoxLayout.setHandlersPositions(this.controller.selectionService.topLeftHandler, bottomRight);
-            this.selectionBoxLayout.drawHandlers();
-            return true;
-        } else {
-            return false;
-        }
+        return this.controller.selectionService.inSelection;
     }
     loadCarouselCanvas(): void {
         if (this.carousel.loadImage) {

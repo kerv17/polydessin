@@ -25,6 +25,8 @@ export class MetadataService {
             .find({})
             .toArray()
             .then((metadata: Metadata[]) => {
+                if (metadata.length === 0)
+                    throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données");
                 return metadata;
             });
     }

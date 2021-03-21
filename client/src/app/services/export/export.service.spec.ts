@@ -39,7 +39,7 @@ describe('ExportService', () => {
     it('should  not export the image if the type and name arent undefined avec un comfirm true ', () => {
         const type = 'png';
 
-        let element: HTMLElement = document.createElement('a');
+        const element: HTMLElement = document.createElement('a');
         createElementSpy = spyOn(document, 'createElement').and.returnValue(element);
 
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
