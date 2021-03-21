@@ -126,7 +126,7 @@ export class CarouselService {
                 return;
             }
 
-            //this.pictures = response.body | ([] as CanvasInformation[]);
+            // this.pictures = response.body | ([] as CanvasInformation[]);
             this.setSlides();
 
             this.currentSearch = this.currentTags;

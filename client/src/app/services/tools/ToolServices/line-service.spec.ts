@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawAction } from '../undoRedo/undo-redo.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { LineService } from './line-service';
 
 // tslint:disable:no-any
@@ -20,6 +20,7 @@ describe('LineService', () => {
     let drawLineSpy: jasmine.Spy<any>;
     let distanceSpy: jasmine.Spy<any>;
 
+    const mouseEventPosTestNumber = 10;
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
@@ -34,7 +35,7 @@ describe('LineService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine');
         pointToPushSpy = spyOn<any>(service, 'getPointToPush').and.callThrough();
         distanceSpy = spyOn<any>(service, 'distanceBewteenPoints').and.callThrough();
-        dispatchSpy = spyOn<any>(service,'dispatchAction');
+        dispatchSpy = spyOn<any>(service, 'dispatchAction');
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -42,8 +43,8 @@ describe('LineService', () => {
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
-            pageX: 10 + SIDEBAR_WIDTH,
-            pageY: 10,
+            pageX: mouseEventPosTestNumber + SIDEBAR_WIDTH,
+            pageY: mouseEventPosTestNumber,
             button: 0,
         } as MouseEvent;
 
@@ -126,6 +127,7 @@ describe('LineService', () => {
 
     it('onDbClick should place the last point as the mouseEvent coords when it is not within range of the first point', () => {
         mouseEvent = {
+            // tslint:disable-next-line: no-magic-numbers
             pageX: 20 + SIDEBAR_WIDTH,
             pageY: 20,
             button: 0,
@@ -280,10 +282,14 @@ describe('LineService', () => {
     });
 
     it('doAction', () => {
-      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
-      const action:DrawAction = (service as any).createAction();
-      service.clearPath();
-      service.doAction(action);
-      expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
+        (service as any).pathData = [
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+            { x: 110, y: 110 },
+        ];
+        const action: DrawAction = (service as any).createAction();
+        service.clearPath();
+        service.doAction(action);
+        expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });

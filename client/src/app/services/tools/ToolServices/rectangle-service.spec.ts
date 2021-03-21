@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawAction } from '../undoRedo/undo-redo.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
@@ -42,13 +42,14 @@ describe('RectangleService', () => {
         fillSpy = spyOn<any>(service, 'fill').and.callThrough();
         pointSpy = spyOn<any>(service, 'getRectanglePoints').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
-        dispatchSpy = spyOn<any>(service,'dispatchAction');
+        dispatchSpy = spyOn<any>(service, 'dispatchAction');
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
+            // tslint:disable-next-line: no-magic-numbers
             pageX: 25 + Globals.SIDEBAR_WIDTH,
             pageY: 25,
             button: 0,
@@ -205,10 +206,14 @@ describe('RectangleService', () => {
     });
 
     it('doAction', () => {
-      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
-      const action:DrawAction = (service as any).createAction();
-      service.clearPath();
-      service.doAction(action);
-      expect(drawRectangleSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
+        (service as any).pathData = [
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+            { x: 110, y: 110 },
+        ];
+        const action: DrawAction = (service as any).createAction();
+        service.clearPath();
+        service.doAction(action);
+        expect(drawRectangleSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });

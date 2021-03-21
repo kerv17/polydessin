@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawAction } from '../undoRedo/undo-redo.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
@@ -16,7 +16,6 @@ describe('PencilService', () => {
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let dispatchSpy: jasmine.Spy<any>;
-
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -39,26 +38,27 @@ describe('PencilService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         drawPixelSpy = spyOn<any>(service, 'drawPixel').and.callThrough();
-        dispatchSpy = spyOn<any>(service,'dispatchAction');
+        dispatchSpy = spyOn<any>(service, 'dispatchAction');
         // Configuration du spy du service
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service.drawingService.canvas = canvasTestHelper.canvas;
-
-
         mouseEvent = {
+            // tslint:disable-next-line: no-magic-numbers
             pageX: 25 + SIDEBAR_WIDTH,
             pageY: 25,
             button: 0,
         } as MouseEvent;
 
         mouseEventRClick = {
+            // tslint:disable-next-line: no-magic-numbers
             pageX: 25 + SIDEBAR_WIDTH,
             pageY: 25,
             button: 1,
         } as MouseEvent;
 
         mouseEvent2 = {
+            // tslint:disable-next-line: no-magic-numbers
             pageX: 56 + SIDEBAR_WIDTH,
             pageY: 74,
             button: 0,
@@ -104,9 +104,10 @@ describe('PencilService', () => {
     it(' onMouseUp should clear canvas & path if mouse click was released out of the canvas limits', () => {
         service.mouseDown = true;
         service.outOfBounds = true;
-        (service as any).pathData.push({x:0,y:0});
-        service.drawingService.canvas.width = 10;
-        service.drawingService.canvas.height = 10;
+        (service as any).pathData.push({ x: 0, y: 0 });
+        const canvasSize = 10;
+        service.drawingService.canvas.width = canvasSize;
+        service.drawingService.canvas.height = canvasSize;
         service.onMouseUp(mouseEvent);
         expect(clearPathSpy).toHaveBeenCalled();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
@@ -164,8 +165,6 @@ describe('PencilService', () => {
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
-
-
     it(' onMouseLeave shoud clear path & canvas if mouse was down while leaving canvas surface', () => {
         service.mouseDown = true;
         service.onMouseLeave(mouseEvent);
@@ -275,33 +274,55 @@ describe('PencilService', () => {
     });
 
     it('doAction', () => {
-      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
-      const action:DrawAction = (service as any).createAction();
-      service.clearPath();
-      service.doAction(action);
-      expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
+        (service as any).pathData = [
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+            { x: 110, y: 110 },
+        ];
+        const action: DrawAction = (service as any).createAction();
+        service.clearPath();
+        service.doAction(action);
+        expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 
-    it('separatePathLists', ()=>{
+    it('separatePathLists', () => {
+        const canvasSize = 10;
+        service.drawingService.canvas.width = canvasSize;
+        service.drawingService.canvas.height = canvasSize;
 
-      service.drawingService.canvas.width = 10;
-      service.drawingService.canvas.height = 10;
-
-      const vec:Vec2[] = [{x:1,y:1}, {x:2,y:2},{x:-5,y:-2},{x:3,y:3}];
-      const result = service.separatePathLists(vec);
-      const expectedResult = [[{x:1,y:1}, {x:2,y:2}],[{x:3,y:3}]];
-      expect(result).toEqual(expectedResult);
+        const vec: Vec2[] = [
+            { x: 1, y: 1 },
+            { x: 2, y: 2 },
+            { x: -5, y: -2 },
+            { x: 3, y: 3 },
+        ];
+        const result = service.separatePathLists(vec);
+        const expectedResult = [
+            [
+                { x: 1, y: 1 },
+                { x: 2, y: 2 },
+            ],
+            [{ x: 3, y: 3 }],
+        ];
+        expect(result).toEqual(expectedResult);
     });
 
-    it('isPointInRange', ()=>{
-      service.drawingService.canvas.width = 10;
-      service.drawingService.canvas.height = 10;
-      const points = [{x:1,y:1},{x:15,y:1},{x:1,y:15},{x:-15,y:1},{x:1,y:-1}];
-      const expectedResult = [true,false,false,false,false];
-      let result:boolean[] = []
-      for (const point of points){
-        result.push(service.isPointInRange(point));
-      }
-      expect(result).toEqual(expectedResult);
-    })
+    it('isPointInRange', () => {
+        const canvasSize = 10;
+        service.drawingService.canvas.width = canvasSize;
+        service.drawingService.canvas.height = canvasSize;
+        const points = [
+            { x: 1, y: 1 },
+            { x: 15, y: 1 },
+            { x: 1, y: 15 },
+            { x: -15, y: 1 },
+            { x: 1, y: -1 },
+        ];
+        const expectedResult = [true, false, false, false, false];
+        const result: boolean[] = [];
+        for (const point of points) {
+            result.push(service.isPointInRange(point));
+        }
+        expect(result).toEqual(expectedResult);
+    });
 });

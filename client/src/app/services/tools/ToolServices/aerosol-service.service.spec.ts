@@ -3,9 +3,10 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawAction } from '../undoRedo/undo-redo.service';
-import { AerosolService } from './aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
+// tslint:disable: no-any
 describe('AerosolService', () => {
     let service: AerosolService;
     let mouseEvent: MouseEvent;
@@ -20,6 +21,7 @@ describe('AerosolService', () => {
 
     let points: Vec2[];
 
+    const mouseEventPosTestNumber = 25;
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
@@ -39,11 +41,11 @@ describe('AerosolService', () => {
 
         timeoutSpy = spyOn(service, 'onTimeout');
         drawSpraySpy = spyOn(service, 'drawSpray');
-        dispatchSpy = spyOn<any>(service,'dispatchAction');
+        dispatchSpy = spyOn<any>(service, 'dispatchAction');
 
         mouseEvent = {
-            pageX: 25 + SIDEBAR_WIDTH,
-            pageY: 25,
+            pageX: mouseEventPosTestNumber + SIDEBAR_WIDTH,
+            pageY: mouseEventPosTestNumber,
             button: 0,
         } as MouseEvent;
 
@@ -62,9 +64,9 @@ describe('AerosolService', () => {
     it('rng generates a random number between -max et max', () => {
         // It just works, trust me
         let result = true;
-
+        const coefficientDeTest = 250;
         const max = 5;
-        const nbTest = max * 250;
+        const nbTest = max * coefficientDeTest;
 
         for (let i = 0; i < nbTest && result; i++) {
             const value = service.rng(max);
@@ -126,11 +128,11 @@ describe('AerosolService', () => {
     });
 
     it('onMouseUp doesnt draw the spray on baseCtx', () => {
-      service.mouseDown = false;
-      service.onMouseUp(mouseEvent);
-      expect(drawSpraySpy).not.toHaveBeenCalledWith(baseCtxStub, []);
-      expect(dispatchSpy).not.toHaveBeenCalled();
-  });
+        service.mouseDown = false;
+        service.onMouseUp(mouseEvent);
+        expect(drawSpraySpy).not.toHaveBeenCalledWith(baseCtxStub, []);
+        expect(dispatchSpy).not.toHaveBeenCalled();
+    });
 
     it('showRadius shows the a circle of defined radius at relevant position', () => {
         const radius = 5;
@@ -138,14 +140,15 @@ describe('AerosolService', () => {
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
 
         (service as any).showRadius(pos, radius);
-        expect(drawSpraySpy).toHaveBeenCalledWith(previewCtxStub,[]);
+        expect(drawSpraySpy).toHaveBeenCalledWith(previewCtxStub, []);
         expect(ellipseSpy).toHaveBeenCalled();
         expect(strokeSpy).toHaveBeenCalled();
     });
 
     it('sprayPoints adds x points in defined radius', () => {
         const addpointSpy = spyOn(service, 'addPoint');
-        service.sprayPoints(pos, 10);
+        const radius = 10;
+        service.sprayPoints(pos, radius);
         expect((service as any).pathData.length).toEqual(1);
         expect(addpointSpy).toHaveBeenCalledTimes(1);
     });
@@ -163,31 +166,34 @@ describe('AerosolService', () => {
     });
 
     it('drawSpray', () => {
-      drawSpraySpy.and.callThrough();
-        for (let i = 0; i < 10; i++){
-          points.push({ x: i, y: i} as Vec2);
+        drawSpraySpy.and.callThrough();
+        const numberOfPointsToTest = 10;
+        for (let i = 0; i < numberOfPointsToTest; i++) {
+            points.push({ x: i, y: i } as Vec2);
         }
 
         const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
 
-        service.drawSpray(previewCtxStub,points);
-        expect(ellipseSpy).toHaveBeenCalledTimes(10);
-        expect(strokeSpy).toHaveBeenCalledTimes(10);
+        service.drawSpray(previewCtxStub, points);
+        expect(ellipseSpy).toHaveBeenCalledTimes(numberOfPointsToTest);
+        expect(strokeSpy).toHaveBeenCalledTimes(numberOfPointsToTest);
     });
 
     it('distance', () => {
-        expect(service.distance(3,4)).toEqual(5);
+        // tslint:disable-next-line: no-magic-numbers
+        expect(service.distance(3, 4)).toEqual(5);
     });
 
     it('doAction', () => {
-      for (let i = 0; i< 5; i++){
-        service.sprayPoints({x:25, y:25}, 5);
-      }
+        const numberOfPointsToTest = 5;
+        for (let i = 0; i < numberOfPointsToTest; i++) {
+            service.sprayPoints({ x: 25, y: 25 }, numberOfPointsToTest);
+        }
 
-      const action:DrawAction = (service as any).createAction();
-      service.clearPath();
-      service.doAction(action);
-      expect(drawSpraySpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
+        const action: DrawAction = (service as any).createAction();
+        service.clearPath();
+        service.doAction(action);
+        expect(drawSpraySpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });

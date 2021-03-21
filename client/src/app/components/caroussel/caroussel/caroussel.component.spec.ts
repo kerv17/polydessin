@@ -12,6 +12,7 @@ describe('CarousselComponent', () => {
     const router = jasmine.createSpyObj(Router, ['navigate']);
 
     beforeEach(async(() => {
+        drawingStub = {} as DrawingService;
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         TestBed.configureTestingModule({
             declarations: [CarousselComponent],

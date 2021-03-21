@@ -18,6 +18,7 @@ export class AerosolService extends Tool {
     sprayAmountPerSecond: number = 10;
     lastPosition: Vec2;
     mouseDown: boolean = false;
+    // tslint:disable-next-line: no-any
     timeoutID: any;
     // Fonction servant a generer un nombre aleatoire entre -max et max
     rng(max: number): number {
@@ -38,7 +39,7 @@ export class AerosolService extends Tool {
         this.showRadius(this.lastPosition, this.sprayRadius);
     }
 
-    onTimeout() {
+    onTimeout(): void {
         if (this.mouseDown) {
             this.sprayPoints(this.lastPosition, this.sprayRadius);
             this.drawSpray(this.drawingService.previewCtx, this.pathData);
@@ -83,7 +84,7 @@ export class AerosolService extends Tool {
         return pointToAdd;
     }
 
-    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]):void {
+    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
         ctx.strokeStyle = ctx.strokeStyle = this.color || 'black';
         ctx.fillStyle = this.color || 'black';
         for (const point of points) {
