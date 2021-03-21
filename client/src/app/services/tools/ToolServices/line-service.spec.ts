@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '../undoRedo/undo-redo.service';
 import { LineService } from './line-service';
 
 // tslint:disable:no-any
@@ -11,6 +13,7 @@ describe('LineService', () => {
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let pointToPushSpy: jasmine.Spy<any>;
+    let dispatchSpy: jasmine.Spy<any>;
     let vec: Vec2[];
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -31,6 +34,7 @@ describe('LineService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine');
         pointToPushSpy = spyOn<any>(service, 'getPointToPush').and.callThrough();
         distanceSpy = spyOn<any>(service, 'distanceBewteenPoints').and.callThrough();
+        dispatchSpy = spyOn<any>(service,'dispatchAction');
 
         // Configuration du spy du service
         // tslint:disable:no-string-literal
@@ -38,8 +42,8 @@ describe('LineService', () => {
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
-            offsetX: 10,
-            offsetY: 10,
+            pageX: 10 + SIDEBAR_WIDTH,
+            pageY: 10,
             button: 0,
         } as MouseEvent;
 
@@ -93,6 +97,7 @@ describe('LineService', () => {
             { x: 0, y: 0 },
         ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it('onDbClick should place the last point as the first when mouseEvent is within range of the first point', () => {
@@ -102,6 +107,7 @@ describe('LineService', () => {
         expect(distanceSpy).not.toHaveBeenCalled();
         expect((service as any).pathData.length).toEqual(0);
         expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it('onDbClick should place the last point as the first when mouseEvent is within range of the first point', () => {
@@ -115,12 +121,13 @@ describe('LineService', () => {
             { x: 0, y: 0 },
         ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it('onDbClick should place the last point as the mouseEvent coords when it is not within range of the first point', () => {
         mouseEvent = {
-            offsetX: 20,
-            offsetY: 20,
+            pageX: 20 + SIDEBAR_WIDTH,
+            pageY: 20,
             button: 0,
         } as MouseEvent;
         (service as any).pathData.push({ x: 20, y: 20 }, { x: 20, y: 20 });
@@ -132,6 +139,7 @@ describe('LineService', () => {
             { x: 20, y: 20 },
         ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it('onDbClick should clearPath', () => {
@@ -269,5 +277,13 @@ describe('LineService', () => {
         const result = service.getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('doAction', () => {
+      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
+      const action:DrawAction = (service as any).createAction();
+      service.clearPath();
+      service.doAction(action);
+      expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });
