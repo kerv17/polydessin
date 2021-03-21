@@ -3,6 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '../undoRedo/undo-redo.service';
 import { RectangleService } from './rectangle-service';
 
 // tslint:disable:no-any
@@ -13,6 +14,7 @@ describe('RectangleService', () => {
     let testPath: Vec2[];
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let dispatchSpy: jasmine.Spy<any>;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -40,14 +42,15 @@ describe('RectangleService', () => {
         fillSpy = spyOn<any>(service, 'fill').and.callThrough();
         pointSpy = spyOn<any>(service, 'getRectanglePoints').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
+        dispatchSpy = spyOn<any>(service,'dispatchAction');
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
+            pageX: 25 + Globals.SIDEBAR_WIDTH,
+            pageY: 25,
             button: 0,
         } as MouseEvent;
 
@@ -95,6 +98,7 @@ describe('RectangleService', () => {
         expect(pointSpy).toHaveBeenCalled();
         expect(drawRectangleSpy).toHaveBeenCalled();
         expect(clearPathSpy).toHaveBeenCalled();
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
@@ -104,6 +108,7 @@ describe('RectangleService', () => {
         service.onMouseUp(mouseEvent);
         expect(pointSpy).not.toHaveBeenCalled();
         expect(drawRectangleSpy).not.toHaveBeenCalled();
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
@@ -197,5 +202,13 @@ describe('RectangleService', () => {
 
         points = service.getRectanglePoints(c);
         expect(points[2]).toEqual(expectedResultC);
+    });
+
+    it('doAction', () => {
+      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
+      const action:DrawAction = (service as any).createAction();
+      service.clearPath();
+      service.doAction(action);
+      expect(drawRectangleSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });
