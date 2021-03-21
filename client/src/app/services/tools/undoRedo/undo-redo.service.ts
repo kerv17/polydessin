@@ -21,7 +21,7 @@ export class UndoRedoService {
         I do not know yet how custom events work, but it is worth looking into
         */
         addEventListener('action', (event: CustomEvent) => {
-            this.addAction(event.detail);
+            this.addAction(event.detail as CanvasAction);
         });
 
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
@@ -63,7 +63,7 @@ export class UndoRedoService {
         dispatchEvent(c);
     }
 
-    addAction(action: DrawAction): void {
+    addAction(action: CanvasAction): void {
         if (this.currentLocation < this.pile.length - 1) {
             this.pile = this.pile.slice(0, this.currentLocation + 1);
         }
@@ -91,7 +91,6 @@ export class UndoRedoService {
                 break;
         }
     }
-    // function doAction(action: ResizeAction):void
 }
 
 export interface CanvasAction {
