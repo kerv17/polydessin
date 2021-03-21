@@ -1,6 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { IndexService } from '@app/services/index/index.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
 const MAX_SIZE_TAG = 10;
@@ -12,25 +13,32 @@ const MAX_NUMBER_TAG = 5;
     providedIn: 'root',
 })
 export class RemoteSaveService {
-    constructor(public drawingService: DrawingService, private indexService: IndexService) {}
+    constructor(public drawingService: DrawingService, private requestService: ServerRequestService) {}
     showModalSave: boolean = false;
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
+            window.alert('Il faut choisir un type et un nom qui respecte les critères');
             return;
         }
 
         if (confirm('Êtes-vous sûr de vouloir sauvegarder le dessin')) {
-            try {
-                const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
-                information.imageData = data;
-                information.height = this.drawingService.canvas.height;
-                information.width = this.drawingService.canvas.width;
+            const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
+            information.imageData = data;
+            information.height = this.drawingService.canvas.height;
+            information.width = this.drawingService.canvas.width;
 
-                this.indexService.basicPost(information).subscribe();
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            this.requestService.basicPost(information).subscribe(
+                (response) => {
+                    window.alert(response.body?.title);
+                },
+                (err: HttpErrorResponse) => {
+                    if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                    else {
+                        window.alert(err.message);
+                    }
+                },
+            );
         }
     }
     validateMetadata(information: CanvasInformation): boolean {
@@ -48,7 +56,7 @@ export class RemoteSaveService {
     }
 
     private validateName(name: string): boolean {
-        return name.startsWith('Dessin') && this.verifyNameLength(name);
+        return name != undefined && name.startsWith('Dessin') && this.verifyNameLength(name);
     }
     private verifyNameLength(name: string): boolean {
         return name.length >= MIN_SIZE_NAME && name.length <= MAX_SIZE_NAME;

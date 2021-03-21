@@ -1,16 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Tool } from '@app/classes/tool';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ResizedEvent } from 'angular-resize-event';
 import { EditorComponent } from './editor.component';
+
 class ToolStub extends Tool {}
 
 describe('EditorComponent', () => {
@@ -19,17 +23,20 @@ describe('EditorComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let resizeStub: ResizePoint;
-
+    let carouselService: CarouselService;
+    const router = jasmine.createSpyObj(Router, ['navigate']);
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         drawingStub.resizePoint = resizeStub;
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent, WidthSliderComponent, MatSlider],
             providers: [
                 { provide: Tool, useValue: toolStub },
+                { provide: CarouselService, useValue: carouselService },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ResizePoint, useValue: resizeStub },
             ],

@@ -20,10 +20,10 @@ type ToolParam = {
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    showWidth: boolean = false;
+    showWidth: boolean = true;
     showAerosol: boolean = false;
     shapeOptions: boolean = false;
-    showline: boolean = false;
+    showLine: boolean = false;
     currentTool: string;
     resetAttributes: boolean = false;
 
@@ -31,9 +31,10 @@ export class SidebarComponent {
     redo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
     private toolParamMap: Map<string, ToolParam>;
     private functionMap: Map<string, () => void>;
+    rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(
-        private toolcontroller: ToolControllerService,
+        private toolController: ToolControllerService,
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
@@ -43,7 +44,7 @@ export class SidebarComponent {
         public remoteSaveService: RemoteSaveService,
     ) {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
         this.toolParamMap = new Map();
         this.functionMap = new Map();
         this.initToolMap();
@@ -62,14 +63,20 @@ export class SidebarComponent {
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
     }
     setTool(tool: string): void {
-        this.toolcontroller.setTool(tool);
+        this.toolController.setTool(tool);
     }
 
     selectCanvas(): void {
-        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+
+        //    const keyEventData = { isTrusted: true, key: Globals.RECTANGLE_SELECTION_SHORTCUT, ctrlKey: false, shiftKey: false };
+        //   const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        //   window.dispatchEvent(keyDownEvent);
     }
     openCarousel(): void {
         this.carouselService.initialiserCarousel();
@@ -77,17 +84,24 @@ export class SidebarComponent {
     openSave(): void {
         this.remoteSaveService.showModalSave = true;
     }
-    openSelection(): void {
-        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
-    }
+
     showAerosolInterface(): void {
         this.showAerosol = this.currentTool === Globals.AEROSOL_SHORTCUT;
     }
     showLineOptions(): void {
-        this.showline = this.currentTool === Globals.LINE_SHORTCUT;
+        this.showLine = this.currentTool === Globals.LINE_SHORTCUT;
+    }
+    openExport(): void {
+        this.exportService.showModalExport = true;
     }
     showShapeOptions(): void {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
+    }
+
+    annulerSelection(): void {
+        if (this.toolController.selectionService.inSelection) {
+            this.toolController.selectionService.onEscape();
+        }
     }
     openTool(showWidth: boolean, toolname: string): void {
         this.showWidth = showWidth;
@@ -97,61 +111,57 @@ export class SidebarComponent {
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
-        if (this.toolcontroller.selectionService.inSelection) {
-            this.toolcontroller.selectionService.onEscape();
-        }
+        this.annulerSelection();
     }
 
     newCanvas(): void {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
-        this.toolcontroller.resetToolsMode();
+        this.toolController.resetWidth();
+        this.toolController.resetToolsMode();
         this.drawing.newCanvas();
-        this.toolcontroller.lineService.clearPath();
+        this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
     }
 
     @HostListener('window:keydown', ['$event'])
     onKeyPress($event: KeyboardEvent): void {
         if (!this.exportService.showModalExport && !this.carouselService.showCarousel && !this.remoteSaveService.showModalSave) {
-            if (this.functionMap.has([$event.ctrlKey, $event.key].join())) {
-                this.functionMap.get([$event.ctrlKey, $event.key].join())?.call(this);
+            if (this.functionMap.has([$event.shiftKey, $event.ctrlKey, $event.key].join())) {
+                this.functionMap.get([$event.shiftKey, $event.ctrlKey, $event.key].join())?.call(this);
                 $event.preventDefault();
             }
 
-            if (this.toolcontroller.focused) {
+            if (this.toolController.focused) {
                 this.handleShortcuts($event);
             }
         }
     }
-    openExport(): void {
-        this.exportService.showModalExport = true;
-    }
 
     initToolMap(): void {
         this.toolParamMap
-            .set([false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
-            .set([false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
-            .set([false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
-            .set([false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
-            .set([false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
-            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
+            .set([false, false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
             } as ToolParam);
     }
     initFunctionMap(): void {
         this.functionMap
-            .set([true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
-            .set([true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
-            .set([true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
-            .set([true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
-            .set([false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), this.openSelection)
-            .set([true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave);
+            .set([false, true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
+            .set([false, true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
+            .set([false, true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
+            .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
+            .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
+            .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
+            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);
     }
 
     handleShortcuts(event: KeyboardEvent): void {
-        const key: string = [event.ctrlKey, event.key].join();
+        const key: string = [event.shiftKey, event.ctrlKey, event.key].join();
         const currentToolOptions = this.toolParamMap.get(key);
         if (currentToolOptions != undefined) {
             this.setTool(currentToolOptions.toolName);
