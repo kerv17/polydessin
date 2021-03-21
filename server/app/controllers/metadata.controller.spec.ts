@@ -1,46 +1,67 @@
 import { Application } from '@app/app';
-//import { DataAccessService } from '@app/services/data-access.service';
+import { DataAccessService } from '@app/services/data-access.service';
 import { TYPES } from '@app/types';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { expect } from 'chai';
+import * as Httpstatus from 'http-status-codes';
+import { ObjectId } from 'mongodb';
 import * as supertest from 'supertest';
-import { /*Stubbed,*/ testingContainer } from '../../test/test-utils';
+import { Stubbed, testingContainer } from '../../test/test-utils';
 
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
-//const HTTP_STATUS_CREATED = 201;
+const HTTP_STATUS_CREATED = 201;
+const HTTP_STATUS_NOT_FOUND = 404;
 
 describe('MetadataController', () => {
-    const baseMessage = { title: 'Hello world', body: 'anything really' } as Message;
-    const baseInformation = { name: "aName", tags:['tag1','tag2'] ,format : 'png', width: 0, height: 0, imageData: '' } as CanvasInformation;
-    //let dataAccessService: Stubbed<DataAccessService>;
+    const baseInformation = { name: 'aName', tags: ['tag1', 'tag2'], format: 'png', width: 0, height: 0, imageData: '' } as CanvasInformation;
+    const testinformation: CanvasInformation = {
+        codeID: new ObjectId('507f1f77bcf86cd799439012').toHexString(),
+        name: 'DessinTest2',
+        tags: ['tagUnique', 'tag2'],
+        format: 'jpeg',
+        height: 300,
+        width: 300,
+        imageData: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
+    };
+    let dataAccessService: Stubbed<DataAccessService>;
     let app: Express.Application;
 
     beforeEach(async () => {
         const [container, sandbox] = await testingContainer();
         container.rebind(TYPES.DataAccessService).toConstantValue({
-            getAllData: sandbox.stub().resolves([baseInformation,baseInformation]),
+            getAllData: sandbox.stub().resolves([baseInformation, baseInformation]),
             getDataByTags: sandbox.stub().resolves(baseInformation),
             addData: sandbox.stub().resolves(),
-            deleteData: sandbox.stub().resolves(baseMessage),
+            deleteData: sandbox.stub().resolves(),
         });
-        //dataAccessService = container.get(TYPES.DataAccessService);
+        dataAccessService = container.get(TYPES.DataAccessService);
         app = container.get<Application>(TYPES.Application).app;
     });
 
-    it('should return canvasInformation from data access service on valid get request to root', async () => {
-        //dataAccessService.getAllData.returns([baseInformation,baseInformation]);
+    it('should return an array of canvasInformation on valid get request to root', async () => {
+        // dataAccessService.getAllData.returns([baseInformation,baseInformation]);
         return supertest(app)
             .get('/api/metadata/')
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
-                expect(response.body).to.deep.equal([baseInformation,baseInformation]);
+                expect(response.body).to.deep.equal([baseInformation, baseInformation]);
+            });
+    });
+    it('should return an error as a message on get request fail', async () => {
+        dataAccessService.getAllData.rejects(new Error('service error'));
+
+        return supertest(app)
+            .get('/api/metadata/')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.status).to.equal(HTTP_STATUS_NOT_FOUND);
             });
     });
 
     it('should return canvasInformation from data access service on valid get request to tag route', async () => {
-        //dataAccessService.getDataByTags.returns(baseInformation);
+        // dataAccessService.getDataByTags.returns(baseInformation);
         return supertest(app)
             .get('/api/metadata/:tags')
             .expect(HTTP_STATUS_OK)
@@ -49,18 +70,33 @@ describe('MetadataController', () => {
             });
     });
 
-    /*it('should store message in the array on valid post request to /send', async () => {
-        const message: Message = { title: 'Hello', body: 'World' };
-        return supertest(app).post('/api/metadata/send').send(message).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
+    it('should store canvasInformation in the array on valid post request to root', async () => {
+        const testinformation2: CanvasInformation = {
+            codeID: new ObjectId('507f1f77bcf86cd799439012').toHexString(),
+            name: 'DessinTest2',
+            tags: ['tagUnique', 'tag2'],
+            format: 'jpeg',
+            height: 300,
+            width: 300,
+            imageData: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
+        };
+        return supertest(app).post('/api/metadata/').send(testinformation2).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
     });
-
-    it('should return an arrat of messages on valid get request to /all', async () => {
-        indexService.getAllMessages.returns([baseMessage, baseMessage]);
+    /* TODO find out how to make delete work*/
+    it('should return a messages on valid delete request', async () => {
+        // indexService.getAllMessages.returns([baseMessage, baseMessage]);
+        const msg = {
+            title: "L'image a ete supprimer",
+            body: Httpstatus.StatusCodes.NO_CONTENT.toString(),
+        } as Message;
+        dataAccessService.deleteData.returns(testinformation.codeID);
         return supertest(app)
-            .get('/api/index/all')
+            .delete('/api/delete/:code')
+            .send(testinformation.codeID)
+            .set('Accept', 'application/json')
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
-                expect(response.body).to.deep.equal([baseMessage, baseMessage]);
+                expect(response).to.deep.equal(msg);
             });
-    });*/
+    });
 });
