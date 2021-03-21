@@ -19,7 +19,6 @@ export class RemoteSaveComponent {
         this.saveMode = mode;
     }
     savePicture(): void {
-        console.log(this.tagsName);
         const tags: string[] = this.remoteSaveService.tagsHangler(this.tagsName);
 
         const information = { name: this.fileName, tags, format: this.saveMode, width: 0, height: 0, imageData: '' } as CanvasInformation;

@@ -57,12 +57,15 @@
     background-image: url(../../../assets/bluebackground.jpeg);
     background-size: cover;
     border: 1px solid black;
+    flex-shrink: 0;
+    width: 400px;
 }
 
 //J'utilise ca pour faire la rangé de bouton a gauche
 .sidebar-container {
+    flex-shrink: 0;
     border: 1px solid black;
-    width: 70 px;
+    width: 70px;
     background-image: url(../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png);
     background-color: black;
 }

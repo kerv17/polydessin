@@ -27,10 +27,12 @@ export class DataAccessService {
     }
     async getDataByTags(receivedTags: string): Promise<CanvasInformation[]> {
         const tagsToFind: string[] = receivedTags.split(',');
+
         return this.metadataService
             .getMetadataByTags(tagsToFind)
             .then((metadata: Metadata[]) => {
                 const information = this.serverSaveService.createCanvasInformation(metadata);
+
                 return information;
             })
             .catch((error: Error) => {
@@ -47,7 +49,7 @@ export class DataAccessService {
             width: information.width,
         } as Metadata;
 
-        this.metadataService
+        return this.metadataService
             .addMetadata(data)
             .then(() => {
                 this.serverSaveService.saveImage(information.format, data.codeID.toHexString(), information.imageData);
@@ -57,9 +59,15 @@ export class DataAccessService {
             });
     }
     async deleteData(aCode: string): Promise<void> {
-        this.metadataService.deleteMetadata(aCode).then(() => {
-            this.serverSaveService.deleteCanvasInformation(aCode);
-        });
+        return this.metadataService
+            .deleteMetadata(aCode)
+            .then(() => {
+                this.serverSaveService.deleteCanvasInformation(aCode);
+            })
+            .catch((error: Error) => {
+                console.log(error.message);
+                throw new Error(error.message);
+            });
     }
 
     /*unsure if needed

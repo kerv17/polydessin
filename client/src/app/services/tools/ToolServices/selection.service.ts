@@ -1,60 +1,96 @@
 import { Injectable } from '@angular/core';
-import { Tool } from '@app/classes/tool';
+import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { RectangleService } from './rectangle-service';
-
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionService extends Tool {
     rectangleService: RectangleService;
-    selectedArea: ImageData;
-
     inSelection: boolean = false;
-    inMovement: boolean = false;
+    private inMovement: boolean = false;
+    private selectedArea: ImageData;
+    private timeout: number;
+    private interval: number;
+    private keyDown: boolean = false;
+    private firstTime: boolean = true;
 
-    bottomRightHandler: Vec2;
-    topLeftHandler: Vec2;
-    initialMousePosition: Vec2;
-    initialSelectionPosition: Vec2;
-    firstCorner: Vec2;
-    oppositeCorner: Vec2;
-    handlersPositions: Vec2[] = [];
-
-    leftArrow: boolean = false;
-    downArrow: boolean = false;
-    rightArrow: boolean = false;
-    upArrow: boolean = false;
-
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
         this.rectangleService = new RectangleService(this.drawingService);
 
-        this.onEscape();
-
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            this.checkArrowKeyDown(event);
-            this.onMoveArrows();
+            if (this.inSelection) {
+                if (event.repeat) {
+                    this.setKeyMovementDelays(event);
+                } else {
+                    this.onArrowDown(event);
+                }
+            }
         });
+
         document.addEventListener('keyup', (event: KeyboardEvent) => {
-            this.checkArrowKeyUp(event);
+            if (this.inSelection) {
+                this.keyDown = false;
+                this.firstTime = true;
+                clearInterval(this.interval);
+                clearTimeout(this.timeout);
+                this.selectionMove.onArrowKeyUp(event);
+            }
         });
+    }
+
+    getActualPosition(): Vec2 {
+        if (this.pathData.length > Globals.CURRENT_SELECTION_POSITION) {
+            return { x: this.pathData[Globals.CURRENT_SELECTION_POSITION].x, y: this.pathData[Globals.CURRENT_SELECTION_POSITION].y };
+        } else if (this.pathData.length > 0) {
+            return { x: this.pathData[0].x, y: this.pathData[0].y };
+        }
+        return { x: 0, y: 0 };
+    }
+
+    getSelectionWidth(): number {
+        if (this.selectedArea !== undefined) {
+            return this.selectedArea.width;
+        }
+        return 0;
+    }
+
+    getSelectionHeight(): number {
+        if (this.selectedArea !== undefined) {
+            return this.selectedArea.height;
+        }
+        return 0;
     }
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === Globals.MouseButton.Left;
-        const mousePosition = this.getPositionFromMouse(event);
+
         if (this.inSelection) {
-            if (!this.onMouseDownSelection(event, mousePosition)) {
+            const mousePosition = this.getPositionFromMouse(event);
+            if (
+                this.selectionMove.onMouseDown(
+                    event,
+                    mousePosition,
+                    this.pathData[Globals.CURRENT_SELECTION_POSITION],
+                    this.selectedArea.width,
+                    this.selectedArea.height,
+                )
+            ) {
+                this.inMovement = true;
+                this.inSelection = false;
+            } else {
                 this.onEscape();
             }
         } else {
-            this.firstCorner = mousePosition;
             this.rectangleService.onMouseDown(event);
+            this.pathData.push(this.rectangleService.getPath()[0]);
         }
     }
 
@@ -65,17 +101,17 @@ export class SelectionService extends Tool {
 
             if (this.inMovement) {
                 this.updateCanvasOnMove(this.drawingService.previewCtx);
-                this.onMouseMoveSelection(event, this.drawingService.previewCtx);
+                this.selectionMove.onMouseMove(
+                    event,
+                    this.drawingService.previewCtx,
+                    this.pathData[Globals.CURRENT_SELECTION_POSITION],
+                    this.selectedArea,
+                );
             } else {
-                const mousePosition = this.getPositionFromMouse(event);
-                const vec: Vec2[] = this.rectangleService.getRectanglePoints(mousePosition);
-                this.oppositeCorner = vec[2];
-                this.setTopLeftHandler();
-                this.drawBorder(this.drawingService.previewCtx, vec);
-                this.selectArea(this.drawingService.baseCtx, vec);
+                this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
+                this.drawBorder(this.drawingService.previewCtx);
+                this.selectArea(this.drawingService.baseCtx);
             }
-            this.clearPath();
-            this.pathData.push(this.topLeftHandler);
         }
     }
 
@@ -83,16 +119,16 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
-                this.onMouseUpSelection(event);
+                this.selectionMove.onMouseUp(event, this.pathData[Globals.CURRENT_SELECTION_POSITION], this.pathData);
                 this.inMovement = false;
-            } else if (this.firstCorner.x !== mousePosition.x && this.firstCorner.y !== mousePosition.x) {
+                this.inSelection = true;
+            } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
+                this.setTopLeftHandler();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
                 this.inSelection = true;
             }
         }
         this.mouseDown = false;
-        this.clearPath();
     }
 
     onShift(shifted: boolean): void {
@@ -103,56 +139,67 @@ export class SelectionService extends Tool {
     onEscape(): void {
         if (this.inSelection) {
             this.confirmSelectionMove();
+            this.dispatchAction(this.createAction());
             this.inSelection = false;
             this.mouseDown = false;
             this.inMovement = false;
-            this.firstCorner = { x: 0, y: 0 };
-            this.oppositeCorner = { x: 0, y: 0 };
-            this.topLeftHandler = { x: 0, y: 0 };
-            this.bottomRightHandler = { x: 0, y: 0 };
-            this.initialSelectionPosition = { x: 0, y: 0 };
-            this.initialMousePosition = { x: 0, y: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
-            this.handlersPositions = [];
         }
     }
 
-    private setTopLeftHandler(): void {
-        if (this.firstCorner.x < this.oppositeCorner.x && this.firstCorner.y < this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-            this.bottomRightHandler = { x: this.oppositeCorner.x, y: this.oppositeCorner.y };
-        } else if (this.firstCorner.x < this.oppositeCorner.x && this.firstCorner.y > this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.firstCorner.x, y: this.oppositeCorner.y };
-            this.bottomRightHandler = { x: this.oppositeCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x > this.oppositeCorner.x && this.firstCorner.y > this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.oppositeCorner.x, y: this.oppositeCorner.y };
-            this.bottomRightHandler = { x: this.firstCorner.x, y: this.firstCorner.y };
-        } else if (this.firstCorner.x > this.oppositeCorner.x && this.firstCorner.y < this.oppositeCorner.y) {
-            this.topLeftHandler = { x: this.oppositeCorner.x, y: this.firstCorner.y };
-            this.bottomRightHandler = { x: this.firstCorner.x, y: this.oppositeCorner.y };
+    // selectionner tout le canvas avec Ctrl + A
+    selectCanvas(width: number, height: number): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
+        this.inSelection = true;
+        this.pathData.push({ x: 0, y: 0 });
+        this.rectangleService.setPath(this.pathData);
+        this.pathData = this.rectangleService.getRectanglePoints({ x: width, y: height });
+        this.pathData.push({ x: 0, y: 0 });
+    }
+
+    // undoredo
+    doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.selectArea(this.drawingService.baseCtx);
+        this.confirmSelectionMove();
+        this.loadSetting(previousSetting);
+    }
+
+    // selection des pixels
+    private selectArea(ctx: CanvasRenderingContext2D): void {
+        const width: number = this.pathData[2].x - this.pathData[0].x;
+        const height: number = this.pathData[2].y - this.pathData[0].y;
+        if (width !== 0 && height !== 0) {
+            this.selectedArea = ctx.getImageData(this.pathData[0].x, this.pathData[0].y, width, height);
         }
     }
 
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
-        ctx.fillRect(this.initialSelectionPosition.x, this.initialSelectionPosition.y, this.selectedArea.width, this.selectedArea.height);
+        ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.selectedArea.width, this.selectedArea.height);
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
     }
 
     private confirmSelectionMove(): void {
         this.updateCanvasOnMove(this.drawingService.baseCtx);
-        this.drawingService.baseCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
+        this.drawingService.baseCtx.putImageData(
+            this.selectedArea,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+        );
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    private drawBorder(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (const point of path) {
+        for (const point of this.pathData) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -161,7 +208,7 @@ export class SelectionService extends Tool {
         ctx.strokeStyle = 'black';
         ctx.beginPath();
         ctx.setLineDash([Globals.LINE_DASH, Globals.LINE_DASH]);
-        for (const point of path) {
+        for (const point of this.pathData) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -169,137 +216,54 @@ export class SelectionService extends Tool {
         ctx.setLineDash([]);
     }
 
-    // selection des pixels
-    private selectArea(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        const width: number = path[2].x - path[0].x;
-        const height: number = path[2].y - path[0].y;
-        this.selectedArea = ctx.getImageData(path[0].x, path[0].y, width, height);
+    // Ajuste le pathData pour permettre la selection à partir de n'importe quel coin
+    // donc pour tracer le rectangle de selection dans n'importe quelle direction
+    private setTopLeftHandler(): void {
+        const firstCorner = { x: this.pathData[0].x, y: this.pathData[0].y };
+        const oppositeCorner = { x: this.pathData[2].x, y: this.pathData[2].y };
+
+        if (firstCorner.x < oppositeCorner.x && firstCorner.y > oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: firstCorner.x, y: oppositeCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: oppositeCorner.x, y: firstCorner.y });
+        } else if (firstCorner.x > oppositeCorner.x && firstCorner.y > oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: oppositeCorner.x, y: oppositeCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: firstCorner.y });
+        } else if (firstCorner.x > oppositeCorner.x && firstCorner.y < oppositeCorner.y) {
+            this.clearPath();
+            this.pathData.push({ x: oppositeCorner.x, y: firstCorner.y });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: oppositeCorner.y });
+        }
+        this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
     }
 
-    // selectionner tout le canvas avec Ctrl + A
-    selectCanvas(width: number, height: number): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.topLeftHandler = { x: 0, y: 0 };
-        this.bottomRightHandler = { x: width, y: height };
-        this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, width, height);
-        this.inSelection = true;
-        this.initialSelectionPosition = { x: this.topLeftHandler.x, y: this.topLeftHandler.y };
-    }
-
-    private onMouseDownSelection(event: MouseEvent, mousePosition: Vec2): boolean {
-        if (
-            mousePosition.x > this.topLeftHandler.x &&
-            mousePosition.x < this.bottomRightHandler.x &&
-            mousePosition.y > this.topLeftHandler.y &&
-            mousePosition.y < this.bottomRightHandler.y
-        ) {
-            this.initialMousePosition = { x: event.x, y: event.y };
-            this.inMovement = true;
-            this.inSelection = false;
-            return true;
+    private setKeyMovementDelays(event: KeyboardEvent): void {
+        if (this.keyDown) {
+            if (this.firstTime) {
+                this.firstTime = false;
+                this.interval = setInterval(() => {
+                    this.onArrowDown(event);
+                }, Globals.INTERVAL_MS);
+            }
         } else {
-            return false;
+            this.timeout = setTimeout(() => {
+                this.keyDown = true;
+            }, Globals.TIMEOUT_MS);
         }
     }
 
-    private onMouseMoveSelection(event: MouseEvent, ctx: CanvasRenderingContext2D): void {
-        const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-        const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-        ctx.putImageData(this.selectedArea, position.x, position.y);
-    }
-
-    private onMouseUpSelection(event: MouseEvent): void {
-        if (this.inMovement) {
-            const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
-            const position: Vec2 = { x: this.topLeftHandler.x + deplacement.x, y: this.topLeftHandler.y + deplacement.y };
-            this.topLeftHandler = position;
-            this.bottomRightHandler = { x: this.topLeftHandler.x + this.selectedArea.width, y: this.topLeftHandler.y + this.selectedArea.height };
-            this.inMovement = false;
-            this.initialMousePosition = { x: 0, y: 0 };
-            this.inSelection = true;
-        }
-    }
-
-    private checkArrowKeyDown(event: KeyboardEvent): void {
-        if (this.inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = true;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = true;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = true;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = true;
-            }
-        }
-    }
-
-    private onMoveArrows(): void {
-        if (this.leftArrow || this.upArrow || this.rightArrow || this.downArrow) {
-            this.positionArrows();
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(this.selectedArea, this.topLeftHandler.x, this.topLeftHandler.y);
-        }
-    }
-
-    private positionArrows(): void {
-        if (this.leftArrow) {
-            this.topLeftHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.x -= Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.upArrow) {
-            this.topLeftHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.y -= Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.rightArrow) {
-            this.topLeftHandler.x += Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.x += Globals.N_PIXELS_DEPLACEMENT;
-        }
-        if (this.downArrow) {
-            this.topLeftHandler.y += Globals.N_PIXELS_DEPLACEMENT;
-            this.bottomRightHandler.y += Globals.N_PIXELS_DEPLACEMENT;
-        }
-    }
-
-    private checkArrowKeyUp(event: KeyboardEvent): void {
-        if (this.inSelection) {
-            if (event.key === 'ArrowLeft') {
-                this.leftArrow = false;
-            }
-            if (event.key === 'ArrowUp') {
-                this.upArrow = false;
-            }
-            if (event.key === 'ArrowRight') {
-                this.rightArrow = false;
-            }
-            if (event.key === 'ArrowDown') {
-                this.downArrow = false;
-            }
-        }
-    }
-
-    // calcul position des 8 handlers
-    setHandlersPositions(topLeft: Vec2, bottomRight: Vec2): void {
-        this.handlersPositions = [];
-        // coin haut gauche
-        this.handlersPositions.push(topLeft);
-        // centre haut
-        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: topLeft.y });
-        // coin haut droite
-        this.handlersPositions.push({ x: bottomRight.x, y: topLeft.y });
-        // centre droite
-        this.handlersPositions.push({ x: bottomRight.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
-        // coin bas droite
-        this.handlersPositions.push(bottomRight);
-        // centre bas
-        this.handlersPositions.push({ x: bottomRight.x - (bottomRight.x - topLeft.x) / 2, y: bottomRight.y });
-        // coin bas gauche
-        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y });
-        // centre gauche
-        this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
+    private onArrowDown(event: KeyboardEvent): void {
+        this.selectionMove.onArrowKeyDown(event, this.pathData, this.pathData[Globals.CURRENT_SELECTION_POSITION]);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.updateCanvasOnMove(this.drawingService.previewCtx);
+        this.drawingService.previewCtx.putImageData(
+            this.selectedArea,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+            this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+        );
     }
 }

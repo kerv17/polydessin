@@ -3,12 +3,17 @@ import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { ColorComponent } from '@app/components/color/color.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
 import * as Globals from '@app/Constants/constants';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
+import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
@@ -24,7 +29,11 @@ export class DrawingServiceStub extends DrawingService {
     }
 }
 
-describe('SidebarComponent', () => {
+type ToolParam = {
+    showWidth: boolean;
+    toolName: string;
+};
+fdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -37,26 +46,30 @@ describe('SidebarComponent', () => {
     let openToolSpy: jasmine.Spy;
     let drawingStubSpy: jasmine.Spy;
     let toolController: ToolControllerService;
-    let setWhiteSpy: jasmine.Spy;
+    let remoteSaveServiceStub: RemoteSaveService;
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
+    let carouselService: CarouselService;
+    let selectionMovementService: SelectionMovementService;
+    let canvasTestHelper;
 
     let eventSpy: jasmine.Spy;
-    const router = {
-        navigate: jasmine.createSpy('navigate'),
-    };
+    const router = jasmine.createSpyObj(Router, ['navigate']);
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
+        remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
+        selectionMovementService = new SelectionMovementService();
         toolController = new ToolControllerService(
-            {} as PencilService,
-            {} as RectangleService,
-            {} as LineService,
-            {} as EllipsisService,
-            {} as AerosolService,
-            {} as SelectionService,
+            new PencilService(drawingStub),
+            new RectangleService(drawingStub),
+            new LineService(drawingStub),
+            new EllipsisService(drawingStub),
+            new AerosolService(drawingStub),
+            new SelectionService(drawingStub, selectionMovementService),
         );
         colorService = new ColorService();
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
@@ -66,7 +79,9 @@ describe('SidebarComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ColorService, useValue: colorService },
+                { provide: CarouselService, useValue: carouselService },
                 { provide: Router, useValue: router },
+                { provide: RemoteSaveService, useValue: remoteSaveServiceStub },
             ],
         }).compileComponents();
     }));
@@ -82,10 +97,25 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should add two event listeners in the constructor', () => {
+        const c: CustomEvent = new CustomEvent('undoRedoState', {
+            detail: [false, true],
+        });
+        dispatchEvent(c);
+        expect(component.redo).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.undo).toEqual(Globals.BACKGROUND_DARKGREY);
+    });
+    it('should add two event listeners in the constructor', () => {
+        const c: CustomEvent = new CustomEvent('undoRedoState', {
+            detail: [true, false],
+        });
+        dispatchEvent(c);
+        expect(component.undo).toEqual(Globals.BACKGROUND_WHITE);
+        expect(component.redo).toEqual(Globals.BACKGROUND_DARKGREY);
+    });
     it('it should set the values to show all elements needed for crayon and the rest false at initialization', () => {
         expect(component.showWidth).toEqual(true);
-        expect(component.resetAttributes).toEqual(true);
-        expect(component.fillBorder).toEqual(false);
+        expect(component.resetAttributes).toEqual(false);
     });
     it('should go back and call resetDrawing', () => {
         resetDrawingSpy = spyOn(component, 'resetDrawingAttributes');
@@ -100,61 +130,118 @@ describe('SidebarComponent', () => {
         expect(colorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
     });
-    it('it should set all the background colors of the buttons to white except crayon ', () => {
-        expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
-        expect(component.line).toEqual(Globals.BACKGROUND_WHITE);
-        expect(component.ellipsis).toEqual(Globals.BACKGROUND_WHITE);
+
+    it('should open the export modal', () => {
+        component.exportService.showModalExport = false;
+        component.openExport();
+
+        expect(component.exportService.showModalExport).toBe(true);
     });
 
-    it('OpenCrayon should change the ngSyle variable and call SetTool and OpenTool', () => {
-        openToolSpy = spyOn(component, 'openTool');
-        component.openCrayon();
-
-        expect(component.crayon).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth);
-        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.CRAYON_SHORTCUT);
-    });
-
-    it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
-        openToolSpy = spyOn(component, 'openTool');
-        component.openRectangle();
-        expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
-    });
-
-    it('OpenRectangle should change the ngSyle variable and call SetTool and OpenTool', () => {
-        openToolSpy = spyOn(component, 'openTool');
-        component.openRectangle();
-        expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.rectangle).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.RECTANGLE_SHORTCUT);
-    });
-
-    it('OpenLine should change the ngSyle variable and call SetTool and OpenTool', () => {
-        openToolSpy = spyOn(component, 'openTool');
-        component.openLine();
-        expect(openToolSpy).toHaveBeenCalledWith(!showFillOptions, showWidth, true);
-        expect(component.line).toEqual(Globals.BACKGROUND_GAINSBORO);
-        expect(toolControllerSpy).toHaveBeenCalledWith(Globals.LINE_SHORTCUT);
-    });
-    it('OpenEllipsis should change the ngSyle variable and call SetTool and OpenTool', () => {
-        openToolSpy = spyOn(component, 'openTool');
-        component.openEllipsis();
-        expect(openToolSpy).toHaveBeenCalledWith(showFillOptions, showWidth);
-        expect(component.ellipsis).toEqual(Globals.BACKGROUND_GAINSBORO);
+    it('should call toolControllerSetTool ', () => {
+        component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
-    it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
-        setWhiteSpy = spyOn(component, 'setButtonWhite');
-        const tempSlidervalue = component.resetAttributes;
+    // tslint:disable:no-any
+    it('should call the selectionService method select Canvas with the full size ', () => {
+        canvasTestHelper = new CanvasTestHelper();
+        (component as any).drawing.canvas = (canvasTestHelper as any).createCanvas();
+        (component as any).drawing.canvas.height = Globals.SIDEBAR_WIDTH; // pour fin de test
+        (component as any).drawing.canvas.width = Globals.SIDEBAR_WIDTH; // pour fin de test
+        const selectionSpy = spyOn(((component as any).toolController as any).selectionService, 'selectCanvas');
+        component.selectCanvas();
+        expect(selectionSpy).toHaveBeenCalled();
+    });
 
-        component.openTool(showFillOptions, showWidth, false);
-        expect(setWhiteSpy).toHaveBeenCalled();
-        expect(component.fillBorder).toEqual(showFillOptions);
+    it('should open the Carrousel Modal when we click on the button ', () => {
+        const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
+        component.openCarousel();
+        expect(carouselSpy).toHaveBeenCalled();
+    });
+
+    it('should open the Save Modal when we click on the button ', () => {
+        component.remoteSaveService.showModalSave = false;
+        component.openSave();
+        expect(component.remoteSaveService.showModalSave).toEqual(true);
+    });
+
+    it('should open the Save Modal when we click on the button ', () => {
+        component.remoteSaveService.showModalSave = false;
+        component.openSave();
+        expect(component.remoteSaveService.showModalSave).toEqual(true);
+    });
+
+    it('should open the Save Modal when we click on the button ', () => {
+        component.remoteSaveService.showModalSave = false;
+        component.openSave();
+        expect(component.remoteSaveService.showModalSave).toEqual(true);
+    });
+    it('should check if the current tool is Aerosol and show its specific options if it is', () => {
+        component.showAerosol = false;
+        component.currentTool = Globals.AEROSOL_SHORTCUT;
+        component.showAerosolInterface();
+        expect(component.showAerosol).toEqual(true);
+    });
+    it('should check if the current tool is Aerosol and not show its specific options if it isnt', () => {
+        component.showAerosol = false;
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        component.showAerosolInterface();
+        expect(component.showAerosol).toEqual(false);
+    });
+
+    it('should check if the current tool is Line and not show its specific options if it isnt', () => {
+        component.showLine = false;
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        component.showLineOptions();
+        expect(component.showLine).toEqual(false);
+    });
+
+    it('should check if the current tool is Line and show its specific options if it is', () => {
+        component.showLine = false;
+        component.currentTool = Globals.LINE_SHORTCUT;
+        component.showLineOptions();
+        expect(component.showLine).toEqual(true);
+    });
+
+    it('should check if the current tool is Rectangle or Ellipsis and show its specific options if it is', () => {
+        component.shapeOptions = false;
+        component.currentTool = Globals.ELLIPSIS_SHORTCUT;
+        component.showShapeOptions();
+        expect(component.shapeOptions).toEqual(true);
+    });
+    it('should check if the current tool is Rectangle or Ellipsis and not show its specific options if it is', () => {
+        component.shapeOptions = true;
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        component.showShapeOptions();
+        expect(component.shapeOptions).toEqual(false);
+    });
+
+    it('should cancel the selection on toolSwap if theres something selected', () => {
+        const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
+        ((component as any).toolController as any).selectionService.inSelection = true;
+        component.annulerSelection();
+        expect(escapeSpy).toHaveBeenCalled();
+    });
+
+    it('should not cancel the selection on toolSwap if theres not something selected', () => {
+        const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
+        ((component as any).toolController as any).selectionService.inSelection = false;
+        component.annulerSelection();
+        expect(escapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
+        const originalResetValue = component.resetAttributes;
+        const lineSpy = spyOn(component, 'showLineOptions');
+        const aerorolSpy = spyOn(component, 'showAerosolInterface');
+        const shapeSpy = spyOn(component, 'showShapeOptions');
+        component.openTool(showFillOptions, Globals.AEROSOL_SHORTCUT);
+        expect(component.resetAttributes).not.toEqual(originalResetValue);
+        expect(component.currentTool).toEqual(Globals.AEROSOL_SHORTCUT);
         expect(component.showWidth).toEqual(showWidth);
-        expect(component.resetAttributes).toEqual(!tempSlidervalue);
+        expect(lineSpy).toHaveBeenCalled();
+        expect(aerorolSpy).toHaveBeenCalled();
+        expect(shapeSpy).toHaveBeenCalled();
     });
 
     it('newCanvas should call drawingService nouveau dessin', () => {
@@ -185,7 +272,7 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
-        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true };
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
 
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
@@ -197,28 +284,27 @@ describe('SidebarComponent', () => {
     });
 
     it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
-        component.initMap();
-        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
+        component.initToolMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-        openToolSpy = spyOn(component, 'openTool');
-        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = true;
 
         window.dispatchEvent(keyDownEvent);
-        expect(mapSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
-        expect(openToolSpy).toHaveBeenCalled();
+        expect(mapSpy).toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
+        expect(component.currentTool).toEqual(Globals.ELLIPSIS_SHORTCUT);
     });
 
-    it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
-        component.initMap();
+    it('checking if onkeyPress calls Map.get() if its a toolkey but ctrl is true', () => {
         const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         openToolSpy = spyOn(component, 'openTool');
-        mapSpy = spyOn(component.functionMap, 'get').and.returnValue(component.openEllipsis);
+        mapSpy = spyOn((component as any).functionMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = false;
 
         window.dispatchEvent(keyDownEvent);
-        expect(mapSpy).not.toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
+        expect(mapSpy).not.toHaveBeenCalledWith([true, Globals.ELLIPSIS_SHORTCUT].join());
         expect(openToolSpy).not.toHaveBeenCalled();
     });
 
@@ -245,13 +331,5 @@ describe('SidebarComponent', () => {
 
         expect(eventSpy).not.toHaveBeenCalled();
         expect(drawingStubSpy).not.toHaveBeenCalled();
-    });
-
-    it('setButtonWhite should set all icons to white', () => {
-        component.setButtonWhite();
-        expect(component.crayon).toEqual(Globals.BACKGROUND_WHITE);
-        expect(component.rectangle).toEqual(Globals.BACKGROUND_WHITE);
-        expect(component.line).toEqual(Globals.BACKGROUND_WHITE);
-        expect(component.ellipsis).toEqual(Globals.BACKGROUND_WHITE);
     });
 });

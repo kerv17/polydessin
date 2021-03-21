@@ -98,9 +98,6 @@
             <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
             <img
                 src="../../../assets/selection.png"
-                [ngStyle]="{
-                    backgroundColor: currentTool == 'r' ? 'gainsboro' : 'white'
-                }"
                 (click)="setTool('r')"
                 (click)="this.openTool(false, 'r')"
                 (click)="selectCanvas()"
@@ -111,6 +108,19 @@
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton sauvegarde le dessin sur le serveur. Le raccourci est 'Ctrl+s'</div>
             <img src="../../../assets/save.png" class="function" (click)="openSave()" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire une sélection rectangulaire. Le raccourci est 'r'</div>
+            <img
+                src="../../../assets/Rectangleselection.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'r' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('r')"
+                (click)="this.openTool(false, 'r')"
+                class="function"
+                tabindex="0"
+            />
         </div>
     </div>
     <div class="BackgroundServices">
@@ -130,7 +140,7 @@
             <div *ngIf="shapeOptions">
                 <app-shape-options [change]="resetAttributes"></app-shape-options>
             </div>
-            <div *ngIf="showline">
+            <div *ngIf="showLine">
                 <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
         </div>

@@ -17,6 +17,17 @@ export class MetadataController {
     private configureRouter(): void {
         this.router = Router();
 
+        this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
+            this.dataAccessService
+                .getDataByTags(req.params.tags)
+                .then((information: CanvasInformation[]) => {
+                    res.json(information);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
         this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
             this.dataAccessService
                 .getAllData()
@@ -37,22 +48,13 @@ export class MetadataController {
             // }
         });
 
-        this.router.get('/:tags', async (req: Request, res: Response, next: NextFunction) => {
-            this.dataAccessService
-                .getDataByTags(req.params.tags)
-                .then((information: CanvasInformation[]) => {
-                    res.json(information);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
             this.dataAccessService
                 .addData(req.body)
                 .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.CREATED).send();
+                    const msg = {} as Message;
+                    msg.title = "L'image a ete enregistré";
+                    res.status(Httpstatus.StatusCodes.CREATED).send(msg);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -70,11 +72,12 @@ export class MetadataController {
                     res.status(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
-                    const msg: Message = req.body;
+                    /*const msg: Message = req.body;
                     msg.title = "L'image ne se trouve pas sur la base de données";
                     msg.body = Httpstatus.StatusCodes.NOT_FOUND.toString();
                     res.send(msg);
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND);
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND);*/
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
     }

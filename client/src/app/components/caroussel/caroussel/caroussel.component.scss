@@ -34,7 +34,7 @@
     justify-content: flex-end;
     font-size: 28px;
     font-weight: bold;
-    z-index: 3;
+    z-index: 1;
 }
 
 .close:hover,
@@ -89,6 +89,17 @@
 .info {
     z-index: 0;
 }
-.carouselAction {
-    text-align: center;
+.carouselActions {
+    display: inline-block;
+    position: relative;
+}
+.loading {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+    scale: 0.5;
+}
+.currentTags {
+    position: absolute;
 }
