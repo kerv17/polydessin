@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '../undoRedo/undo-redo.service';
 import { PencilService } from './pencil-service';
 
 // tslint:disable:no-any
@@ -13,6 +15,8 @@ describe('PencilService', () => {
     let mouseEvent2: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let dispatchSpy: jasmine.Spy<any>;
+
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -35,25 +39,28 @@ describe('PencilService', () => {
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
         clearPathSpy = spyOn<any>(service, 'clearPath').and.callThrough();
         drawPixelSpy = spyOn<any>(service, 'drawPixel').and.callThrough();
+        dispatchSpy = spyOn<any>(service,'dispatchAction');
         // Configuration du spy du service
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service.drawingService.canvas = canvasTestHelper.canvas;
+
 
         mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
+            pageX: 25 + SIDEBAR_WIDTH,
+            pageY: 25,
             button: 0,
         } as MouseEvent;
 
         mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
+            pageX: 25 + SIDEBAR_WIDTH,
+            pageY: 25,
             button: 1,
         } as MouseEvent;
 
         mouseEvent2 = {
-            offsetX: 56,
-            offsetY: 74,
+            pageX: 56 + SIDEBAR_WIDTH,
+            pageY: 74,
             button: 0,
         } as MouseEvent;
     });
@@ -97,17 +104,21 @@ describe('PencilService', () => {
     it(' onMouseUp should clear canvas & path if mouse click was released out of the canvas limits', () => {
         service.mouseDown = true;
         service.outOfBounds = true;
+        (service as any).pathData.push({x:0,y:0});
+        service.drawingService.canvas.width = 10;
+        service.drawingService.canvas.height = 10;
         service.onMouseUp(mouseEvent);
         expect(clearPathSpy).toHaveBeenCalled();
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(service.mouseDown).toEqual(false);
     });
 
-    it(' onMouseUp should not clear canvas if mouse click was released inside the canvas limits', () => {
+    it(' onMouseUp should clear canvas if mouse click was released inside the canvas limits', () => {
         service.outOfBounds = false;
+
         service.onMouseDown(mouseEvent2);
         service.onMouseUp(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawPixel if mouse was clicked and released at the same position without movement', () => {
@@ -122,10 +133,11 @@ describe('PencilService', () => {
         expect(drawPixelSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseUp should call drawLine if mouse was already down', () => {
+    it(' onMouseUp should call drawLine and send action event if mouse was already down', () => {
         service.onMouseDown(mouseEvent2);
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
@@ -153,17 +165,11 @@ describe('PencilService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    it(' onMouseLeave shoud call drawLine if mouse was down while leaving canvas surface', () => {
-        service.mouseDown = true;
-        service.onMouseLeave(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled();
-    });
 
     it(' onMouseLeave shoud clear path & canvas if mouse was down while leaving canvas surface', () => {
         service.mouseDown = true;
         service.onMouseLeave(mouseEvent);
-        expect(clearPathSpy).toHaveBeenCalled();
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(service.outOfBounds).toBeTrue();
     });
 
     it(' onMouseLeave shoud set outOfbounds to true if mouse was down while leaving canvas surface', () => {
@@ -216,6 +222,7 @@ describe('PencilService', () => {
     it(' drawLine should call lineTo if path as points', () => {
         const lineSpy = spyOn(drawServiceSpy.previewCtx, 'lineTo');
         service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEvent);
         service['drawLine'](drawServiceSpy.previewCtx, service['pathData']);
         expect(lineSpy).toHaveBeenCalled();
     });
@@ -254,11 +261,10 @@ describe('PencilService', () => {
 
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
+        mouseEvent = { pageX: 0 + SIDEBAR_WIDTH, pageY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
-        mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
+        mouseEvent = { pageX: 1 + SIDEBAR_WIDTH, pageY: 1, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-
         // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
@@ -267,4 +273,35 @@ describe('PencilService', () => {
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
+
+    it('doAction', () => {
+      (service as any).pathData = [{x: 0, y:0},{x: 10, y:10}, {x: 110, y:110}];
+      const action:DrawAction = (service as any).createAction();
+      service.clearPath();
+      service.doAction(action);
+      expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
+    });
+
+    it('separatePathLists', ()=>{
+
+      service.drawingService.canvas.width = 10;
+      service.drawingService.canvas.height = 10;
+
+      const vec:Vec2[] = [{x:1,y:1}, {x:2,y:2},{x:-5,y:-2},{x:3,y:3}];
+      const result = service.separatePathLists(vec);
+      const expectedResult = [[{x:1,y:1}, {x:2,y:2}],[{x:3,y:3}]];
+      expect(result).toEqual(expectedResult);
+    });
+
+    it('isPointInRange', ()=>{
+      service.drawingService.canvas.width = 10;
+      service.drawingService.canvas.height = 10;
+      const points = [{x:1,y:1},{x:15,y:1},{x:1,y:15},{x:-15,y:1},{x:1,y:-1}];
+      const expectedResult = [true,false,false,false,false];
+      let result:boolean[] = []
+      for (const point of points){
+        result.push(service.isPointInRange(point));
+      }
+      expect(result).toEqual(expectedResult);
+    })
 });
