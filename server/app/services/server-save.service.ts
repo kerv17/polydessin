@@ -7,13 +7,15 @@ import { Metadata } from '../classes/metadata';
 export class ServerSaveService {
     showModalExport: boolean = false;
 
-    saveImage(type: string, name: string, data: string): void {
-        if (type != undefined && name !== '') {
+    saveImage(type: string, code: string, data: string): void {
+        if (type != undefined && code !== '') {
             const base64Data = data.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
-            fs.writeFile('./' + name + '.' + type, base64Data, 'base64', (err) => {
-                if (err) return console.log(err);
+            fs.writeFile('./' + code + '.' + type, base64Data, 'base64', (err) => {
+                if (err) throw new Error('la sauvegarde a échouée');
             });
+        } else {
+            throw new Error('nom ou type invalide');
         }
     }
     deleteCanvasInformation(canvaToDelete: string): void {
