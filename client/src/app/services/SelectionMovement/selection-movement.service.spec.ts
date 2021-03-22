@@ -28,13 +28,7 @@ describe('SelectionMovementService', () => {
         drawService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.canvas = canvasTestHelper.canvas;
         topLeft = { x: 100, y: 100 };
-        mouseEvent = {
-            offsetX: 125,
-            offsetY: 125,
-            x: 125,
-            y: 125,
-            button: 1,
-        } as MouseEvent;
+        mouseEvent = Globals.mouseDownEvent;
     });
 
     it('should be created', () => {

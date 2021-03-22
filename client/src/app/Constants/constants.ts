@@ -84,3 +84,12 @@ export const BOTTOM_RIGHT_HANDLER = 4; // coin bas droite
 export const BOTTOM_HANDLER = 5; // centre bas
 export const BOTTOM_LEFT_HANDLER = 6; // coin bas gauche
 export const LEFT_HANDLER = 7; // centre gauche
+
+// Constante pour tests de sélection
+export const mouseDownEvent = {
+    offsetX: 125,
+    offsetY: 125,
+    x: 125,
+    y: 125,
+    button: 0,
+} as MouseEvent;

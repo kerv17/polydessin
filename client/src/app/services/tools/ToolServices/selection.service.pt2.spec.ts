@@ -4,7 +4,8 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { SelectionService } from './selection.service';
-// tslint:disable: no-string-literal
+
+// justifié pour pouvoir faire des spys sur des méthodes privées
 // tslint:disable: no-any
 describe('SelectionService', () => {
     let service: SelectionService;
@@ -18,6 +19,12 @@ describe('SelectionService', () => {
     const height = 100;
     const canvasWidth = 500;
     const canvasHeight = 500;
+    const pathData = 'pathData';
+    const keyDown = 'keyDown';
+    const firstTime = 'firstTime';
+    const onArrowDown = 'onArrowDown';
+    const setKeyMovementDelays = 'setKeyMovementDelays';
+    const selectedArea = 'selectedArea';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -30,7 +37,7 @@ describe('SelectionService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         drawService.canvas.width = canvasWidth;
         drawService.canvas.height = canvasHeight;
-        service['pathData'] = [
+        service[pathData] = [
             { x: 100, y: 100 },
             { x: 200, y: 100 },
             { x: 200, y: 200 },
@@ -107,37 +114,37 @@ describe('SelectionService', () => {
         const keyUpEvent = new KeyboardEvent('keyup', keyEventData);
         document.dispatchEvent(keyUpEvent);
         expect(selectionMovementSpy).toHaveBeenCalled();
-        expect(service['keyDown']).not.toBeTrue();
-        expect(service['firstTime']).toBeTrue();
+        expect(service[keyDown]).not.toBeTrue();
+        expect(service[firstTime]).toBeTrue();
     });
 
     it('setKeyMovementDelays should call setTimeout if keyDown is false', () => {
-        service['keyDown'] = false;
+        service[keyDown] = false;
         jasmine.clock().install();
-        service['setKeyMovementDelays']();
+        service[setKeyMovementDelays]();
         jasmine.clock().tick(Globals.TIMEOUT_MS + 1);
-        expect(service['keyDown']).toBeTrue();
+        expect(service[keyDown]).toBeTrue();
         jasmine.clock().uninstall();
     });
 
     it('setKeyMovementDelays should call setInterval if keyDown is true and firstTime is true', () => {
-        service['keyDown'] = true;
-        service['firstTime'] = true;
+        service[keyDown] = true;
+        service[firstTime] = true;
         selectionSpy = spyOn<any>(service, 'onArrowDown');
         jasmine.clock().install();
-        service['setKeyMovementDelays']();
+        service[setKeyMovementDelays]();
         jasmine.clock().tick(Globals.INTERVAL_MS + 1);
-        expect(service['firstTime']).not.toBeTrue();
+        expect(service[firstTime]).not.toBeTrue();
         expect(selectionSpy).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
 
     it('setKeyMovementDelays should not call setInterval if keyDown is true and firstTime is false', () => {
-        service['keyDown'] = true;
-        service['firstTime'] = false;
+        service[keyDown] = true;
+        service[firstTime] = false;
         selectionSpy = spyOn<any>(service, 'onArrowDown');
-        service['setKeyMovementDelays']();
-        expect(service['firstTime']).not.toBeTrue();
+        service[setKeyMovementDelays]();
+        expect(service[firstTime]).not.toBeTrue();
         expect(selectionSpy).not.toHaveBeenCalled();
     });
 
@@ -145,9 +152,9 @@ describe('SelectionService', () => {
         selectionMovementSpy = spyOn(selectionMoveService, 'moveSelection');
         selectionSpy = spyOn<any>(service, 'updateCanvasOnMove');
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
-        service['selectedArea'] = drawService.baseCtx.getImageData(width, height, width, height);
-        service['pathData'].push({ x: width, y: height });
-        service['onArrowDown']();
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service[pathData].push({ x: width, y: height });
+        service[onArrowDown]();
         expect(selectionMovementSpy).toHaveBeenCalled();
         expect(selectionSpy).toHaveBeenCalled();
         expect(drawServiceSpy).toHaveBeenCalled();
@@ -157,8 +164,8 @@ describe('SelectionService', () => {
         selectionMovementSpy = spyOn(selectionMoveService, 'moveSelection');
         selectionSpy = spyOn<any>(service, 'updateCanvasOnMove');
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
-        service['pathData'].push({ x: width, y: height });
-        service['onArrowDown']();
+        service[pathData].push({ x: width, y: height });
+        service[onArrowDown]();
         expect(selectionMovementSpy).not.toHaveBeenCalled();
         expect(selectionSpy).not.toHaveBeenCalled();
         expect(drawServiceSpy).not.toHaveBeenCalled();
