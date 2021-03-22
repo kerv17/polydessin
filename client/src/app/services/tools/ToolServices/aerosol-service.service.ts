@@ -18,6 +18,7 @@ export class AerosolService extends Tool {
     sprayAmountPerSecond: number = 10;
     lastPosition: Vec2;
     mouseDown: boolean = false;
+    // tslint:disable-next-line: no-any
     timeoutID: any;
     // Fonction servant a generer un nombre aleatoire entre -max et max
     rng(max: number): number {
@@ -29,18 +30,18 @@ export class AerosolService extends Tool {
         this.mouseDown = true;
         this.timeoutID = setInterval(() => {
             this.onTimeout();
-        }, MILS_TO_SEC);
+        }, MILS_TO_SEC / this.sprayAmountPerSecond);
         this.onTimeout();
     }
 
     onMouseMove(event: MouseEvent): void {
         this.lastPosition = this.getPositionFromMouse(event);
-        this.showRadius(this.getPositionFromMouse(event), this.sprayRadius);
+        this.showRadius(this.lastPosition, this.sprayRadius);
     }
 
-    onTimeout() {
+    onTimeout(): void {
         if (this.mouseDown) {
-            this.sprayPoints(this.lastPosition, this.sprayRadius, this.sprayAmountPerSecond);
+            this.sprayPoints(this.lastPosition, this.sprayRadius);
             this.drawSpray(this.drawingService.previewCtx, this.pathData);
         }
     }
@@ -67,10 +68,8 @@ export class AerosolService extends Tool {
         this.drawSpray(this.drawingService.previewCtx, this.pathData);
     }
 
-    sprayPoints(position: Vec2, radius: number, amount: number): void {
-        for (let i = 0; i < amount; i++) {
-            this.pathData.push(this.addPoint(position, radius));
-        }
+    sprayPoints(position: Vec2, radius: number): void {
+        this.pathData.push(this.addPoint(position, radius));
     }
 
     addPoint(position: Vec2, radius: number): Vec2 {
@@ -85,7 +84,7 @@ export class AerosolService extends Tool {
         return pointToAdd;
     }
 
-    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]):void {
+    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
         ctx.strokeStyle = ctx.strokeStyle = this.color || 'black';
         ctx.fillStyle = this.color || 'black';
         for (const point of points) {

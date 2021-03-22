@@ -1,49 +1,64 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
-const nombreImagePair = 2;
+// const nombreImagePair = 2;
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
     styleUrls: ['./caroussel.component.scss'],
 })
-export class CarousselComponent {
-    constructor(public carouselService: CarouselService) {}
-
+export class CarousselComponent implements AfterViewInit {
     @ViewChild('owlCar') owlCar: CarouselComponent;
-    slides = [
-        '../../../SavedCanvas/dessin1.jpeg',
-        '../../../SavedCanvas/dessin2.jpeg',
-        '../../../SavedCanvas/dessin3.jpeg',
-        '../../../SavedCanvas/dessin4.jpeg',
-        '../../../SavedCanvas/dessin5.jpeg',
-    ];
+    customOptions: OwlOptions;
+    constructor(public carouselService: CarouselService) {
+        this.resetOptions();
+    }
 
-    customOptions: OwlOptions = {
-        loop: true,
-        mouseDrag: true,
-        // TODO gèrer les cas ou moins de 2
-        merge: true,
-        touchDrag: true,
+    resetOptions(): void {
+        // J'attribue les options de mon owl-carousel-o
+        // Le lien vers le repo github de ce carousel est:
+        // https://github.com/vitalii-andriiovskyi/ngx-owl-carousel-o
+        this.customOptions = {
+            loop: true,
+            mouseDrag: true,
 
-        pullDrag: true,
-        margin: 20,
+            merge: true,
+            touchDrag: true,
 
-        dots: true,
-        navSpeed: 600,
-        navText: ['&#8249', '&#8250;'],
-        center: this.slides.length % nombreImagePair === 0 ? false : true,
-        items: this.slides.length >= nombreImage ? nombreImage : this.slides.length,
-        autoWidth: false,
+            pullDrag: true,
+            margin: 20,
 
-        nav: true,
-    };
+            dots: false,
+            navSpeed: 600,
+
+            center: true,
+            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1,
+            autoWidth: false,
+            // Cette petite partie  fait en sorte que le carousel s'adapate quand ca change de taille
+            // J'ai du le mettre sinon parfois il y a des espaces qui se crée
+            responsive: {
+                0: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
+                400: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
+                740: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
+                960: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
+            },
+            // I disactivate the provided nav because it doesnt work if the number of items is equal to amount of images
+            nav: false,
+        };
+    }
+
+    ngAfterViewInit(): void {
+        this.resetOptions();
+    }
+
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.key === 'ArrowRight') {
+        if (event.key === Globals.RIGHT_ARROW_SHORTCUT) {
+            // cette méthode change le slide courant vers la droite
             this.owlCar.next();
-        } else if (event.key === 'ArrowLeft') this.owlCar.prev();
+        } else if (event.key === Globals.LEFT_ARROW_SHORTCUT) this.owlCar.prev();
+        // cette méthode change le slide courant vers la gauche
     }
-    delete(): void {}
 }

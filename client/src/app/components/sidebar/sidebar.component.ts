@@ -5,44 +5,51 @@ import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
+
+type ToolParam = {
+    showWidth: boolean;
+    toolName: string;
+};
+
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    showWidth: boolean = false;
+    showWidth: boolean = true;
     showAerosol: boolean = false;
-    fillBorder: boolean = false;
-    showline: boolean = false;
-
+    shapeOptions: boolean = false;
+    showLine: boolean = false;
+    currentTool: string;
     resetAttributes: boolean = false;
-    crayon: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    rectangle: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    line: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    ellipsis: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    aerosol: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
-    selection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
+
     undo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
     redo: { backgroundColor: string } = Globals.BACKGROUND_DARKGREY;
-    functionMap: Map<string, () => void>;
+    private toolParamMap: Map<string, ToolParam>;
+    private functionMap: Map<string, () => void>;
+    rectangleSelection: { backgroundColor: string } = Globals.BACKGROUND_WHITE;
 
     constructor(
-        private toolcontroller: ToolControllerService,
+        private toolController: ToolControllerService,
         private drawing: DrawingService,
         private router: Router,
         private colorService: ColorService,
         public exportService: ExportService,
         public carouselService: CarouselService,
         private undoRedoService: UndoRedoService,
+        public remoteSaveService: RemoteSaveService,
     ) {
-        this.openCrayon();
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
+        this.toolParamMap = new Map();
         this.functionMap = new Map();
-        this.initMap();
+        this.initToolMap();
+        this.initFunctionMap();
+        this.currentTool = Globals.CRAYON_SHORTCUT;
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
@@ -56,121 +63,122 @@ export class SidebarComponent {
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
+        this.toolController.resetWidth();
+    }
+    setTool(tool: string): void {
+        this.toolController.setTool(tool);
     }
 
-    openCrayon(): void {
-        this.toolcontroller.setTool(Globals.CRAYON_SHORTCUT);
-        this.openTool(false, true);
-        this.crayon = Globals.BACKGROUND_GAINSBORO;
-    }
-    openRectangle(): void {
-        this.toolcontroller.setTool(Globals.RECTANGLE_SHORTCUT);
-        this.openTool(true, true);
-        this.rectangle = Globals.BACKGROUND_GAINSBORO;
-    }
-
-    openLine(): void {
-        this.toolcontroller.setTool(Globals.LINE_SHORTCUT);
-        this.openTool(false, true, true);
-        this.line = Globals.BACKGROUND_GAINSBORO;
-    }
-
-    openEllipsis(): void {
-        this.toolcontroller.setTool(Globals.ELLIPSIS_SHORTCUT);
-        this.openTool(true, true);
-        this.ellipsis = Globals.BACKGROUND_GAINSBORO;
-    }
-
-    openAerosol(): void {
-        this.toolcontroller.setTool(Globals.AEROSOL_SHORTCUT);
-        this.openTool(false, true);
-        this.showAerosol = true;
-        this.aerosol = Globals.BACKGROUND_GAINSBORO;
-    }
     selectCanvas(): void {
-        this.openTool(false, false);
-        this.toolcontroller.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
-        this.selection = Globals.BACKGROUND_GAINSBORO;
-        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+        this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
+        this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
+
+        //    const keyEventData = { isTrusted: true, key: Globals.RECTANGLE_SELECTION_SHORTCUT, ctrlKey: false, shiftKey: false };
+        //   const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        //   window.dispatchEvent(keyDownEvent);
+    }
+    openCarousel(): void {
+        this.carouselService.initialiserCarousel();
+    }
+    openSave(): void {
+        this.remoteSaveService.showModalSave = true;
     }
 
-    openSelection(): void {
-        this.toolcontroller.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
-        this.openTool(false, false);
-        this.selection = Globals.BACKGROUND_GAINSBORO;
+    showAerosolInterface(): void {
+        this.showAerosol = this.currentTool === Globals.AEROSOL_SHORTCUT;
     }
-
-    openTool(fillBorder: boolean, showWidth: boolean, showline: boolean = false): void {
-        this.fillBorder = fillBorder;
-        this.showWidth = showWidth;
-        this.showline = showline;
-        this.resetAttributes = !this.resetAttributes;
-        this.showAerosol = false;
-        this.setButtonWhite();
-        if (this.toolcontroller.selectionService.inSelection) {
-            this.toolcontroller.selectionService.onEscape();
-        }
-    }
-
-    newCanvas(): void {
-        this.colorService.resetColorValues();
-        this.toolcontroller.resetWidth();
-        this.toolcontroller.resetToolsMode();
-        this.drawing.newCanvas();
-        this.toolcontroller.lineService.clearPath();
-        this.openCrayon();
-    }
-
-    @HostListener('window:keydown', ['$event'])
-    onKeyPress($event: KeyboardEvent): void {
-        if (this.exportService.showModalExport || this.carouselService.showCarousel) {
-            $event.stopImmediatePropagation();
-        } else if ($event.ctrlKey && $event.key === Globals.NEW_DRAWING_EVENT) {
-            $event.preventDefault();
-
-            this.drawing.newCanvas();
-        } else if ($event.ctrlKey && $event.key === Globals.EXPORT_SHORTCUT) {
-            this.openExport();
-        } else if ($event.ctrlKey && $event.key === Globals.CAROUSEL_SHORTCUT) {
-            $event.preventDefault();
-            this.carouselService.openCarousel();
-        } else if ($event.ctrlKey && $event.key === Globals.CANVAS_SELECTION_EVENT) {
-            $event.preventDefault();
-            this.selectCanvas();
-        } else if ($event.key === Globals.RECTANGLE_SELECTION_SHORTCUT) {
-            this.openSelection();
-        } else if (this.toolcontroller.focused) {
-            this.functionMap.get($event.key)?.call(this);
-        }
+    showLineOptions(): void {
+        this.showLine = this.currentTool === Globals.LINE_SHORTCUT;
     }
     openExport(): void {
         this.exportService.showModalExport = true;
     }
-
-    setButtonWhite(): void {
-        this.crayon = Globals.BACKGROUND_WHITE;
-        this.rectangle = Globals.BACKGROUND_WHITE;
-        this.ellipsis = Globals.BACKGROUND_WHITE;
-        this.line = Globals.BACKGROUND_WHITE;
-        this.aerosol = Globals.BACKGROUND_WHITE;
-        this.selection = Globals.BACKGROUND_WHITE;
+    showShapeOptions(): void {
+        this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
-    initMap(): void {
+
+    annulerSelection(): void {
+        if (this.toolController.selectionService.inSelection) {
+            this.toolController.selectionService.onEscape();
+        }
+    }
+    openTool(showWidth: boolean, toolname: string): void {
+        this.showWidth = showWidth;
+        this.resetAttributes = !this.resetAttributes;
+        this.currentTool = toolname;
+
+        this.showLineOptions();
+        this.showAerosolInterface();
+        this.showShapeOptions();
+        this.annulerSelection();
+    }
+
+    newCanvas(): void {
+        this.colorService.resetColorValues();
+        this.toolController.resetWidth();
+        this.toolController.resetToolsMode();
+        this.drawing.newCanvas();
+        this.toolController.lineService.clearPath();
+        this.currentTool = Globals.CRAYON_SHORTCUT;
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyPress($event: KeyboardEvent): void {
+        if (!this.exportService.showModalExport && !this.carouselService.showCarousel && !this.remoteSaveService.showModalSave) {
+            if (this.functionMap.has([$event.shiftKey, $event.ctrlKey, $event.key].join())) {
+                this.functionMap.get([$event.shiftKey, $event.ctrlKey, $event.key].join())?.call(this);
+                $event.preventDefault();
+            }
+
+            if (this.toolController.focused) {
+                this.handleShortcuts($event);
+            }
+        }
+    }
+
+    initToolMap(): void {
+        this.toolParamMap
+            .set([false, false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
+                showWidth: false,
+                toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
+            } as ToolParam);
+    }
+    initFunctionMap(): void {
         this.functionMap
-            .set(Globals.CRAYON_SHORTCUT, this.openCrayon)
-            .set(Globals.RECTANGLE_SHORTCUT, this.openRectangle)
-            .set(Globals.LINE_SHORTCUT, this.openLine)
-            .set(Globals.ELLIPSIS_SHORTCUT, this.openEllipsis)
-            .set(Globals.AEROSOL_SHORTCUT, this.openAerosol)
-            .set(Globals.CANVAS_SELECTION_EVENT, this.selectCanvas);
+            .set([false, true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
+            .set([false, true, Globals.EXPORT_SHORTCUT].join(), this.openExport)
+            .set([false, true, Globals.CAROUSEL_SHORTCUT].join(), this.openCarousel)
+            .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
+            .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
+            .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
+            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);
+    }
+
+    handleShortcuts(event: KeyboardEvent): void {
+        const key: string = [event.shiftKey, event.ctrlKey, event.key].join();
+        const currentToolOptions = this.toolParamMap.get(key);
+        if (currentToolOptions != undefined) {
+            this.setTool(currentToolOptions.toolName);
+            this.openTool(currentToolOptions.showWidth, currentToolOptions.toolName);
+            event.preventDefault();
+        }
     }
 
     undoAction(): void {
-        this.undoRedoService.undo();
+        if (!this.toolController.selectionService.inSelection) {
+            this.undoRedoService.undo();
+        }
     }
 
     redoAction(): void {
-        this.undoRedoService.redo();
+        if (!this.toolController.selectionService.inSelection) {
+            this.undoRedoService.redo();
+        }
     }
 }

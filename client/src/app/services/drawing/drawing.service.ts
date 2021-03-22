@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-
+import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
+import { CanvasInformation } from '@common/communication/canvas-information';
 @Injectable({
     providedIn: 'root',
 })
@@ -54,21 +55,65 @@ export class DrawingService {
                 return;
             }
         }
-        this.canvas.height = newCanvasSize.y;
-        this.canvas.width = newCanvasSize.x;
-
-        this.previewCanvas.height = newCanvasSize.y;
-        this.previewCanvas.width = newCanvasSize.x;
+        this.setCanvassSize(newCanvasSize);
         this.clearCanvas(this.previewCtx);
-        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        const imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        const action: DrawingAction = {
+            type: 'Drawing',
+            drawing: imageData,
+            width: this.canvas.width,
+            height: this.canvas.height,
+        };
+        const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
+        dispatchEvent(event);
+    }
+    loadOldCanvas(oldCanvas: CanvasInformation): void {
+        const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        if (this.canvasNotEmpty(data) && !confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
+            return;
+        }
+
+        this.reloadOldCanvas(oldCanvas);
+        const imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        const action: DrawingAction = {
+            type: 'Drawing',
+            drawing: imageData,
+            width: this.canvas.width,
+            height: this.canvas.height,
+        };
+        const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
+        dispatchEvent(event);
     }
 
-    resetCanvas(): void {
+    reloadOldCanvas(oldCanvas: CanvasInformation): void {
+        const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
+        this.setCanvassSize(newSize);
+        const image = new Image();
+        image.src = oldCanvas.imageData;
+        this.baseCtx.drawImage(image, 0, 0);
+        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+    }
+
+    setCanvassSize(newCanvasSize: Vec2): void {
+        this.canvas.height = newCanvasSize.y;
+        this.canvas.width = newCanvasSize.x;
+        this.previewCanvas.height = newCanvasSize.y;
+        this.previewCanvas.width = newCanvasSize.x;
+        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+    }
+    resetCanvas(size: Vec2): void {
+        this.canvas.width = size.x;
+        this.canvas.height = size.y;
+        this.previewCanvas.width = size.x;
+        this.previewCanvas.height = size.y;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.clearCanvas(this.previewCtx);
+        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
 
     canvasNotEmpty(image: ImageData): boolean {

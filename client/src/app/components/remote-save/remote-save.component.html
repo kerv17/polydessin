@@ -1,0 +1,49 @@
+<div id="myModal" class="modal">
+  <div class="modal-content">
+      <div class="close" (click)="close()">&times;</div>
+      <div>
+          <p>Veuillez choisir le type du fichier sauvegardé</p>
+          <button
+              [ngStyle]="{
+                  backgroundColor: saveMode == 'png' ? 'gainsboro' : 'white'
+              }"
+              (click)="toggleMode('png')"
+          >
+              Png
+          </button>
+          <button
+              [ngStyle]="{
+                  backgroundColor: saveMode == 'jpeg' ? 'gainsboro' : 'white'
+              }"
+              (click)="toggleMode('jpeg')"
+          >
+              Jpeg
+          </button>
+          <div *ngIf="saveMode != undefined">
+              <p>Le format choisi est de {{ saveMode }}</p>
+          </div>
+      </div>
+      <div>
+          <p>Veuillez choisir le nom du fichier en commencant par "Dessin"</p>
+          <ul>
+                <li>Le nom du fichier doit faire entre 6 et 20 caracter</li>
+          </ul>  
+          <input [(ngModel)]="fileName" />
+      </div>
+      <div>
+          <p>Vous pouvez ajouter des tags</p>
+          <ul>
+            <li>Les tags doivent être séparés par des ","</li>
+            <li>Il peut ne pas y avoir de tags, mais pas de tag vide</li>
+            <li>Les tags doivent faire entre 3 et 10 caracter</li>
+            <li>Les tags ne doivent pas avoir de caractères speciaux ou espaces</li>
+            <li>Il ne peut pas il y avoir plus de 5 tags</li>
+          </ul>  
+      </div>
+      <div>
+            <p>Veuillez choisir les tags pour le fichier</p>
+            <input [(ngModel)]="tagsName" />
+       </div>
+      <button class="save" (click)="savePicture()" [disabled]="inSave">sauvegarder le canvas</button>
+  </div>
+</div>

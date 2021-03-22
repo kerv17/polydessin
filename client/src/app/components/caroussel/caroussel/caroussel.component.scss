@@ -19,9 +19,11 @@
     background-color: slategray;
     margin: 5% auto auto auto; /* 15% from the top and centered */
     padding: 20px;
-
+    padding-bottom: 100px;
     width: 90%; /* Could be more or less, depending on screen size */
-    height: min-content;
+    height: 70vh;
+    min-width: 600px;
+    min-height: 500px;
     border: 10px solid black;
 }
 
@@ -32,7 +34,7 @@
     justify-content: flex-end;
     font-size: 28px;
     font-weight: bold;
-    z-index: 3;
+    z-index: 1;
 }
 
 .close:hover,
@@ -46,6 +48,8 @@
     display: flex;
 
     height: 60vh;
+    min-height: 400px;
+    min-width: 300px;
 }
 .carousel:hover {
     cursor: pointer;
@@ -54,15 +58,48 @@
 .carouselContainer {
     height: 60vh;
     border: 2px solid black;
+    min-width: 200px;
+    min-height: 400px;
 }
-.delete {
-    display: flex;
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    left: 30%;
-    z-index: 2;
-}
+
 .delete:hover {
-    cursor: col-resize;
+    cursor: pointer;
+}
+.button {
+    text-align: center;
+    margin-top: 60px;
+    z-index: 3;
+}
+
+.left {
+    position: relative;
+    margin-right: 40px;
+    scale: 1.5;
+}
+.left:hover,
+.right:hover {
+    cursor: pointer;
+}
+.right {
+    position: relative;
+
+    margin-left: 10px;
+    scale: 1.5;
+}
+.info {
+    z-index: 0;
+}
+.carouselActions {
+    display: inline-block;
+    position: relative;
+}
+.loading {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 1;
+    scale: 0.5;
+}
+.currentTags {
+    position: absolute;
 }

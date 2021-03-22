@@ -99,15 +99,9 @@ export class ResizePoint {
         }
     }
     forceMaxWidth(event: MouseEvent): boolean {
-        if (event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER) {
-            return true;
-        }
-        return false;
+        return event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
     }
     forceMaxHeight(event: MouseEvent): boolean {
-        if (event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER) {
-            return true;
-        }
-        return false;
+        return event.offsetY >= window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
     }
 }

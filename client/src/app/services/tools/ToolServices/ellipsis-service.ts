@@ -167,9 +167,9 @@ export class EllipsisService extends Tool {
     }
 
     doAction(action: DrawAction): void {
-      const previousSetting = this.saveSetting();
-      this.loadSetting(action.setting);
-      this.drawEllipse(action.canvas, this.pathData);
-      this.loadSetting(previousSetting);
+        const previousSetting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.drawEllipse(action.canvas, this.pathData);
+        this.loadSetting(previousSetting);
     }
 }

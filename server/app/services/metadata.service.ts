@@ -1,15 +1,16 @@
 import { TYPES } from '@app/types';
+import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
-import { Collection, FilterQuery, FindAndModifyWriteOpResultObject, FindOneOptions, UpdateQuery } from 'mongodb';
+import { Collection, FindAndModifyWriteOpResultObject, ObjectId } from 'mongodb';
 import 'reflect-metadata';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
 import { DatabaseService } from './database.service';
 
-// CHANGE the URL for your database information
 const DATABASE_COLLECTION = 'metadata';
-const MAX_SIZE_TAG = 20;
-const MIN_SIZE_TAG = 4;
+const MAX_SIZE_TAG = 10;
+const MIN_SIZE_TAG = 3;
+const MAX_NUMBER_TAG = 5;
 
 @injectable()
 export class MetadataService {
@@ -24,130 +25,59 @@ export class MetadataService {
             .find({})
             .toArray()
             .then((metadata: Metadata[]) => {
+                if (metadata.length === 0)
+                    throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données");
                 return metadata;
             });
     }
 
-    async getMetadataByCode(aCode: string): Promise<Metadata> {
-        // TODO: This can return null if the metadata does not exist, need to handle it
-        return this.collection.findOne({ code: aCode }).then((metadata: Metadata) => {
-            return metadata;
-        });
-    }
-    async getMetadataByName(aName: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { name: aName };
+    async getMetadataByTags(tagsToFind: string[]): Promise<Metadata[]> {
         return this.collection
-            .find(filterQuery)
+            .find({ tags: { $in: tagsToFind } })
             .toArray()
             .then((metadatas: Metadata[]) => {
+                if (metadatas.length === 0) {
+                    throw new Error();
+                }
                 return metadatas;
             })
 
             .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
-    // TODO getMetadataByTag
-    async getMetadataByTag(tag: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { tags: tag };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
-
-            .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
-    // TODO getMetadataByTags
-    async getMetadataByTags(receivedTags: string[]): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { tags: receivedTags };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
-
-            .catch(() => {
-                throw new Error('Failed to get data');
+                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée");
             });
     }
     // TODO getMetadataByNameAndTags
 
-    async addMetadata(data: Metadata): Promise<void> {
-        if (this.validateMetadata(data)) {
-            await this.collection.insertOne(data).catch((error: Error) => {
-                throw new HttpException(500, 'Failed to insert metadata');
-            });
+    async addMetadata(metadata: Metadata): Promise<void> {
+        if (this.validateMetadata(metadata)) {
+            await this.collection
+                .insertOne(metadata)
+                .catch((error: Error) => {
+                    throw new HttpException(Httpstatus.StatusCodes.INTERNAL_SERVER_ERROR, "Le serveur n'a pas pu insérer la donnée");
+                })
+                .catch((error: Error) => {
+                    throw new Error(error.message);
+                });
         } else {
-            throw new Error('Invalid metadata');
+            throw new HttpException(Httpstatus.StatusCodes.BAD_REQUEST, "n'a pas pu insérer la donnée, format érroné");
         }
     }
 
     async deleteMetadata(aCode: string): Promise<void> {
         return this.collection
-            .findOneAndDelete({ code: aCode })
+            .findOneAndDelete({ codeID: new ObjectId(aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
-                    throw new Error('Failed to delete metadata');
+                    throw new Error("Le serveur n'a pas pu enlevé la donnée");
                 }
             })
-            .catch(() => {
-                throw new Error('Failed to delete metadata');
-            });
-    }
-    // TODO is this necessary?
-    async modifyMetadata(metadata: Metadata): Promise<void> {
-        if (this.validateMetadata(metadata)) {
-            const filterQuery: FilterQuery<Metadata> = { code: metadata.code };
-            const updateQuery: UpdateQuery<Metadata> = {
-                $set: {
-                    code: metadata.code,
-                    name: metadata.name,
-                    tags: metadata.tags,
-                },
-            };
-            // Can also use replaceOne if we want to replace the entire object
-            return this.collection
-                .updateOne(filterQuery, updateQuery)
-                .then(() => {})
-                .catch(() => {
-                    throw new Error('Failed to update document');
-                });
-        }
-    }
-
-    async getMetadataName(aCode: string): Promise<string> {
-        const filterQuery: FilterQuery<Metadata> = { code: aCode };
-        // Only get the name and not any of the other fields
-        const projection: FindOneOptions = { projection: { name: 1, _id: 0 } };
-        return this.collection
-            .findOne(filterQuery, projection)
-            .then((metadata: Metadata) => {
-                return metadata.name;
-            })
-            .catch(() => {
-                throw new Error('Failed to get data');
-            });
-    }
-    async getCodesByName(aName: string): Promise<Metadata[]> {
-        const filterQuery: FilterQuery<Metadata> = { name: aName };
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((metadatas: Metadata[]) => {
-                return metadatas;
-            })
-            .catch(() => {
-                throw new Error('No codes for that name');
+            .catch((error: Error) => {
+                throw new Error(error.message);
             });
     }
 
     private validateMetadata(metadata: Metadata): boolean {
-        return this.validateName(metadata.name) || this.validateTags(metadata.tags);
+        return this.validateName(metadata.name) && this.validateTags(metadata.tags);
     }
     // TODO define name acceptance rules
     private validateName(name: string): boolean {
@@ -156,20 +86,22 @@ export class MetadataService {
 
     // TODO define tags acceptance rules
     private validateTags(tags: string[]): boolean {
-        if (tags.length == 0) {
+        if (tags.length === 0) {
             // il est accepter qu'un dessin peut ne pas avoir de tag
             return true;
         } else {
-            if (
+            return (
                 this.verifyTagsNotNull(tags) &&
                 this.verifyTagsTooLong(tags) &&
                 this.verifyTagsTooShort(tags) &&
-                this.verifyTagsNoSpecialChracter(tags)
-            ) {
-                return true;
-            }
-            return false;
+                this.verifyTagsNoSpecialChracter(tags) &&
+                this.verifyTagsNumber(tags)
+            );
         }
+    }
+
+    private verifyTagsNumber(tags: string[]): boolean {
+        return tags.length <= MAX_NUMBER_TAG;
     }
     private verifyTagsNotNull(tags: string[]): boolean {
         return tags.every((elem) => elem.length > 0);
@@ -186,7 +118,7 @@ export class MetadataService {
     publié le 28 Decembre 2018
     disponible à l'adresse suivante : "https://www.aspsnippets.com/Articles/Check-whether-String-contains-Special-Characters-using-JavaScript.aspx"
     Quelques modifications y ont été apportées
-*/
+    */
     private verifyTagsNoSpecialChracter(tags: string[]): boolean {
         // only accepts letters and numbers
         const regex = /^[A-Za-z0-9]+$/;

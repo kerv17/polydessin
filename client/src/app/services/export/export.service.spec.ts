@@ -21,15 +21,16 @@ describe('ExportService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should export the image if the type and name arent undefined avec un comfirm true ', () => {
+    xit('should export the image if the type and name arent undefined avec un comfirm true ', () => {
         const type = 'png';
         const name = 'test';
-        let element: HTMLElement = document.createElement('a');
+        const filtre = 'none';
+        const element: HTMLElement = document.createElement('a');
         createElementSpy = spyOn(document, 'createElement').and.returnValue(element);
 
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
 
-        service.exportImage(type, name);
+        service.exportImage(type, name, filtre);
 
         expect(createElementSpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
@@ -38,14 +39,40 @@ describe('ExportService', () => {
     it('should  not export the image if the type and name arent undefined avec un comfirm true ', () => {
         const type = 'png';
 
-        let element: HTMLElement = document.createElement('a');
+        const element: HTMLElement = document.createElement('a');
         createElementSpy = spyOn(document, 'createElement').and.returnValue(element);
 
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
 
-        service.exportImage(type, '');
+        service.exportImage(type, '', '');
 
         expect(createElementSpy).not.toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
+    });
+
+    it('should do nothing if the user refuses the comfirm', () => {
+        const type = 'png';
+        const name = 'test';
+        const filtre = 'none';
+        const element: HTMLElement = document.createElement('a');
+        createElementSpy = spyOn(document, 'createElement').and.returnValue(element);
+
+        confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
+
+        service.exportImage(type, name, filtre);
+
+        expect(createElementSpy).not.toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+
+    it('should check if the name is empty and return false if it is', () => {
+        expect(service.checkifNotEmpty('')).not.toBeTrue();
+    });
+    it('should check if the name is empty and return true if it isnt', () => {
+        expect(service.checkifNotEmpty('test')).toBeTrue();
+    });
+
+    it('should check if the name is empty and return false if it only contains spaces', () => {
+        expect(service.checkifNotEmpty('               ')).not.toBeTrue();
     });
 });

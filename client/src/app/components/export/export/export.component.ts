@@ -39,7 +39,7 @@ export class ExportComponent implements AfterViewInit {
     }
 
     exportPicture(): void {
-        this.exportService.exportImage(this.exportMode, this.fileName);
+        this.exportService.exportImage(this.exportMode, this.fileName, this.filtre);
     }
     close(): void {
         this.exportService.showModalExport = false;

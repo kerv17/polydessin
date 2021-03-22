@@ -1,8 +1,8 @@
+import { TYPES } from '@app/types';
 import * as http from 'http';
 import { inject, injectable } from 'inversify';
 import { Application } from './app';
-import { TYPES } from '@app/types';
-import { DatabaseService } from "./services/database.service";
+import { DatabaseService } from './services/database.service';
 
 @injectable()
 export class Server {
@@ -12,8 +12,8 @@ export class Server {
 
     constructor(
         @inject(TYPES.Application) private application: Application,
-        @inject(TYPES.DatabaseService) private databaseService: DatabaseService
-        ) {}
+        @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
+    ) {}
 
     async init(): Promise<void> {
         this.application.app.set('port', this.appPort);
@@ -25,9 +25,9 @@ export class Server {
         this.server.on('listening', () => this.onListening());
         try {
             await this.databaseService.start();
-            console.log("Database connection successful !");
+            console.log('Database connection successful !');
         } catch {
-            console.error("Database connection failed !");
+            console.error('Database connection failed !');
             process.exit(1);
         }
     }

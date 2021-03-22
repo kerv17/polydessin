@@ -1,16 +1,38 @@
 <!--Code tiré pour le model window de  https://www.w3schools.com/howto/howto_css_modals.asp-->
 <div id="myModal" class="modal">
     <div class="modal-content">
+        <div class="currentTags" *ngIf="carouselService.currentSearch != ''">
+            <p>Les tags sélectionné sont: {{ carouselService.currentSearch }}</p>
+        </div>
         <div class="close" (click)="carouselService.close()">&times;</div>
+
         <div class="carouselContainer">
-            <owl-carousel-o id="carousel" [options]="customOptions" class="test" #owlCar>
-                <ng-container *ngFor="let slide of slides" class="container">
-                    <ng-template carouselSlide>
-                        <img class="carousel" (click)="carouselService.test(slide)" [src]="slide" alt="test" />
+            <owl-carousel-o id="carousel" [options]="customOptions" #owlCar>
+                <ng-container *ngFor="let slide of carouselService.pictures" class="container">
+                    <ng-template carouselSlide [id]="slide.codeID">
+                        <div>
+                            <img class="carousel" (click)="carouselService.loadCanvas(slide)" [src]="slide.imageData" alt="test" />
+                        </div>
+                        <div class="info">
+                            <p>Nom: {{ slide.name }} Tags: {{ slide.tags }}</p>
+                        </div>
                     </ng-template>
                 </ng-container>
             </owl-carousel-o>
         </div>
-        <button class="delete" (click)="carouselService.delete()">Delete selected canvas</button>
+
+        <div class="button">
+            <button class="left" (click)="this.owlCar.prev()">&#8249;</button>
+            <button class="right" (click)="this.owlCar.next()">&#8250;</button>
+        </div>
+        <div *ngIf="carouselService.showLoad"><img class="loading" src="../../../../assets/loading.gif" /></div>
+        <div class="carouselActions">
+            <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Delete selected canvas</button>
+            <div class="tags">
+                <p style="display: inline-block">Veuillez entrez les tags recherché(séparé par une virgule)</p>
+                <input style="display: inline-block" [(ngModel)]="carouselService.currentTags" />
+                <button style="display: inline-block" (click)="carouselService.filterdessin()">Enregistrer Tags</button>
+            </div>
+        </div>
     </div>
 </div>

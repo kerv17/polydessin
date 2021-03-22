@@ -5,7 +5,9 @@ export const TYPES = {
     DateController: Symbol('DateController'),
     IndexService: Symbol('IndexService'),
     DateService: Symbol('DateService'),
-    MetadataController: Symbol("MetadataController"),
-    DatabaseService: Symbol("DatabaseService"),
-    MetadataService: Symbol("MetadataService"),
+    MetadataController: Symbol('MetadataController'),
+    DatabaseService: Symbol('DatabaseService'),
+    MetadataService: Symbol('MetadataService'),
+    ServerSaveService: Symbol('ServerSaveService'),
+    DataAccessService: Symbol('DataAccessService'),
 };
