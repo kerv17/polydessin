@@ -84,27 +84,84 @@ describe('Service: Data-Access', () => {
         sandbox.restore();
     });
 
-    it('should  return all the information of drawing saved on server', async () => {
+    it('should  return all the information of drawing saved on server and DB', async () => {
         const spyGetAllData = sinon.spy(dataAccessService, 'getAllData');
-
-        sandbox.stub(metadataService, 'getAllMetadata').returns(Promise.resolve([testMetadata, testMetadata2]));
-        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
-        // const information = await dataAccessService.getAllData();
-        spyGetAllData.returned(Promise.resolve([testinformation, testinformation2]));
-        // expect(await information[0]).to.deep.equals(testMetadata);
-        // expect(await information[1]).to.deep.equals(testMetadata2);
-        // spyExists.reset();
+        sandbox.stub(metadataService, 'getAllMetadata').resolves([testMetadata, testMetadata2]);
+        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
+        await dataAccessService.getAllData();
+        expect(spyGetAllData.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
     });
-    it('should  return error if getAllMetadata throws an error', async () => {
+    it('should  return error in getAllData if getAllMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'getAllMetadata').returns(Promise.reject(new Error('something happened')));
         // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
-        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error('something happened'));
+        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
         // spyExists.reset();
     });
-    it('should  return error if createCanvasInformation throws an error', async () => {
+    it('should  return error in getAllData if createCanvasInformation throws an error', async () => {
         sandbox.stub(serverSaveService, 'createCanvasInformation').yields(Error('something happened'));
         // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
-        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error('something happened'));
+        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+
+    it('should  return the information of drawing saved on server and DB that have at least one of the tags', async () => {
+        const spyGetDataByTags = sinon.spy(dataAccessService, 'getDataByTags');
+        sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
+        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
+        await dataAccessService.getDataByTags('someTag');
+        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
+    });
+    it('should  return error in getDataByTags if getAllMetadata throws an error', async () => {
+        sandbox.stub(metadataService, 'getMetadataByTags').returns(Promise.reject(new Error('something happened')));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+    it('should  return error in getDataByTags if createCanvasInformation throws an error', async () => {
+        sandbox.stub(serverSaveService, 'createCanvasInformation').yields(Error('something happened'));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+    // TODO make this test
+    /*it('should  not return anything if data is correctly added by addData', async () => {
+        const spyGetDataByTags = sinon.spy(dataAccessService, 'getDataByTags');
+        sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
+        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
+        await dataAccessService.getDataByTags('someTag');
+        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
+    });*/
+    it('should  return error in  addData if addMetadata throws an error', async () => {
+        sandbox.stub(metadataService, 'addMetadata').returns(Promise.reject(new Error('something happened')));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+    it('should  return error in  addData if saveImage throws an error', async () => {
+        sandbox.stub(serverSaveService, 'saveImage').yields(Error('something happened'));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+
+    // TODO make this test
+    /*it('should  not return anything if data is correctly deleted by deleteData', async () => {
+        const spyGetDataByTags = sinon.spy(dataAccessService, 'deleteData');
+        sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
+        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
+        await dataAccessService.getDataByTags('someTag');
+        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
+    });*/
+    it('should  return error in  deleteData if deleteMetadata throws an error', async () => {
+        sandbox.stub(metadataService, 'deleteMetadata').returns(Promise.reject(new Error('something happened')));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
+        // spyExists.reset();
+    });
+    it('should  return error in  deleteData if deleteCanvasInformation throws an error', async () => {
+        sandbox.stub(serverSaveService, 'deleteCanvasInformation').yields(Error('something happened'));
+        // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
+        expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
         // spyExists.reset();
     });
 });
