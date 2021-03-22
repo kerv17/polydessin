@@ -42,7 +42,6 @@ export class SelectionService extends Tool {
                 clearInterval(this.interval);
                 clearTimeout(this.timeout);
                 this.selectionMove.onArrowKeyUp(event);
-                console.log(this.pathData);
             }
         });
     }
@@ -127,9 +126,11 @@ export class SelectionService extends Tool {
                 this.setTopLeftHandler();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.inSelection = true;
+            } else {
+                this.clearPath();
             }
+            this.mouseDown = false;
         }
-        this.mouseDown = false;
     }
 
     onShift(shifted: boolean): void {
@@ -258,13 +259,15 @@ export class SelectionService extends Tool {
     }
 
     private onArrowDown(): void {
-        this.selectionMove.moveSelection(this.pathData);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.updateCanvasOnMove(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.putImageData(
-            this.selectedArea,
-            this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
-            this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
-        );
+        if (this.selectedArea !== undefined) {
+            this.selectionMove.moveSelection(this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.putImageData(
+                this.selectedArea,
+                this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
+                this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
+            );
+        }
     }
 }

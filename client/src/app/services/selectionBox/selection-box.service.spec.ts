@@ -3,7 +3,7 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { SelectionBoxService } from './selection-box.service';
 
-fdescribe('SelectionBoxService', () => {
+describe('SelectionBoxService', () => {
     let service: SelectionBoxService;
     let topLeft: Vec2;
     const width = 100;

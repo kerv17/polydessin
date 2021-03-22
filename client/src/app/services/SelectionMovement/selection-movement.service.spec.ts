@@ -5,7 +5,7 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from './selection-movement.service';
 
-fdescribe('SelectionMovementService', () => {
+describe('SelectionMovementService', () => {
     let service: SelectionMovementService;
     let drawService: DrawingService;
     let drawServiceSpy: jasmine.Spy;
