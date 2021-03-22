@@ -13,11 +13,7 @@ describe('SelectionBoxService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionBoxService);
-        mouseEvent = {
-            offsetX: 125,
-            offsetY: 125,
-            button: 1,
-        } as MouseEvent;
+        mouseEvent = Globals.mouseDownEvent;
         topLeft = { x: 100, y: 100 };
     });
 
