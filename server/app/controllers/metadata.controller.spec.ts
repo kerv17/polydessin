@@ -13,10 +13,11 @@ import { Stubbed, testingContainer } from '../../test/test-utils';
 const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_CREATED = 201;
 const HTTP_STATUS_NOT_FOUND = 404;
+// const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
 describe('MetadataController', () => {
     const baseInformation = { name: 'aName', tags: ['tag1', 'tag2'], format: 'png', width: 0, height: 0, imageData: '' } as CanvasInformation;
-    const testinformation: CanvasInformation = {
+    /*const testinformation: CanvasInformation = {
         codeID: new ObjectId('507f1f77bcf86cd799439012').toHexString(),
         name: 'DessinTest2',
         tags: ['tagUnique', 'tag2'],
@@ -24,7 +25,7 @@ describe('MetadataController', () => {
         height: 300,
         width: 300,
         imageData: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
-    };
+    };*/
     let dataAccessService: Stubbed<DataAccessService>;
     let app: Express.Application;
 
@@ -69,6 +70,15 @@ describe('MetadataController', () => {
                 expect(response.body).to.deep.equal(baseInformation);
             });
     });
+    it('should return an error as a message on get request with tag fail', async () => {
+        dataAccessService.getDataByTags.rejects(new Error('service error'));
+        return supertest(app)
+            .get('/api/metadata/:tags')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.status).to.equal(HTTP_STATUS_NOT_FOUND);
+            });
+    });
 
     it('should store canvasInformation in the array on valid post request to root', async () => {
         const testinformation2: CanvasInformation = {
@@ -82,6 +92,16 @@ describe('MetadataController', () => {
         };
         return supertest(app).post('/api/metadata/').send(testinformation2).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
     });
+    it('should return an error as a message on post request fail', async () => {
+        dataAccessService.addData.rejects(new Error('service error'));
+        return supertest(app)
+            .post('/api/metadata/')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.status).to.equal(HTTP_STATUS_NOT_FOUND);
+            });
+    });
+
     /* TODO find out how to make delete work*/
     it('should return a messages on valid delete request', async () => {
         // indexService.getAllMessages.returns([baseMessage, baseMessage]);
@@ -89,14 +109,22 @@ describe('MetadataController', () => {
             title: "L'image a ete supprimer",
             body: Httpstatus.StatusCodes.NO_CONTENT.toString(),
         } as Message;
-        dataAccessService.deleteData.returns(testinformation.codeID);
+        // dataAccessService.deleteData.returns(testinformation.codeID);
+        // console.log(msg);
         return supertest(app)
-            .delete('/api/delete/:code')
-            .send(testinformation.codeID)
-            .set('Accept', 'application/json')
+            .delete('/api/metadata/:code')
             .expect(HTTP_STATUS_OK)
             .then((response: any) => {
-                expect(response).to.deep.equal(msg);
+                expect(response.body).to.deep.equal(msg);
+            });
+    });
+    it('should return an error as a message on delete request fail', async () => {
+        dataAccessService.deleteData.rejects(new Error('service error'));
+        return supertest(app)
+            .delete('/api/metadata/:code')
+            .expect(HTTP_STATUS_NOT_FOUND)
+            .then((response: any) => {
+                expect(response.status).to.equal(HTTP_STATUS_NOT_FOUND);
             });
     });
 });

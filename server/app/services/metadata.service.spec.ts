@@ -2,8 +2,10 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
+import * as Httpstatus from 'http-status-codes';
 import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
+import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
 import { DatabaseServiceMock } from './database.service.mock';
 import { MetadataService } from './metadata.service';
@@ -49,6 +51,11 @@ describe('Service: Metadata', () => {
         expect(metadatas.length).to.equal(2);
         expect(testMetadata).to.deep.equals(metadatas[0]);
     });
+    it('should throw an error on get all if database is empty', async () => {
+        await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
+        await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
+        expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données"));
+    });
 
     it('should get specific metadata with valid tag', async () => {
         const metadata = await metadataService.getMetadataByTags(['tagUnique']);
@@ -68,6 +75,11 @@ describe('Service: Metadata', () => {
         const metadatas = await metadataService.getMetadataByTags(['tag1', 'tagUnique', 'tag2']);
         expect(metadatas[0]).to.deep.equals(testMetadata);
         expect(metadatas[1]).to.deep.equals(testMetadata2);
+    });
+    it('should throw an error on get with tags if no canvas are found', async () => {
+        await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
+        await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
+        expect(metadataService.getMetadataByTags(['anything'])).to.eventually.be.rejectedWith(new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée"));
     });
 
     it('should insert a new metadata', async () => {
