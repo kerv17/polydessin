@@ -14,7 +14,7 @@ export class CarouselStub {
     prev(): void {}
 }
 
-fdescribe('CarousselComponent', () => {
+describe('CarousselComponent', () => {
     let component: CarousselComponent;
     let carouselService: CarouselService;
     let fixture: ComponentFixture<CarousselComponent>;

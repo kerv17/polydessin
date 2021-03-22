@@ -171,10 +171,14 @@ export class SidebarComponent {
     }
 
     undoAction(): void {
-        this.undoRedoService.undo();
+        if (!this.toolController.selectionService.inSelection) {
+            this.undoRedoService.undo();
+        }
     }
 
     redoAction(): void {
-        this.undoRedoService.redo();
+        if (!this.toolController.selectionService.inSelection) {
+            this.undoRedoService.redo();
+        }
     }
 }
