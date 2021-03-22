@@ -1,22 +1,24 @@
 import { TestBed } from '@angular/core/testing';
+import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { SelectionBoxService } from './selection-box.service';
 
 describe('SelectionBoxService', () => {
     let service: SelectionBoxService;
-    const topLeft = { x: 100, y: 100 };
+    let topLeft: Vec2;
     const width = 100;
     const height = 100;
     const size = 8;
-    const mouseEvent = {
-        offsetX: 75,
-        offsetY: 125,
-        button: 1,
-    } as MouseEvent;
-
+    let mouseEvent: MouseEvent;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionBoxService);
+        mouseEvent = {
+            offsetX: 125,
+            offsetY: 125,
+            button: 1,
+        } as MouseEvent;
+        topLeft = { x: 100, y: 100 };
     });
 
     it('should be created', () => {
@@ -102,8 +104,6 @@ describe('SelectionBoxService', () => {
     });
 
     it('cursorChange should set the cursor to crosshair if the mouse is not over the selection', () => {
-        service.cursorChange(mouseEvent, true, { x: width, y: height }, width, height);
-        expect(service.cursor.cursor).toEqual('crosshair');
         const mouseEvent2 = {
             offsetX: 75,
             offsetY: 500,

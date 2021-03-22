@@ -50,8 +50,12 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
     let carouselService: CarouselService;
+<<<<<<< HEAD
     let selectionMovementService: SelectionMovementService;
     let canvasTestHelper;
+=======
+    let selectionMovement: SelectionMovementService;
+>>>>>>> origin/feature/Selection
 
     let eventSpy: jasmine.Spy;
     const router = jasmine.createSpyObj(Router, ['navigate']);
@@ -66,7 +70,11 @@ describe('SidebarComponent', () => {
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
+<<<<<<< HEAD
             new SelectionService(drawingStub, selectionMovementService),
+=======
+            new SelectionService(drawingStub, selectionMovement),
+>>>>>>> origin/feature/Selection
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
