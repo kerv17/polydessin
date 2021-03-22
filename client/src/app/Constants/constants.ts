@@ -96,6 +96,8 @@ export const LEFT_HANDLER = 7; // centre gauche
 
 // Constante pour tests de sélection
 export const mouseDownEvent = {
+    pageX: 595,
+    pageY: 125,
     offsetX: 125,
     offsetY: 125,
     x: 125,

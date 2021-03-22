@@ -36,7 +36,7 @@ describe('SelectionMovementService', () => {
 
     it('onMouseDown should set the initialMousePosition value based on the mouseEvent and return true if the selected area was clicked', () => {
         const mousePosition = { x: 125, y: 125 };
-        const expectedResult = { x: mouseEvent.offsetX, y: mouseEvent.offsetY };
+        const expectedResult = { x: mouseEvent.x, y: mouseEvent.y };
         expect(service.onMouseDown(mouseEvent, mousePosition, topLeft, width, height)).toBeTrue();
         expect(service[initialMousePosition]).toEqual(expectedResult);
     });
@@ -89,7 +89,7 @@ describe('SelectionMovementService', () => {
         const expectedResult = { x: topLeft.x + deplacement, y: topLeft.y + deplacement };
         service.onMouseUp(mouseEvent, topLeft, path);
         expect(path.length).toEqual(expectedLength);
-        expect(path[path.length]).toEqual(expectedResult);
+        expect(path[path.length - 1]).toEqual(expectedResult);
     });
 
     it('isArrowKeyDown should return true if the key pressed is an arrow', () => {

@@ -48,8 +48,8 @@ describe('SelectionService', () => {
         drawService.canvas.height = canvasHeight;
         mouseDownEvent = Globals.mouseDownEvent;
         mouseUpEvent = {
-            offsetX: 175,
-            offsetY: 175,
+            pageX: 645,
+            pageY: 175,
             x: 175,
             y: 175,
             button: 1,
