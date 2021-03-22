@@ -5,18 +5,27 @@ import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { CarouselComponent } from 'ngx-owl-carousel-o';
 import { CarousselComponent } from './caroussel.component';
 
-describe('CarousselComponent', () => {
+export class CarouselStub {
+    // tslint:disable: no-empty
+    next(): void {}
+    prev(): void {}
+}
+
+fdescribe('CarousselComponent', () => {
     let component: CarousselComponent;
     let carouselService: CarouselService;
     let fixture: ComponentFixture<CarousselComponent>;
+    let carousel: CarouselStub;
     const drawingStub = new DrawingService({} as ResizePoint);
 
     const router = jasmine.createSpyObj(Router, ['navigate']);
     const maxItems = 3;
 
     beforeEach(async(() => {
+        carousel = new CarouselStub();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         TestBed.configureTestingModule({
             declarations: [CarousselComponent],
@@ -49,20 +58,37 @@ describe('CarousselComponent', () => {
     });
 
     it('rotate the canvas on right arrow click', () => {
+        component.owlCar = carousel as CarouselComponent;
+        const rightSpy = spyOn(component.owlCar, 'next');
+        const leftSpy = spyOn(component.owlCar, 'prev');
         const keyEventData = { isTrusted: true, key: Globals.RIGHT_ARROW_SHORTCUT, ctrlKey: false, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-        const nextSpy = spyOn(component.owlCar, 'next');
-        window.dispatchEvent(keyDownEvent);
 
-        expect(nextSpy).toHaveBeenCalled();
+        window.dispatchEvent(keyDownEvent);
+        expect(rightSpy).toHaveBeenCalled();
+        expect(leftSpy).not.toHaveBeenCalled();
     });
 
     it('rotate the canvas on left arrow click', () => {
+        component.owlCar = carousel as CarouselComponent;
+        const leftSpy = spyOn(component.owlCar, 'prev');
+        const rightSpy = spyOn(component.owlCar, 'next');
         const keyEventData = { isTrusted: true, key: Globals.LEFT_ARROW_SHORTCUT, ctrlKey: false, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-        const nextSpy = spyOn(component.owlCar, 'prev');
 
         window.dispatchEvent(keyDownEvent);
-        expect(nextSpy).toHaveBeenCalled();
+        expect(leftSpy).toHaveBeenCalled();
+        expect(rightSpy).not.toHaveBeenCalled();
+    });
+    it('does nothing on another KeyDown', () => {
+        component.owlCar = carousel as CarouselComponent;
+        const rightSpy = spyOn(component.owlCar, 'next');
+        const leftSpy = spyOn(component.owlCar, 'prev');
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: false, shiftKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+
+        window.dispatchEvent(keyDownEvent);
+        expect(leftSpy).not.toHaveBeenCalled();
+        expect(rightSpy).not.toHaveBeenCalled();
     });
 });
