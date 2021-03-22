@@ -123,14 +123,14 @@ describe('Service: Data-Access', () => {
         expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
         // spyExists.reset();
     });
-    // TODO make this test
-    /*it('should  not return anything if data is correctly added by addData', async () => {
-        const spyGetDataByTags = sinon.spy(dataAccessService, 'getDataByTags');
-        sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
-        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
-        await dataAccessService.getDataByTags('someTag');
-        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
-    });*/
+
+    it('should  not return anything if data is correctly added by addData', async () => {
+        const spyAddData = sinon.spy(dataAccessService, 'addData');
+        sandbox.stub(metadataService, 'addMetadata').resolves();
+        sandbox.stub(serverSaveService, 'saveImage').returns();
+        await dataAccessService.addData(testinformation);
+        expect(spyAddData.returned(Promise.resolve())).to.eql(true);
+    });
     it('should  return error in  addData if addMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'addMetadata').returns(Promise.reject(new Error('something happened')));
         // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
@@ -144,14 +144,13 @@ describe('Service: Data-Access', () => {
         // spyExists.reset();
     });
 
-    // TODO make this test
-    /*it('should  not return anything if data is correctly deleted by deleteData', async () => {
-        const spyGetDataByTags = sinon.spy(dataAccessService, 'deleteData');
-        sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
-        sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
-        await dataAccessService.getDataByTags('someTag');
-        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
-    });*/
+    it('should  not return anything if data is correctly deleted by deleteData', async () => {
+        const spyDeleteData = sinon.spy(dataAccessService, 'deleteData');
+        sandbox.stub(metadataService, 'deleteMetadata').resolves();
+        sandbox.stub(serverSaveService, 'deleteCanvasInformation').returns();
+        await dataAccessService.deleteData('aRandomCode');
+        expect(spyDeleteData.returned(Promise.resolve())).to.eql(true);
+    });
     it('should  return error in  deleteData if deleteMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'deleteMetadata').returns(Promise.reject(new Error('something happened')));
         // sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation,testinformation2]);
