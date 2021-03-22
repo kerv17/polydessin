@@ -1,6 +1,8 @@
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
+// CE CODE EST PRIS DE L'EXEMPLE DONNE POUR LE COURS LOG2990
+// 'exemple de mongoDB avec serveur NodeJS'
 const DATABASE_NAME = 'projet2990';
 
 export class DatabaseServiceMock {
