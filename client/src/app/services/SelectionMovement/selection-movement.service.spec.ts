@@ -83,6 +83,8 @@ describe('SelectionMovementService', () => {
     });
 
     it('onMouseUp should pop the last element of pathData if there are already 5 values', () => {
+        const deplacement = 15;
+        const expectedLength = 5;
         const path: Vec2[] = [
             { x: 100, y: 100 },
             { x: 200, y: 100 },
@@ -91,10 +93,10 @@ describe('SelectionMovementService', () => {
             { x: 100, y: 100 },
         ];
         service[initialMousePosition] = { x: 110, y: 110 };
-        const expectedResult = { x: topLeft.x + 15, y: topLeft.y + 15 };
+        const expectedResult = { x: topLeft.x + deplacement, y: topLeft.y + deplacement };
         service.onMouseUp(mouseEvent, topLeft, path);
-        expect(path.length).toEqual(5);
-        expect(path[4]).toEqual(expectedResult);
+        expect(path.length).toEqual(expectedLength);
+        expect(path[path.length]).toEqual(expectedResult);
     });
 
     it('isArrowKeyDown should return true if the key pressed is an arrow', () => {
@@ -208,6 +210,7 @@ describe('SelectionMovementService', () => {
     });
 
     it('moveSelection should update the current topLeft position to the path based on which key is down if path lenth was 5', () => {
+        const expectedLength = 5;
         const path: Vec2[] = [
             { x: 100, y: 100 },
             { x: 200, y: 100 },
@@ -222,7 +225,7 @@ describe('SelectionMovementService', () => {
         };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
-        expect(path.length).toEqual(5);
+        expect(path.length).toEqual(expectedLength);
 
         service[leftArrow] = false;
         service[upArrow] = true;
@@ -231,6 +234,6 @@ describe('SelectionMovementService', () => {
         expectedresult = { x: expectedresult.x + Globals.N_PIXELS_DEPLACEMENT, y: expectedresult.y - Globals.N_PIXELS_DEPLACEMENT };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
-        expect(path.length).toEqual(5);
+        expect(path.length).toEqual(expectedLength);
     });
 });

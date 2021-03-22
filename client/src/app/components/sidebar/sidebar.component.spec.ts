@@ -44,7 +44,7 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
     let carouselService: CarouselService;
-    let selectionMovement : SelectionMovementService;
+    let selectionMovement: SelectionMovementService;
 
     let eventSpy: jasmine.Spy;
     const router = {
@@ -59,7 +59,7 @@ describe('SidebarComponent', () => {
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
-            new SelectionService(drawingStub,selectionMovement),
+            new SelectionService(drawingStub, selectionMovement),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as IndexService);
