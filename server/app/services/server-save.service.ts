@@ -24,7 +24,7 @@ export class ServerSaveService {
                 fs.unlinkSync(canvaToDelete + '.png');
             } catch (err) {
                 if (err.code === 'ENOENT') {
-                    throw new Error('Canva non trouvé')
+                    throw new Error('Canva non trouvé');
                 } else {
                     throw new Error('le serveur ne réussi pas detruire le Canva');
                 }
