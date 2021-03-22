@@ -33,7 +33,7 @@ type ToolParam = {
     showWidth: boolean;
     toolName: string;
 };
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -308,28 +308,39 @@ fdescribe('SidebarComponent', () => {
         expect(openToolSpy).not.toHaveBeenCalled();
     });
 
-    it('checking if onKeyPress does nothing if both event keys are bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
+    it('should do nothing if the showModalValue is true ', () => {
+        component.exportService.showModalExport = true;
+        component.initToolMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false, shiftKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
+        toolController.focused = true;
 
-        const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
-
-        const event = new KeyboardEvent('keydown', keyEventData);
-
-        eventSpy = spyOn(event, 'preventDefault');
-        window.dispatchEvent(event);
-        expect(eventSpy).not.toHaveBeenCalled();
-        expect(drawingStubSpy).not.toHaveBeenCalled();
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).not.toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
+        expect(component.currentTool).not.toEqual(Globals.ELLIPSIS_SHORTCUT);
     });
 
-    it('checking if onKeyPress does nothing if the Ctrl Key is bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
+    it('should not call anything if the return value is null ', () => {
+        component.initFunctionMap();
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        const functionSpy = spyOn((component as any).functionMap, 'get').and.returnValue(null);
+        const newDrawingSpy = spyOn(component, 'newCanvas');
+        component.onKeyPress(keyDownEvent);
+        expect(functionSpy).toHaveBeenCalled();
+        expect(newDrawingSpy).not.toHaveBeenCalled();
+    });
+    it('should call the undoRedoService redo method ', () => {
+        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
+        component.redoAction();
+        expect(redoSpy).toHaveBeenCalled();
+    });
 
-        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: false };
-        const event = new KeyboardEvent('keydown', keyEventData);
-        window.dispatchEvent(event);
-        eventSpy = spyOn(event, 'preventDefault');
-
-        expect(eventSpy).not.toHaveBeenCalled();
-        expect(drawingStubSpy).not.toHaveBeenCalled();
+    it('should call the undoRedoService undo method ', () => {
+        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
+        component.undoAction();
+        expect(undoSpy).toHaveBeenCalled();
     });
 });

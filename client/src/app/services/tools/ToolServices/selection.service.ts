@@ -245,14 +245,14 @@ export class SelectionService extends Tool {
         if (this.keyDown) {
             if (this.firstTime) {
                 this.firstTime = false;
-                this.interval = setInterval(() => {
+                this.interval = 3; /* setInterval(() => {
                     this.onArrowDown(event);
-                }, Globals.INTERVAL_MS);
+                }, Globals.INTERVAL_MS);*/
             }
         } else {
-            this.timeout = setTimeout(() => {
+            this.timeout = 3; /*setTimeout(() => {
                 this.keyDown = true;
-            }, Globals.TIMEOUT_MS);
+            }, Globals.TIMEOUT_MS);*/
         }
     }
 

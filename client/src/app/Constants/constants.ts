@@ -20,6 +20,8 @@ export const CANVAS_SELECTION_EVENT = 'a';
 export const CANVAS_SAVE_SHORTCUT = 's';
 export const UNDO_SHORTCUT = 'z';
 export const REDO_SHORTCUT = 'Z';
+export const RIGHT_ARROW_SHORTCUT = 'ArrowRight';
+export const LEFT_ARROW_SHORTCUT = 'ArrowLeft';
 // Variables d'editor
 export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;
 

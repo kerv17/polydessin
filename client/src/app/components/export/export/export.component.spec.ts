@@ -47,12 +47,12 @@ describe('ExportComponent', () => {
     it('should set the right mode', () => {
         const test = 'test';
         component.toggleMode(test);
-        expect(component.toggleMode).toEqual(test);
+        expect(component.exportMode).toEqual(test);
     });
 
     it('should set the right filter', () => {
         drawImageSpy = spyOn(component.ctx, 'drawImage');
-        const test = 'test';
+        const test = 'none';
         component.setFiltre(test);
         expect(component.filtre).toEqual(test);
         expect(component.ctx.filter).toEqual(test);
