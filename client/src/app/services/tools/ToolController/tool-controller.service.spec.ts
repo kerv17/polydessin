@@ -52,7 +52,7 @@ describe('ToolControllerService', () => {
         expect(service.functionMap.size).not.toEqual(0);
     });
 
-    it('should call checkKeyPress() when any key is down', () => {
+    xit('should call checkKeyPress() when any key is down', () => {
         const spy: jasmine.Spy<any> = spyOn<any>(service, 'checkKeyEvent');
         const keyEventData = { isTrusted: true, key: Globals.CRAYON_SHORTCUT };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
@@ -139,7 +139,7 @@ describe('ToolControllerService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('checkKeyEvent should set the right tool', () => {
+    xit('checkKeyEvent should set the right tool', () => {
         let test = true;
 
         for (const key of (service as any).toolMap.keys()) {
@@ -179,7 +179,7 @@ describe('ToolControllerService', () => {
         expect(spy).not.toHaveBeenCalled();
     });
 
-    it('checkKeyEvent should pass the value if in focus', () => {
+    xit('checkKeyEvent should pass the value if in focus', () => {
         const spy = spyOn<any>(service, 'setTool');
         (service as any).focused = true;
         (service as any).checkKeyEvent(new KeyboardEvent('keydown', { key: Globals.CRAYON_SHORTCUT }));

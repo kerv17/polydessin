@@ -7,7 +7,7 @@ import { ServerRequestService } from '@app/services/index/server-request.service
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { CarousselComponent } from './caroussel.component';
 
-fdescribe('CarousselComponent', () => {
+describe('CarousselComponent', () => {
     let component: CarousselComponent;
     let carouselService: CarouselService;
     let fixture: ComponentFixture<CarousselComponent>;
@@ -36,12 +36,14 @@ fdescribe('CarousselComponent', () => {
     });
 
     it('should reset all carousel options and set the number of items per slide to 3  if pictures is longer than three', () => {
-        component.carouselService.pictures = new Array(8);
+        const bigSize = 8;
+        component.carouselService.pictures = new Array(bigSize);
         component.resetOptions();
         expect(component.customOptions.items).toEqual(maxItems);
     });
     it('should reset all carousel options and set the number of items per slide to 1  if pictures is shorter than three', () => {
-        component.carouselService.pictures = new Array(2);
+        const smallNumber = 2;
+        component.carouselService.pictures = new Array(smallNumber);
         component.resetOptions();
         expect(component.customOptions.items).not.toEqual(maxItems);
     });
@@ -49,7 +51,7 @@ fdescribe('CarousselComponent', () => {
     it('rotate the canvas on right arrow click', () => {
         const keyEventData = { isTrusted: true, key: Globals.RIGHT_ARROW_SHORTCUT, ctrlKey: false, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-        const nextSpy = spyOn<any>(component.owlCar, 'next');
+        const nextSpy = spyOn(component.owlCar, 'next');
         window.dispatchEvent(keyDownEvent);
 
         expect(nextSpy).toHaveBeenCalled();
