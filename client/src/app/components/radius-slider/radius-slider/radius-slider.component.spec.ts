@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
@@ -11,9 +12,8 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
-
-import { SimpleChange } from '@angular/core';
 import { RadiusSliderComponent } from './radius-slider.component';
+
 // tslint:disable:no-any
 describe('RadiusSliderComponent', () => {
     let component: RadiusSliderComponent;
