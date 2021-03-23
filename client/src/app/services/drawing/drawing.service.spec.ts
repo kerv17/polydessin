@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { CanvasInformation } from '@common/communication/canvas-information';
 import { DrawingService } from './drawing.service';
 
 describe('DrawingService', () => {
@@ -206,6 +207,39 @@ describe('DrawingService', () => {
         expect(service.previewCanvas.height).toEqual(vec.y);
     });
 
+    it('should load the saved canvas', () => {
+        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
+
+        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const dispatchSpy = spyOn(window, 'dispatchEvent');
+        service.loadOldCanvas({} as CanvasInformation);
+        expect(reloadSpy).toHaveBeenCalled();
+        expect(dispatchSpy).toHaveBeenCalled();
+        expect(canvasNotEmptySpy).toHaveBeenCalled();
+        expect(confirmSpy).not.toHaveBeenCalled();
+    });
+
+    it('shouldnt load the saved canvas if the user doesnt confirm', () => {
+        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
+        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const dispatchSpy = spyOn(window, 'dispatchEvent');
+        service.loadOldCanvas({} as CanvasInformation);
+        expect(reloadSpy).not.toHaveBeenCalled();
+        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(canvasNotEmptySpy).toHaveBeenCalled();
+        expect(confirmSpy).toHaveBeenCalled();
+    });
+
+    it('should charge the image into the canvas', () => {
+        const setCanvasSpy = spyOn(service, 'setCanvassSize');
+        const ctxSpy = spyOn(service.baseCtx, 'drawImage');
+        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        expect(setCanvasSpy).toHaveBeenCalled();
+        expect(ctxSpy).toHaveBeenCalled();
+    });
+
     it('should return true if the canvas is not empty', () => {
         service.baseCtx.fillStyle = 'black';
         service.baseCtx.fillRect(0, 0, 2, 2);
@@ -218,5 +252,15 @@ describe('DrawingService', () => {
         service.baseCtx.fillRect(0, 0, service.canvas.width, service.canvas.height);
         const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
         expect(service.canvasNotEmpty(image)).not.toBeTrue();
+    });
+
+    it('should reset the Canvas', () => {
+        fillRectSpy = spyOn(service.baseCtx, 'fillRect');
+        clearCanvasSpy = spyOn(service, 'clearCanvas');
+
+        service.resetCanvas({ x: 1, y: 1 } as Vec2);
+        expect(fillRectSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalled();
+        expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
     });
 });

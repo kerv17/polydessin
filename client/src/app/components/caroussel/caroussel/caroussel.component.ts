@@ -36,6 +36,7 @@ export class CarousselComponent implements AfterViewInit {
             center: true,
             items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1,
             autoWidth: false,
+
             // Cette petite partie  fait en sorte que le carousel s'adapate quand ca change de taille
             // J'ai du le mettre sinon parfois il y a des espaces qui se crée
             responsive: {

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
@@ -19,6 +20,7 @@ describe('ExportComponent', () => {
         exportService = new ExportService(drawingService);
         exportService.showModalExport = false;
         TestBed.configureTestingModule({
+            imports: [FormsModule],
             declarations: [ExportComponent],
             providers: [ExportComponent, { provide: ExportService, useValue: exportService }],
         }).compileComponents();
