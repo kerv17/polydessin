@@ -260,12 +260,16 @@ describe('PencilService', () => {
 
     // Exemple de test d'intégration qui est quand même utile
     it(' should draw on the canvas ', () => {
+        // tslint:disable-next-line: no-magic-numbers
         mouseEvent = { pageX: -1 + SIDEBAR_WIDTH, pageY: -1, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { pageX: 1 + SIDEBAR_WIDTH, pageY: 1, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        expect(drawLineSpy).toHaveBeenCalledWith(service.drawingService.baseCtx, [{x:-1,y:-1},{x:1,y:1}]);
+        expect(drawLineSpy).toHaveBeenCalledWith(service.drawingService.baseCtx, [
+            { x: -1, y: -1 },
+            { x: 1, y: 1 },
+        ]);
     });
 
     it('doAction', () => {
