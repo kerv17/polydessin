@@ -14,10 +14,6 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     private inMovement: boolean = false;
     private selectedArea: ImageData;
-    private timeout: number;
-    private interval: number;
-    private keyDown: boolean = false;
-    private firstTime: boolean = true;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -37,10 +33,10 @@ export class SelectionService extends Tool {
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
-                this.keyDown = false;
-                this.firstTime = true;
-                clearInterval(this.interval);
-                clearTimeout(this.timeout);
+                this.selectionMove.keyDown = false;
+                this.selectionMove.firstTime = true;
+                clearInterval(this.selectionMove.interval);
+                clearTimeout(this.selectionMove.timeout);
                 this.selectionMove.onArrowKeyUp(event);
             }
         });
@@ -71,9 +67,9 @@ export class SelectionService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === Globals.MouseButton.Left;
+        const mousePosition = this.getPositionFromMouse(event);
 
         if (this.inSelection) {
-            const mousePosition = this.getPositionFromMouse(event);
             if (
                 this.selectionMove.onMouseDown(
                     event,
@@ -89,8 +85,8 @@ export class SelectionService extends Tool {
                 this.onEscape();
             }
         } else {
-            this.rectangleService.onMouseDown(event);
-            this.pathData.push(this.rectangleService.getPath()[0]);
+            this.pathData.push(mousePosition);
+            this.rectangleService.setPath(this.pathData);
         }
     }
 
@@ -171,6 +167,25 @@ export class SelectionService extends Tool {
         this.loadSetting(previousSetting);
     }
 
+    // overwrite la méthode de base de tool, pour limiter le rectangle à la surface du canvas lors du tracé initial
+    getPositionFromMouse(event: MouseEvent): Vec2 {
+        let mousePosition = { x: event.pageX - Globals.SIDEBAR_WIDTH, y: event.pageY };
+
+        if (mousePosition.x > this.drawingService.canvas.width) {
+            mousePosition = { x: this.drawingService.canvas.width, y: mousePosition.y };
+        } else if (mousePosition.x < 0) {
+            mousePosition = { x: 0, y: mousePosition.y };
+        }
+
+        if (mousePosition.y > this.drawingService.canvas.height) {
+            mousePosition = { x: mousePosition.x, y: this.drawingService.canvas.height };
+        } else if (mousePosition.y < 0) {
+            mousePosition = { x: mousePosition.x, y: 0 };
+        }
+
+        return mousePosition;
+    }
+
     // selection des pixels
     private selectArea(ctx: CanvasRenderingContext2D): void {
         const width: number = this.pathData[2].x - this.pathData[0].x;
@@ -244,16 +259,16 @@ export class SelectionService extends Tool {
     }
 
     private setKeyMovementDelays(): void {
-        if (this.keyDown) {
-            if (this.firstTime) {
-                this.firstTime = false;
-                this.interval = window.setInterval(() => {
+        if (this.selectionMove.keyDown) {
+            if (this.selectionMove.firstTime) {
+                this.selectionMove.firstTime = false;
+                this.selectionMove.interval = window.setInterval(() => {
                     this.onArrowDown();
                 }, Globals.INTERVAL_MS);
             }
         } else {
-            this.timeout = window.setTimeout(() => {
-                this.keyDown = true;
+            this.selectionMove.timeout = window.setTimeout(() => {
+                this.selectionMove.keyDown = true;
             }, Globals.TIMEOUT_MS);
         }
     }

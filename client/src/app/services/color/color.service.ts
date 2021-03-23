@@ -16,19 +16,12 @@ export class ColorService {
     primaryColor: string = DEFAULT_COLOR;
     secondaryColor: string = DEFAULT_COLOR;
     currentColor: string;
-    modalVisibility: boolean;
-    recentColors: string[] = new Array();
-
-    constructor() {
-        this.modalVisibility = false;
-    }
+    modalVisibility: boolean = false;
+    recentColors: string[] = [];
 
     isHexadecimal(value: string): boolean {
         const num: number = parseInt(value, 16);
-        if (num >= 0 && num <= MAX_RGB_VALUE) {
-            return true;
-        }
-        return false;
+        return num >= 0 && num <= MAX_RGB_VALUE;
     }
 
     saveColor(color: string): void {
@@ -76,15 +69,11 @@ export class ColorService {
     }
 
     verifyOpacityInput(opacity: string): string {
-        if (opacity !== '' && parseFloat(opacity) <= MAX_OPACITY) {
-            return (parseInt(opacity, 10) / 100).toString();
-        } else {
-            return '1';
-        }
+        return opacity !== '' && parseFloat(opacity) <= MAX_OPACITY ? (parseInt(opacity, 10) / 100).toString() : '1';
     }
 
     resetColorValues(): void {
-        this.recentColors = new Array();
+        this.recentColors = [];
         this.primaryColor = DEFAULT_COLOR;
         this.secondaryColor = DEFAULT_COLOR;
         this.modalVisibility = false;
