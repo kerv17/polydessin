@@ -9,7 +9,7 @@ import { ColorService } from '@app/services/color/color.service';
 export class ColorComponent implements AfterViewInit, OnChanges {
     primaryColor: string;
     secondaryColor: string;
-    recentColors: string[] = new Array();
+    recentColors: string[] = [];
 
     @Input()
     reset: boolean;

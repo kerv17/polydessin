@@ -29,10 +29,4 @@ export class ServerRequestService {
     basicDelete(message: string): Observable<HttpResponse<Message>> {
         return this.http.delete<Message>(this.BASE_URL + '/' + message, { observe: 'response' });
     }
-    /*
-    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
-        return (error: Error): Observable<T> => {
-            return of(result as T);
-        };
-    }*/
 }

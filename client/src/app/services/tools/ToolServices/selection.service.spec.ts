@@ -31,7 +31,6 @@ describe('SelectionService', () => {
     const updateCanvasOnMove = 'updateCanvasOnMove';
     const selectedArea = 'selectedArea';
     const rectangleService = 'rectangleService';
-    const setTopLeftHandler = 'setTopLeftHandler';
     const drawBorder = 'drawBorder';
     const confirmSelectionMove = 'confirmSelectionMove';
 
@@ -103,11 +102,11 @@ describe('SelectionService', () => {
         expect(service.mouseDown).toBeTrue();
     });
 
-    it('onMouseDown should call the mouseDown method of the rectangleService if there is no active selection', () => {
+    it('onMouseDown should call the setPath method of the rectangleService if there is no active selection', () => {
         service.inSelection = false;
-        rectangleSpy = spyOn(service[rectangleService], 'onMouseDown');
+        rectangleSpy = spyOn(service[rectangleService], 'setPath');
         service.onMouseDown(mouseDownEvent);
-        expect(rectangleSpy).toHaveBeenCalledWith(mouseDownEvent);
+        expect(rectangleSpy).toHaveBeenCalledWith(service[pathData]);
     });
 
     it('onMouseDown should set inmovement to true and inselection to false if the event occured inside the selected area limits', () => {
@@ -269,6 +268,42 @@ describe('SelectionService', () => {
         expect(selectionSpy).toHaveBeenCalled();
     });
 
+    it('getPositionFromMouse should limit the x value to the width of the canvas if mouse is on the right of the canvas', () => {
+        const mouseEvent = {
+            pageX: 1000,
+            pageY: 125,
+            button: 0,
+        } as MouseEvent;
+        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth, y: 125 });
+    });
+
+    it('getPositionFromMouse should limit the x value to 0 if mouse is on the left of the canvas', () => {
+        const mouseEvent = {
+            pageX: 300,
+            pageY: 125,
+            button: 0,
+        } as MouseEvent;
+        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: 0, y: 125 });
+    });
+
+    it('getPositionFromMouse should limit the y value to the height of the canvas if mouse is below the canvas', () => {
+        const mouseEvent = {
+            pageX: canvasWidth,
+            pageY: 1000,
+            button: 0,
+        } as MouseEvent;
+        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth - Globals.SIDEBAR_WIDTH, y: canvasHeight });
+    });
+
+    it('getPositionFromMouse should limit the y value to 0 if mouse is on top of the canvas', () => {
+        const mouseEvent = {
+            pageX: canvasWidth,
+            pageY: -125,
+            button: 0,
+        } as MouseEvent;
+        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth - Globals.SIDEBAR_WIDTH, y: 0 });
+    });
+
     it('selectArea should call getImageData if the width and height are not 0', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'getImageData');
         service[selectArea](drawService.baseCtx);
@@ -307,42 +342,5 @@ describe('SelectionService', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'lineTo');
         service[drawBorder](drawService.baseCtx);
         expect(drawServiceSpy).toHaveBeenCalled();
-    });
-
-    it('setTopLefthandler should push the first coordinate of the PathData', () => {
-        service[setTopLeftHandler]();
-        expect(service[pathData][Globals.BOTTOM_RIGHT_HANDLER]).toEqual(service[pathData][0]);
-    });
-
-    it('setTopLefthandler should set the path with the new calculated topLeftHandler has the first element of the path', () => {
-        service[pathData] = [
-            { x: 200, y: 200 },
-            { x: 200, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 200 },
-        ];
-        service[setTopLeftHandler]();
-        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
-        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
-
-        service[pathData] = [
-            { x: 100, y: 200 },
-            { x: 200, y: 200 },
-            { x: 200, y: 100 },
-            { x: 100, y: 100 },
-        ];
-        service[setTopLeftHandler]();
-        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
-        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
-
-        service[pathData] = [
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-            { x: 100, y: 100 },
-        ];
-        service[setTopLeftHandler]();
-        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
-        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
     });
 });

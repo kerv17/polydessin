@@ -6,11 +6,15 @@ import * as Globals from '@app/Constants/constants';
     providedIn: 'root',
 })
 export class SelectionMovementService {
-    private initialMousePosition: Vec2;
+    private initialMousePosition: Vec2 = { x: 0, y: 0 };
     private leftArrow: boolean = false;
     private downArrow: boolean = false;
     private rightArrow: boolean = false;
     private upArrow: boolean = false;
+    timeout: number = 0;
+    interval: number = 0;
+    keyDown: boolean = false;
+    firstTime: boolean = true;
 
     onMouseDown(event: MouseEvent, mousePosition: Vec2, topLeft: Vec2, width: number, height: number): boolean {
         const bottomRight = { x: topLeft.x + width, y: topLeft.y + height };

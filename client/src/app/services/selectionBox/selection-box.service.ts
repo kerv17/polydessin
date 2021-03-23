@@ -6,7 +6,7 @@ import * as Globals from '@app/Constants/constants';
     providedIn: 'root',
 })
 export class SelectionBoxService {
-    handlersPositions: Vec2[] = [];
+    private handlersPositions: Vec2[] = [];
     selectionBox: { [key: string]: string };
     cursor: { [key: string]: string };
 
@@ -33,6 +33,10 @@ export class SelectionBoxService {
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y });
         // centre gauche
         this.handlersPositions.push({ x: topLeft.x, y: bottomRight.y - (bottomRight.y - topLeft.y) / 2 });
+    }
+
+    getHandlersPositions(): Vec2[] {
+        return this.handlersPositions;
     }
 
     getCursor(pos: number): string {

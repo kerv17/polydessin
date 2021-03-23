@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
@@ -19,6 +20,7 @@ describe('ExportComponent', () => {
         exportService = new ExportService(drawingService);
         exportService.showModalExport = false;
         TestBed.configureTestingModule({
+            imports: [FormsModule],
             declarations: [ExportComponent],
             providers: [ExportComponent, { provide: ExportService, useValue: exportService }],
         }).compileComponents();
@@ -44,13 +46,13 @@ describe('ExportComponent', () => {
         expect(component.height).toBe(global.innerHeight / four);
         expect(component.ctx).toEqual(component.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
     });
-    xit('should set the right mode', () => {
+    it('should set the right mode', () => {
         const test = 'test';
         component.toggleMode(test);
         expect(component.exportMode).toEqual(test);
     });
 
-    xit('should set the right filter', () => {
+    it('should set the right filter', () => {
         drawImageSpy = spyOn(component.ctx, 'drawImage');
         const test = 'none';
         component.setFiltre(test);
