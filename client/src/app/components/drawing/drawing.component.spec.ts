@@ -1,9 +1,12 @@
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
+import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
@@ -27,6 +30,8 @@ fdescribe('DrawingComponent', () => {
     const resizePointStub: ResizePoint = new ResizePoint();
     let toolController: ToolControllerService;
     let carouselService: CarouselService;
+    let selectionBoxService: SelectionBoxService;
+    let selectionMoveService: SelectionMovementService;
     let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
@@ -34,16 +39,17 @@ fdescribe('DrawingComponent', () => {
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
+        selectionMoveService = new SelectionMovementService();
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
             {} as LineService,
             {} as EllipsisService,
             {} as AerosolService,
-            {} as SelectionService,
+            new SelectionService(drawingStub, selectionMoveService),
         );
         carouselService = {} as CarouselService;
-
+        selectionBoxService = new SelectionBoxService();
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
@@ -51,6 +57,7 @@ fdescribe('DrawingComponent', () => {
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: CarouselService, useValue: carouselService },
+                { provide: SelectionBoxService, useValue: selectionBoxService },
             ],
         }).compileComponents();
     }));
@@ -130,6 +137,17 @@ fdescribe('DrawingComponent', () => {
         component.heightPrev = expectedValue;
         component.ngOnChanges({ heightPrev: new SimpleChange(1, component.heightPrev, true) });
         expect(component.previewCanvas.nativeElement.height).toEqual(expectedValue);
+    });
+
+    it(' ngOnChanges should call onEscape from selectionService if there is an active selection and mouseDown is false', () => {
+        component['viewInitialized'] = true;
+        component.mouseDown = false;
+        component['controller'].selectionService.inSelection = true;
+        component.widthPrev = 2;
+        component.heightPrev = 2;
+        const escapeSpy = spyOn<any>(component['controller'].selectionService, 'onEscape');
+        component.ngOnChanges({});
+        expect(escapeSpy).toHaveBeenCalled();
     });
 
     it('should get stubTool', () => {
@@ -218,5 +236,36 @@ fdescribe('DrawingComponent', () => {
 
         component.ngAfterViewInit();
         expect(actionCalled).toBeTrue();
+    });
+
+    it('cursorChange should call cursorChange method from selectionBox Service', () => {
+        const cursorSpy = spyOn(component.selectionBoxLayout, 'cursorChange');
+        component.cursorChange(Globals.mouseDownEvent);
+        expect(cursorSpy).toHaveBeenCalled();
+    });
+
+    it('drawSelectionBox should call drawSelectionBox, setHandlers from selectionbox service and return true if there is an active selection', () => {
+        toolController.selectionService.inSelection = true;
+        const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
+        const setHandlersSpy = spyOn(component.selectionBoxLayout, 'setHandlersPositions');
+        expect(component.drawSelectionBox()).toBeTrue();
+        expect(drawSelectionBoxSpy).toHaveBeenCalled();
+        expect(setHandlersSpy).toHaveBeenCalled();
+    });
+
+    it('drawSelectionBox should not call drawSelectionBox, setHandlers from selectionbox service and should return false if there is no active selection', () => {
+        toolController.selectionService.inSelection = false;
+        const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
+        const setHandlersSpy = spyOn(component.selectionBoxLayout, 'setHandlersPositions');
+        expect(component.drawSelectionBox()).not.toBeTrue();
+        expect(drawSelectionBoxSpy).not.toHaveBeenCalled();
+        expect(setHandlersSpy).not.toHaveBeenCalled();
+    });
+
+    it('drawhandlers should return the inSelection value from selectionService', () => {
+        toolController.selectionService.inSelection = true;
+        expect(component.drawHandlers()).toBeTrue();
+        toolController.selectionService.inSelection = false;
+        expect(component.drawHandlers()).not.toBeTrue();
     });
 });

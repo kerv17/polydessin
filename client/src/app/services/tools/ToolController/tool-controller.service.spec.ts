@@ -7,6 +7,7 @@ import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-servi
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { ToolControllerService } from './tool-controller.service';
 // tslint:disable:no-any
 describe('ToolControllerService', () => {
@@ -18,13 +19,14 @@ describe('ToolControllerService', () => {
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
-
+    let selectionServiceSpy: jasmine.SpyObj<AerosolService>;
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', {}, { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', {}, { color: 'test' });
         rectangleServiceSpy = jasmine.createSpyObj('RectangleService', {}, { color: 'test' });
         lineServiceSpy = jasmine.createSpyObj('LineService', {}, { color: 'test' });
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', {}, { color: 'test' });
+        selectionServiceSpy = jasmine.createSpyObj('SelectionService', {}, { color: 'test' });
 
         TestBed.configureTestingModule({
             providers: [
@@ -33,6 +35,7 @@ describe('ToolControllerService', () => {
                 { provide: RectangleService, useValue: rectangleServiceSpy },
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: AerosolService, useValue: aerosolServiceSpy },
+                { provide: SelectionService, useValue: selectionServiceSpy },
             ],
         });
         TestBed.configureTestingModule({});
@@ -52,7 +55,7 @@ describe('ToolControllerService', () => {
         expect(service.functionMap.size).not.toEqual(0);
     });
 
-    xit('should call checkKeyPress() when any key is down', () => {
+    it('should call checkKeyPress() when any key is down', () => {
         const spy: jasmine.Spy<any> = spyOn<any>(service, 'checkKeyEvent');
         const keyEventData = { isTrusted: true, key: Globals.CRAYON_SHORTCUT };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
@@ -139,6 +142,7 @@ describe('ToolControllerService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    // À VÉRIFIER : TypeError: this.currentTool.clearPreviewCtx is not a function
     xit('checkKeyEvent should set the right tool', () => {
         let test = true;
 
@@ -179,6 +183,7 @@ describe('ToolControllerService', () => {
         expect(spy).not.toHaveBeenCalled();
     });
 
+    // À VÉRIFIER : spy not called
     xit('checkKeyEvent should pass the value if in focus', () => {
         const spy = spyOn<any>(service, 'setTool');
         (service as any).focused = true;
