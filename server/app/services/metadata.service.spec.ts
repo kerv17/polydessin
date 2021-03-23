@@ -3,15 +3,14 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import * as Httpstatus from 'http-status-codes';
 import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
-import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
 import { DatabaseServiceMock } from './database.service.mock';
 import { MetadataService } from './metadata.service';
 chai.use(chaiAsPromised); // this allows us to test for rejection
+
 
 describe('Service: Metadata', () => {
     let metadataService: MetadataService;
@@ -48,7 +47,7 @@ describe('Service: Metadata', () => {
         await databaseService.closeConnection();
     });
 
-    it('should get all metadatas from DB', async () => {
+    it('should getAll metadatas from DB', async () => {
         const metadatas = await metadataService.getAllMetadata();
         expect(metadatas.length).to.equal(2);
         expect(testMetadata).to.deep.equals(metadatas[0]);
@@ -56,9 +55,12 @@ describe('Service: Metadata', () => {
     it('should throw an error on get all if database is empty', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
-        expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(
-            new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données"),
-        );
+        try {
+            await metadataService.getAllMetadata();
+        } catch(error) {
+            expect(error.message
+            ).to.be.equal('Aucun canvas présent dans la base de données');
+        }
     });
 
     it('should get specific metadata with valid tag', async () => {
@@ -83,9 +85,12 @@ describe('Service: Metadata', () => {
     it('should throw an error on get with tags if no canvas are found', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
-        expect(metadataService.getMetadataByTags(['anything'])).to.eventually.be.rejectedWith(
-            new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée"),
-        );
+        try {
+            await metadataService.getMetadataByTags(['anything']);
+        } catch(error) {
+            expect(error.message
+            ).to.be.equal("Aucun canvas n'a été trouvée");
+        }
     });
 
     it('should insert a new metadata', async () => {
@@ -157,6 +162,19 @@ describe('Service: Metadata', () => {
             expect(metadatas.length).to.equal(2);
         }
     });
+    it('should return void if mock doesnt didnt call start beforehand', async () => {
+        databaseService = new DatabaseServiceMock();
+        await databaseService.closeConnection();
+        expect(databaseService['client']).to.be.undefined;
+        
+    });
+    it('should return the client if mock already called start beforehand', async () => {
+        databaseService = new DatabaseServiceMock();
+        await databaseService.start();
+        await databaseService.start();
+        sinon.mock(databaseService.mongoServer).expects('getUri').never();
+    });
+
 
     // Error handling
     describe('Error handling', async () => {

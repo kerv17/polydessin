@@ -69,8 +69,4 @@ export class DataAccessService {
                 throw new Error(error.message);
             });
     }
-
-    /*unsure if needed
-  getDataByCode()
-  getDataByName()*/
 }

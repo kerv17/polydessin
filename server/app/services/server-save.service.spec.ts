@@ -1,24 +1,21 @@
 /* tslint:disable:no-unused-variable */
-import { CanvasInformation } from '@common/communication/canvas-information';
+import { CanvasInformation } from '../../../common/communication/canvas-information';
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import * as chaiSpies from 'chai-spies';
 import * as fs from 'fs';
 import { describe } from 'mocha';
 import { ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
 import { Metadata } from '../classes/metadata';
 import { ServerSaveService } from './server-save.service';
-// let chaiSpies = require('chai-spies');
 chai.use(chaiAsPromised); // this allows us to test for rejection
-chai.use(chaiSpies);
 
 describe('Service: Server-Save', () => {
     let serverSaveService: ServerSaveService;
     let testinformation: CanvasInformation;
     let testinformation2: CanvasInformation;
-    let sandbox: sinon.SinonSandbox; // | undefined;
+    let sandbox: sinon.SinonSandbox;
 
     beforeEach(async () => {
         serverSaveService = new ServerSaveService();
@@ -43,16 +40,10 @@ describe('Service: Server-Save', () => {
         sandbox = sinon.createSandbox();
     });
     afterEach(() => {
-        chai.spy.restore(fs, 'writeFile');
-        chai.spy.restore(fs, 'existsSync');
-        chai.spy.restore(fs, 'unlinkSync');
         sandbox.restore();
     });
 
     it('should  save the image of a jpeg format', () => {
-        // const spy = chai.spy(fs.writeFile);
-        // serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
-        // expect(spy).to.have.been.called();
         expect(() => serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData)).to.be.ok;
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
     });
@@ -146,7 +137,6 @@ describe('Service: Server-Save', () => {
     });
 
     it('should  create canvas information of metadata that has image saved on server', () => {
-        // const spyRead= sinon.spy(fs,'readFileSync');
         const spyExists = sinon.spy(serverSaveService, 'createCanvasInformation');
         const testMetadata: Metadata = {
             codeID: new ObjectId('507f1f77bcf86cd799439011'),
@@ -171,10 +161,8 @@ describe('Service: Server-Save', () => {
         spyExists.returned([testinformation, testinformation2]);
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
-        // spyRead.restore();
     });
     it('should  create canvas information of metadata that only has images from server', () => {
-        // const spyRead= sinon.spy(fs,'readFileSync');
         const spyExists = sinon.spy(serverSaveService, 'createCanvasInformation');
         const testMetadata: Metadata = {
             codeID: new ObjectId('507f1f77bcf86cd799439011'),
@@ -207,7 +195,6 @@ describe('Service: Server-Save', () => {
         spyExists.returned([testinformation, testinformation2]);
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
-        // spyRead.restore();
     });
     it('should  throw error if readfileSync fails', () => {
         const error: any = new Error('something didnt work on readFile');
