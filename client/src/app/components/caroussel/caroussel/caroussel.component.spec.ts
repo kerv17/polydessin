@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { CarouselComponent } from 'ngx-owl-carousel-o';
+import { CarouselComponent, CarouselModule } from 'ngx-owl-carousel-o';
 import { CarousselComponent } from './caroussel.component';
-
 export class CarouselStub {
     // tslint:disable: no-empty
     next(): void {}
@@ -28,6 +28,7 @@ describe('CarousselComponent', () => {
         carousel = new CarouselStub();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
         TestBed.configureTestingModule({
+            imports: [CarouselModule, FormsModule],
             declarations: [CarousselComponent],
             providers: [{ provide: CarouselService, useValue: carouselService }],
         }).compileComponents();

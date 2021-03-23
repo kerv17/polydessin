@@ -37,15 +37,6 @@ export class MetadataController {
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
-
-            // Can also use the async/await syntax
-            // try{
-            //   const courses = await this.coursesService.getAllCourses();
-            //   res.json(courses);
-            // }
-            // catch(error){
-            //   res.status(Httpstatus.NOT_FOUND).send(error.message);
-            // }
         });
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
@@ -72,11 +63,6 @@ export class MetadataController {
                     res.status(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
-                    /*const msg: Message = req.body;
-                    msg.title = "L'image ne se trouve pas sur la base de données";
-                    msg.body = Httpstatus.StatusCodes.NOT_FOUND.toString();
-                    res.send(msg);
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND);*/
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
         });
