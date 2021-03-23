@@ -1,9 +1,11 @@
-/*
+import { HttpResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { CanvasInformation } from '@common/communication/canvas-information';
+import { Message } from '@common/communication/message';
 import { ServerRequestService } from './server-request.service';
 
-xdescribe('ServerRequestService', () => {
+describe('ServerRequestService', () => {
     let httpMock: HttpTestingController;
     let service: ServerRequestService;
     let baseUrl: string;
@@ -23,44 +25,76 @@ xdescribe('ServerRequestService', () => {
     afterEach(() => {
         httpMock.verify();
     });
-    /*
+
     it('should return expected message (HttpClient called once)', () => {
-        const expectedMessage: Message = { body: 'Hello', title: 'World' };
+        const canvasArray: CanvasInformation[] = new Array(1);
+        canvasArray[0] = { codeID: 'test' } as CanvasInformation;
+        // const expectedMessage: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
 
         // check the content of the mocked call
-        service.basicGet().subscribe((response: Message) => {
-            expect(response.title).toEqual(expectedMessage.title, 'Title check');
-            expect(response.body).toEqual(expectedMessage.body, 'body check');
-        }, fail);
+        service.basicGet().subscribe((response: HttpResponse<CanvasInformation[]>) => {
+            if (response.body != null) {
+                expect(response.body).toEqual(canvasArray);
+            } else throw new Error();
+        });
 
         const req = httpMock.expectOne(baseUrl);
         expect(req.request.method).toBe('GET');
         // actually send the request
-        req.flush(expectedMessage);
+        req.flush(canvasArray);
     });
 
-    it('should not return any message when sending a POST request (HttpClient called once)', () => {
-        const sentMessage: Message = { body: 'Hello', title: 'World' };
+    it('should return expected message for GetSome (HttpClient called once)', () => {
+        const canvasArray: CanvasInformation[] = new Array(1);
+        canvasArray[0] = { codeID: 'test', tags: ['test1'] } as CanvasInformation;
+        // const expectedMessage: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
+
+        // check the content of the mocked call
+        service.getSome('test1').subscribe((response: HttpResponse<CanvasInformation[]>) => {
+            if (response.body != null) {
+                expect(response.body).toEqual(canvasArray);
+            } else throw new Error();
+        });
+
+        const req = httpMock.expectOne(baseUrl + '/test1');
+        expect(req.request.method).toBe('GET');
+        // actually send the request
+        req.flush(canvasArray);
+    });
+
+    it('should a message confirmation when sending a POST request (HttpClient called once)', () => {
+        const canvas: CanvasInformation = { codeID: 'test' } as CanvasInformation;
+        const recieved: Message = { body: 'Hello', title: 'World' };
         // subscribe to the mocked call
         // tslint:disable-next-line: no-empty
-        service.basicPost(sentMessage).subscribe(() => {}, fail);
-
-        const req = httpMock.expectOne(baseUrl + '/send');
-        expect(req.request.method).toBe('POST');
-        // actually send the request
-        req.flush(sentMessage);
-    });
-
-    it('should handle http error safely', () => {
-        service.basicGet().subscribe((response: Message) => {
-            expect(response).toBeUndefined();
+        service.basicPost(canvas).subscribe((response: HttpResponse<Message>) => {
+            console.log(response);
+            if (response.body != null) {
+                expect(response.body).toEqual(recieved);
+            } else throw new Error();
         }, fail);
 
-        const req = httpMock.expectOne(baseUrl);
-        expect(req.request.method).toBe('GET');
-        req.error(new ErrorEvent('Random error occured'));
+        const req = httpMock.expectOne(baseUrl + '/');
+        expect(req.request.method).toBe('POST');
+        // actually send the request
+        req.flush(recieved);
     });
 
-});
+    it('should a message confirmation when sending a POST request (HttpClient called once)', () => {
+        const recievedMessage: Message = { body: 'Hello', title: 'World' };
+        const message = 'testId';
+        // subscribe to the mocked call
+        // tslint:disable-next-line: no-empty
+        service.basicDelete(message).subscribe((response: HttpResponse<Message>) => {
+            console.log(response);
+            if (response.body != null) {
+                expect(response.body).toEqual(recievedMessage);
+            } else throw new Error();
+        }, fail);
 
-  */
+        const req = httpMock.expectOne(baseUrl + '/' + message);
+        expect(req.request.method).toBe('DELETE');
+        // actually send the request
+        req.flush(recievedMessage);
+    });
+});
