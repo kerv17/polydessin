@@ -1,12 +1,11 @@
-
 /* tslint:disable:no-unused-variable */
-import { CanvasInformation } from '../../../common/communication/canvas-information';
+// tslint:disable:no-any
 import * as chai from 'chai';
-import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
+import { CanvasInformation } from '../../../common/communication/canvas-information';
 import { Metadata } from '../classes/metadata';
 import { DataAccessService } from './data-access.service';
 import { DatabaseServiceMock } from './database.service.mock';
@@ -76,15 +75,15 @@ describe('Service: Data-Access', () => {
         sandbox.stub(metadataService, 'getAllMetadata').resolves([testMetadata, testMetadata2]);
         sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
         await dataAccessService.getAllData();
-        expect(spyGetAllData.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
+        chai.expect(spyGetAllData.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
     });
     it('should  return error in getAllData if getAllMetadata throws an error', async () => {
-        sandbox.stub(metadataService, 'getAllMetadata').returns(Promise.reject(new Error('something happened')));  
-        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
+        sandbox.stub(metadataService, 'getAllMetadata').returns(Promise.reject(new Error('something happened')));
+        chai.expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
     });
     it('should  return error in getAllData if createCanvasInformation throws an error', async () => {
         sandbox.stub(serverSaveService, 'createCanvasInformation').yields(Error('something happened'));
-        expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.getAllData()).to.eventually.be.rejectedWith(Error);
     });
 
     it('should  return the information of drawing saved on server and DB that have at least one of the tags', async () => {
@@ -92,15 +91,15 @@ describe('Service: Data-Access', () => {
         sandbox.stub(metadataService, 'getMetadataByTags').resolves([testMetadata, testMetadata2]);
         sandbox.stub(serverSaveService, 'createCanvasInformation').returns([testinformation, testinformation2]);
         await dataAccessService.getDataByTags('someTag');
-        expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
+        chai.expect(spyGetDataByTags.returned(Promise.resolve([testinformation, testinformation2]))).to.eql(true);
     });
     it('should  return error in getDataByTags if getAllMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'getMetadataByTags').returns(Promise.reject(new Error('something happened')));
-        expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
     });
     it('should  return error in getDataByTags if createCanvasInformation throws an error', async () => {
         sandbox.stub(serverSaveService, 'createCanvasInformation').yields(Error('something happened'));
-        expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.getDataByTags('someTag')).to.eventually.be.rejectedWith(Error);
     });
 
     it('should  not return anything if data is correctly added by addData', async () => {
@@ -108,15 +107,15 @@ describe('Service: Data-Access', () => {
         sandbox.stub(metadataService, 'addMetadata').resolves();
         sandbox.stub(serverSaveService, 'saveImage').returns();
         await dataAccessService.addData(testinformation);
-        expect(spyAddData.returned(Promise.resolve())).to.eql(true);
+        chai.expect(spyAddData.returned(Promise.resolve())).to.eql(true);
     });
     it('should  return error in  addData if addMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'addMetadata').returns(Promise.reject(new Error('something happened')));
-        expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
     });
     it('should  return error in  addData if saveImage throws an error', async () => {
         sandbox.stub(serverSaveService, 'saveImage').yields(Error('something happened'));
-        expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.addData(testinformation)).to.eventually.be.rejectedWith(Error);
     });
 
     it('should  not return anything if data is correctly deleted by deleteData', async () => {
@@ -124,14 +123,14 @@ describe('Service: Data-Access', () => {
         sandbox.stub(metadataService, 'deleteMetadata').resolves();
         sandbox.stub(serverSaveService, 'deleteCanvasInformation').returns();
         await dataAccessService.deleteData('aRandomCode');
-        expect(spyDeleteData.returned(Promise.resolve())).to.eql(true);
+        chai.expect(spyDeleteData.returned(Promise.resolve())).to.eql(true);
     });
     it('should  return error in  deleteData if deleteMetadata throws an error', async () => {
         sandbox.stub(metadataService, 'deleteMetadata').returns(Promise.reject(new Error('something happened')));
-        expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
     });
     it('should  return error in  deleteData if deleteCanvasInformation throws an error', async () => {
         sandbox.stub(serverSaveService, 'deleteCanvasInformation').yields(Error('something happened'));
-        expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
+        chai.expect(dataAccessService.deleteData('aRandomCode')).to.eventually.be.rejectedWith(Error);
     });
 });

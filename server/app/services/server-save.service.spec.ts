@@ -1,12 +1,13 @@
 /* tslint:disable:no-unused-variable */
-import { CanvasInformation } from '../../../common/communication/canvas-information';
+// tslint:disable:no-unused-expression
+// tslint:disable:no-any
 import * as chai from 'chai';
-import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as fs from 'fs';
 import { describe } from 'mocha';
 import { ObjectId } from 'mongodb';
 import * as sinon from 'sinon';
+import { CanvasInformation } from '../../../common/communication/canvas-information';
 import { Metadata } from '../classes/metadata';
 import { ServerSaveService } from './server-save.service';
 chai.use(chaiAsPromised); // this allows us to test for rejection
@@ -44,11 +45,11 @@ describe('Service: Server-Save', () => {
     });
 
     it('should  save the image of a jpeg format', () => {
-        expect(() => serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData)).to.be.ok;
+        chai.expect(() => serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData)).to.be.ok;
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
     });
     it('should  save the image of a png format', () => {
-        expect(() => serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData)).to.be.ok;
+        chai.expect(() => serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData)).to.be.ok;
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
     });
 
@@ -64,7 +65,7 @@ describe('Service: Server-Save', () => {
             imageData: '',
         };
         sandbox.stub(fs, 'writeFile').yields(error);
-        expect(() => serverSaveService.saveImage(testinformation3.format, testinformation3.codeID, testinformation3.imageData)).to.throw(
+        chai.expect(() => serverSaveService.saveImage(testinformation3.format, testinformation3.codeID, testinformation3.imageData)).to.throw(
             Error,
             'la sauvegarde a échouée',
         );
@@ -80,7 +81,7 @@ describe('Service: Server-Save', () => {
             width: 300,
             imageData: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
         };
-        expect(() => serverSaveService.saveImage(testinformation3.format, testinformation3.codeID, testinformation3.imageData)).to.throw(
+        chai.expect(() => serverSaveService.saveImage(testinformation3.format, testinformation3.codeID, testinformation3.imageData)).to.throw(
             Error,
             'nom ou type invalide',
         );
@@ -90,10 +91,10 @@ describe('Service: Server-Save', () => {
         const spyUnlink = sinon.spy(fs, 'unlinkSync');
         const spyExists = sinon.spy(fs, 'existsSync');
         serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.be.ok;
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.be.ok;
         spyUnlink.called;
         spyExists.returned(true);
-        expect(fs.existsSync(testinformation2.codeID + testinformation2.format)).to.be.false;
+        chai.expect(fs.existsSync(testinformation2.codeID + testinformation2.format)).to.be.false;
         spyUnlink.restore();
         spyExists.restore();
     });
@@ -101,13 +102,13 @@ describe('Service: Server-Save', () => {
         const error: any = new Error('No such file or directory');
         error.code = 'ENOENT';
         sandbox.stub(fs, 'unlinkSync').throws(error);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.throw(Error, 'Canva non trouvé');
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.throw(Error, 'Canva non trouvé');
     });
     it('should  throw error on delete error of a jpeg image that doesnt throw ENOENT', () => {
-        const error: any = new Error('That did not work');
+        const error = new Error('That did not work');
 
         sandbox.stub(fs, 'unlinkSync').throws(error);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.throw(
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.throw(
             Error,
             'le serveur ne réussi pas detruire le Canva',
         );
@@ -116,10 +117,10 @@ describe('Service: Server-Save', () => {
         const spyUnlink = sinon.spy(fs, 'unlinkSync');
         const spyExists = sinon.spy(fs, 'existsSync');
         serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.be.ok;
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.be.ok;
         spyUnlink.called;
         spyExists.returned(true);
-        expect(fs.existsSync(testinformation.codeID + testinformation.format)).to.be.false;
+        chai.expect(fs.existsSync(testinformation.codeID + testinformation.format)).to.be.false;
         spyUnlink.restore();
         spyExists.restore();
     });
@@ -127,13 +128,16 @@ describe('Service: Server-Save', () => {
         const error: any = new Error('No such file or directory');
         error.code = 'ENOENT';
         sandbox.stub(fs, 'unlinkSync').throws(error);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.throw(Error, 'Canva non trouvé');
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.throw(Error, 'Canva non trouvé');
     });
     it('should  throw error on delete error of a png image that doesnt throw ENOENT', () => {
-        const error: any = new Error('That did not work');
+        const error = new Error('That did not work');
 
         sandbox.stub(fs, 'unlinkSync').throws(error);
-        expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.throw(Error, 'le serveur ne réussi pas detruire le Canva');
+        chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.throw(
+            Error,
+            'le serveur ne réussi pas detruire le Canva',
+        );
     });
 
     it('should  create canvas information of metadata that has image saved on server', () => {
@@ -158,7 +162,7 @@ describe('Service: Server-Save', () => {
         serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData);
         serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
         serverSaveService.createCanvasInformation(metadataArray);
-        spyExists.returned([testinformation, testinformation2]);
+        chai.expect(spyExists.returned([testinformation, testinformation2]));
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
     });
@@ -192,12 +196,12 @@ describe('Service: Server-Save', () => {
         serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData);
         serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
         serverSaveService.createCanvasInformation(metadataArray);
-        spyExists.returned([testinformation, testinformation2]);
+        chai.expect(spyExists.returned([testinformation, testinformation2]));
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
     });
     it('should  throw error if readfileSync fails', () => {
-        const error: any = new Error('something didnt work on readFile');
+        const error = new Error('something didnt work on readFile');
         sandbox.stub(fs, 'readFileSync').throws(error);
         const testMetadata: Metadata = {
             codeID: new ObjectId('507f1f77bcf86cd799439011'),
@@ -218,7 +222,7 @@ describe('Service: Server-Save', () => {
         const metadataArray: Metadata[] = [testMetadata, testMetadata2];
         serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData);
         serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
-        expect(() => serverSaveService.createCanvasInformation(metadataArray)).to.throw(Error, 'le serveur ne réussi pas a sauvegarder le dessin');
+        chai.expect(() => serverSaveService.createCanvasInformation(metadataArray)).to.throw(Error, 'le serveur ne réussi pas a recuperer le dessin');
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
     });

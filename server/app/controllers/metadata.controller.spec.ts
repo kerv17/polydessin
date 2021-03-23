@@ -94,7 +94,7 @@ describe('MetadataController', () => {
             title: "L'image a ete supprimer",
             body: Httpstatus.StatusCodes.NO_CONTENT.toString(),
         } as Message;
-        
+
         return supertest(app)
             .delete('/api/metadata/:code')
             .expect(HTTP_STATUS_OK)

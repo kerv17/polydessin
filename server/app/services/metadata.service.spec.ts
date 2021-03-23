@@ -1,7 +1,7 @@
-/* tslint:disable:no-unused-variable */
 /* tslint:disable:no-any */
+// tslint:disable:no-unused-expression
+// tslint:disable:no-string-literal
 import * as chai from 'chai';
-import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -10,7 +10,6 @@ import { Metadata } from '../classes/metadata';
 import { DatabaseServiceMock } from './database.service.mock';
 import { MetadataService } from './metadata.service';
 chai.use(chaiAsPromised); // this allows us to test for rejection
-
 
 describe('Service: Metadata', () => {
     let metadataService: MetadataService;
@@ -49,47 +48,45 @@ describe('Service: Metadata', () => {
 
     it('should getAll metadatas from DB', async () => {
         const metadatas = await metadataService.getAllMetadata();
-        expect(metadatas.length).to.equal(2);
-        expect(testMetadata).to.deep.equals(metadatas[0]);
+        chai.expect(metadatas.length).to.equal(2);
+        chai.expect(testMetadata).to.deep.equals(metadatas[0]);
     });
     it('should throw an error on get all if database is empty', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
         try {
             await metadataService.getAllMetadata();
-        } catch(error) {
-            expect(error.message
-            ).to.be.equal('Aucun canvas présent dans la base de données');
+        } catch (error) {
+            chai.expect(error.message).to.be.equal('Aucun canvas présent dans la base de données');
         }
     });
 
     it('should get specific metadata with valid tag', async () => {
         const metadata = await metadataService.getMetadataByTags(['tagUnique']);
-        expect(metadata[0]).to.deep.equals(testMetadata2);
+        chai.expect(metadata[0]).to.deep.equals(testMetadata2);
     });
     it('should get all metadata with valid tag', async () => {
         const metadatas = await metadataService.getMetadataByTags(['tag2']);
-        expect(metadatas[0]).to.deep.equals(testMetadata);
-        expect(metadatas[1]).to.deep.equals(testMetadata2);
+        chai.expect(metadatas[0]).to.deep.equals(testMetadata);
+        chai.expect(metadatas[1]).to.deep.equals(testMetadata2);
     });
     it('should get all metadata with valid at least one of the tags tag', async () => {
         const metadatas = await metadataService.getMetadataByTags(['tag1', 'tagUnique']);
-        expect(metadatas[0]).to.deep.equals(testMetadata);
-        expect(metadatas[1]).to.deep.equals(testMetadata2);
+        chai.expect(metadatas[0]).to.deep.equals(testMetadata);
+        chai.expect(metadatas[1]).to.deep.equals(testMetadata2);
     });
     it('should get all metadata with valid at least one or all of the tags tag', async () => {
         const metadatas = await metadataService.getMetadataByTags(['tag1', 'tagUnique', 'tag2']);
-        expect(metadatas[0]).to.deep.equals(testMetadata);
-        expect(metadatas[1]).to.deep.equals(testMetadata2);
+        chai.expect(metadatas[0]).to.deep.equals(testMetadata);
+        chai.expect(metadatas[1]).to.deep.equals(testMetadata2);
     });
     it('should throw an error on get with tags if no canvas are found', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
         try {
             await metadataService.getMetadataByTags(['anything']);
-        } catch(error) {
-            expect(error.message
-            ).to.be.equal("Aucun canvas n'a été trouvée");
+        } catch (error) {
+            chai.expect(error.message).to.be.equal("Aucun canvas n'a été trouvée");
         }
     });
 
@@ -107,9 +104,9 @@ describe('Service: Metadata', () => {
 
         await metadataService.addMetadata(thirdMetadata);
         const datas = await metadataService.collection.find({}).toArray();
-        expect(datas.length).to.equal(numberOfElements);
-        expect(spyValidate.returned(true)).to.eql(true);
-        expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
+        chai.expect(datas.length).to.equal(numberOfElements);
+        chai.expect(spyValidate.returned(true)).to.eql(true);
+        chai.expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
     });
     it('should insert a new metadata without tags', async () => {
         const numberOfElements = 3;
@@ -125,9 +122,9 @@ describe('Service: Metadata', () => {
 
         await metadataService.addMetadata(thirdMetadata);
         const datas = await metadataService.collection.find({}).toArray();
-        expect(datas.length).to.equal(numberOfElements);
-        expect(spyValidate.returned(true)).to.eql(true);
-        expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
+        chai.expect(datas.length).to.equal(numberOfElements);
+        chai.expect(spyValidate.returned(true)).to.eql(true);
+        chai.expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
     });
 
     it('should not insert a new metadata if it has an invalid name and tags', async () => {
@@ -144,29 +141,28 @@ describe('Service: Metadata', () => {
             await metadataService.addMetadata(secondMetadata);
         } catch {
             const courses = await metadataService.collection.find({}).toArray();
-            expect(spyValidate.returned(false)).to.eql(true);
-            expect(courses.length).to.equal(2);
+            chai.expect(spyValidate.returned(false)).to.eql(true);
+            chai.expect(courses.length).to.equal(2);
         }
     });
 
     it('should delete an existing metadata if a valid codeID is sent', async () => {
         await metadataService.deleteMetadata('507f1f77bcf86cd799439012');
         const metadatas = await metadataService.collection.find({}).toArray();
-        expect(metadatas.length).to.equal(1);
+        chai.expect(metadatas.length).to.equal(1);
     });
     it('should not delete an existing metadata if an invalid codeID is sent', async () => {
         try {
             await metadataService.deleteMetadata('507f1f77bcf86cd799439015');
         } catch {
             const metadatas = await metadataService.collection.find({}).toArray();
-            expect(metadatas.length).to.equal(2);
+            chai.expect(metadatas.length).to.equal(2);
         }
     });
     it('should return void if mock doesnt didnt call start beforehand', async () => {
         databaseService = new DatabaseServiceMock();
         await databaseService.closeConnection();
-        expect(databaseService['client']).to.be.undefined;
-        
+        chai.expect(databaseService['client']).to.be.undefined;
     });
     it('should return the client if mock already called start beforehand', async () => {
         databaseService = new DatabaseServiceMock();
@@ -174,23 +170,21 @@ describe('Service: Metadata', () => {
         await databaseService.start();
         sinon.mock(databaseService.mongoServer).expects('getUri').never();
     });
-
-
     // Error handling
     describe('Error handling', async () => {
         it('should throw an error if we try to get all metadata on a closed connection', async () => {
             await client.close();
-            expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(Error);
+            chai.expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(Error);
         });
 
         it('should throw an error if we try to get a metadata on a closed connection', async () => {
             await client.close();
-            expect(metadataService.getMetadataByTags(testMetadata.tags)).to.eventually.be.rejectedWith(Error);
+            chai.expect(metadataService.getMetadataByTags(testMetadata.tags)).to.eventually.be.rejectedWith(Error);
         });
 
         it('should throw an error if we try to delete a specific metadata on a closed connection', async () => {
             await client.close();
-            expect(metadataService.deleteMetadata(testMetadata.codeID.toHexString())).to.eventually.be.rejectedWith(Error);
+            chai.expect(metadataService.deleteMetadata(testMetadata.codeID.toHexString())).to.eventually.be.rejectedWith(Error);
         });
 
         it('should throw an error if we try to add metadata on a closed connection', async () => {
@@ -203,7 +197,7 @@ describe('Service: Metadata', () => {
                 height: 300,
                 width: 300,
             };
-            expect(metadataService.addMetadata(secondMetadata)).to.eventually.be.rejectedWith(Error);
+            chai.expect(metadataService.addMetadata(secondMetadata)).to.eventually.be.rejectedWith(Error);
         });
     });
 });
