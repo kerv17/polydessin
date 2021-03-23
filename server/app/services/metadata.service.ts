@@ -25,8 +25,7 @@ export class MetadataService {
             .find({})
             .toArray()
             .then((metadata: Metadata[]) => {
-                if (metadata.length === 0)
-                    throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données");
+                if (metadata.length === 0) throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, 'Aucun canvas présent dans la base de données');
                 return metadata;
             });
     }
@@ -46,7 +45,6 @@ export class MetadataService {
                 throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée");
             });
     }
-    // TODO getMetadataByNameAndTags
 
     async addMetadata(metadata: Metadata): Promise<void> {
         if (this.validateMetadata(metadata)) {
@@ -79,12 +77,11 @@ export class MetadataService {
     private validateMetadata(metadata: Metadata): boolean {
         return this.validateName(metadata.name) && this.validateTags(metadata.tags);
     }
-    // TODO define name acceptance rules
+
     private validateName(name: string): boolean {
         return name.startsWith('Dessin');
     }
 
-    // TODO define tags acceptance rules
     private validateTags(tags: string[]): boolean {
         if (tags.length === 0) {
             // il est accepter qu'un dessin peut ne pas avoir de tag
@@ -112,6 +109,7 @@ export class MetadataService {
     private verifyTagsTooShort(tags: string[]): boolean {
         return tags.every((elem) => elem.length >= MIN_SIZE_TAG);
     }
+
     /*
     RÉFÉRENCES POUR LE CODE DE LA METHODE  verifyTagsNoSpecialChracter :
     Le présent code est tiré du tutoriel "Check wheter String contains Special Characters using JavaScript" de Mudassar Khan,

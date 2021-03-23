@@ -22,6 +22,6 @@
             "@common/*": ["../common/*"]
         }
     },
-    "include": ["app/**/*.ts"],
-    "exclude": ["node_modules", "dist", "**/*.spec.ts", "test/*"]
+    "include": ["app/**/*.ts","@types/mocha"],
+    "exclude": ["node_modules", "dist", "test/*"]
 }

@@ -51,7 +51,7 @@ export class ServerSaveService {
                 try {
                     information[j].imageData = fs.readFileSync(elem.codeID + '.' + elem.format, 'base64');
                 } catch (err) {
-                    throw new Error('le serveur ne réussi pas a sauvegarder le dessin');
+                    throw new Error('le serveur ne réussi pas a recuperer le dessin');
                 }
 
                 information[j].name = elem.name;

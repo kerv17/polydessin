@@ -22,7 +22,7 @@ export class DatabaseService {
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
-            throw new Error('Database connection error');
+            throw new Error('Erreure de connection avec la base de données');
         }
         return this.client;
     }

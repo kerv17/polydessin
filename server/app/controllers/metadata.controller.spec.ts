@@ -13,19 +13,9 @@ import { Stubbed, testingContainer } from '../../test/test-utils';
 const HTTP_STATUS_OK = 200;
 const HTTP_STATUS_CREATED = 201;
 const HTTP_STATUS_NOT_FOUND = 404;
-// const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 
 describe('MetadataController', () => {
     const baseInformation = { name: 'aName', tags: ['tag1', 'tag2'], format: 'png', width: 0, height: 0, imageData: '' } as CanvasInformation;
-    /*const testinformation: CanvasInformation = {
-        codeID: new ObjectId('507f1f77bcf86cd799439012').toHexString(),
-        name: 'DessinTest2',
-        tags: ['tagUnique', 'tag2'],
-        format: 'jpeg',
-        height: 300,
-        width: 300,
-        imageData: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD',
-    };*/
     let dataAccessService: Stubbed<DataAccessService>;
     let app: Express.Application;
 
@@ -42,7 +32,6 @@ describe('MetadataController', () => {
     });
 
     it('should return an array of canvasInformation on valid get request to root', async () => {
-        // dataAccessService.getAllData.returns([baseInformation,baseInformation]);
         return supertest(app)
             .get('/api/metadata/')
             .expect(HTTP_STATUS_OK)
@@ -52,7 +41,6 @@ describe('MetadataController', () => {
     });
     it('should return an error as a message on get request fail', async () => {
         dataAccessService.getAllData.rejects(new Error('service error'));
-
         return supertest(app)
             .get('/api/metadata/')
             .expect(HTTP_STATUS_NOT_FOUND)
@@ -62,7 +50,6 @@ describe('MetadataController', () => {
     });
 
     it('should return canvasInformation from data access service on valid get request to tag route', async () => {
-        // dataAccessService.getDataByTags.returns(baseInformation);
         return supertest(app)
             .get('/api/metadata/:tags')
             .expect(HTTP_STATUS_OK)
@@ -102,15 +89,12 @@ describe('MetadataController', () => {
             });
     });
 
-    /* TODO find out how to make delete work*/
     it('should return a messages on valid delete request', async () => {
-        // indexService.getAllMessages.returns([baseMessage, baseMessage]);
         const msg = {
             title: "L'image a ete supprimer",
             body: Httpstatus.StatusCodes.NO_CONTENT.toString(),
         } as Message;
-        // dataAccessService.deleteData.returns(testinformation.codeID);
-        // console.log(msg);
+
         return supertest(app)
             .delete('/api/metadata/:code')
             .expect(HTTP_STATUS_OK)
