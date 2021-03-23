@@ -81,11 +81,11 @@ describe('SprayAmountSliderComponent', () => {
 
   it('Verifying that updateWidthValues does nothing if the evt.value is null', () => {
       const previousWidth: number = component.width;
-      const previousToolWidth: number = toolController.currentTool.width;
+      const previousToolWidth: number = (toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayAmountPerSecond;
       matSliderChange.value = null;
       component.updateWidthValues(matSliderChange);
       expect(component.width).toEqual(previousWidth);
-      expect(toolController.currentTool.width).toEqual(previousToolWidth);
+      expect((toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayAmountPerSecond).toEqual(previousToolWidth);
   });
 
   it('Verifying that the component sets the right width value for the tool', () => {
