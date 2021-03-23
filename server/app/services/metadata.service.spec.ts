@@ -1,10 +1,12 @@
 /* tslint:disable:no-unused-variable */
+/* tslint:disable:no-any */
 import * as chai from 'chai';
 import { expect } from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as Httpstatus from 'http-status-codes';
 import { describe } from 'mocha';
 import { MongoClient, ObjectId } from 'mongodb';
+import * as sinon from 'sinon';
 import { HttpException } from '../classes/http.exceptions';
 import { Metadata } from '../classes/metadata';
 import { DatabaseServiceMock } from './database.service.mock';
@@ -54,7 +56,9 @@ describe('Service: Metadata', () => {
     it('should throw an error on get all if database is empty', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
-        expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données"));
+        expect(metadataService.getAllMetadata()).to.eventually.be.rejectedWith(
+            new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'est présent dans la base de données"),
+        );
     });
 
     it('should get specific metadata with valid tag', async () => {
@@ -79,7 +83,9 @@ describe('Service: Metadata', () => {
     it('should throw an error on get with tags if no canvas are found', async () => {
         await metadataService.deleteMetadata(testMetadata.codeID.toHexString());
         await metadataService.deleteMetadata(testMetadata2.codeID.toHexString());
-        expect(metadataService.getMetadataByTags(['anything'])).to.eventually.be.rejectedWith(new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée"));
+        expect(metadataService.getMetadataByTags(['anything'])).to.eventually.be.rejectedWith(
+            new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée"),
+        );
     });
 
     it('should insert a new metadata', async () => {
@@ -92,10 +98,12 @@ describe('Service: Metadata', () => {
             height: 300,
             width: 300,
         };
+        const spyValidate = sinon.spy(metadataService as any, 'validateMetadata');
 
         await metadataService.addMetadata(thirdMetadata);
         const datas = await metadataService.collection.find({}).toArray();
         expect(datas.length).to.equal(numberOfElements);
+        expect(spyValidate.returned(true)).to.eql(true);
         expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
     });
     it('should insert a new metadata without tags', async () => {
@@ -108,10 +116,12 @@ describe('Service: Metadata', () => {
             height: 300,
             width: 300,
         };
+        const spyValidate = sinon.spy(metadataService as any, 'validateMetadata');
 
         await metadataService.addMetadata(thirdMetadata);
         const datas = await metadataService.collection.find({}).toArray();
         expect(datas.length).to.equal(numberOfElements);
+        expect(spyValidate.returned(true)).to.eql(true);
         expect(datas.find((x) => x.name === thirdMetadata.name)).to.deep.equals(thirdMetadata);
     });
 
@@ -124,10 +134,12 @@ describe('Service: Metadata', () => {
             height: 300,
             width: 300,
         };
+        const spyValidate = sinon.spy(metadataService as any, 'validateMetadata');
         try {
             await metadataService.addMetadata(secondMetadata);
         } catch {
             const courses = await metadataService.collection.find({}).toArray();
+            expect(spyValidate.returned(false)).to.eql(true);
             expect(courses.length).to.equal(2);
         }
     });
