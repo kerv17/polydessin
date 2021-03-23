@@ -25,24 +25,25 @@ export class CarouselService {
     }
 
     delete(activeSlides: SlideModel[] | undefined): void {
-        if (activeSlides != undefined) {
-            const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
+        if (activeSlides == undefined) {
+            return;
+        }
+        const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
 
-            if (confirm('Voulez-vous supprimez ce dessin')) {
-                this.requestService.basicDelete(selectedSlide.id).subscribe(
-                    (response) => {
-                        window.alert(response.body?.title);
+        if (confirm('Voulez-vous supprimez ce dessin')) {
+            this.requestService.basicDelete(selectedSlide.id).subscribe(
+                (response) => {
+                    window.alert(response.body?.title);
 
-                        this.removeCanvasInformation(selectedSlide.id);
-                        if (this.pictures.length === 0) {
-                            window.alert('Il ne reste plus de dessin avec ces critères');
-                        }
-                    },
-                    (err: HttpErrorResponse) => {
-                        this.handleCarouselErrors(err);
-                    },
-                );
-            }
+                    this.removeCanvasInformation(selectedSlide.id);
+                    if (this.pictures.length === 0) {
+                        window.alert('Il ne reste plus de dessin avec ces critères');
+                    }
+                },
+                (err: HttpErrorResponse) => {
+                    this.handleCarouselErrors(err);
+                },
+            );
         }
     }
     /*  loadImageButton(activeSlides: SlideModel[] | undefined): void {
@@ -65,7 +66,6 @@ export class CarouselService {
     loadCanvas(info: CanvasInformation): void {
         if (this.router.url.includes('/editor')) {
             this.drawingService.loadOldCanvas(info);
-
             this.close();
         } else {
             this.router.navigate(['/editor']);
