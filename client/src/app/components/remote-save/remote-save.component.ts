@@ -11,7 +11,7 @@ export class RemoteSaveComponent {
     jpeg: string = 'jpeg';
     saveMode: string;
     fileName: string;
-    tagsName: string;
+    tagsName: string = '';
     inSave: boolean = false;
     constructor(private remoteSaveService: RemoteSaveService) {}
 
@@ -19,8 +19,8 @@ export class RemoteSaveComponent {
         this.saveMode = mode;
     }
     savePicture(): void {
-        const tags: string[] = this.remoteSaveService.tagsHangler(this.tagsName);
-
+        const tags: string[] = this.remoteSaveService.tagsHandler(this.tagsName);
+        window.alert(this.tagsName);
         const information = { name: this.fileName, tags, format: this.saveMode, width: 0, height: 0, imageData: '' } as CanvasInformation;
 
         this.inSave = true;
