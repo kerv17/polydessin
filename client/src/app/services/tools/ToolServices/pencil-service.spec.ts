@@ -259,18 +259,17 @@ describe('PencilService', () => {
     });
 
     // Exemple de test d'intégration qui est quand même utile
-    it(' should change the pixel of the canvas ', () => {
-        mouseEvent = { pageX: 0 + SIDEBAR_WIDTH, pageY: 0, button: 0 } as MouseEvent;
+    it(' should draw on the canvas ', () => {
+        // tslint:disable-next-line: no-magic-numbers
+        mouseEvent = { pageX: -1 + SIDEBAR_WIDTH, pageY: -1, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { pageX: 1 + SIDEBAR_WIDTH, pageY: 1, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-        // Premier pixel seulement
-        const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
-        expect(imageData.data[3]).not.toEqual(0); // A
+
+        expect(drawLineSpy).toHaveBeenCalledWith(service.drawingService.baseCtx, [
+            { x: -1, y: -1 },
+            { x: 1, y: 1 },
+        ]);
     });
 
     it('doAction', () => {
