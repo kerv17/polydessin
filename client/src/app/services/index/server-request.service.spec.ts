@@ -68,7 +68,6 @@ describe('ServerRequestService', () => {
         // subscribe to the mocked call
         // tslint:disable-next-line: no-empty
         service.basicPost(canvas).subscribe((response: HttpResponse<Message>) => {
-            console.log(response);
             if (response.body != null) {
                 expect(response.body).toEqual(recieved);
             } else throw new Error();
@@ -86,7 +85,6 @@ describe('ServerRequestService', () => {
         // subscribe to the mocked call
         // tslint:disable-next-line: no-empty
         service.basicDelete(message).subscribe((response: HttpResponse<Message>) => {
-            console.log(response);
             if (response.body != null) {
                 expect(response.body).toEqual(recievedMessage);
             } else throw new Error();

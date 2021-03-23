@@ -7,7 +7,7 @@ import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 // import { CanvasInformation } from '@common/communication/canvas-information';
 import { RemoteSaveComponent } from './remote-save.component';
 // tslint:disable:no-any
-fdescribe('RemoteSaveComponent', () => {
+describe('RemoteSaveComponent', () => {
     let component: RemoteSaveComponent;
     let fixture: ComponentFixture<RemoteSaveComponent>;
     let remoteSaveService: RemoteSaveService;
