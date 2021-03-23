@@ -89,7 +89,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 }
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
                 this.newCanvasSize = { x: this.widthPrev, y: this.heightPrev };
-
                 const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
 
                 this.baseCanvas.nativeElement.width = this.widthPrev;
