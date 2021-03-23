@@ -10,6 +10,8 @@ describe('SelectionBoxService', () => {
     const height = 100;
     const size = 8;
     let mouseEvent: MouseEvent;
+    const handlersPosition = 'handlersPositions';
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionBoxService);
@@ -23,30 +25,35 @@ describe('SelectionBoxService', () => {
 
     it('setHandlersPosition should add the correct position values to the handlersPosition array', () => {
         service.setHandlersPositions(topLeft, width, height);
-        expect(service.handlersPositions.length).toEqual(size);
-        expect(service.handlersPositions[Globals.TOP_LEFT_HANDLER]).toEqual(topLeft);
-        expect(service.handlersPositions[Globals.TOP_HANDLER]).toEqual({ x: 150, y: 100 });
-        expect(service.handlersPositions[Globals.TOP_RIGHT_HANDLER]).toEqual({ x: 200, y: 100 });
-        expect(service.handlersPositions[Globals.RIGHT_HANDLER]).toEqual({ x: 200, y: 150 });
-        expect(service.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER]).toEqual({ x: 200, y: 200 });
-        expect(service.handlersPositions[Globals.BOTTOM_HANDLER]).toEqual({ x: 150, y: 200 });
-        expect(service.handlersPositions[Globals.BOTTOM_LEFT_HANDLER]).toEqual({ x: 100, y: 200 });
-        expect(service.handlersPositions[Globals.LEFT_HANDLER]).toEqual({ x: 100, y: 150 });
+        expect(service[handlersPosition].length).toEqual(size);
+        expect(service[handlersPosition][Globals.TOP_LEFT_HANDLER]).toEqual(topLeft);
+        expect(service[handlersPosition][Globals.TOP_HANDLER]).toEqual({ x: 150, y: 100 });
+        expect(service[handlersPosition][Globals.TOP_RIGHT_HANDLER]).toEqual({ x: 200, y: 100 });
+        expect(service[handlersPosition][Globals.RIGHT_HANDLER]).toEqual({ x: 200, y: 150 });
+        expect(service[handlersPosition][Globals.BOTTOM_RIGHT_HANDLER]).toEqual({ x: 200, y: 200 });
+        expect(service[handlersPosition][Globals.BOTTOM_HANDLER]).toEqual({ x: 150, y: 200 });
+        expect(service[handlersPosition][Globals.BOTTOM_LEFT_HANDLER]).toEqual({ x: 100, y: 200 });
+        expect(service[handlersPosition][Globals.LEFT_HANDLER]).toEqual({ x: 100, y: 150 });
     });
 
     it('setHandlersPosition should replace the previous handlersPosition array with the new values', () => {
         const largeWidth = 500;
         service.setHandlersPositions({ x: 0, y: 0 }, largeWidth, largeWidth);
         service.setHandlersPositions(topLeft, width, height);
-        expect(service.handlersPositions.length).toEqual(size);
-        expect(service.handlersPositions[Globals.TOP_LEFT_HANDLER]).toEqual(topLeft);
-        expect(service.handlersPositions[Globals.TOP_HANDLER]).toEqual({ x: 150, y: 100 });
-        expect(service.handlersPositions[Globals.TOP_RIGHT_HANDLER]).toEqual({ x: 200, y: 100 });
-        expect(service.handlersPositions[Globals.RIGHT_HANDLER]).toEqual({ x: 200, y: 150 });
-        expect(service.handlersPositions[Globals.BOTTOM_RIGHT_HANDLER]).toEqual({ x: 200, y: 200 });
-        expect(service.handlersPositions[Globals.BOTTOM_HANDLER]).toEqual({ x: 150, y: 200 });
-        expect(service.handlersPositions[Globals.BOTTOM_LEFT_HANDLER]).toEqual({ x: 100, y: 200 });
-        expect(service.handlersPositions[Globals.LEFT_HANDLER]).toEqual({ x: 100, y: 150 });
+        expect(service[handlersPosition].length).toEqual(size);
+        expect(service[handlersPosition][Globals.TOP_LEFT_HANDLER]).toEqual(topLeft);
+        expect(service[handlersPosition][Globals.TOP_HANDLER]).toEqual({ x: 150, y: 100 });
+        expect(service[handlersPosition][Globals.TOP_RIGHT_HANDLER]).toEqual({ x: 200, y: 100 });
+        expect(service[handlersPosition][Globals.RIGHT_HANDLER]).toEqual({ x: 200, y: 150 });
+        expect(service[handlersPosition][Globals.BOTTOM_RIGHT_HANDLER]).toEqual({ x: 200, y: 200 });
+        expect(service[handlersPosition][Globals.BOTTOM_HANDLER]).toEqual({ x: 150, y: 200 });
+        expect(service[handlersPosition][Globals.BOTTOM_LEFT_HANDLER]).toEqual({ x: 100, y: 200 });
+        expect(service[handlersPosition][Globals.LEFT_HANDLER]).toEqual({ x: 100, y: 150 });
+    });
+
+    it('getHandlersPositions should return the current handlersPositions array', () => {
+        service.setHandlersPositions(topLeft, width, height);
+        expect(service.getHandlersPositions()).toEqual(service[handlersPosition]);
     });
 
     it('getCursor should return all-scroll if the cursor is not on one of the 8 handlers', () => {

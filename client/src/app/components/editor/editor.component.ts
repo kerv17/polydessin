@@ -24,10 +24,10 @@ export class EditorComponent {
     onResize(event: ResizedEvent): void {
         if (window.innerHeight < this.drawingService.resizePoint.posY) {
             // because JS creates decimals https://medium.com/@DominicCarmel/understanding-javascripts-weird-decimal-calculations-e65f0e1adefb
-            this.editorSizeY = Math.floor(this.drawingService.resizePoint.posY * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+            this.editorSizeY = Math.floor(this.drawingService.resizePoint.posY * Globals.RESIZE_CONSTANT);
         }
         if (window.innerWidth - Globals.SIDEBAR_WIDTH < this.drawingService.resizePoint.posX) {
-            this.editorSizeX = Math.floor((this.drawingService.resizePoint.posX + Globals.SIDEBAR_WIDTH) * Globals.CONSTANTE_AGRANDISSEMENT_TRAVAIL);
+            this.editorSizeX = Math.floor((this.drawingService.resizePoint.posX + Globals.SIDEBAR_WIDTH) * Globals.RESIZE_CONSTANT);
         }
         if (window.innerHeight > this.drawingService.resizePoint.posY) {
             this.editorSizeY = window.innerHeight;
