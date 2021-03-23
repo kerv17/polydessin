@@ -108,7 +108,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     };
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
-                    console.log('shouldnt hit this');
                 }
                 this.allowUndoCall = true;
             }

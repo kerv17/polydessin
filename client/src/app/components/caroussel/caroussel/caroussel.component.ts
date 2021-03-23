@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
@@ -10,17 +11,19 @@ const nombreImage = 3;
 })
 export class CarousselComponent implements AfterViewInit {
     @ViewChild('owlCar') owlCar: CarouselComponent;
-
+    customOptions: OwlOptions;
     constructor(public carouselService: CarouselService) {
         this.resetOptions();
     }
-    customOptions: OwlOptions;
 
     resetOptions(): void {
+        // J'attribue les options de mon owl-carousel-o
+        // Le lien vers le repo github de ce carousel est:
+        // https://github.com/vitalii-andriiovskyi/ngx-owl-carousel-o
         this.customOptions = {
             loop: true,
             mouseDrag: true,
-            // TODO gèrer les cas ou moins de 2
+
             merge: true,
             touchDrag: true,
 
@@ -33,7 +36,8 @@ export class CarousselComponent implements AfterViewInit {
             center: true,
             items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1,
             autoWidth: false,
-
+            // Cette petite partie  fait en sorte que le carousel s'adapate quand ca change de taille
+            // J'ai du le mettre sinon parfois il y a des espaces qui se crée
             responsive: {
                 0: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
                 400: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
@@ -46,14 +50,15 @@ export class CarousselComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        // this.customOptions.responsive = { 0: { items: 1 }, 400: { items: 1 }, 740: { items: 1 }, 960: { items: 1 } };
         this.resetOptions();
     }
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.key === 'ArrowRight') {
+        if (event.key === Globals.RIGHT_ARROW_SHORTCUT) {
+            // cette méthode change le slide courant vers la droite
             this.owlCar.next();
-        } else if (event.key === 'ArrowLeft') this.owlCar.prev();
+        } else if (event.key === Globals.LEFT_ARROW_SHORTCUT) this.owlCar.prev();
+        // cette méthode change le slide courant vers la gauche
     }
 }

@@ -16,6 +16,7 @@ describe('MainPageComponent', () => {
     };
 
     beforeEach(async(() => {
+        indexServiceSpy = jasmine.createSpyObj<ServerRequestService>('ServerRequestService', ['basicGet']);
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],

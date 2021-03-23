@@ -20,6 +20,8 @@ export const CANVAS_SELECTION_EVENT = 'a';
 export const CANVAS_SAVE_SHORTCUT = 's';
 export const UNDO_SHORTCUT = 'z';
 export const REDO_SHORTCUT = 'Z';
+export const RIGHT_ARROW_SHORTCUT = 'ArrowRight';
+export const LEFT_ARROW_SHORTCUT = 'ArrowLeft';
 // Variables d'editor
 export const CONSTANTE_AGRANDISSEMENT_TRAVAIL = 1.1;
 
@@ -91,3 +93,14 @@ export const BOTTOM_RIGHT_HANDLER = 4; // coin bas droite
 export const BOTTOM_HANDLER = 5; // centre bas
 export const BOTTOM_LEFT_HANDLER = 6; // coin bas gauche
 export const LEFT_HANDLER = 7; // centre gauche
+
+// Constante pour tests de sélection
+export const mouseDownEvent = {
+    pageX: 595,
+    pageY: 125,
+    offsetX: 125,
+    offsetY: 125,
+    x: 125,
+    y: 125,
+    button: 0,
+} as MouseEvent;

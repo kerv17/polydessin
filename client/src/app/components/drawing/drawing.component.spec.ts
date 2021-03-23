@@ -1,6 +1,7 @@
-import { SimpleChange } from '@angular/core';
+import { SimpleChange, SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
+import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -25,10 +26,14 @@ describe('DrawingComponent', () => {
     let putImageDataSpy: jasmine.Spy;
     const resizePointStub: ResizePoint = new ResizePoint();
     let toolController: ToolControllerService;
+    let carouselService: CarouselService;
+    let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(resizePointStub);
+        baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
+        drawingStub.baseCtx = baseCtxTest;
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
@@ -37,6 +42,7 @@ describe('DrawingComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
         );
+        carouselService = {} as CarouselService;
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -44,6 +50,7 @@ describe('DrawingComponent', () => {
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolControllerService, useValue: toolController },
+                { provide: CarouselService, useValue: carouselService },
             ],
         }).compileComponents();
     }));
@@ -178,5 +185,38 @@ describe('DrawingComponent', () => {
         component.onMouseEnter(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it('ngOnChanges should dispatch an action Event only when allowed', () => {
+        (component as any).heightPrev = 2;
+        (component as any).widthPrev = 2;
+
+        let actionCalled = false;
+        addEventListener('action', (event: CustomEvent) => {
+            actionCalled = true;
+        });
+        (component as any).viewInitialized = true;
+        (component as any).mouseDown = false;
+
+        (component as any).allowUndoCall = false;
+        component.ngOnChanges({} as SimpleChanges);
+        expect(actionCalled).toBeFalse();
+
+        (component as any).allowUndoCall = true;
+        component.ngOnChanges({} as SimpleChanges);
+        expect(actionCalled).toBeTrue();
+    });
+
+    it('ngOnInit should dispatch a undoRedoWipe event', () => {
+        (component as any).heightPrev = 2;
+        (component as any).widthPrev = 2;
+
+        let actionCalled = false;
+        addEventListener('undoRedoWipe', (event: CustomEvent) => {
+            actionCalled = true;
+        });
+
+        component.ngAfterViewInit();
+        expect(actionCalled).toBeTrue();
     });
 });

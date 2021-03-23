@@ -3,7 +3,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { RemoteSaveService } from './remote-save.service';
 
-describe('Service: RemoteSave', () => {
+xdescribe('Service: RemoteSave', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [RemoteSaveService],

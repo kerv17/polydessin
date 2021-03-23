@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { EllipsisService } from './ellipsis-service';
 
 // tslint:disable:no-any
@@ -10,11 +12,12 @@ describe('EllipsisService', () => {
     let mouseEvent: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
+    let dispatchSpy: jasmine.Spy<any>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
 
+    const mouseEventPosTestNumber = 25;
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
@@ -27,15 +30,15 @@ describe('EllipsisService', () => {
 
         service = TestBed.inject(EllipsisService);
         drawLineSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
-
+        dispatchSpy = spyOn<any>(service, 'dispatchAction');
         // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
-            offsetX: 25,
-            offsetY: 25,
+            pageX: mouseEventPosTestNumber + SIDEBAR_WIDTH,
+            pageY: mouseEventPosTestNumber,
             button: 0,
         } as MouseEvent;
     });
@@ -72,6 +75,7 @@ describe('EllipsisService', () => {
         // Rise it back up
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(dispatchSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawRectangle if mouse was not already down', () => {
@@ -80,6 +84,7 @@ describe('EllipsisService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawRectangle if mouse was already down', () => {
@@ -234,5 +239,14 @@ describe('EllipsisService', () => {
         expect(service.shift).toBe(true);
 
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('doAction', () => {
+        (service as any).pathData = [{ x: 0, y: 0 }];
+        (service as any).getPathForEllipsis(service.getPositionFromMouse(mouseEvent));
+        const action: DrawAction = (service as any).createAction();
+        service.clearPath();
+        service.doAction(action);
+        expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
 });

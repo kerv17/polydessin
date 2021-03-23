@@ -33,7 +33,7 @@ type ToolParam = {
     showWidth: boolean;
     toolName: string;
 };
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     const showFillOptions = true;
@@ -188,21 +188,18 @@ fdescribe('SidebarComponent', () => {
         component.showAerosolInterface();
         expect(component.showAerosol).toEqual(false);
     });
-
     it('should check if the current tool is Line and not show its specific options if it isnt', () => {
         component.showLine = false;
         component.currentTool = Globals.CRAYON_SHORTCUT;
         component.showLineOptions();
         expect(component.showLine).toEqual(false);
     });
-
     it('should check if the current tool is Line and show its specific options if it is', () => {
         component.showLine = false;
         component.currentTool = Globals.LINE_SHORTCUT;
         component.showLineOptions();
         expect(component.showLine).toEqual(true);
     });
-
     it('should check if the current tool is Rectangle or Ellipsis and show its specific options if it is', () => {
         component.shapeOptions = false;
         component.currentTool = Globals.ELLIPSIS_SHORTCUT;
@@ -215,21 +212,18 @@ fdescribe('SidebarComponent', () => {
         component.showShapeOptions();
         expect(component.shapeOptions).toEqual(false);
     });
-
     it('should cancel the selection on toolSwap if theres something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = true;
         component.annulerSelection();
         expect(escapeSpy).toHaveBeenCalled();
     });
-
     it('should not cancel the selection on toolSwap if theres not something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = false;
         component.annulerSelection();
         expect(escapeSpy).not.toHaveBeenCalled();
     });
-
     it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
         const originalResetValue = component.resetAttributes;
         const lineSpy = spyOn(component, 'showLineOptions');
@@ -243,7 +237,6 @@ fdescribe('SidebarComponent', () => {
         expect(aerorolSpy).toHaveBeenCalled();
         expect(shapeSpy).toHaveBeenCalled();
     });
-
     it('newCanvas should call drawingService nouveau dessin', () => {
         toolController.lineService = new LineService(drawingStub);
         const spy = spyOn(toolController.lineService, 'clearPath');
@@ -255,7 +248,6 @@ fdescribe('SidebarComponent', () => {
         expect(drawingStubSpy).toHaveBeenCalled();
         expect(spy).toHaveBeenCalled();
     });
-
     it('newCanvas should call the reset methods from services', () => {
         toolController.lineService = new LineService(drawingStub);
         const spy = spyOn(toolController.lineService, 'clearPath');
@@ -270,7 +262,6 @@ fdescribe('SidebarComponent', () => {
         expect(resetWidthSpy).toHaveBeenCalled();
         expect(resetToolsModeSpy).toHaveBeenCalled();
     });
-
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
         const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
@@ -282,7 +273,6 @@ fdescribe('SidebarComponent', () => {
         expect(eventSpy).toHaveBeenCalled();
         expect(drawingStubSpy).toHaveBeenCalled();
     });
-
     it('checking if onkeyPress calls Map.get() if its a toolkey', () => {
         component.initToolMap();
         const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false, shiftKey: false };
@@ -295,7 +285,6 @@ fdescribe('SidebarComponent', () => {
         expect(mapSpy).toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
         expect(component.currentTool).toEqual(Globals.ELLIPSIS_SHORTCUT);
     });
-
     it('checking if onkeyPress calls Map.get() if its a toolkey but ctrl is true', () => {
         const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: true };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
@@ -307,29 +296,51 @@ fdescribe('SidebarComponent', () => {
         expect(mapSpy).not.toHaveBeenCalledWith([true, Globals.ELLIPSIS_SHORTCUT].join());
         expect(openToolSpy).not.toHaveBeenCalled();
     });
+    it('should do nothing if the showModalValue is true ', () => {
+        component.exportService.showModalExport = true;
+        component.initToolMap();
+        const keyEventData = { isTrusted: true, key: Globals.ELLIPSIS_SHORTCUT, ctrlKey: false, shiftKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        component.currentTool = Globals.CRAYON_SHORTCUT;
+        mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
+        toolController.focused = true;
 
-    it('checking if onKeyPress does nothing if both event keys are bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
-
-        const keyEventData = { isTrusted: true, key: 'x', ctrlKey: true };
-
-        const event = new KeyboardEvent('keydown', keyEventData);
-
-        eventSpy = spyOn(event, 'preventDefault');
-        window.dispatchEvent(event);
-        expect(eventSpy).not.toHaveBeenCalled();
-        expect(drawingStubSpy).not.toHaveBeenCalled();
+        window.dispatchEvent(keyDownEvent);
+        expect(mapSpy).not.toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
+        expect(component.currentTool).not.toEqual(Globals.ELLIPSIS_SHORTCUT);
     });
-
-    it('checking if onKeyPress does nothing if the Ctrl Key is bad', () => {
-        drawingStubSpy = spyOn(drawingStub, 'newCanvas');
-
-        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: false };
-        const event = new KeyboardEvent('keydown', keyEventData);
-        window.dispatchEvent(event);
-        eventSpy = spyOn(event, 'preventDefault');
-
-        expect(eventSpy).not.toHaveBeenCalled();
-        expect(drawingStubSpy).not.toHaveBeenCalled();
+    it('should not call anything if the return value is null ', () => {
+        component.initFunctionMap();
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        const functionSpy = spyOn((component as any).functionMap, 'get').and.returnValue(null);
+        const newDrawingSpy = spyOn(component, 'newCanvas');
+        component.onKeyPress(keyDownEvent);
+        expect(functionSpy).toHaveBeenCalled();
+        expect(newDrawingSpy).not.toHaveBeenCalled();
+    });
+    it('should call the undoRedoService redo method if there is no active selection', () => {
+        toolController.selectionService.inSelection = false;
+        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
+        component.redoAction();
+        expect(redoSpy).toHaveBeenCalled();
+    });
+    it('should call the undoRedoService undo method if there is no active selection', () => {
+        toolController.selectionService.inSelection = false;
+        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
+        component.undoAction();
+        expect(undoSpy).toHaveBeenCalled();
+    });
+    it('should not call the undoRedoService redo method if there is an active selection', () => {
+        toolController.selectionService.inSelection = true;
+        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
+        component.redoAction();
+        expect(redoSpy).not.toHaveBeenCalled();
+    });
+    it('should not call the undoRedoService undo method if there is an active selection', () => {
+        toolController.selectionService.inSelection = true;
+        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
+        component.undoAction();
+        expect(undoSpy).not.toHaveBeenCalled();
     });
 });

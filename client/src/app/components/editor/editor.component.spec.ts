@@ -17,7 +17,7 @@ import { EditorComponent } from './editor.component';
 
 class ToolStub extends Tool {}
 
-describe('EditorComponent', () => {
+xdescribe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let toolStub: ToolStub;
