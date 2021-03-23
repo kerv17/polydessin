@@ -6,10 +6,10 @@ import { ServerRequestService } from '@app/services/index/server-request.service
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
-import { /*BehaviorSubject, Observable,*/ of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { RemoteSaveService } from './remote-save.service';
 
-fdescribe('Service: RemoteSave', () => {
+describe('Service: RemoteSave', () => {
     let service: RemoteSaveService;
     let drawingService: DrawingService;
     let requestService: ServerRequestService;
