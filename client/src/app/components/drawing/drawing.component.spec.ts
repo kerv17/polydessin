@@ -1,9 +1,11 @@
 import { SimpleChange, SimpleChanges } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
@@ -19,7 +21,7 @@ class ToolStub extends Tool {}
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
@@ -48,7 +50,8 @@ fdescribe('DrawingComponent', () => {
             {} as AerosolService,
             new SelectionService(drawingStub, selectionMoveService),
         );
-        carouselService = {} as CarouselService;
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+
         selectionBoxService = new SelectionBoxService();
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -267,5 +270,15 @@ fdescribe('DrawingComponent', () => {
         expect(component.drawHandlers()).toBeTrue();
         toolController.selectionService.inSelection = false;
         expect(component.drawHandlers()).not.toBeTrue();
+    });
+    it('should load the carousel picture if one is stored', () => {
+        (component as any).carousel = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+
+        (component as any).carousel.loadImage = true;
+
+        const loadCanvasSpy = spyOn((component as any).drawingService, 'loadOldCanvas').and.returnValue({});
+        component.loadCarouselCanvas();
+        expect(loadCanvasSpy).toHaveBeenCalled();
+        expect((component as any).carousel.loadImage).not.toBeTrue();
     });
 });
