@@ -20,11 +20,11 @@ describe('SelectionService', () => {
     const canvasWidth = 500;
     const canvasHeight = 500;
     const pathData = 'pathData';
-    const keyDown = 'keyDown';
-    const firstTime = 'firstTime';
+    const selectionMove = 'selectionMove';
     const onArrowDown = 'onArrowDown';
     const setKeyMovementDelays = 'setKeyMovementDelays';
     const selectedArea = 'selectedArea';
+    const setTopLeftHandler = 'setTopLeftHandler';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -114,37 +114,74 @@ describe('SelectionService', () => {
         const keyUpEvent = new KeyboardEvent('keyup', keyEventData);
         document.dispatchEvent(keyUpEvent);
         expect(selectionMovementSpy).toHaveBeenCalled();
-        expect(service[keyDown]).not.toBeTrue();
-        expect(service[firstTime]).toBeTrue();
+        expect(service[selectionMove].keyDown).not.toBeTrue();
+        expect(service[selectionMove].firstTime).toBeTrue();
+    });
+
+    it('setTopLefthandler should push the first coordinate of the PathData', () => {
+        service[setTopLeftHandler]();
+        expect(service[pathData][Globals.BOTTOM_RIGHT_HANDLER]).toEqual(service[pathData][0]);
+    });
+
+    it('setTopLefthandler should set the path with the new calculated topLeftHandler has the first element of the path', () => {
+        service[pathData] = [
+            { x: 200, y: 200 },
+            { x: 200, y: 100 },
+            { x: 100, y: 100 },
+            { x: 100, y: 200 },
+        ];
+        service[setTopLeftHandler]();
+        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
+        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
+
+        service[pathData] = [
+            { x: 100, y: 200 },
+            { x: 200, y: 200 },
+            { x: 200, y: 100 },
+            { x: 100, y: 100 },
+        ];
+        service[setTopLeftHandler]();
+        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
+        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
+
+        service[pathData] = [
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+            { x: 100, y: 100 },
+        ];
+        service[setTopLeftHandler]();
+        expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
+        expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
     });
 
     it('setKeyMovementDelays should call setTimeout if keyDown is false', () => {
-        service[keyDown] = false;
+        service[selectionMove].keyDown = false;
         jasmine.clock().install();
         service[setKeyMovementDelays]();
         jasmine.clock().tick(Globals.TIMEOUT_MS + 1);
-        expect(service[keyDown]).toBeTrue();
+        expect(service[selectionMove].keyDown).toBeTrue();
         jasmine.clock().uninstall();
     });
 
     it('setKeyMovementDelays should call setInterval if keyDown is true and firstTime is true', () => {
-        service[keyDown] = true;
-        service[firstTime] = true;
+        service[selectionMove].keyDown = true;
+        service[selectionMove].firstTime = true;
         selectionSpy = spyOn<any>(service, 'onArrowDown');
         jasmine.clock().install();
         service[setKeyMovementDelays]();
         jasmine.clock().tick(Globals.INTERVAL_MS + 1);
-        expect(service[firstTime]).not.toBeTrue();
+        expect(service[selectionMove].firstTime).not.toBeTrue();
         expect(selectionSpy).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
 
     it('setKeyMovementDelays should not call setInterval if keyDown is true and firstTime is false', () => {
-        service[keyDown] = true;
-        service[firstTime] = false;
+        service[selectionMove].keyDown = true;
+        service[selectionMove].firstTime = false;
         selectionSpy = spyOn<any>(service, 'onArrowDown');
         service[setKeyMovementDelays]();
-        expect(service[firstTime]).not.toBeTrue();
+        expect(service[selectionMove].firstTime).not.toBeTrue();
         expect(selectionSpy).not.toHaveBeenCalled();
     });
 
