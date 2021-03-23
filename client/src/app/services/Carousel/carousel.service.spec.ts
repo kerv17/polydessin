@@ -12,7 +12,7 @@ import { CarouselService } from './carousel.service';
 export class SlideModel {
     id: string;
 } // tslint:disable: no-any
-fdescribe('CarouselService', () => {
+describe('CarouselService', () => {
     let service: CarouselService;
 
     let confirmSpy: jasmine.Spy;
