@@ -18,7 +18,7 @@ export class RemoteSaveService {
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
-            window.alert('Il faut choisir un type et un nom qui respecte les critères');
+            window.alert('Il faut choisir respecter les critères pour le tag et le nom');
             return;
         }
 
@@ -35,7 +35,7 @@ export class RemoteSaveService {
                 (err: HttpErrorResponse) => {
                     if (err.status === 0) window.alert('Aucune connection avec le serveur');
                     else {
-                        window.alert(err.message);
+                        window.alert(err.error);
                     }
                 },
             );
@@ -45,8 +45,8 @@ export class RemoteSaveService {
         return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
     }
 
-    tagsHangler(tags: string): string[] {
-        if (tags === undefined) {
+    tagsHandler(tags: string): string[] {
+        if (tags === '') {
             const emptyArray: string[] = [];
             return emptyArray;
         } else {
