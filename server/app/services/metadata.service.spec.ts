@@ -151,7 +151,7 @@ describe('Service: Metadata', () => {
         const metadatas = await metadataService.collection.find({}).toArray();
         chai.expect(metadatas.length).to.equal(1);
     });
-    it('should not delete an existing metadata if an invalid codeID is sent', async () => {
+    it('should not delete an existing metadata if an non existant codeID is sent', async () => {
         try {
             await metadataService.deleteMetadata('507f1f77bcf86cd799439015');
         } catch {

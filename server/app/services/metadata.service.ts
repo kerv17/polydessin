@@ -84,7 +84,7 @@ export class MetadataService {
 
     private validateTags(tags: string[]): boolean {
         if (tags.length === 0) {
-            // il est accepter qu'un dessin peut ne pas avoir de tag
+            // un dessin sans tag est valide
             return true;
         } else {
             return (
