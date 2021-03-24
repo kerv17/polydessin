@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as Globals from '@app/Constants/constants';
-import { CarouselService } from '@app/services/Carousel/carousel.service';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ServerRequestService } from '@app/services/index/server-request.service';
+import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;

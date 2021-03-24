@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
-import { CarouselService } from '@app/services/Carousel/carousel.service';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
 

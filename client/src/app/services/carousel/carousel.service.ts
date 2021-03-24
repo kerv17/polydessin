@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ServerRequestService } from '@app/services/index/server-request.service';
+import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import * as Httpstatus from 'http-status-codes';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';

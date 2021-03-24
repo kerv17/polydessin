@@ -2,8 +2,8 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ServerRequestService } from '@app/services/index/server-request.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { of, throwError } from 'rxjs';

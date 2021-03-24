@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
-import { CarouselService } from '@app/services/Carousel/carousel.service';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { BehaviorSubject } from 'rxjs';
 @Component({
     selector: 'app-main-page',
