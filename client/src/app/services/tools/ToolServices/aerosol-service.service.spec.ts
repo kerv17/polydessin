@@ -159,7 +159,7 @@ describe('AerosolService', () => {
         const rngSpy = spyOn(service, 'rng').and.callThrough();
         const distanceSpy = spyOn(service, 'distance').and.callThrough();
         const point = service.addPoint(pos, radius);
-        console.log(point);
+
         expect(rngSpy).toHaveBeenCalled();
         expect(distanceSpy).toHaveBeenCalled();
         expect(service.distance(point.x, point.y)).toBeLessThanOrEqual(radius);

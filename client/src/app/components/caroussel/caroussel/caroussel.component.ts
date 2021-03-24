@@ -34,16 +34,16 @@ export class CarousselComponent implements AfterViewInit {
             navSpeed: 600,
 
             center: true,
-            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1,
+            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length,
             autoWidth: false,
 
             // Cette petite partie  fait en sorte que le carousel s'adapate quand ca change de taille
             // J'ai du le mettre sinon parfois il y a des espaces qui se crée
             responsive: {
-                0: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
-                400: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
-                740: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
-                960: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : 1 },
+                0: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
+                400: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
+                740: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
+                960: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
             },
             // I disactivate the provided nav because it doesnt work if the number of items is equal to amount of images
             nav: false,

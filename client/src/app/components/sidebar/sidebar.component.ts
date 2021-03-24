@@ -50,6 +50,7 @@ export class SidebarComponent {
         this.initToolMap();
         this.initFunctionMap();
         this.currentTool = Globals.CRAYON_SHORTCUT;
+        this.setTool(Globals.CRAYON_SHORTCUT);
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
