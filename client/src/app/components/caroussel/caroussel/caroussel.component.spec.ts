@@ -39,6 +39,7 @@ describe('CarousselComponent', () => {
         component = fixture.componentInstance;
 
         fixture.detectChanges();
+        fixture.debugElement.nativeElement.style.visibility = 'hidden';
     });
 
     it('should create', () => {
