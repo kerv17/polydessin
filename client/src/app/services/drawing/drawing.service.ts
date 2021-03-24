@@ -26,7 +26,7 @@ export class DrawingService {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    setSizeCanva(vec: Vec2 = this.canvasSize): Vec2 {
+    initializeCanvas(vec: Vec2 = this.canvasSize): Vec2 {
         const dimensionPageY: number = window.innerHeight;
         const dimensionPageX: number = window.innerWidth;
 
@@ -47,7 +47,7 @@ export class DrawingService {
 
     newCanvas(): void {
         let newCanvasSize: Vec2 = { x: 0, y: 0 };
-        newCanvasSize = this.setSizeCanva(newCanvasSize);
+        newCanvasSize = this.initializeCanvas(newCanvasSize);
 
         const image: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (this.canvasNotEmpty(image)) {

@@ -17,7 +17,7 @@ export class EditorComponent {
     editorSizeX: number;
 
     constructor(public drawingService: DrawingService, public controller: ToolControllerService, public colorService: ColorService) {
-        this.sizeCanvasOnReset = this.drawingService.setSizeCanva();
+        this.sizeCanvasOnReset = this.drawingService.initializeCanvas();
         this.drawingService.resizePoint.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
 

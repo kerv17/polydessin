@@ -32,7 +32,7 @@ export class UndoRedoService {
     undo(): void {
         if (this.currentLocation > 0) {
             this.currentLocation--;
-            this.drawingService.setCanvassSize(this.drawingService.setSizeCanva());
+            this.drawingService.setCanvassSize(this.drawingService.initializeCanvas());
             for (let i = 0; i <= this.currentLocation; i++) {
                 this.doAction(this.pile[i]);
             }

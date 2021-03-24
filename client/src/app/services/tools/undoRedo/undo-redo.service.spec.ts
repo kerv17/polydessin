@@ -15,7 +15,7 @@ describe('UndoRedoService', () => {
     const amountOfActionsToAdd = 25;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['resetCanvas', 'setSizeCanva', 'setCanvassSize', 'clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['resetCanvas', 'initializeCanvas', 'setCanvassSize', 'clearCanvas']);
         baseCtx = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
         drawingServiceSpy.baseCtx = baseCtx;
         resizePointSpy = jasmine.createSpyObj('RezisePoint', ['resetControlPoints']);
@@ -105,7 +105,7 @@ describe('UndoRedoService', () => {
 
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawingServiceSpy.setCanvassSize).toHaveBeenCalled();
-        expect(drawingServiceSpy.setSizeCanva).toHaveBeenCalled();
+        expect(drawingServiceSpy.initializeCanvas).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledTimes(amountOfActionsToAdd);
         expect(service.currentLocation).toEqual(amountOfActionsToAdd - 1);
     });
@@ -115,7 +115,7 @@ describe('UndoRedoService', () => {
         service.undo();
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawingServiceSpy.setCanvassSize).not.toHaveBeenCalled();
-        expect(drawingServiceSpy.setSizeCanva).not.toHaveBeenCalled();
+        expect(drawingServiceSpy.initializeCanvas).not.toHaveBeenCalled();
     });
 
     it('redo does the next action of the pile', () => {

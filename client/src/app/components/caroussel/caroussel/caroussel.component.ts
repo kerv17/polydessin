@@ -3,7 +3,7 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/Carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
 const nombreImage = 3;
-// const nombreImagePair = 2;
+
 @Component({
     selector: 'app-caroussel',
     templateUrl: './caroussel.component.html',
