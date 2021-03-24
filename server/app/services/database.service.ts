@@ -5,6 +5,9 @@ import 'reflect-metadata';
 // 'exemple de mongoDB avec serveur NodeJS'
 const DATABASE_URL = 'mongodb+srv://admin:DB2990T312@cluster0.iuq28.mongodb.net/projet2990?retryWrites=true&w=majority';
 const DATABASE_NAME = 'projet2990';
+// données pour connecté à mondoDB cloud
+// Email: compteprojet2990@gmail.com
+// Password: 2990RULES!!
 
 @injectable()
 export class DatabaseService {
@@ -22,7 +25,7 @@ export class DatabaseService {
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
-            throw new Error('Erreure de connection avec la base de données');
+            throw new Error('Erreur de connection avec la base de données');
         }
         return this.client;
     }

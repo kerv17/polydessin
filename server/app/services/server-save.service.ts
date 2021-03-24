@@ -10,10 +10,11 @@ export class ServerSaveService {
     saveImage(type: string, code: string, data: string): void {
         if (type != undefined && code !== '') {
             const base64Data = data.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-
-            fs.writeFile('./' + code + '.' + type, base64Data, 'base64', (err) => {
-                if (err) throw new Error('la sauvegarde a échouée');
-            });
+            try {
+                fs.writeFileSync('./' + code + '.' + type, base64Data, 'base64');
+            } catch {
+                throw new Error('la sauvegarde a échouée');
+            }
         } else {
             throw new Error('nom ou type invalide');
         }
@@ -23,23 +24,16 @@ export class ServerSaveService {
             try {
                 fs.unlinkSync(canvaToDelete + '.png');
             } catch (err) {
-                if (err.code === 'ENOENT') {
-                    throw new Error('Canva non trouvé');
-                } else {
-                    throw new Error('le serveur ne réussi pas detruire le Canva');
-                }
+                throw new Error('le serveur ne réussit pas à détruire le Canva');
             }
-        }
-        if (fs.existsSync(canvaToDelete + '.jpeg')) {
+        } else if (fs.existsSync(canvaToDelete + '.jpeg')) {
             try {
                 fs.unlinkSync(canvaToDelete + '.jpeg');
             } catch (err) {
-                if (err.code === 'ENOENT') {
-                    throw new Error('Canva non trouvé');
-                } else {
-                    throw new Error('le serveur ne réussi pas detruire le Canva');
-                }
+                throw new Error('le serveur ne réussit pas à détruire le Canva');
             }
+        } else {
+            throw new Error('Canva non trouvé');
         }
     }
     createCanvasInformation(metadata: Metadata[]): CanvasInformation[] {
@@ -51,7 +45,7 @@ export class ServerSaveService {
                 try {
                     information[j].imageData = fs.readFileSync(elem.codeID + '.' + elem.format, 'base64');
                 } catch (err) {
-                    throw new Error('le serveur ne réussi pas a recuperer le dessin');
+                    throw new Error('le serveur ne réussit pas à récuperer le dessin');
                 }
 
                 information[j].name = elem.name;

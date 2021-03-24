@@ -18,7 +18,7 @@ export class RemoteSaveService {
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
-            window.alert('Il faut choisir respecter les critères pour le tag et le nom');
+            window.alert('Il faut respecter les critères pour le tag et le nom');
             return;
         }
 

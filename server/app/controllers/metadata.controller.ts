@@ -44,7 +44,7 @@ export class MetadataController {
                 .addData(req.body)
                 .then(() => {
                     const msg = {} as Message;
-                    msg.title = "L'image a ete enregistré";
+                    msg.title = "L'image a été enregistrée";
                     res.status(Httpstatus.StatusCodes.CREATED).send(msg);
                 })
                 .catch((error: Error) => {
@@ -57,7 +57,7 @@ export class MetadataController {
                 .deleteData(req.params.code)
                 .then(() => {
                     const msg: Message = req.body;
-                    msg.title = "L'image a ete supprimer";
+                    msg.title = "L'image a été supprimée";
                     msg.body = Httpstatus.StatusCodes.NO_CONTENT.toString();
                     res.send(msg);
                     res.status(Httpstatus.StatusCodes.NO_CONTENT);

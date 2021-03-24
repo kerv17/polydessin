@@ -5,7 +5,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/index/server-request.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-// import { CanvasInformation } from '@common/communication/canvas-information';
 import { RemoteSaveComponent } from './remote-save.component';
 // tslint:disable:no-any
 describe('RemoteSaveComponent', () => {
@@ -14,7 +13,6 @@ describe('RemoteSaveComponent', () => {
     let remoteSaveService: RemoteSaveService;
     let tagHandlerSpy: jasmine.Spy;
     let postSpy: jasmine.Spy;
-    // let testInformation: CanvasInformation;
     const drawingStub = new DrawingService({} as ResizePoint);
 
     beforeEach(async(() => {

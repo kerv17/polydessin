@@ -117,7 +117,7 @@ describe('Service: RemoteSave', () => {
         service.post(badTestinformation);
         expect(basicPostSpy).not.toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('Il faut choisir respecter les critères pour le tag et le nom');
+        expect(alertSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
     });
     it('should send a window alert if information tag is not valid', () => {
         badTestinformation.tags = ['tagggggggggggggg1', 'tg', 'tag ', 'tag!', 'tag', 'tag1'];
@@ -127,7 +127,7 @@ describe('Service: RemoteSave', () => {
         service.post(badTestinformation);
         expect(basicPostSpy).not.toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('Il faut choisir respecter les critères pour le tag et le nom');
+        expect(alertSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
     });
 
     it('should return an array of tags', () => {
