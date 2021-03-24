@@ -78,21 +78,23 @@ describe('DrawingComponent', () => {
 
     it(' ngAfterViewInit should set baseCtx, previewCtx from the component and from the service', () => {
         component.ngAfterViewInit();
-        expect(component['baseCtx']).toEqual(component.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
-        expect(drawingStub.baseCtx).toEqual(component['baseCtx']);
-        expect(component['previewCtx']).toEqual(component.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
-        expect(drawingStub.previewCtx).toEqual(component['previewCtx']);
+        expect((component as any).drawingService['baseCtx']).toEqual(component.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
+        expect(drawingStub.baseCtx).toEqual((component as any).drawingService['baseCtx']);
+        expect((component as any).drawingService['previewCtx']).toEqual(
+            component.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D,
+        );
+        expect(drawingStub.previewCtx).toEqual((component as any).drawingService['previewCtx']);
     });
     it(' ngAfterViewInit should set previewCanva and canva  from drawingService', () => {
         component.ngAfterViewInit();
         expect((component as any).drawingService.previewCanvas).toEqual(component.previewCanvas.nativeElement);
         expect((component as any).drawingService.canvas).toEqual(component.baseCanvas.nativeElement);
-        expect(drawingStub.previewCtx).toEqual((component as any).previewCtx);
+        expect(drawingStub.previewCtx).toEqual((component as any).drawingService.previewCtx);
     });
     it(' ngAfterViewInit should set fill the canva baseCtx', () => {
-        fillRectSpy = spyOn((component as any).baseCtx, 'fillRect');
+        fillRectSpy = spyOn((component as any).drawingService.baseCtx, 'fillRect');
         component.ngAfterViewInit();
-        expect((component as any).baseCtx.fillStyle).toEqual('#ffffff');
+        expect((component as any).drawingService.baseCtx.fillStyle).toEqual('#ffffff');
         expect(fillRectSpy).toHaveBeenCalled();
     });
     it(' ngAfterViewInit should set viewInitialized to true', () => {
@@ -118,7 +120,7 @@ describe('DrawingComponent', () => {
         component.widthPrev = 2;
         component.heightPrev = 2;
         fillNewSpaceSpy = spyOn(drawingStub, 'fillNewSpace');
-        putImageDataSpy = spyOn(component['baseCtx'], 'putImageData');
+        putImageDataSpy = spyOn((component as any).drawingService['baseCtx'], 'putImageData');
         component['viewInitialized'] = true;
         component.mouseDown = false;
         component.ngOnChanges({});
@@ -280,5 +282,11 @@ describe('DrawingComponent', () => {
         component.loadCarouselCanvas();
         expect(loadCanvasSpy).toHaveBeenCalled();
         expect((component as any).carousel.loadImage).not.toBeTrue();
+    });
+
+    it('calling allowUndoRedoCall should change the allowUndoCall variable', () => {
+        const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
+        dispatchEvent(event);
+        expect((component as any).allowUndoCall).not.toBeTrue();
     });
 });
