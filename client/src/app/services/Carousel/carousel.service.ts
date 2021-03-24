@@ -46,12 +46,11 @@ export class CarouselService {
             );
         }
     }
-
+    // alterne la position du dernier et celui a enlever et ensuite fait simplement un pop
     removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
             if (this.pictures[i].codeID === codeID) {
                 this.pictures[i] = this.pictures[this.pictures.length - 1];
-
                 this.pictures.pop();
             }
         }

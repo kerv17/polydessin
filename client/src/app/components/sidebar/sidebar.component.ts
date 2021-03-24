@@ -139,6 +139,7 @@ export class SidebarComponent {
     }
 
     initToolMap(): void {
+        // the key is a joined string comprised of the event shiftkey,eventCtrlKey,and the shortcut
         this.toolParamMap
             .set([false, false, Globals.CRAYON_SHORTCUT].join(), { showWidth: true, toolName: Globals.CRAYON_SHORTCUT } as ToolParam)
             .set([false, false, Globals.LINE_SHORTCUT].join(), { showWidth: true, toolName: Globals.LINE_SHORTCUT } as ToolParam)
@@ -151,6 +152,7 @@ export class SidebarComponent {
             } as ToolParam);
     }
     initFunctionMap(): void {
+        // the key is a joined string comprised of the event shiftkey,eventCtrlKey,and the shortcut
         this.functionMap
             .set([false, true, Globals.NEW_DRAWING_EVENT].join(), this.newCanvas)
             .set([false, true, Globals.EXPORT_SHORTCUT].join(), this.openExport)

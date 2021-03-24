@@ -45,7 +45,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
     ) {
-        this.canvasSize = this.drawingService.setSizeCanva();
+        this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
             this.allowUndoCall = event.detail;
         });
