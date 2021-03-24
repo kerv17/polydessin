@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule, HttpErrorResponse, HttpResponse } from '@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ServerRequestService } from '@app/services/index/server-request.service';
+import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { CarouselModule } from 'ngx-owl-carousel-o';

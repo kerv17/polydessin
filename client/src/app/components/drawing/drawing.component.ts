@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { CarouselService } from '@app/services/Carousel/carousel.service';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
@@ -28,6 +28,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     mouseOut: boolean = false;
 
+    private baseCtx: CanvasRenderingContext2D;
+    private previewCtx: CanvasRenderingContext2D;
+
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
     private newCanvasSize: Vec2;
@@ -49,20 +52,20 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     ngAfterViewInit(): void {
-        this.drawingService.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawingService.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
+        this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
-        this.drawingService.baseCtx = this.drawingService.baseCtx;
-        this.drawingService.previewCtx = this.drawingService.previewCtx;
+        this.drawingService.baseCtx = this.baseCtx;
+        this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
         this.viewInitialized = true;
         const action: DrawingAction = {
             type: 'Drawing',
-            drawing: this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y),
+            drawing: this.baseCtx.getImageData(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y),
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
@@ -86,14 +89,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 }
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
                 this.newCanvasSize = { x: this.widthPrev, y: this.heightPrev };
-                const dessin = this.drawingService.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
+                const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
 
                 this.baseCanvas.nativeElement.width = this.widthPrev;
                 this.baseCanvas.nativeElement.height = this.heightPrev;
                 this.previewCanvas.nativeElement.width = this.widthPrev;
                 this.previewCanvas.nativeElement.height = this.heightPrev;
 
-                this.drawingService.baseCtx.putImageData(dessin, 0, 0);
+                this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
                 if (this.allowUndoCall) {
                     const drawingAction: DrawingAction = {
