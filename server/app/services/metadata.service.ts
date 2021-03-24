@@ -42,7 +42,7 @@ export class MetadataService {
             })
 
             .catch(() => {
-                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvée");
+                throw new HttpException(Httpstatus.StatusCodes.NOT_FOUND, "Aucun canvas n'a été trouvé");
             });
     }
 
@@ -66,7 +66,7 @@ export class MetadataService {
             .findOneAndDelete({ codeID: new ObjectId(aCode) })
             .then((res: FindAndModifyWriteOpResultObject<Metadata>) => {
                 if (!res.value) {
-                    throw new Error("Le serveur n'a pas pu enlevé la donnée");
+                    throw new Error("Le serveur n'a pas pu enlever la donnée");
                 }
             })
             .catch((error: Error) => {

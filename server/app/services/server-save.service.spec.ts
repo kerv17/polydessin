@@ -126,7 +126,7 @@ describe('Service: Server-Save', () => {
         sandbox.stub(fs, 'unlinkSync').throws(error);
         chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation2.codeID)).to.throw(
             Error,
-            'le serveur ne réussi pas detruire le Canva',
+            'le serveur ne réussit pas à détruire le Canva',
         );
     });
     it('should  delete the image of a png format', () => {
@@ -152,7 +152,7 @@ describe('Service: Server-Save', () => {
 
         chai.expect(() => serverSaveService.deleteCanvasInformation(testinformation.codeID)).to.throw(
             Error,
-            'le serveur ne réussi pas detruire le Canva',
+            'le serveur ne réussit pas à détruire le Canva',
         );
     });
 
@@ -245,7 +245,10 @@ describe('Service: Server-Save', () => {
         sandbox.stub(fs, 'readFileSync').throws(error);
         serverSaveService.saveImage(testinformation.format, testinformation.codeID, testinformation.imageData);
         serverSaveService.saveImage(testinformation2.format, testinformation2.codeID, testinformation2.imageData);
-        chai.expect(() => serverSaveService.createCanvasInformation(metadataArray)).to.throw(Error, 'le serveur ne réussi pas a recuperer le dessin');
+        chai.expect(() => serverSaveService.createCanvasInformation(metadataArray)).to.throw(
+            Error,
+            'le serveur ne réussit pas à récuperer le dessin',
+        );
         serverSaveService.deleteCanvasInformation(testinformation2.codeID);
         serverSaveService.deleteCanvasInformation(testinformation.codeID);
     });

@@ -86,7 +86,7 @@ describe('Service: Metadata', () => {
         try {
             await metadataService.getMetadataByTags(['anything']);
         } catch (error) {
-            chai.expect(error.message).to.be.equal("Aucun canvas n'a été trouvée");
+            chai.expect(error.message).to.be.equal("Aucun canvas n'a été trouvé");
         }
     });
 

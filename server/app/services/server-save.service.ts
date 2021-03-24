@@ -24,13 +24,13 @@ export class ServerSaveService {
             try {
                 fs.unlinkSync(canvaToDelete + '.png');
             } catch (err) {
-                throw new Error('le serveur ne réussi pas detruire le Canva');
+                throw new Error('le serveur ne réussit pas à détruire le Canva');
             }
         } else if (fs.existsSync(canvaToDelete + '.jpeg')) {
             try {
                 fs.unlinkSync(canvaToDelete + '.jpeg');
             } catch (err) {
-                throw new Error('le serveur ne réussi pas detruire le Canva');
+                throw new Error('le serveur ne réussit pas à détruire le Canva');
             }
         } else {
             throw new Error('Canva non trouvé');
@@ -45,7 +45,7 @@ export class ServerSaveService {
                 try {
                     information[j].imageData = fs.readFileSync(elem.codeID + '.' + elem.format, 'base64');
                 } catch (err) {
-                    throw new Error('le serveur ne réussi pas a recuperer le dessin');
+                    throw new Error('le serveur ne réussit pas à récuperer le dessin');
                 }
 
                 information[j].name = elem.name;
