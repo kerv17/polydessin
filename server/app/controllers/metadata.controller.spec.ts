@@ -91,7 +91,7 @@ describe('MetadataController', () => {
 
     it('should return a messages on valid delete request', async () => {
         const msg = {
-            title: "L'image a ete supprimer",
+            title: "L'image a été supprimée",
             body: Httpstatus.StatusCodes.NO_CONTENT.toString(),
         } as Message;
 
