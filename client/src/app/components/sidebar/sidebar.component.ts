@@ -74,10 +74,6 @@ export class SidebarComponent {
         this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
         this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
-
-        //    const keyEventData = { isTrusted: true, key: Globals.RECTANGLE_SELECTION_SHORTCUT, ctrlKey: false, shiftKey: false };
-        //   const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-        //   window.dispatchEvent(keyDownEvent);
     }
     openCarousel(): void {
         this.carouselService.initialiserCarousel();
