@@ -1,5 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/index/server-request.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
@@ -17,6 +18,7 @@ describe('RemoteSaveComponent', () => {
     beforeEach(async(() => {
         remoteSaveService = new RemoteSaveService(drawingStub, {} as ServerRequestService);
         TestBed.configureTestingModule({
+            imports: [FormsModule],
             declarations: [RemoteSaveComponent],
             providers: [{ provide: RemoteSaveService, useValue: remoteSaveService }],
         }).compileComponents();

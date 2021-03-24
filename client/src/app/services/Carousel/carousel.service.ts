@@ -46,13 +46,6 @@ export class CarouselService {
             );
         }
     }
-    /*  loadImageButton(activeSlides: SlideModel[] | undefined): void {
-        if (activeSlides != undefined) {
-            const selectedSlide = activeSlides.length === 1 ? activeSlides[0] : activeSlides[1];
-            const canvas = this.findCanvasInformation(selectedSlide.id);
-            this.loadCanvas(canvas);
-        }
-    }*/
 
     removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
@@ -65,8 +58,7 @@ export class CarouselService {
     }
     loadCanvas(info: CanvasInformation): void {
         if (this.router.url.includes('/editor')) {
-            this.drawingService.loadOldCanvas(info);
-            this.close();
+            if (this.drawingService.loadOldCanvas(info)) this.close();
         } else {
             this.router.navigate(['/editor']);
             this.loadImage = true;
@@ -87,13 +79,7 @@ export class CarouselService {
             },
         );
     }
-    /*  findCanvasInformationPosition(canvas: CanvasInformation): number {
-        let i = 0;
-        for (; i < this.pictures.length; i++) {
-            if (canvas.codeID === this.pictures[i].codeID) break;
-        }
-        return i;
-    }*/
+
     setSlides(): void {
         for (const element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;

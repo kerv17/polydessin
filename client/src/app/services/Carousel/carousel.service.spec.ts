@@ -54,6 +54,7 @@ describe('CarouselService', () => {
         service.pictures = new Array(0);
         slideArray[0] = new SlideModel();
         slideArray[0].id = 'test';
+
         const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         const message = { title: 'test' } as Message;
@@ -154,11 +155,24 @@ describe('CarouselService', () => {
     });
 
     it('should load the Canvas from the canvas information', () => {
-        const loadCanvasSpy = spyOn((service as any).drawingService, 'loadOldCanvas').and.returnValue({});
+        const loadCanvasSpy = spyOn((service as any).drawingService, 'loadOldCanvas').and.returnValue(true);
+        const closeSpy = spyOn(service, 'close');
         (service as any).router.url = '/editor';
 
         service.loadCanvas({} as CanvasInformation);
         expect(loadCanvasSpy).toHaveBeenCalled();
+        expect(closeSpy).toHaveBeenCalled();
+        expect((service as any).router.navigate).not.toHaveBeenCalled();
+    });
+
+    it('should not close the modal if loadcanvas returns false ', () => {
+        const loadCanvasSpy = spyOn((service as any).drawingService, 'loadOldCanvas').and.returnValue(false);
+        const closeSpy = spyOn(service, 'close');
+        (service as any).router.url = '/editor';
+
+        service.loadCanvas({} as CanvasInformation);
+        expect(loadCanvasSpy).toHaveBeenCalled();
+        expect(closeSpy).not.toHaveBeenCalled();
         expect((service as any).router.navigate).not.toHaveBeenCalled();
     });
 

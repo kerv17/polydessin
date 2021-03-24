@@ -71,7 +71,7 @@ export class DrawingService {
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
     }
-    loadOldCanvas(oldCanvas: CanvasInformation): void {
+    loadOldCanvas(oldCanvas: CanvasInformation): boolean {
         const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (!this.canvasNotEmpty(data) || confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
             this.reloadOldCanvas(oldCanvas);
@@ -84,7 +84,9 @@ export class DrawingService {
             };
             const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
             dispatchEvent(event);
+            return true;
         }
+        return false;
     }
 
     reloadOldCanvas(oldCanvas: CanvasInformation): void {
