@@ -14,6 +14,7 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     private inMovement: boolean = false;
     private selectedArea: ImageData;
+    private clipboard: ImageData;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -143,7 +144,6 @@ export class SelectionService extends Tool {
             this.inMovement = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
-            this.selectedArea = this.drawingService.baseCtx.getImageData(0, 0, 1, 1);
         }
     }
 
@@ -184,6 +184,43 @@ export class SelectionService extends Tool {
         }
 
         return mousePosition;
+    }
+
+    // clipboard
+    copy(): void {
+        if (this.inSelection) {
+            this.clipboard = new ImageData(this.selectedArea.data, this.selectedArea.width, this.selectedArea.height);
+        }
+    }
+
+    paste(): void {
+        if (this.clipboard !== undefined) {
+            if (this.inSelection) {
+                this.onEscape();
+            }
+            this.drawingService.previewCtx.putImageData(this.clipboard, 0, 0);
+            this.clearPath();
+            this.pathData.push({ x: 0, y: 0 });
+            this.rectangleService.setPath(this.pathData);
+            this.pathData = this.rectangleService.getRectanglePoints({ x: this.clipboard.width, y: this.clipboard.height });
+            this.pathData.push({ x: 0, y: 0 });
+            this.inSelection = true;
+        }
+    }
+
+    cut(): void {
+        if (this.inSelection) {
+            this.copy();
+            this.delete();
+        }
+    }
+
+    delete(): void {
+        if (this.inSelection) {
+            this.updateCanvasOnMove(this.drawingService.baseCtx);
+            this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.inSelection = false;
+        }
     }
 
     // selection des pixels

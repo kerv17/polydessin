@@ -25,6 +25,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { SelectionOptionsComponent } from './components/sidebar/selectionOptions/selection-options/selection-options.component';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { ColorService } from './services/color/color.service';
         RadiusSliderComponent,
         SprayAmountSliderComponent,
         RemoteSaveComponent,
+        SelectionOptionsComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
     providers: [ColorService],

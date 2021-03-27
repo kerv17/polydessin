@@ -22,6 +22,11 @@ export const UNDO_SHORTCUT = 'z';
 export const REDO_SHORTCUT = 'Z';
 export const RIGHT_ARROW_SHORTCUT = 'ArrowRight';
 export const LEFT_ARROW_SHORTCUT = 'ArrowLeft';
+export const COPY_SHORTCUT = 'c';
+export const PASTE_SHORTCUT = 'v';
+export const CUT_SHORTCUT = 'x';
+export const DELETE_SHORTCUT = 'Delete';
+
 // Variables d'editor
 export const RESIZE_CONSTANT = 1.1;
 
