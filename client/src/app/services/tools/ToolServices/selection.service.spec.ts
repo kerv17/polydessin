@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { SelectionService } from './selection.service';
 // justifié pour pouvoir faire des spys sur des méthodes privées

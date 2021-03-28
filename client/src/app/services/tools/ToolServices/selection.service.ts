@@ -3,7 +3,7 @@ import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { RectangleService } from './rectangle-service';
 @Injectable({
