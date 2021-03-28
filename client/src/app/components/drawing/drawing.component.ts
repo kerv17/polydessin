@@ -196,6 +196,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     drawHandlers(): boolean {
         return this.controller.selectionService.inSelection;
     }
+
     loadCarouselCanvas(): void {
         if (this.carousel.loadImage) {
             this.carousel.loadImage = false;

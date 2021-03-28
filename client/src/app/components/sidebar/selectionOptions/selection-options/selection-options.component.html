@@ -1,1 +1,17 @@
-<p>selection-options works!</p>
+<p>Manipulations de sélection :</p>
+<div class='button' *ngIf='selectionService.inSelection'>
+    <div class="infobulle">Ctrl + c</div>
+    <button (click)="selectionService.copy()">Copier</button>
+</div>
+<div class='button' *ngIf='selectionService.getClipboardStatus()'>
+    <div class="infobulle">Ctrl + v</div>
+    <button (click)="selectionService.paste()">Coller</button>
+</div>
+<div class='button' *ngIf='selectionService.inSelection'>
+    <div class="infobulle">Ctrl + x</div>
+    <button (click)="selectionService.cut()">Couper</button>
+</div>
+<div class='button' *ngIf='selectionService.inSelection'>
+    <div class="infobulle">DELETE</div>
+    <button (click)="selectionService.delete()">Supprimer</button>
+</div>

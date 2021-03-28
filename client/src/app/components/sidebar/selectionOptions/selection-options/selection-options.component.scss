@@ -1,0 +1,22 @@
+.infobulle {
+    visibility: hidden;
+    width: 60px;
+    background-color: black;
+    color: black;
+    text-align: center;
+    padding: 2px 0;
+    border-radius: 2px;
+    position: absolute;
+    margin-top: 25px;
+    z-index: 2;
+}
+
+.button:hover .infobulle {
+    visibility: visible;
+    display: inline;
+    background-color: gainsboro;
+}
+
+.button {
+    display: inline;
+}

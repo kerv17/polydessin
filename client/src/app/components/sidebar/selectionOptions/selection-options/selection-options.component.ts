@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
-import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
+import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 
 @Component({
     selector: 'app-selection-options',
@@ -8,7 +8,10 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
     styleUrls: ['./selection-options.component.scss'],
 })
 export class SelectionOptionsComponent {
-    constructor(private toolControllerService: ToolControllerService) {
+    copyStyle: { [key: string]: string };
+    pasteStyle: { [key: string]: string };
+
+    constructor(public selectionService: SelectionService) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
         });
@@ -17,16 +20,13 @@ export class SelectionOptionsComponent {
     // transformer en map
     private checkKeyEvent(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === Globals.COPY_SHORTCUT) {
-            this.toolControllerService.selectionService.copy();
+            this.selectionService.copy();
         } else if (event.ctrlKey && event.key === Globals.PASTE_SHORTCUT) {
-            if (this.toolControllerService.currentTool !== this.toolControllerService.selectionService) {
-                this.toolControllerService.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
-            }
-            this.toolControllerService.selectionService.paste();
+            this.selectionService.paste();
         } else if (event.ctrlKey && event.key === Globals.CUT_SHORTCUT) {
-            this.toolControllerService.selectionService.cut();
+            this.selectionService.cut();
         } else if (event.key === Globals.DELETE_SHORTCUT) {
-            this.toolControllerService.selectionService.delete();
+            this.selectionService.delete();
         }
     }
 }

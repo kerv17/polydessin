@@ -66,6 +66,13 @@ export class SelectionService extends Tool {
         return 0;
     }
 
+    getClipboardStatus(): boolean {
+        if (this.clipboard !== undefined) {
+            return true;
+        }
+        return false;
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         const mousePosition = this.getPositionFromMouse(event);
@@ -84,6 +91,7 @@ export class SelectionService extends Tool {
                 this.inSelection = false;
             } else {
                 this.onEscape();
+                this.onMouseDown(event);
             }
         } else {
             this.pathData.push(mousePosition);
@@ -167,6 +175,14 @@ export class SelectionService extends Tool {
         this.loadSetting(previousSetting);
     }
 
+    // undoredo avec delete et cut du clipboard
+    /*doAction(action: DrawAction): void {
+        const previousSetting: Setting = this.saveSetting();
+        this.loadSetting(action.setting);
+        this.updateCanvasOnMove(this.drawingService.baseCtx);
+        this.loadSetting(previousSetting);
+    }*/
+
     // overwrite la méthode de base de tool, pour limiter le rectangle à la surface du canvas lors du tracé initial
     getPositionFromMouse(event: MouseEvent): Vec2 {
         let mousePosition = { x: event.pageX - Globals.SIDEBAR_WIDTH, y: event.pageY };
@@ -197,12 +213,14 @@ export class SelectionService extends Tool {
         if (this.clipboard !== undefined) {
             if (this.inSelection) {
                 this.onEscape();
+                this.selectedArea = this.clipboard;
             }
             this.drawingService.previewCtx.putImageData(this.clipboard, 0, 0);
             this.clearPath();
             this.pathData.push({ x: 0, y: 0 });
             this.rectangleService.setPath(this.pathData);
             this.pathData = this.rectangleService.getRectanglePoints({ x: this.clipboard.width, y: this.clipboard.height });
+            console.log(this.pathData);
             this.pathData.push({ x: 0, y: 0 });
             this.inSelection = true;
         }
@@ -219,6 +237,7 @@ export class SelectionService extends Tool {
         if (this.inSelection) {
             this.updateCanvasOnMove(this.drawingService.baseCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.dispatchAction(this.createAction());
             this.inSelection = false;
         }
     }
