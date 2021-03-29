@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { RectangleService } from './rectangle-service';
 @Injectable({
@@ -13,10 +14,11 @@ export class SelectionService extends Tool {
     rectangleService: RectangleService;
     inSelection: boolean = false;
     private inMovement: boolean = false;
+    private inResize: boolean = false;
     private selectedArea: ImageData;
     private clipboard: ImageData;
 
-    constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
+    constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selectionResize: SelectionResizeService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
@@ -54,14 +56,14 @@ export class SelectionService extends Tool {
 
     getSelectionWidth(): number {
         if (this.selectedArea !== undefined) {
-            return this.selectedArea.width;
+            return Math.abs(this.pathData[2].x - this.pathData[0].x);
         }
         return 0;
     }
 
     getSelectionHeight(): number {
         if (this.selectedArea !== undefined) {
-            return this.selectedArea.height;
+            return Math.abs(this.pathData[2].y - this.pathData[0].y);
         }
         return 0;
     }
@@ -89,6 +91,8 @@ export class SelectionService extends Tool {
             ) {
                 this.inMovement = true;
                 this.inSelection = false;
+            } else if (this.selectionResize.onMouseDown(mousePosition)) {
+                this.inResize = true;
             } else {
                 this.onEscape();
                 this.onMouseDown(event);
@@ -112,6 +116,15 @@ export class SelectionService extends Tool {
                     this.pathData[Globals.CURRENT_SELECTION_POSITION],
                     this.selectedArea,
                 );
+            } else if (this.inResize) {
+                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionResize.onMouseMove(
+                    this.selectedArea,
+                    this.drawingService.previewCtx,
+                    this.pathData,
+                    this.getPositionFromMouse(event),
+                    this.rectangleService.shift,
+                );
             } else {
                 this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
                 this.drawBorder(this.drawingService.previewCtx);
@@ -127,6 +140,9 @@ export class SelectionService extends Tool {
                 this.selectionMove.onMouseUp(event, this.pathData[Globals.CURRENT_SELECTION_POSITION], this.pathData);
                 this.inMovement = false;
                 this.inSelection = true;
+            } else if (this.inResize) {
+                this.inResize = false;
+                this.selectArea(this.drawingService.previewCtx);
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
                 this.setTopLeftHandler();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -251,6 +267,7 @@ export class SelectionService extends Tool {
         }
     }
 
+    // À METTRE DANS SELECTION MOVEMENT
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
@@ -314,6 +331,7 @@ export class SelectionService extends Tool {
         this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
     }
 
+    // À METTRE DANS SELECTION MOVEMENT
     private setKeyMovementDelays(): void {
         if (this.selectionMove.keyDown) {
             if (this.selectionMove.firstTime) {
@@ -329,6 +347,7 @@ export class SelectionService extends Tool {
         }
     }
 
+    // À METTRE DANS SELECTION MOVEMENT
     private onArrowDown(): void {
         if (this.selectedArea !== undefined) {
             this.selectionMove.moveSelection(this.pathData);
