@@ -47,7 +47,7 @@ export class ExportComponent implements AfterViewInit {
     }
 
     exportImgur(): void {
-        this.exportService.exportToImgur(this.exportMode, this.fileName, this.fileName);
+        this.exportService.exportToImgur(this.exportMode, this.fileName, this.filtre);
     }
 
     exportPicture(): void {

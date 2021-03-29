@@ -9,14 +9,12 @@ export class ImgurController {
 
     constructor(@inject(TYPES.ImgurSaveService) private imgurService: ImgurSaveService) {
         this.configureRouter();
-        // this.imgurService.addData({} as CanvasInformation);
     }
 
     private configureRouter() {
         this.router = Router();
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-            console.log('test');
             this.imgurService.addData(req.body).catch();
         });
     }
