@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ExportService } from '@app/services/export/export.service';
+import { ResizedEvent } from 'angular-resize-event';
 
 const CONSTANTE_DIVISION_FENETRE = 4;
 @Component({
@@ -22,12 +23,19 @@ export class ExportComponent implements AfterViewInit {
         this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
     }
 
+    onResize(event: ResizedEvent): void {
+        this.ctx.canvas.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
+        this.ctx.canvas.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
+        this.ctx.filter = this.filtre;
+        this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    }
     ngAfterViewInit(): void {
         this.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
         this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
         this.ctx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
+
     toggleMode(mode: string): void {
         this.exportMode = mode;
     }
@@ -38,8 +46,12 @@ export class ExportComponent implements AfterViewInit {
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
 
+    exportImgur(): void {
+        this.exportService.exportToImgur(this.exportMode, this.fileName, this.fileName);
+    }
+
     exportPicture(): void {
-        this.exportService.exportImage(this.exportMode, this.fileName, this.filtre);
+        this.exportService.downloadImage(this.exportMode, this.fileName, this.filtre);
     }
     close(): void {
         this.exportService.showModalExport = false;
