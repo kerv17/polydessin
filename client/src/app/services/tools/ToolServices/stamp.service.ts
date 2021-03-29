@@ -4,9 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 export const path = '../../../../assets/Stamp/';
-const angleTurnPerRotation = 15;
-const maxImageSize = 250;
-
+export const angleTurnPerRotation = 15;
+export const maxImageSize = 250;
 
 @Injectable({
     providedIn: 'root',
@@ -41,7 +40,6 @@ export class StampService extends Tool {
     }
 
     setStampRotationScale(ctx: CanvasRenderingContext2D, orientation: number): void {
-
         ctx.translate(this.pathData[0].x, this.pathData[0].y);
         ctx.rotate(this.convertDegToRad(orientation));
         ctx.scale(this.width / this.scaleRatio, this.width / this.scaleRatio);

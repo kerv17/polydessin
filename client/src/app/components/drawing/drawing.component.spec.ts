@@ -192,11 +192,11 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's onWheel when receiving a mouse wheel event", () => {
-      const event = {} as WheelEvent;
-      const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
-      component.onWheel(event);
-      expect(mouseEventSpy).toHaveBeenCalled();
-      expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        const event = {} as WheelEvent;
+        const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
+        component.onWheel(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 
     it(" should call the tool's double click when receiving a mouse dblclick event", () => {

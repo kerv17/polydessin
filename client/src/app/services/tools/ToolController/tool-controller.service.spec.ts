@@ -29,7 +29,7 @@ describe('ToolControllerService', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['clearPreviewCtx'], { color: 'test' });
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['clearPreviewCtx'], { color: 'test' });
         selectionServiceSpy = jasmine.createSpyObj('SelectionService', ['clearPreviewCtx'], { color: 'test' });
-        stampServiceSpy = jasmine.createSpyObj('StampService',['clearPreviewCtx'],{color:'test'});
+        stampServiceSpy = jasmine.createSpyObj('StampService', ['clearPreviewCtx'], { color: 'test' });
         drawingService = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
@@ -40,7 +40,7 @@ describe('ToolControllerService', () => {
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: AerosolService, useValue: aerosolServiceSpy },
                 { provide: SelectionService, useValue: selectionServiceSpy },
-                { provide: StampService, useValue:stampServiceSpy },
+                { provide: StampService, useValue: stampServiceSpy },
                 { provide: DrawingService, useValue: drawingService },
             ],
         });

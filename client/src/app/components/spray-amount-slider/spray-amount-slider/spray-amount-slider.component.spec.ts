@@ -13,8 +13,8 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 
 import { SimpleChange } from '@angular/core';
-import { SprayAmountSliderComponent } from './spray-amount-slider.component';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
+import { SprayAmountSliderComponent } from './spray-amount-slider.component';
 // tslint:disable:no-any
 describe('SprayAmountSliderComponent', () => {
     let component: SprayAmountSliderComponent;
