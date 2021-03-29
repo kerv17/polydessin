@@ -128,7 +128,7 @@ export class ToolControllerService {
     getTool(toolShortcut: string): Tool {
         if (this.toolMap.has(toolShortcut)) {
             return this.toolMap.get(toolShortcut) as Tool;
-        } else return this.stampService;
+        } else return this.pencilService;
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));

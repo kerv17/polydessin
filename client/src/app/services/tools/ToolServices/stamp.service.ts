@@ -3,16 +3,18 @@ import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-const path = '../../../../assets/Stamp/';
+export const path = '../../../../assets/Stamp/';
 const angleTurnPerRotation = 15;
 const maxImageSize = 250;
+
 
 @Injectable({
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    pointWidth: number = 0;
+    pointWidth: number = 0; // Used for the angle of the stamp
     toolMode: string = 'forsenCD.png';
+    scaleRatio: number = 20;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -26,7 +28,8 @@ export class StampService extends Tool {
     }
 
     onWheel(event: WheelEvent): void {
-        this.pointWidth += event.deltaY > 0 ? angleTurnPerRotation : -angleTurnPerRotation;
+        const rotationAmount = event.altKey ? 1 : angleTurnPerRotation;
+        this.pointWidth += event.deltaY > 0 ? rotationAmount : -rotationAmount;
         this.clearPreviewCtx();
         this.drawStamp(this.drawingService.previewCtx);
     }
@@ -38,9 +41,10 @@ export class StampService extends Tool {
     }
 
     setStampRotationScale(ctx: CanvasRenderingContext2D, orientation: number): void {
+
         ctx.translate(this.pathData[0].x, this.pathData[0].y);
         ctx.rotate(this.convertDegToRad(orientation));
-        ctx.scale(this.width / 20, this.width / 20);
+        ctx.scale(this.width / this.scaleRatio, this.width / this.scaleRatio);
         ctx.translate(-this.pathData[0].x, -this.pathData[0].y);
     }
 
@@ -62,6 +66,7 @@ export class StampService extends Tool {
     }
 
     convertDegToRad(deg: number): number {
+        // tslint:disable-next-line: no-magic-numbers
         return (deg * Math.PI) / 180;
     }
 

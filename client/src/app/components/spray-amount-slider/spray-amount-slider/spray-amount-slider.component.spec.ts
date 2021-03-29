@@ -14,6 +14,7 @@ import { SelectionService } from '@app/services/tools/ToolServices/selection.ser
 
 import { SimpleChange } from '@angular/core';
 import { SprayAmountSliderComponent } from './spray-amount-slider.component';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 // tslint:disable:no-any
 describe('SprayAmountSliderComponent', () => {
     let component: SprayAmountSliderComponent;
@@ -30,6 +31,7 @@ describe('SprayAmountSliderComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             {} as SelectionService,
+            {} as StampService,
         );
 
         aerosol = new AerosolService({} as DrawingService);

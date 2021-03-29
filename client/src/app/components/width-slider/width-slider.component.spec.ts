@@ -12,6 +12,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { WidthSliderComponent } from './width-slider.component';
 
 describe('WidthSliderComponent', () => {
@@ -31,6 +32,7 @@ describe('WidthSliderComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             {} as SelectionService,
+            {} as StampService,
         );
 
         pencil = new PencilService({} as DrawingService);

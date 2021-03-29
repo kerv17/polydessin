@@ -22,4 +22,15 @@ describe('StampComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should create', () => {
+    component.setImage('test.jpg');
+    expect((component as any).stampService.toolMode).toEqual('test.jpg');
+    expect(component.currentStamp).toEqual('test.jpg');
+  });
+
+  it('ngOnInit', ()=>{
+      component.ngOnInit();
+      expect(component.currentStamp).toEqual((component as any).stampService.toolMode);
+  });
 });
