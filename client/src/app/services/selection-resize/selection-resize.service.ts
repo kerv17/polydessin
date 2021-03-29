@@ -30,14 +30,37 @@ export class SelectionResizeService {
 
     // changer la taille du image data
     onMouseMove(selectedArea: ImageData, ctx: CanvasRenderingContext2D, path: Vec2[], mousePosition: Vec2, shifted: boolean): void {
-        // resize après déplacement fail parce que calculée à partir de pathData[0] qui n'est plus l'actual position
-        // possibilité recalculer le path avant de le passer pathData[0] devient le pathData[4] et les autres sont caluclés
-        // selon width et height, ajouter une fonction pour faire ça avant l'itération si pathData[4] != pathData[0], donc
-        // si il y a eu un déplacement de la sélection sur la surface de dessin
+        this.getPathDataAfterMovement(path);
         this.updatePathDataOnResize(path, mousePosition, shifted);
         createImageBitmap(selectedArea).then(function (imgBitmap) {
-            ctx.drawImage(imgBitmap, path[4].x, path[4].y, path[2].x - path[0].x, path[2].y - path[0].y);
+            const width = path[2].x - path[0].x;
+            const height = path[2].y - path[0].y;
+            if (width < 0) {
+                ctx.scale(-1, 1);
+                ctx.drawImage(imgBitmap, -path[0].x, path[0].y, -width, height);
+            } else if (height < 0) {
+                ctx.scale(1, -1);
+                ctx.drawImage(imgBitmap, path[0].x, -path[0].y, width, -height);
+            } else {
+                ctx.drawImage(imgBitmap, path[0].x, path[0].y, width, height);
+            }
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
         });
+    }
+
+    // resize après déplacement fail parce que calculée à partir de pathData[0] qui n'est plus l'actual position
+    // possibilité recalculer le path avant de le passer pathData[0] devient le pathData[4] et les autres sont caluclés
+    // selon width et height, ajouter une fonction pour faire ça avant l'itération si pathData[4] != pathData[0], donc
+    // si il y a eu un déplacement de la sélection sur la surface de dessin
+    getPathDataAfterMovement(path: Vec2[]): void {
+        if (path[4] !== path[0]) {
+            const width = path[2].x - path[0].x;
+            const height = path[2].y - path[0].y;
+            path[0] = { x: path[4].x, y: path[4].y };
+            path[1] = { x: path[4].x, y: path[4].y + height };
+            path[2] = { x: path[4].x + width, y: path[4].y + height };
+            path[3] = { x: path[4].x + width, y: path[4].y };
+        }
     }
 
     // implémenter le flip
@@ -106,5 +129,6 @@ export class SelectionResizeService {
             default:
                 break;
         }
+        path[4] = path[0];
     }
 }

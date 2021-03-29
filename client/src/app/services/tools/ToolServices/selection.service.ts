@@ -142,6 +142,7 @@ export class SelectionService extends Tool {
                 this.inSelection = true;
             } else if (this.inResize) {
                 this.inResize = false;
+                // crée l'effet paint à corriger
                 this.selectArea(this.drawingService.previewCtx);
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
                 this.setTopLeftHandler();
