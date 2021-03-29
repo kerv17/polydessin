@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Setting, Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-
 const path = '../../../../assets/Stamp/';
 const angleTurnPerRotation = 15;
+const maxImageSize = 250;
 
 @Injectable({
     providedIn: 'root',
 })
 export class StampService extends Tool {
     pointWidth: number = 0;
-    imageList: string[] = ['heart.png'];
-    toolMode: string = this.imageList[0];
+    toolMode: string = 'forsenCD.png';
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -40,7 +40,7 @@ export class StampService extends Tool {
     setStampRotationScale(ctx: CanvasRenderingContext2D, orientation: number): void {
         ctx.translate(this.pathData[0].x, this.pathData[0].y);
         ctx.rotate(this.convertDegToRad(orientation));
-        ctx.scale(this.width / 25, this.width / 25);
+        ctx.scale(this.width / 20, this.width / 20);
         ctx.translate(-this.pathData[0].x, -this.pathData[0].y);
     }
 
@@ -48,9 +48,9 @@ export class StampService extends Tool {
         this.setStampRotationScale(ctx, this.pointWidth);
         const image = new Image();
         image.src = path + this.toolMode;
-
-        ctx.translate(-image.naturalWidth / 2, -image.naturalHeight / 2);
-        ctx.drawImage(image, this.pathData[0].x, this.pathData[0].y);
+        const imageSize = this.scaleImage(image);
+        ctx.translate(-imageSize.x / 2, -imageSize.y / 2);
+        ctx.drawImage(image, this.pathData[0].x, this.pathData[0].y, imageSize.x, imageSize.y);
         ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset the canvas transform
     }
 
@@ -63,5 +63,9 @@ export class StampService extends Tool {
 
     convertDegToRad(deg: number): number {
         return (deg * Math.PI) / 180;
+    }
+
+    scaleImage(img: HTMLImageElement): Vec2 {
+        return { x: (maxImageSize / img.naturalWidth) * img.naturalHeight, y: maxImageSize };
     }
 }
