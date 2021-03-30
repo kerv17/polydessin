@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
@@ -16,6 +17,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    // on utilise ce canvas pour afficher la grille
+    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
 
     @Input()
     widthPrev: number;
@@ -30,6 +33,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
+    private gridCtx: CanvasRenderingContext2D;
 
     private canvasSize: Vec2;
     private previousCanvasSize: Vec2;
@@ -44,6 +48,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
+        private gridService: GridService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -54,11 +59,14 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
+        this.drawingService.gridCanvas = this.gridCanvas.nativeElement;
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
+        this.drawingService.gridCtx = this.gridCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
@@ -95,6 +103,13 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.baseCanvas.nativeElement.height = this.heightPrev;
                 this.previewCanvas.nativeElement.width = this.widthPrev;
                 this.previewCanvas.nativeElement.height = this.heightPrev;
+                this.gridCtx.canvas.width = this.widthPrev;
+                this.gridCtx.canvas.height = this.heightPrev;
+                // this.gridCtx.fillStyle = 'rgba(200,20,70,1)';
+                // this.gridCtx.fillRect(10, 10, 55, 50);
+                const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+                dispatchEvent(eventGrid);
+                this.gridService.drawGrid(); // a enlever quand grid est dans sidebar
 
                 this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);

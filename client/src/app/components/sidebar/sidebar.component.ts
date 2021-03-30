@@ -8,7 +8,6 @@ import { ExportService } from '@app/services/export/export.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
-
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -42,6 +41,7 @@ export class SidebarComponent {
         public carouselService: CarouselService,
         private undoRedoService: UndoRedoService,
         public remoteSaveService: RemoteSaveService,
+        
     ) {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
