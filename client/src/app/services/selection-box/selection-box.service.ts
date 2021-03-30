@@ -56,6 +56,14 @@ export class SelectionBoxService {
     }
 
     drawSelectionBox(topLeft: Vec2, width: number, height: number): void {
+        if (width < 0) {
+            topLeft.x = topLeft.x + width;
+            width = Math.abs(width);
+        }
+        if (height < 0) {
+            topLeft.y = topLeft.y + height;
+            height = Math.abs(height);
+        }
         this.selectionBox = {
             height: height + 'px',
             width: width + 'px',
@@ -67,6 +75,14 @@ export class SelectionBoxService {
     }
 
     cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
+        if (width < 0) {
+            topLeft.x = topLeft.x + width;
+            width = Math.abs(width);
+        }
+        if (height < 0) {
+            topLeft.y = topLeft.y + height;
+            height = Math.abs(height);
+        }
         const bottomRight = {
             x: topLeft.x + width,
             y: topLeft.y + height,

@@ -56,14 +56,14 @@ export class SelectionService extends Tool {
 
     getSelectionWidth(): number {
         if (this.selectedArea !== undefined) {
-            return Math.abs(this.pathData[2].x - this.pathData[0].x);
+            return this.pathData[2].x - this.pathData[0].x;
         }
         return 0;
     }
 
     getSelectionHeight(): number {
         if (this.selectedArea !== undefined) {
-            return Math.abs(this.pathData[2].y - this.pathData[0].y);
+            return this.pathData[2].y - this.pathData[0].y;
         }
         return 0;
     }
@@ -91,6 +91,10 @@ export class SelectionService extends Tool {
             ) {
                 this.inMovement = true;
                 this.inSelection = false;
+                if (this.inResize) {
+                    this.inResize = false;
+                    this.selectArea(this.drawingService.previewCtx);
+                }
             } else if (this.selectionResize.onMouseDown(mousePosition)) {
                 this.inResize = true;
             } else {
@@ -141,9 +145,6 @@ export class SelectionService extends Tool {
                 this.inMovement = false;
                 this.inSelection = true;
             } else if (this.inResize) {
-                this.inResize = false;
-                // crée l'effet paint à corriger
-                this.selectArea(this.drawingService.previewCtx);
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
                 this.setTopLeftHandler();
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -162,6 +163,10 @@ export class SelectionService extends Tool {
 
     onEscape(): void {
         if (this.inSelection) {
+            if (this.inResize) {
+                this.inResize = false;
+                this.selectArea(this.drawingService.previewCtx);
+            }
             this.confirmSelectionMove();
             this.dispatchAction(this.createAction());
             this.inSelection = false;

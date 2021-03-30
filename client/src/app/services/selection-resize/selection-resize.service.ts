@@ -16,10 +16,10 @@ export class SelectionResizeService {
         this.positions = this.selectionBox.getHandlersPositions();
         for (const handlers of this.positions) {
             if (
-                mousePosition.x <= handlers.x + 5 &&
-                mousePosition.x >= handlers.x - 5 &&
-                mousePosition.y <= handlers.y + 5 &&
-                mousePosition.y >= handlers.y - 5
+                mousePosition.x <= handlers.x + 8 &&
+                mousePosition.x >= handlers.x - 8 &&
+                mousePosition.y <= handlers.y + 8 &&
+                mousePosition.y >= handlers.y - 8
             ) {
                 this.actualHandler = this.positions.indexOf(handlers);
                 return true;
@@ -38,9 +38,25 @@ export class SelectionResizeService {
             if (width < 0) {
                 ctx.scale(-1, 1);
                 ctx.drawImage(imgBitmap, -path[0].x, path[0].y, -width, height);
+                // update le pathdata
+                // inverser 0 et 3, 2 et 1
+                /*
+                path[0] = { x: path[3].x, y: path[3].y };
+                path[3] = { x: path[4].x, y: path[4].y };
+                const temp = { x: path[1].x, y: path[1].y };
+                path[1] = { x: path[2].x, y: path[2].y };
+                path[2] = { x: temp.x, y: temp.y };
+                path[4] = path[0];*/
             } else if (height < 0) {
                 ctx.scale(1, -1);
                 ctx.drawImage(imgBitmap, path[0].x, -path[0].y, width, -height);
+                // update le pathdata
+                // inverser 0 et 1, 2 et 3
+                /*path[0] = { x: path[1].x, y: path[1].y };
+                path[1] = { x: path[4].x, y: path[4].y };
+                const temp = { x: path[3].x, y: path[3].y };
+                path[3] = { x: path[2].x, y: path[2].y };
+                path[2] = { x: temp.x, y: temp.y };*/
             } else {
                 ctx.drawImage(imgBitmap, path[0].x, path[0].y, width, height);
             }
@@ -48,10 +64,6 @@ export class SelectionResizeService {
         });
     }
 
-    // resize après déplacement fail parce que calculée à partir de pathData[0] qui n'est plus l'actual position
-    // possibilité recalculer le path avant de le passer pathData[0] devient le pathData[4] et les autres sont caluclés
-    // selon width et height, ajouter une fonction pour faire ça avant l'itération si pathData[4] != pathData[0], donc
-    // si il y a eu un déplacement de la sélection sur la surface de dessin
     getPathDataAfterMovement(path: Vec2[]): void {
         if (path[4] !== path[0]) {
             const width = path[2].x - path[0].x;
@@ -63,7 +75,6 @@ export class SelectionResizeService {
         }
     }
 
-    // implémenter le flip
     updatePathDataOnResize(path: Vec2[], mousePosition: Vec2, shifted: boolean): void {
         switch (this.actualHandler) {
             case 0:
