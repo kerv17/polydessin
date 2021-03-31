@@ -1,3 +1,7 @@
-<p>
-  grid works!
-</p>
+<p>Veuiller entrez la taille des carrés de la grille</p>
+<mat-slider thumbLabel min="10" max="100" [(ngModel)]="size" (sizeChange)="updateSizeValues($event)"></mat-slider>
+<div class="value">La taille courante d'un carré est de {{ size }}px</div>
+
+<p>Veuiller entrez l'opacité des lignes pour les carrés de la grille</p>
+<mat-slider thumbLabel min="0.2" max="1" [(ngModel)]="opacity" (opacityChange)="updateOpacityValues($event)"></mat-slider>
+<div class="value">L'opacité des lignes courante d'un carré est de {{ opacity }}px</div>
