@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class GridService {
     context: CanvasRenderingContext2D;
     boxSize: number;
+    opacity: number;
     showGrid: boolean = false;
 
     constructor(public drawingService: DrawingService) {
@@ -15,7 +16,7 @@ export class GridService {
     }
     drawGrid(): void {
         this.boxSize = 20;
-        this.showGrid = true;
+        this.opacity = 20;
         if (!this.showGrid) {
             return;
         }
@@ -23,19 +24,17 @@ export class GridService {
         const canvasHeight = this.drawingService.canvas.height;
         const canvasWidth = this.drawingService.canvas.width;
         this.context.lineWidth = 1;
-        this.context.strokeStyle = 'rgba(0,0,0,1)';
+        this.context.strokeStyle = 'rgba(0,0,0,' + (this.opacity / 100).toString() + ')';
         this.context.beginPath();
         for (let x = 0; x < canvasWidth; x += this.boxSize) {
             this.context.moveTo(x, 0);
             this.context.lineTo(x, canvasHeight);
-            this.context.stroke();
         }
         for (let y = 0; y < canvasHeight; y += this.boxSize) {
             this.context.moveTo(0, y);
             this.context.lineTo(canvasWidth, y);
-            this.context.stroke();
         }
-        // this.context.stroke();
+        this.context.stroke();
     }
     toggleGrid(): void {
         this.showGrid = !this.showGrid;

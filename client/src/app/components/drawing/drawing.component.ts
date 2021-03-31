@@ -4,7 +4,6 @@ import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { GridService } from '@app/services/grid/grid.service';
 import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
@@ -48,7 +47,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
-        private gridService: GridService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -105,11 +103,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.previewCanvas.nativeElement.height = this.heightPrev;
                 this.gridCtx.canvas.width = this.widthPrev;
                 this.gridCtx.canvas.height = this.heightPrev;
-                // this.gridCtx.fillStyle = 'rgba(200,20,70,1)';
-                // this.gridCtx.fillRect(10, 10, 55, 50);
                 const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
                 dispatchEvent(eventGrid);
-                this.gridService.drawGrid(); // a enlever quand grid est dans sidebar
 
                 this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
