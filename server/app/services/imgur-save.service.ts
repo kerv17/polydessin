@@ -27,7 +27,7 @@ export class ImgurSaveService {
         req.end();
     }*/
 
-    async addData(information: CanvasInformation): Promise<void> {
+    async addData(information: CanvasInformation): Promise<string> {
         //   const imagteste = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
         //   const image = 'https://static.wikia.nocookie.net/software/images/5/51/Orca_Browser.png';
         const base64Data = information.imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -35,7 +35,7 @@ export class ImgurSaveService {
 
         const data = {
             image: base64Data,
-            type: encodeURIComponent('base64'),
+            type: 'image/' + information.format,
             name: information.name,
             title: information.name,
         };
@@ -45,14 +45,18 @@ export class ImgurSaveService {
             'content-type': 'application/json',
         };
 
-        axios
+        return axios
             .post('https://api.imgur.com/3/image', data, { headers: header })
             .then((res) => {
                 console.log('RESPONSE RECEIVED: ', res.data);
+                const data = res.data.data;
+                return data.link;
             })
             .catch((err) => {
                 console.log('AXIOS ERROR: ', err.response.data);
+                throw { message: "erreur lors de l'envoi de la requete " } as Error;
             });
+
         /*const options = {
             hostname: 'api.imgur.com',
             method: 'POST',

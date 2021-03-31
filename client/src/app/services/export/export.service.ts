@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
@@ -23,12 +24,22 @@ export class ExportService {
         this.context.drawImage(this.drawingService.canvas, 0, 0);
     }
 
-    exportToImgur(type: string, name: string, filtre: string) {
+    exportToImgur(type: string, name: string, filtre: string): void {
         if (!this.exportImage(type, name, filtre)) return;
         const data = this.canvas.toDataURL('image/' + type);
-        const info = { name: name, format: type, imageData: data } as CanvasInformation;
+        const info = { name, format: type, imageData: data } as CanvasInformation;
 
-        this.serverRequestService.basicPost(info, 'imgur').subscribe();
+        this.serverRequestService.basicPost(info, 'imgur').subscribe(
+            (response) => {
+                window.alert("Lien de l'image" + response.body?.body);
+            },
+            (err: HttpErrorResponse) => {
+                if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                else {
+                    window.alert(err.error);
+                }
+            },
+        );
     }
 
     downloadImage(type: string, name: string, filtre: string): void {
