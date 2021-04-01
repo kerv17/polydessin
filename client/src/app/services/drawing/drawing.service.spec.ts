@@ -24,8 +24,10 @@ describe('DrawingService', () => {
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         service.canvas = canvasTestHelper.canvas;
         service.previewCanvas = canvasTestHelper.canvas;
+        service.gridCanvas =canvasTestHelper.canvas;
         service.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.gridCtx = canvasTestHelper.selectionCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should be created', () => {
@@ -156,6 +158,7 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
         expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
+        expect(clearCanvasSpy).toHaveBeenCalledWith(service.gridCtx);
         expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
         expect(service.canvas.width).toEqual(vec.x);
         expect(service.canvas.height).toEqual(vec.y);
@@ -178,6 +181,7 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
         expect(clearCanvasSpy).not.toHaveBeenCalledWith(service.previewCtx);
+        expect(clearCanvasSpy).not.toHaveBeenCalledWith(service.gridCtx);
         expect(resizePointSpy.resetControlPoints).not.toHaveBeenCalled();
         expect(service.canvas.width).not.toEqual(vec.x);
         expect(service.canvas.height).not.toEqual(vec.y);
@@ -200,11 +204,14 @@ describe('DrawingService', () => {
         expect(canvasNotEmptySpy).toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
         expect(clearCanvasSpy).toHaveBeenCalledWith(service.previewCtx);
+        expect(clearCanvasSpy).toHaveBeenCalledWith(service.gridCtx);
         expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
         expect(service.canvas.width).toEqual(vec.x);
         expect(service.canvas.height).toEqual(vec.y);
         expect(service.previewCanvas.width).toEqual(vec.x);
         expect(service.previewCanvas.height).toEqual(vec.y);
+        expect(service.gridCanvas.width).toEqual(vec.x);
+        expect(service.gridCanvas.height).toEqual(vec.y);
     });
 
     it('should load the saved canvas', () => {

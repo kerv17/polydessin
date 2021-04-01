@@ -10,6 +10,7 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
@@ -85,18 +86,15 @@ describe('SidebarComponent', () => {
             ],
         }).compileComponents();
     }));
-
     beforeEach(() => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         toolControllerSpy = spyOn(toolController, 'setTool');
     });
-
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
     it('should add two event listeners in the constructor', () => {
         const c: CustomEvent = new CustomEvent('undoRedoState', {
             detail: [false, true],
@@ -130,14 +128,12 @@ describe('SidebarComponent', () => {
         expect(colorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
     });
-
     it('should open the export modal', () => {
         component.exportService.showModalExport = false;
         component.openExport();
 
         expect(component.exportService.showModalExport).toBe(true);
     });
-
     it('should call toolControllerSetTool ', () => {
         component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
@@ -152,25 +148,21 @@ describe('SidebarComponent', () => {
         component.selectCanvas();
         expect(selectionSpy).toHaveBeenCalled();
     });
-
     it('should open the Carrousel Modal when we click on the button ', () => {
         const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
         component.openCarousel();
         expect(carouselSpy).toHaveBeenCalled();
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
@@ -261,6 +253,12 @@ describe('SidebarComponent', () => {
         expect(resetColorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
         expect(resetToolsModeSpy).toHaveBeenCalled();
+    });
+    it('showGrid should call the toggleGrid method from GridService',() =>{
+        component.gridService = new GridService(drawingStub);
+        const spy = spyOn(component.gridService, 'toggleGrid')
+        component.showGrid();
+        expect(spy).toHaveBeenCalled();
     });
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
         const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };

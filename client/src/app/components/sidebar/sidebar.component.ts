@@ -62,7 +62,7 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
-        this.gridService.ResetGrid();
+        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
@@ -118,7 +118,7 @@ export class SidebarComponent {
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
         this.drawing.newCanvas();
-        this.gridService.ResetGrid();
+        this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
     }

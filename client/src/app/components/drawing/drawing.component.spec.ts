@@ -229,6 +229,24 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({} as SimpleChanges);
         expect(actionCalled).toBeTrue();
     });
+    it('ngOnChanges should dispatch a grid Event only after view is initialised', () => {
+        (component as any).heightPrev = 2;
+        (component as any).widthPrev = 2;
+
+        let gridCalled = false;
+        addEventListener('grid', (event: CustomEvent) => {
+            gridCalled = true;
+        });
+        (component as any).viewInitialized = false;
+        (component as any).mouseDown = false;
+
+        component.ngOnChanges({} as SimpleChanges);
+        expect(gridCalled).toBeFalse();
+
+        (component as any).viewInitialized = true;
+        component.ngOnChanges({} as SimpleChanges);
+        expect(gridCalled).toBeTrue();
+    });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
         (component as any).heightPrev = 2;

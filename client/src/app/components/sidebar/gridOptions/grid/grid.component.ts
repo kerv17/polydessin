@@ -25,27 +25,27 @@ export class GridComponent implements OnChanges {
         if (evt.value != null) {
             this.gridService.boxSize = evt.value;
             this.size = this.gridService.boxSize;
-            const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+            const eventGrid: CustomEvent = new CustomEvent('grid');
             dispatchEvent(eventGrid);
         }
     }
     incrementSize(): void {
         this.gridService.shortcutIncrementGrid();
         this.size = this.gridService.boxSize;
-        const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+        const eventGrid: CustomEvent = new CustomEvent('grid');
         dispatchEvent(eventGrid);
     }
     decrementSize(): void {
         this.gridService.shortcutDecrementGrid();
         this.size = this.gridService.boxSize;
-        const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+        const eventGrid: CustomEvent = new CustomEvent('grid');
         dispatchEvent(eventGrid);
     }
     updateOpacityValues(evt: MatSliderChange): void {
         if (evt.value != null) {
             this.gridService.opacity = evt.value;
             this.opacity = this.gridService.opacity;
-            const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+            const eventGrid: CustomEvent = new CustomEvent('grid');
             dispatchEvent(eventGrid);
         }
     }

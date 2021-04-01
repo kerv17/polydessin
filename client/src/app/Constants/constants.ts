@@ -112,4 +112,3 @@ export const GRID_OPACITY_INIT_VALUE = 40;
 export const GRID_VARIATION_VALUE = 5;
 export const GRID_MAX_BOX_VALUE = 100;
 export const GRID_MIN_BOX_VALUE = 10;
-

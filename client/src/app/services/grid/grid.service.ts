@@ -15,7 +15,7 @@ export class GridService {
             this.drawGrid();
         });
     }
-    private drawGrid(): void {
+    drawGrid(): void {
         if (!this.showGrid) {
             return;
         }
@@ -44,7 +44,7 @@ export class GridService {
             this.drawingService.clearCanvas(this.drawingService.gridCtx);
         }
     }
-    ResetGrid(): void {
+    resetGrid(): void {
         this.boxSize = Globals.GRID_BOX_INIT_VALUE;
         this.opacity = Globals.GRID_OPACITY_INIT_VALUE;
         this.showGrid = false;

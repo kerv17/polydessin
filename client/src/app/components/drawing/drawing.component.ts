@@ -103,7 +103,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.previewCanvas.nativeElement.height = this.heightPrev;
                 this.gridCtx.canvas.width = this.widthPrev;
                 this.gridCtx.canvas.height = this.heightPrev;
-                const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+                const eventGrid: CustomEvent = new CustomEvent('grid');
                 dispatchEvent(eventGrid);
 
                 this.baseCtx.putImageData(dessin, 0, 0);
