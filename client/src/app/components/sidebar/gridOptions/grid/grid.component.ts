@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
 import { GridService } from '@app/services/grid/grid.service';
@@ -9,13 +9,17 @@ import { GridService } from '@app/services/grid/grid.service';
 })
 export class GridComponent implements OnChanges {
     @Input() size: number = Globals.GRID_BOX_INIT_VALUE;
-    // @Input() changeSize: boolean;
-
     @Input() opacity: number = Globals.GRID_OPACITY_INIT_VALUE;
-    // @Input() opacityChange: boolean;
     @Input() change: boolean;
 
-    constructor(public gridService: GridService) {}
+    private functionMap: Map<string, () => void>;
+
+    constructor(public gridService: GridService) {
+        this.size = gridService.boxSize;
+        this.opacity = gridService.opacity;
+        this.functionMap = new Map();
+        this.initFunctionMap();
+    }
 
     updateSizeValues(evt: MatSliderChange): void {
         if (evt.value != null) {
@@ -24,6 +28,18 @@ export class GridComponent implements OnChanges {
             const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
             dispatchEvent(eventGrid);
         }
+    }
+    incrementSize(): void {
+        this.gridService.shortcutIncrementGrid();
+        this.size = this.gridService.boxSize;
+        const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+        dispatchEvent(eventGrid);
+    }
+    decrementSize(): void {
+        this.gridService.shortcutDecrementGrid();
+        this.size = this.gridService.boxSize;
+        const eventGrid: CustomEvent = new CustomEvent('grid', { detail: 'drawingAction' });
+        dispatchEvent(eventGrid);
     }
     updateOpacityValues(evt: MatSliderChange): void {
         if (evt.value != null) {
@@ -38,5 +54,24 @@ export class GridComponent implements OnChanges {
             this.size = this.gridService.boxSize;
             this.opacity = this.gridService.opacity;
         }
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyPress($event: KeyboardEvent): void {
+        if (!this.gridService.showGrid) {
+            return;
+        }
+
+        if (this.functionMap.has([$event.key].join())) {
+            this.functionMap.get([$event.key].join())?.call(this);
+            $event.preventDefault();
+        }
+    }
+    initFunctionMap(): void {
+        // the key is a joined string comprised of the event shiftkey,eventCtrlKey,and the shortcut
+        this.functionMap
+            .set([Globals.GRID_INCREMENT_PLUS_SHORTCUT].join(), this.incrementSize)
+            .set([Globals.GRID_INCREMENT_EQUAL_SHORTCUT].join(), this.incrementSize)
+            .set([Globals.GRID_DECREMENT_SHORTCUT].join(), this.decrementSize);
     }
 }

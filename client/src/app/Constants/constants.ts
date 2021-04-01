@@ -23,6 +23,10 @@ export const REDO_SHORTCUT = 'Z';
 export const RIGHT_ARROW_SHORTCUT = 'ArrowRight';
 export const LEFT_ARROW_SHORTCUT = 'ArrowLeft';
 export const GRID_SHORTCUT = 'g';
+export const GRID_INCREMENT_PLUS_SHORTCUT = '+';
+export const GRID_INCREMENT_EQUAL_SHORTCUT = '=';
+export const GRID_DECREMENT_SHORTCUT = '-';
+
 // Variables d'editor
 export const RESIZE_CONSTANT = 1.1;
 
@@ -105,3 +109,7 @@ export const mouseDownEvent = {
 // Constante pour Grille
 export const GRID_BOX_INIT_VALUE = 20;
 export const GRID_OPACITY_INIT_VALUE = 40;
+export const GRID_VARIATION_VALUE = 5;
+export const GRID_MAX_BOX_VALUE = 100;
+export const GRID_MIN_BOX_VALUE = 10;
+

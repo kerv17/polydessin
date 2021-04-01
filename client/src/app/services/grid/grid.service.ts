@@ -15,7 +15,7 @@ export class GridService {
             this.drawGrid();
         });
     }
-    drawGrid(): void {
+    private drawGrid(): void {
         if (!this.showGrid) {
             return;
         }
@@ -42,6 +42,24 @@ export class GridService {
             this.drawGrid();
         } else {
             this.drawingService.clearCanvas(this.drawingService.gridCtx);
+        }
+    }
+    ResetGrid(): void {
+        this.boxSize = Globals.GRID_BOX_INIT_VALUE;
+        this.opacity = Globals.GRID_OPACITY_INIT_VALUE;
+        this.showGrid = false;
+    }
+
+    shortcutIncrementGrid(): void {
+        const newSize = this.boxSize + Globals.GRID_VARIATION_VALUE;
+        if (newSize <= Globals.GRID_MAX_BOX_VALUE) {
+            this.boxSize = newSize;
+        }
+    }
+    shortcutDecrementGrid(): void {
+        const newSize = this.boxSize - Globals.GRID_VARIATION_VALUE;
+        if (newSize >= Globals.GRID_MIN_BOX_VALUE) {
+            this.boxSize = newSize;
         }
     }
 }
