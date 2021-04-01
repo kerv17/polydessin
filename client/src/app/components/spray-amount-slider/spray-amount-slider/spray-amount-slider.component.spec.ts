@@ -13,6 +13,7 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 
 import { SimpleChange } from '@angular/core';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SprayAmountSliderComponent } from './spray-amount-slider.component';
 // tslint:disable:no-any
 describe('SprayAmountSliderComponent', () => {
@@ -30,6 +31,7 @@ describe('SprayAmountSliderComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             {} as SelectionService,
+            {} as StampService,
         );
 
         aerosol = new AerosolService({} as DrawingService);

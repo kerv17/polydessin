@@ -16,6 +16,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
@@ -49,6 +50,7 @@ describe('DrawingComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             new SelectionService(drawingStub, selectionMoveService),
+            {} as StampService,
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
 
@@ -188,6 +190,15 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
+
+    it(" should call the tool's onWheel when receiving a mouse wheel event", () => {
+        const event = {} as WheelEvent;
+        const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
+        component.onWheel(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
     it(" should call the tool's double click when receiving a mouse dblclick event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'ondbClick');

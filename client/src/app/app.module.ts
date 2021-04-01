@@ -23,6 +23,7 @@ import { LineOptionsComponent } from './components/sidebar/lineOptions/line-opti
 import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
+import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
 
@@ -46,6 +47,7 @@ import { ColorService } from './services/color/color.service';
         RadiusSliderComponent,
         SprayAmountSliderComponent,
         RemoteSaveComponent,
+        StampComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
     providers: [ColorService],
