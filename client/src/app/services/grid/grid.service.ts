@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
 export class GridService {
     context: CanvasRenderingContext2D;
-    boxSize: number;
-    opacity: number;
+    boxSize: number = Globals.GRID_BOX_INIT_VALUE;
+    opacity: number = Globals.GRID_OPACITY_INIT_VALUE;
     showGrid: boolean = false;
 
     constructor(public drawingService: DrawingService) {
@@ -15,11 +16,10 @@ export class GridService {
         });
     }
     drawGrid(): void {
-        this.boxSize = 20;
-        this.opacity = 20;
         if (!this.showGrid) {
             return;
         }
+        this.drawingService.clearCanvas(this.drawingService.gridCtx);
         this.context = this.drawingService.gridCtx;
         const canvasHeight = this.drawingService.canvas.height;
         const canvasWidth = this.drawingService.canvas.width;

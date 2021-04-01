@@ -101,3 +101,7 @@ export const mouseDownEvent = {
     y: 125,
     button: 0,
 } as MouseEvent;
+
+// Constante pour Grille
+export const GRID_BOX_INIT_VALUE = 20;
+export const GRID_OPACITY_INIT_VALUE = 40;
