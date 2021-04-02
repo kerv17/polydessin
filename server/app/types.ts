@@ -6,4 +6,6 @@ export const TYPES = {
     MetadataService: Symbol('MetadataService'),
     ServerSaveService: Symbol('ServerSaveService'),
     DataAccessService: Symbol('DataAccessService'),
+    ImgurSaveService: Symbol('ImgurSaveService'),
+    ImgurController: Symbol('ImgurController'),
 };

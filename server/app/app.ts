@@ -7,6 +7,7 @@ import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
+import { ImgurController } from './controllers/imgur.controller';
 import { MetadataController } from './controllers/metadata.controller';
 
 @injectable()
@@ -15,7 +16,10 @@ export class Application {
     private readonly swaggerOptions: swaggerJSDoc.Options;
     app: express.Application;
 
-    constructor(@inject(TYPES.MetadataController) private metadataController: MetadataController) {
+    constructor(
+        @inject(TYPES.MetadataController) private metadataController: MetadataController,
+        @inject(TYPES.ImgurController) private imgurController: ImgurController,
+    ) {
         this.app = express();
 
         this.swaggerOptions = {
@@ -49,6 +53,8 @@ export class Application {
         // Notre application utilise le routeur de notre API `Index`
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/metadata', this.metadataController.router);
+        this.app.use('/api/imgur', this.imgurController.router);
+
         this.errorHandling();
     }
 
