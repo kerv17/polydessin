@@ -39,7 +39,22 @@ export class SelectionBoxService {
         return this.handlersPositions;
     }
 
-    getCursor(pos: number): string {
+    getCursor(event: MouseEvent): string {
+        let pos = 10;
+        for (const handler of this.getHandlersPositions()) {
+            if (
+                event.offsetX <= handler.x + 10 &&
+                event.offsetX >= handler.x - 10 &&
+                event.offsetY <= handler.y + 10 &&
+                event.offsetY >= handler.y - 10
+            ) {
+                pos = this.getHandlersPositions().indexOf(handler);
+            }
+        }
+        return this.setCursor(pos);
+    }
+
+    setCursor(pos: number): string {
         if (pos === Globals.TOP_LEFT_HANDLER || pos === Globals.BOTTOM_RIGHT_HANDLER) return 'nw-resize';
         if (pos === Globals.TOP_HANDLER || pos === Globals.BOTTOM_HANDLER) return 'n-resize';
         if (pos === Globals.TOP_RIGHT_HANDLER || pos === Globals.BOTTOM_LEFT_HANDLER) return 'ne-resize';
@@ -56,14 +71,6 @@ export class SelectionBoxService {
     }
 
     drawSelectionBox(topLeft: Vec2, width: number, height: number): void {
-        if (width < 0) {
-            topLeft.x = topLeft.x + width;
-            width = Math.abs(width);
-        }
-        if (height < 0) {
-            topLeft.y = topLeft.y + height;
-            height = Math.abs(height);
-        }
         this.selectionBox = {
             height: height + 'px',
             width: width + 'px',
@@ -75,21 +82,14 @@ export class SelectionBoxService {
     }
 
     cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
-        if (width < 0) {
-            topLeft.x = topLeft.x + width;
-            width = Math.abs(width);
-        }
-        if (height < 0) {
-            topLeft.y = topLeft.y + height;
-            height = Math.abs(height);
-        }
         const bottomRight = {
             x: topLeft.x + width,
             y: topLeft.y + height,
         };
+
         if (event.offsetX > topLeft.x && event.offsetX < bottomRight.x && event.offsetY > topLeft.y && event.offsetY < bottomRight.y && inSelection) {
             this.cursor = {
-                cursor: 'all-scroll',
+                cursor: this.getCursor(event),
             };
         } else {
             this.cursor = {

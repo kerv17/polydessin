@@ -32,6 +32,7 @@ export class SelectionMovementService {
         ctx.putImageData(selectedArea, position.x, position.y);
     }
 
+    // A REFACTOR pas besoin ed path et top left
     onMouseUp(event: MouseEvent, topLeft: Vec2, path: Vec2[]): Vec2 {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
