@@ -25,13 +25,13 @@ export class ExportService {
     }
 
     exportToImgur(type: string, name: string, filtre: string): void {
-        if (!this.exportImage(type, name, filtre)) return;
+        if (!this.createExportImage(type, name, filtre)) return;
         const data = this.canvas.toDataURL('image/' + type);
         const info = { name, format: type, imageData: data } as CanvasInformation;
 
         this.serverRequestService.basicPost(info, 'imgur').subscribe(
             (response) => {
-                window.alert("Lien de l'image" + response.body?.body);
+                window.alert("Lien de l'image:" + response.body?.body);
             },
             (err: HttpErrorResponse) => {
                 if (err.status === 0) window.alert('Aucune connection avec le serveur');
@@ -43,14 +43,14 @@ export class ExportService {
     }
 
     downloadImage(type: string, name: string, filtre: string): void {
-        if (!this.exportImage(type, name, filtre)) return;
+        if (!this.createExportImage(type, name, filtre)) return;
         this.anchor.href = this.canvas.toDataURL('image/' + type);
         this.anchor.download = name;
         document.body.appendChild(this.anchor);
         this.anchor.click();
     }
 
-    exportImage(type: string, name: string, filtre: string): boolean {
+    createExportImage(type: string, name: string, filtre: string): boolean {
         if (type != undefined && this.checkifNotEmpty(name)) {
             if (confirm('Êtes-vous sûr de vouloir exporter le dessin')) {
                 this.setExportCanvas(filtre);

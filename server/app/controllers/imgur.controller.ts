@@ -17,7 +17,7 @@ export class ImgurController {
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
             this.imgurService
-                .addData(req.body)
+                .uploadImage(req.body)
                 .then((https: string) => {
                     const message = { title: 'link', body: https } as Message;
 

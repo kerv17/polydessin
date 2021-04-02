@@ -118,6 +118,7 @@ export class SidebarComponent {
         this.drawing.newCanvas();
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
+        this.setTool(Globals.CRAYON_SHORTCUT);
     }
 
     @HostListener('window:keydown', ['$event'])

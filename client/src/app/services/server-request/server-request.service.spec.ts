@@ -29,7 +29,6 @@ describe('ServerRequestService', () => {
     it('should return expected message (HttpClient called once)', () => {
         const canvasArray: CanvasInformation[] = new Array(1);
         canvasArray[0] = { codeID: 'test' } as CanvasInformation;
-        // const expectedMessage: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
 
         // check the content of the mocked call
         service.basicGet().subscribe((response: HttpResponse<CanvasInformation[]>) => {
@@ -38,7 +37,7 @@ describe('ServerRequestService', () => {
             } else throw new Error();
         });
 
-        const req = httpMock.expectOne(baseUrl);
+        const req = httpMock.expectOne(baseUrl + 'metadata');
         expect(req.request.method).toBe('GET');
         // actually send the request
         req.flush(canvasArray);
@@ -56,7 +55,7 @@ describe('ServerRequestService', () => {
             } else throw new Error();
         });
 
-        const req = httpMock.expectOne(baseUrl + '/test1');
+        const req = httpMock.expectOne(baseUrl + 'metadata' + '/test1');
         expect(req.request.method).toBe('GET');
         // actually send the request
         req.flush(canvasArray);
@@ -73,13 +72,13 @@ describe('ServerRequestService', () => {
             } else throw new Error();
         }, fail);
 
-        const req = httpMock.expectOne(baseUrl + '/');
+        const req = httpMock.expectOne(baseUrl + 'metadata');
         expect(req.request.method).toBe('POST');
         // actually send the request
         req.flush(recieved);
     });
 
-    it('should a message confirmation when sending a POST request (HttpClient called once)', () => {
+    it('should a message confirmation when sending a Delete request (HttpClient called once)', () => {
         const recievedMessage: Message = { body: 'Hello', title: 'World' };
         const message = 'testId';
         // subscribe to the mocked call
@@ -90,7 +89,7 @@ describe('ServerRequestService', () => {
             } else throw new Error();
         }, fail);
 
-        const req = httpMock.expectOne(baseUrl + '/' + message);
+        const req = httpMock.expectOne(baseUrl + 'metadata' + '/' + message);
         expect(req.request.method).toBe('DELETE');
         // actually send the request
         req.flush(recievedMessage);

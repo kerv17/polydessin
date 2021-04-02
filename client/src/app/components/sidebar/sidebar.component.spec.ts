@@ -10,6 +10,7 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
@@ -52,12 +53,13 @@ describe('SidebarComponent', () => {
     let carouselService: CarouselService;
     let selectionMovementService: SelectionMovementService;
     let canvasTestHelper;
-
+    let exportService: ExportService;
     let eventSpy: jasmine.Spy;
     const router = jasmine.createSpyObj(Router, ['navigate']);
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
+        exportService = new ExportService(drawingStub, {} as ServerRequestService);
         remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
         selectionMovementService = new SelectionMovementService();
         toolController = new ToolControllerService(
@@ -82,6 +84,7 @@ describe('SidebarComponent', () => {
                 { provide: CarouselService, useValue: carouselService },
                 { provide: Router, useValue: router },
                 { provide: RemoteSaveService, useValue: remoteSaveServiceStub },
+                { provide: ExportService, useValue: exportService },
             ],
         }).compileComponents();
     }));

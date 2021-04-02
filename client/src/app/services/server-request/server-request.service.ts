@@ -19,7 +19,7 @@ export class ServerRequestService {
         return this.http.get<CanvasInformation[]>(this.BASE_URL + 'metadata' + '/' + tags, { observe: 'response' });
     }
 
-    basicPost(info: CanvasInformation, type: string = 'imgur'): Observable<HttpResponse<Message>> {
+    basicPost(info: CanvasInformation, type: string = 'metadata'): Observable<HttpResponse<Message>> {
         // idée pris de stack overflow ici :
         // https://stackoverflow.com/questions/50798592/angular-6-how-to-set-response-type-as-text-while-making-http-call
 
@@ -27,6 +27,6 @@ export class ServerRequestService {
     }
 
     basicDelete(message: string): Observable<HttpResponse<Message>> {
-        return this.http.delete<Message>(this.BASE_URL + '/' + message, { observe: 'response' });
+        return this.http.delete<Message>(this.BASE_URL + 'metadata' + '/' + message, { observe: 'response' });
     }
 }

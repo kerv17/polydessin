@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ExportService } from '@app/services/export/export.service';
-import { ResizedEvent } from 'angular-resize-event';
 
 const CONSTANTE_DIVISION_FENETRE = 4;
 @Component({
@@ -23,7 +22,7 @@ export class ExportComponent implements AfterViewInit {
         this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
     }
 
-    onResize(event: ResizedEvent): void {
+    onResize(): void {
         this.ctx.canvas.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
         this.ctx.canvas.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
         this.ctx.filter = this.filtre;
