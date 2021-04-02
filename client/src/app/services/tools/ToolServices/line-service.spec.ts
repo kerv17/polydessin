@@ -10,6 +10,7 @@ import { LineService } from './line-service';
 describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
+    let mouseEvent2: MouseEvent;
     let canvasTestHelper: CanvasTestHelper;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let pointToPushSpy: jasmine.Spy<any>;
@@ -46,6 +47,12 @@ describe('LineService', () => {
             pageX: mouseEventPosTestNumber + SIDEBAR_WIDTH,
             pageY: mouseEventPosTestNumber,
             button: 0,
+        } as MouseEvent;
+
+        mouseEvent2 = {
+            pageX: mouseEventPosTestNumber + SIDEBAR_WIDTH,
+            pageY: mouseEventPosTestNumber,
+            button: 1,
         } as MouseEvent;
 
         vec = [
@@ -86,6 +93,14 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalledWith(previewCtxStub, vec);
     });
 
+    it(' onClick should not call drawLine', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onClick(mouseEvent2);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalledWith(previewCtxStub);
+        expect(drawLineSpy).not.toHaveBeenCalledWith(previewCtxStub, vec);
+    });
+
     it('onDbClick should place the last point as the first when mouseEvent is within range of the first point', () => {
         // pointToPushSpy.and.callThrough();
         (service as any).pathData.push({ x: 0, y: 0 }, { x: 0, y: 0 });
@@ -99,6 +114,21 @@ describe('LineService', () => {
         ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
+    });
+
+    it('onDbClick should not place the last point as the first when mouseEvent is within range of the first point', () => {
+        // pointToPushSpy.and.callThrough();
+        (service as any).pathData.push({ x: 0, y: 0 }, { x: 0, y: 0 });
+        service.ondbClick(mouseEvent2);
+        expect(distanceSpy).not.toHaveBeenCalled();
+        expect((service as any).pathData[length - 1]).not.toEqual((service as any).pathData[0]);
+        const expectedParam: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+            { x: 0, y: 0 },
+        ];
+        expect(drawLineSpy).not.toHaveBeenCalledWith(baseCtxStub, expectedParam);
+        expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it('onDbClick should place the last point as the first when mouseEvent is within range of the first point', () => {
