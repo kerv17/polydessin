@@ -15,7 +15,7 @@ export class AerosolService extends Tool {
     }
 
     sprayRadius: number = 50;
-    sprayAmountPerSecond: number = 10;
+    sprayAmountPerSecond: number = 100;
     lastPosition: Vec2;
     mouseDown: boolean = false;
     // tslint:disable-next-line: no-any

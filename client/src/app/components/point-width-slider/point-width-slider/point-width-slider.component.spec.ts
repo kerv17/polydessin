@@ -11,6 +11,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { PointWidthSliderComponent } from './point-width-slider.component';
 
 describe('PointWidthSliderComponent', () => {
@@ -31,6 +32,7 @@ describe('PointWidthSliderComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             {} as SelectionService,
+            {} as StampService,
         );
         toolController.currentTool = line;
         TestBed.configureTestingModule({
