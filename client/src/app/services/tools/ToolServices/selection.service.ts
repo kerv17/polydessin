@@ -113,10 +113,10 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.updateCanvasOnMove(this.drawingService.previewCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
-                this.updateCanvasOnMove(this.drawingService.previewCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -257,8 +257,8 @@ export class SelectionService extends Tool {
 
     delete(): void {
         if (this.inSelection) {
-            this.updateCanvasOnMove(this.drawingService.baseCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
+            this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
             this.dispatchAction(this.createAction());
             this.clearPath();
             this.inSelection = false;
@@ -275,16 +275,16 @@ export class SelectionService extends Tool {
     }
 
     // À METTRE DANS SELECTION MOVEMENT
-    private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+    /*private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
         ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.pathData[2].x - this.pathData[0].x, this.pathData[2].y - this.pathData[0].y);
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
-    }
+    }*/
 
     private confirmSelectionMove(): void {
-        this.updateCanvasOnMove(this.drawingService.baseCtx);
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
         this.drawingService.baseCtx.putImageData(this.selectedArea, this.getActualPosition().x, this.getActualPosition().y);
     }
 
@@ -355,7 +355,7 @@ export class SelectionService extends Tool {
         if (this.selectedArea !== undefined) {
             this.selectionMove.moveSelection(this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx);
+            this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
             this.drawingService.previewCtx.putImageData(
                 this.selectedArea,
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].x,

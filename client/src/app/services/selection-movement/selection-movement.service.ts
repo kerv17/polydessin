@@ -99,4 +99,12 @@ export class SelectionMovementService {
         }
         path.push(topLeft);
     }
+
+    updateCanvasOnMove(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'white';
+        ctx.fillRect(path[0].x, path[0].y, path[2].x - path[0].x, path[2].y - path[0].y);
+        ctx.fillStyle = 'black';
+        ctx.strokeStyle = 'black';
+    }
 }
