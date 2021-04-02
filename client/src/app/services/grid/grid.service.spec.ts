@@ -14,9 +14,9 @@ describe('GridService', () => {
 
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['resetCanvas', 'initializeCanvas', 'setCanvassSize', 'clearCanvas']);
-        gridCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['lineTo','beginPath','stroke','moveTo']);
+        gridCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['lineTo', 'beginPath', 'stroke', 'moveTo']);
         drawingServiceSpy.gridCtx = gridCtxSpy;
-        
+
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawingServiceSpy }],
         });
@@ -30,8 +30,8 @@ describe('GridService', () => {
     });
 
     it('drawGrid is called when an grid is dispatched', () => {
-        const spy = spyOn( service , 'drawGrid');
-        dispatchEvent(new CustomEvent('grid',));
+        const spy = spyOn(service, 'drawGrid');
+        dispatchEvent(new CustomEvent('grid'));
         expect(spy).toHaveBeenCalled();
     });
     it('drawGrid does nothing if show grid is false', () => {
@@ -55,15 +55,15 @@ describe('GridService', () => {
     });
     it('toggleGrid calls draw grid  and puts show grid at true if it was at false', () => {
         service.showGrid = false;
-        const spy = spyOn( service , 'drawGrid');
+        const spy = spyOn(service, 'drawGrid');
         service.toggleGrid();
         expect(spy).toHaveBeenCalled();
         expect(service.showGrid).toEqual(true);
     });
     it('resetGrid makes sure all values are back to their original state', () => {
         service.showGrid = true;
-        service.boxSize =1;
-        service.opacity =1;
+        service.boxSize = 1;
+        service.opacity = 1;
         service.resetGrid();
         expect(service.boxSize).toEqual(Globals.GRID_BOX_INIT_VALUE);
         expect(service.opacity).toEqual(Globals.GRID_OPACITY_INIT_VALUE);
@@ -72,45 +72,33 @@ describe('GridService', () => {
     it('shortcutIncrementGrid does nothing if new size is too big', () => {
         const testValue = 97;
         service.showGrid = true;
-        service.boxSize =testValue;
-        
+        service.boxSize = testValue;
+
         service.shortcutIncrementGrid();
         expect(service.boxSize).toEqual(testValue);
-       
     });
     it('shortcutIncrementGrid increments of 5 boxSize if new size is within bounds', () => {
         const testValue = 95;
         service.showGrid = true;
-        service.boxSize =testValue;
-        
+        service.boxSize = testValue;
+
         service.shortcutIncrementGrid();
         expect(service.boxSize).toEqual(Globals.GRID_MAX_BOX_VALUE);
-       
     });
     it('shortcutDecrementGrid does nothing if new size is too big', () => {
         const testValue = 12;
         service.showGrid = true;
-        service.boxSize =testValue;
-        
+        service.boxSize = testValue;
+
         service.shortcutDecrementGrid();
         expect(service.boxSize).toEqual(testValue);
-       
     });
     it('shortcutDecrementGrid decrements of 5 boxSize if new size is within bounds', () => {
         const testValue = 15;
         service.showGrid = true;
-        service.boxSize =testValue;
-        
+        service.boxSize = testValue;
+
         service.shortcutDecrementGrid();
         expect(service.boxSize).toEqual(Globals.GRID_MIN_BOX_VALUE);
-       
     });
-
-
-    
 });
-
-
-/*
-
-*/

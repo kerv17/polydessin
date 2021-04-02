@@ -62,16 +62,16 @@ export class GridComponent implements OnChanges {
             return;
         }
 
-        if (this.functionMap.has([$event.key].join())) {
-            this.functionMap.get([$event.key].join())?.call(this);
+        if (this.functionMap.has([$event.shiftKey, $event.ctrlKey, $event.key].join())) {
+            this.functionMap.get([$event.shiftKey, $event.ctrlKey, $event.key].join())?.call(this);
             $event.preventDefault();
         }
     }
     initFunctionMap(): void {
         // the key is a joined string comprised of the event shiftkey,eventCtrlKey,and the shortcut
         this.functionMap
-            .set([Globals.GRID_INCREMENT_PLUS_SHORTCUT].join(), this.incrementSize)
-            .set([Globals.GRID_INCREMENT_EQUAL_SHORTCUT].join(), this.incrementSize)
-            .set([Globals.GRID_DECREMENT_SHORTCUT].join(), this.decrementSize);
+            .set([false, false, Globals.GRID_INCREMENT_PLUS_SHORTCUT].join(), this.incrementSize)
+            .set([false, false, Globals.GRID_INCREMENT_EQUAL_SHORTCUT].join(), this.incrementSize)
+            .set([false, false, Globals.GRID_DECREMENT_SHORTCUT].join(), this.decrementSize);
     }
 }

@@ -254,9 +254,9 @@ describe('SidebarComponent', () => {
         expect(resetWidthSpy).toHaveBeenCalled();
         expect(resetToolsModeSpy).toHaveBeenCalled();
     });
-    it('showGrid should call the toggleGrid method from GridService',() =>{
+    it('showGrid should call the toggleGrid method from GridService', () => {
         component.gridService = new GridService(drawingStub);
-        const spy = spyOn(component.gridService, 'toggleGrid')
+        const spy = spyOn(component.gridService, 'toggleGrid');
         component.showGrid();
         expect(spy).toHaveBeenCalled();
     });
