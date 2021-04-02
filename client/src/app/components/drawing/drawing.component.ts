@@ -164,6 +164,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.ondbClick(event);
     }
 
+    @HostListener('wheel', ['$event'])
+    onWheel(event: WheelEvent): void {
+        this.controller.currentTool.onWheel(event);
+    }
+
     get width(): number {
         return this.canvasSize.x;
     }

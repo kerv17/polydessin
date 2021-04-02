@@ -23,14 +23,18 @@ describe('GridService', () => {
         service = TestBed.inject(GridService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         service.drawingService.canvas = canvasTestHelper.canvas;
+        service.drawingService.previewCanvas = canvasTestHelper.canvas;
+        service.drawingService.canvas.height = 1;
+        service.drawingService.canvas.width = 1;
     });
 
     it('should be created ', () => {
         expect(service).toBeTruthy();
     });
 
-    it('drawGrid is called when an grid is dispatched', () => {
-        const spy = spyOn(service, 'drawGrid');
+    it('drawGrid is called when a grid is dispatched', () => {
+        const spy = spyOn(service, 'drawGrid').and.returnValue();
+        service.showGrid = false;
         dispatchEvent(new CustomEvent('grid'));
         expect(spy).toHaveBeenCalled();
     });

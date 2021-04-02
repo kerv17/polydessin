@@ -22,6 +22,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SidebarComponent } from './sidebar.component';
 
 export class DrawingServiceStub extends DrawingService {
@@ -68,6 +69,7 @@ describe('SidebarComponent', () => {
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
             new SelectionService(drawingStub, selectionMovementService),
+            new StampService(drawingStub),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);

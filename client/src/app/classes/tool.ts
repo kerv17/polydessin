@@ -37,6 +37,8 @@ export abstract class Tool {
 
     onEscape(): void {}
 
+    onWheel(event: WheelEvent): void {}
+
     onBackspace(): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {

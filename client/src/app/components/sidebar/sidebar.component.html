@@ -71,6 +71,20 @@
         </div>
 
         <div class="ToolContainer">
+          <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
+          <img
+              src="../../../assets/stamp.png"
+              [ngStyle]="{
+                  backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
+              }"
+              class="function"
+              (click)="setTool('d')"
+              (click)="this.openTool(true, 'd')"
+              tabindex="0"
+          />
+      </div>
+
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton annule la derniere action. Le raccourci est 'Ctrl+z'</div>
             <img src="../../../assets/undo.png" [ngStyle]="undo" class="function" (click)="undoAction()" tabindex="0" />
         </div>
@@ -147,7 +161,7 @@
             </div>
 
             <div>
-                <app-color [reset]="resetAttributes"></app-color>
+                <app-color [reset]="resetAttributes" *ngIf="currentTool != 'd'"></app-color>
             </div>
             <div *ngIf="shapeOptions">
                 <app-shape-options [change]="resetAttributes"></app-shape-options>
@@ -157,6 +171,9 @@
             </div>
             <div *ngIf="gridService.showGrid">
                 <app-grid></app-grid>
+
+            <div>
+                <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
             </div>
         </div>
     </div>

@@ -8,6 +8,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { ToolControllerService } from './tool-controller.service';
 // tslint:disable:no-any
 describe('ToolControllerService', () => {
@@ -20,6 +21,7 @@ describe('ToolControllerService', () => {
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
     let selectionServiceSpy: jasmine.SpyObj<AerosolService>;
+    let stampServiceSpy: jasmine.SpyObj<StampService>;
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['clearPreviewCtx'], { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', ['clearPreviewCtx'], { color: 'test' });
@@ -27,7 +29,9 @@ describe('ToolControllerService', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['clearPreviewCtx'], { color: 'test' });
         aerosolServiceSpy = jasmine.createSpyObj('AerosolService', ['clearPreviewCtx'], { color: 'test' });
         selectionServiceSpy = jasmine.createSpyObj('SelectionService', ['clearPreviewCtx'], { color: 'test' });
+        stampServiceSpy = jasmine.createSpyObj('StampService', ['clearPreviewCtx'], { color: 'test' });
         drawingService = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
@@ -36,6 +40,7 @@ describe('ToolControllerService', () => {
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: AerosolService, useValue: aerosolServiceSpy },
                 { provide: SelectionService, useValue: selectionServiceSpy },
+                { provide: StampService, useValue: stampServiceSpy },
                 { provide: DrawingService, useValue: drawingService },
             ],
         });
