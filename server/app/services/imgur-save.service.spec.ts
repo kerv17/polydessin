@@ -9,20 +9,21 @@ import * as sinon from 'sinon';
 import { CanvasInformation } from '../../../common/communication/canvas-information';
 import { ImgurSaveService } from './imgur-save.service';
 
-chai.use(chaiAsPromised); // this allows us to test for rejection
-
+chai.use(chaiAsPromised);
+const OK_STATUS = 200;
+const ERROR_STATUS = 404;
 describe('Service: ImgurSaveService', () => {
     const imgurSaveService = new ImgurSaveService();
     let testinformation: CanvasInformation;
     let testinformation2: CanvasInformation;
     let sandbox: sinon.SinonSandbox;
-    // const imgurSpy = sinon.spy(imgurSaveService, 'addData');
+
     const response = {
         data: {
             link: 'test',
         },
-        success: true, //was the request successful
-        status: 200, //http status code
+        success: true, // was the request successful
+        status: 200, // http status code
     };
     beforeEach(async () => {
         testinformation = {
@@ -53,8 +54,8 @@ describe('Service: ImgurSaveService', () => {
         };
         base64Data = testinformation2.imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         const testdata2 = { image: base64Data, type: 'image/' + testinformation2.format, name: testinformation2.name, title: testinformation2.name };
-        nock('https://api.imgur.com').post('/3/image', testdata).reply(200, response);
-        nock('https://api.imgur.com').post('/3/image', testdata2).reply(404, {
+        nock('https://api.imgur.com').post('/3/image', testdata).reply(OK_STATUS, response);
+        nock('https://api.imgur.com').post('/3/image', testdata2).reply(ERROR_STATUS, {
             message: 'something awful happened',
             code: 'AWFUL_ERROR',
         });

@@ -41,7 +41,7 @@ describe('ImgurController', () => {
         return supertest(app)
             .post('/api/imgur/')
             .expect(HTTP_STATUS_NOT_FOUND)
-            .then((response: any) => {
+            .then((response) => {
                 expect(response.status).to.equal(HTTP_STATUS_NOT_FOUND);
             });
     });

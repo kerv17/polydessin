@@ -12,7 +12,7 @@ export class ImgurController {
         this.configureRouter();
     }
 
-    private configureRouter() {
+    private configureRouter(): void {
         this.router = Router();
 
         this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
