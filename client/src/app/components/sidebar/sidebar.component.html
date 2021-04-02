@@ -169,11 +169,11 @@
             <div *ngIf="showLine">
                 <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
-            <div *ngIf="gridService.showGrid">
-                <app-grid></app-grid>
-
             <div>
                 <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            </div>
+            <div *ngIf="gridService.showGrid">
+                <app-grid></app-grid>
             </div>
         </div>
     </div>

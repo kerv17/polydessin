@@ -13,19 +13,20 @@ describe('GridService', () => {
     let gridCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
+        canvasTestHelper = new CanvasTestHelper();
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['resetCanvas', 'initializeCanvas', 'setCanvassSize', 'clearCanvas']);
         gridCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['lineTo', 'beginPath', 'stroke', 'moveTo']);
         drawingServiceSpy.gridCtx = gridCtxSpy;
+        drawingServiceSpy.baseCtx = gridCtxSpy;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawingServiceSpy }],
         });
         service = TestBed.inject(GridService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
-        service.drawingService.canvas = canvasTestHelper.canvas;
-        service.drawingService.previewCanvas = canvasTestHelper.canvas;
-        service.drawingService.canvas.height = 1;
-        service.drawingService.canvas.width = 1;
+        service.drawingService.canvas = (canvasTestHelper as any).createCanvas(1, 1);
+        service.drawingService.previewCanvas = (canvasTestHelper as any).createCanvas(1, 1);
+        service.drawingService.gridCanvas = (canvasTestHelper as any).createCanvas(1, 1);
     });
 
     it('should be created ', () => {
@@ -33,19 +34,22 @@ describe('GridService', () => {
     });
 
     it('drawGrid is called when a grid is dispatched', () => {
-        const spy = spyOn(service, 'drawGrid').and.returnValue();
+        const spy = spyOn(service as any, 'drawGrid');
+
         service.showGrid = false;
-        dispatchEvent(new CustomEvent('grid'));
+        const event = new CustomEvent('grid', {});
+        dispatchEvent(event);
+
         expect(spy).toHaveBeenCalled();
     });
     it('drawGrid does nothing if show grid is false', () => {
         service.showGrid = false;
-        service.drawGrid();
+        (service as any).drawGrid();
         expect(drawingServiceSpy.clearCanvas).not.toHaveBeenCalled();
     });
     it('drawGrid draws vertical and horizontal lines if show grid is true', () => {
         service.showGrid = true;
-        service.drawGrid();
+        (service as any).drawGrid();
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(gridCtxSpy.beginPath).toHaveBeenCalled();
         expect(gridCtxSpy.lineTo).toHaveBeenCalled();
@@ -59,7 +63,7 @@ describe('GridService', () => {
     });
     it('toggleGrid calls draw grid  and puts show grid at true if it was at false', () => {
         service.showGrid = false;
-        const spy = spyOn(service, 'drawGrid');
+        const spy = spyOn(service as any, 'drawGrid');
         service.toggleGrid();
         expect(spy).toHaveBeenCalled();
         expect(service.showGrid).toEqual(true);

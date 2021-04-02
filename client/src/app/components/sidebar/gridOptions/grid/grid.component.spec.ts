@@ -2,7 +2,7 @@
 /* tslint:disable:no-any*/
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSlider } from '@angular/material/slider';
+import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -10,10 +10,23 @@ import { GridService } from '@app/services/grid/grid.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { GridComponent } from './grid.component';
 
+export class GridServiceStub {
+    context: CanvasRenderingContext2D;
+    boxSize: number = Globals.GRID_BOX_INIT_VALUE;
+    opacity: number = Globals.GRID_OPACITY_INIT_VALUE;
+    showGrid: boolean = false;
+    shortcutIncrementGrid(): void {
+        this.boxSize = this.boxSize + Globals.GRID_VARIATION_VALUE;
+    }
+    shortcutDecrementGrid(): void {
+        this.boxSize = this.boxSize - Globals.GRID_VARIATION_VALUE;
+    }
+}
+
 describe('GridComponent', () => {
     let component: GridComponent;
     let fixture: ComponentFixture<GridComponent>;
-    let service: GridService;
+    let serviceStub: GridServiceStub;
     let drawingStub: DrawingService;
     let matSliderChange: MatSliderChange;
     let gridCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
@@ -21,11 +34,12 @@ describe('GridComponent', () => {
         drawingStub = new DrawingService({} as ResizePoint);
         gridCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['lineTo', 'beginPath', 'stroke', 'moveTo']);
         drawingStub.gridCtx = gridCtxSpy;
-        service = new GridService(drawingStub);
+        serviceStub = new GridServiceStub();
 
         TestBed.configureTestingModule({
+            imports: [MatSliderModule],
             declarations: [GridComponent, MatSlider],
-            providers: [GridComponent, { provide: GridService, useValue: service }],
+            providers: [GridComponent, { provide: GridService, useValue: serviceStub as GridServiceStub }],
         }).compileComponents();
     }));
 
@@ -33,7 +47,6 @@ describe('GridComponent', () => {
         matSliderChange = {
             value: Globals.TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
-
         fixture = TestBed.createComponent(GridComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -81,7 +94,7 @@ describe('GridComponent', () => {
     });
 
     it('incrementSize should call shortcutIncrementGrid and dispatches event', () => {
-        const spy = spyOn(service, 'shortcutIncrementGrid').and.returnValue();
+        const spy = spyOn(serviceStub, 'shortcutIncrementGrid').and.returnValue();
 
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
         component.incrementSize();
@@ -90,7 +103,7 @@ describe('GridComponent', () => {
         expect(spyDispatch).toHaveBeenCalled();
     });
     it('decrementSize should call shortcutDecrementGrid and dispatches event', () => {
-        const spy = spyOn(service, 'shortcutDecrementGrid').and.returnValue();
+        const spy = spyOn(serviceStub, 'shortcutDecrementGrid').and.returnValue();
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
 
         component.decrementSize();
@@ -136,7 +149,7 @@ describe('GridComponent', () => {
 
         // on change pas la valeur de set
         expect(component.opacity).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
-        expect(service.opacity).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(serviceStub.opacity).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
         expect(spyDispatch).toHaveBeenCalled();
     });
     it('verifying ngOnchanges with the change value not changing', () => {
@@ -148,7 +161,7 @@ describe('GridComponent', () => {
 
         // on change pas la valeur de set
         expect(component.size).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
-        expect(service.boxSize).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(serviceStub.boxSize).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
         expect(spyDispatch).toHaveBeenCalled();
     });
 

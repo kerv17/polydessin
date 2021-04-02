@@ -15,14 +15,14 @@ export class GridService {
             this.drawGrid();
         });
     }
-    drawGrid(): void {
+    private drawGrid(): void {
         if (!this.showGrid) {
             return;
         }
         this.drawingService.clearCanvas(this.drawingService.gridCtx);
         this.context = this.drawingService.gridCtx;
-        const canvasHeight = this.drawingService.canvas.height;
-        const canvasWidth = this.drawingService.canvas.width;
+        const canvasHeight = this.drawingService.gridCanvas.height;
+        const canvasWidth = this.drawingService.gridCanvas.width;
         this.context.lineWidth = 1;
         this.context.strokeStyle = 'rgba(0,0,0,' + (this.opacity / 100).toString() + ')';
         this.context.beginPath();
