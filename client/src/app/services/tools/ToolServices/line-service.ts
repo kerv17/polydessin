@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
@@ -35,28 +36,33 @@ export class LineService extends Tool {
     onClick(event: MouseEvent): void {
         // this.pathData.push(this.pointToPush(event));
         // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.pathData.push(this.getPointToPush(event));
-        this.drawLine(this.drawingService.previewCtx, this.pathData);
+        if (event.button === Globals.MouseButton.Left) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pathData.push(this.getPointToPush(event));
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
+        }
     }
 
     ondbClick(event: MouseEvent): void {
         // Removes the last 2 points, one for each added by solo click of the dbClick
-        this.pathData.pop();
-        this.pathData.pop();
-        if (this.pathData.length > 0) {
-            const SNAP_RANGE = 20;
-            const mousePosition = this.getPositionFromMouse(event);
-            if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
-                this.pathData.push(this.pathData[0]);
-            } else {
-                this.pathData.push(this.getPointToPush(event));
-            }
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
-            this.dispatchAction(this.createAction());
 
-            this.clearPath();
+        if (event.button === Globals.MouseButton.Left) {
+            this.pathData.pop();
+            this.pathData.pop();
+            if (this.pathData.length > 0) {
+                const SNAP_RANGE = 20;
+                const mousePosition = this.getPositionFromMouse(event);
+                if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
+                    this.pathData.push(this.pathData[0]);
+                } else {
+                    this.pathData.push(this.getPointToPush(event));
+                }
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.drawLine(this.drawingService.baseCtx, this.pathData);
+                this.dispatchAction(this.createAction());
+
+                this.clearPath();
+            }
         }
     }
 

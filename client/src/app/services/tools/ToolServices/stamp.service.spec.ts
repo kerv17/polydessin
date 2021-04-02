@@ -4,17 +4,17 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
-import { angleTurnPerRotation, path, StampService } from './stamp.service';
+import { angleTurnPerRotation, StampService } from './stamp.service';
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 describe('StampService', () => {
     let service: StampService;
     let mouseEvent: MouseEvent;
+    let mouseEvent2: MouseEvent;
     let drawingService: DrawingService;
     let baseCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
     let drawStampSpy: jasmine.Spy<any>;
     let wheelEvent: WheelEvent;
-    let image: HTMLImageElement;
 
     beforeEach(() => {
         drawingService = new DrawingService({} as ResizePoint);
@@ -32,14 +32,16 @@ describe('StampService', () => {
             button: 0,
         } as MouseEvent;
 
+        mouseEvent2 = {
+            pageX: 500,
+            pageY: 200,
+            button: 1,
+        } as MouseEvent;
+
         wheelEvent = {
             deltaY: 5,
             altKey: false,
         } as WheelEvent;
-
-        service.toolMode = 'test.jpg';
-        image = new Image();
-        image.src = path + service.toolMode;
     });
 
     it('should be created', () => {
@@ -55,6 +57,17 @@ describe('StampService', () => {
         expect((service as any).pathData).toEqual([service.getPositionFromMouse(mouseEvent)]);
         expect(drawStampSpy).toHaveBeenCalled();
         expect(actionCalled).toBeTrue();
+    });
+
+    it('click should not draw the stamp if wrong mouse button', () => {
+        let actionCalled = false;
+        addEventListener('action', () => {
+            actionCalled = true;
+        });
+        service.onClick(mouseEvent2);
+        expect((service as any).pathData).not.toEqual([service.getPositionFromMouse(mouseEvent)]);
+        expect(drawStampSpy).not.toHaveBeenCalled();
+        expect(actionCalled).toBeFalse();
     });
 
     it('onWheel should change the orientation', () => {
@@ -121,6 +134,8 @@ describe('StampService', () => {
     });
 
     it('scaleImage', () => {
+        const image: HTMLImageElement = { naturalWidth: 960, naturalHeight: 678 } as HTMLImageElement;
+        console.log(image.naturalWidth, image.naturalHeight);
         expect(service.scaleImage(image)).toEqual({ x: 176.5625, y: 250 });
     });
 });
