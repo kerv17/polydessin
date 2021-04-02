@@ -10,6 +10,7 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
 import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
@@ -54,12 +55,13 @@ describe('SidebarComponent', () => {
     let carouselService: CarouselService;
     let selectionMovementService: SelectionMovementService;
     let canvasTestHelper;
-
+    let exportService: ExportService;
     let eventSpy: jasmine.Spy;
     const router = jasmine.createSpyObj(Router, ['navigate']);
 
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
+        exportService = new ExportService(drawingStub, {} as ServerRequestService);
         remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
         selectionMovementService = new SelectionMovementService();
         toolController = new ToolControllerService(
@@ -85,6 +87,7 @@ describe('SidebarComponent', () => {
                 { provide: CarouselService, useValue: carouselService },
                 { provide: Router, useValue: router },
                 { provide: RemoteSaveService, useValue: remoteSaveServiceStub },
+                { provide: ExportService, useValue: exportService },
             ],
         }).compileComponents();
     }));
@@ -291,7 +294,6 @@ describe('SidebarComponent', () => {
         openToolSpy = spyOn(component, 'openTool');
         mapSpy = spyOn((component as any).functionMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = false;
-
         window.dispatchEvent(keyDownEvent);
         expect(mapSpy).not.toHaveBeenCalledWith([true, Globals.ELLIPSIS_SHORTCUT].join());
         expect(openToolSpy).not.toHaveBeenCalled();
@@ -304,7 +306,6 @@ describe('SidebarComponent', () => {
         component.currentTool = Globals.CRAYON_SHORTCUT;
         mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = true;
-
         window.dispatchEvent(keyDownEvent);
         expect(mapSpy).not.toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
         expect(component.currentTool).not.toEqual(Globals.ELLIPSIS_SHORTCUT);

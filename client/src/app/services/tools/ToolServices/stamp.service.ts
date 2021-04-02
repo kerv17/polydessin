@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Setting, Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
+
 export const path = '../../../../assets/Stamp/';
 export const angleTurnPerRotation = 15;
 export const maxImageSize = 250;
@@ -19,11 +21,12 @@ export class StampService extends Tool {
         super(drawingService);
     }
     onClick(event: MouseEvent): void {
-        this.pathData = [this.getPositionFromMouse(event)];
-
-        this.drawStamp(this.drawingService.baseCtx);
-        this.dispatchAction(this.createAction());
-        this.clearPreviewCtx();
+        if (event.button === Globals.MouseButton.Left) {
+            this.pathData = [this.getPositionFromMouse(event)];
+            this.drawStamp(this.drawingService.baseCtx);
+            this.dispatchAction(this.createAction());
+            this.clearPreviewCtx();
+        }
     }
 
     onWheel(event: WheelEvent): void {
