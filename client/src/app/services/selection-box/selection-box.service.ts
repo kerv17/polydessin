@@ -81,6 +81,7 @@ export class SelectionBoxService {
         };
     }
 
+    // à améliorer
     cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
         const bottomRight = {
             x: topLeft.x + width,

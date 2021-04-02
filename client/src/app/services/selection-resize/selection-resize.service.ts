@@ -7,9 +7,9 @@ import { SelectionBoxService } from '../selection-box/selection-box.service';
 })
 export class SelectionResizeService {
     private positions: Vec2[];
-    actualHandler: number;
-    resizePathData: Vec2[] = [];
-    hasResized: boolean = false;
+    private actualHandler: number;
+    private resizePathData: Vec2[] = [];
+    private hasResized: boolean = false;
 
     constructor(private selectionBox: SelectionBoxService) {}
 
@@ -22,6 +22,10 @@ export class SelectionResizeService {
                 this.resizePathData.push({ x: path[0].x, y: path[0].y });
             }
         }
+    }
+
+    resetPath(): void {
+        this.resizePathData = [];
     }
 
     getActualResizedPosition(): Vec2 {
@@ -56,7 +60,7 @@ export class SelectionResizeService {
     // changer la taille du image data
     onMouseMove(selectedArea: ImageData, ctx: CanvasRenderingContext2D, mousePosition: Vec2, shifted: boolean): void {
         this.hasResized = true;
-        this.updatePathDataOnResize(mousePosition, shifted);
+        this.resize(mousePosition, shifted);
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
             const width = this.resizePathData[2].x - this.resizePathData[0].x;
             const height = this.resizePathData[2].y - this.resizePathData[0].y;
@@ -80,7 +84,21 @@ export class SelectionResizeService {
         });
     }
 
-    onMouseUp(): void {
+    onMouseUp(): boolean {
+        if (this.hasResized) {
+            this.updatePathData();
+        }
+        return this.hasResized;
+    }
+
+    setPathDataAfterMovement(path: Vec2): void {
+        if (this.resizePathData.length !== 0 && path !== this.resizePathData[4]) {
+            this.resizePathData[4] = { x: path.x, y: path.y };
+            this.updatePathData();
+        }
+    }
+
+    private updatePathData(): void {
         const width = Math.abs(this.resizePathData[2].x - this.resizePathData[0].x);
         const height = Math.abs(this.resizePathData[2].y - this.resizePathData[0].y);
         this.resizePathData[0] = { x: this.resizePathData[4].x, y: this.resizePathData[4].y };
@@ -89,19 +107,8 @@ export class SelectionResizeService {
         this.resizePathData[3] = { x: this.resizePathData[4].x + width, y: this.resizePathData[4].y };
     }
 
-    getPathDataAfterMovement(path: Vec2): void {
-        if (this.resizePathData.length !== 0 && path !== this.resizePathData[4]) {
-            const width = Math.abs(this.resizePathData[2].x - this.resizePathData[0].x);
-            const height = Math.abs(this.resizePathData[2].y - this.resizePathData[0].y);
-            this.resizePathData[4] = { x: path.x, y: path.y };
-            this.resizePathData[0] = { x: this.resizePathData[4].x, y: this.resizePathData[4].y };
-            this.resizePathData[1] = { x: this.resizePathData[4].x, y: this.resizePathData[4].y + height };
-            this.resizePathData[2] = { x: this.resizePathData[4].x + width, y: this.resizePathData[4].y + height };
-            this.resizePathData[3] = { x: this.resizePathData[4].x + width, y: this.resizePathData[4].y };
-        }
-    }
-
-    updatePathDataOnResize(mousePosition: Vec2, shifted: boolean): void {
+    // à changer en map
+    private resize(mousePosition: Vec2, shifted: boolean): void {
         switch (this.actualHandler) {
             case 0:
                 if (shifted) {

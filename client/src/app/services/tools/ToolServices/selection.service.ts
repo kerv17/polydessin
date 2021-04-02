@@ -15,7 +15,6 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     private inMovement: boolean = false;
     private inResize: boolean = false;
-    // private selectedArea: ImageData;
     private clipboard: ImageData;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selectionResize: SelectionResizeService) {
@@ -46,7 +45,6 @@ export class SelectionService extends Tool {
     }
 
     getActualPosition(): Vec2 {
-        // À revoir si nécessaire : pathData[4] devrait être égal à selectionResizePath[4]
         if (this.inResize) {
             return this.selectionResize.getActualResizedPosition();
         } else if (this.pathData.length > Globals.CURRENT_SELECTION_POSITION) {
@@ -92,7 +90,7 @@ export class SelectionService extends Tool {
         if (this.inSelection) {
             if (this.selectionResize.onMouseDown(mousePosition, this.pathData)) {
                 this.selectionResize.initializePath(this.pathData);
-                this.selectionResize.getPathDataAfterMovement(this.getActualPosition());
+                this.selectionResize.setPathDataAfterMovement(this.getActualPosition());
                 this.inResize = true;
             } else if (
                 this.selectionMove.onMouseDown(event, mousePosition, this.getActualPosition(), this.getSelectionWidth(), this.getSelectionHeight())
@@ -137,14 +135,12 @@ export class SelectionService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
-                // a refactor
                 this.selectionMove.onMouseUp(event, this.getActualPosition(), this.pathData);
-                this.selectionResize.getPathDataAfterMovement(this.pathData[4]);
+                this.selectionResize.setPathDataAfterMovement(this.pathData[4]);
                 this.inMovement = false;
                 this.inSelection = true;
             } else if (this.inResize) {
-                if (this.selectionResize.hasResized) {
-                    this.selectionResize.onMouseUp();
+                if (this.selectionResize.onMouseUp()) {
                     this.selectedArea = this.drawingService.previewCtx.getImageData(
                         this.getActualPosition().x,
                         this.getActualPosition().y,
@@ -176,7 +172,7 @@ export class SelectionService extends Tool {
             this.mouseDown = false;
             this.inMovement = false;
             this.inResize = false;
-            this.selectionResize.resizePathData = [];
+            this.selectionResize.resetPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
         }
@@ -365,7 +361,7 @@ export class SelectionService extends Tool {
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
             );
-            this.selectionResize.getPathDataAfterMovement(this.pathData[Globals.CURRENT_SELECTION_POSITION]);
+            this.selectionResize.setPathDataAfterMovement(this.pathData[Globals.CURRENT_SELECTION_POSITION]);
         }
     }
 }
