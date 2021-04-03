@@ -17,6 +17,7 @@ export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
 export const EXPORT_SHORTCUT = 'e';
 export const RECTANGLE_SELECTION_SHORTCUT = 'r';
+export const LASSO_SELECTION_SHORTCUT = 'v';
 export const CANVAS_SELECTION_EVENT = 'a';
 export const CANVAS_SAVE_SHORTCUT = 's';
 export const UNDO_SHORTCUT = 'z';

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ServiceCalculator } from '@app/classes/service-calculator';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MILS_TO_SEC, MouseButton } from '@app/Constants/constants';
@@ -21,9 +22,6 @@ export class AerosolService extends Tool {
     // tslint:disable-next-line: no-any
     timeoutID: any;
     // Fonction servant a generer un nombre aleatoire entre -max et max
-    rng(max: number): number {
-        return Math.floor((Math.random() - 1.0 / 2.0) * 2 * max);
-    }
 
     onMouseDown(event: MouseEvent): void {
         this.lastPosition = this.getPositionFromMouse(event);
@@ -77,8 +75,8 @@ export class AerosolService extends Tool {
         let xVariation: number;
         let yVariation: number;
         do {
-            xVariation = this.rng(radius);
-            yVariation = this.rng(radius);
+            xVariation = ServiceCalculator.rng(radius);
+            yVariation = ServiceCalculator.rng(radius);
             pointToAdd = { x: position.x + xVariation, y: position.y + yVariation };
         } while (this.distance(xVariation, yVariation) > radius);
         return pointToAdd;

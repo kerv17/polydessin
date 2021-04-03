@@ -146,6 +146,10 @@ export class SidebarComponent {
             .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
+            } as ToolParam)
+            .set([false, false, Globals.LASSO_SELECTION_SHORTCUT].join(), {
+                showWidth: false,
+                toolName: Globals.LASSO_SELECTION_SHORTCUT,
             } as ToolParam);
     }
     initFunctionMap(): void {

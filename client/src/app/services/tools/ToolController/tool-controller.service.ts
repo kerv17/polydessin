@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -26,6 +27,7 @@ export class ToolControllerService {
         private aerosolService: AerosolService,
         public selectionService: SelectionService,
         public stampService: StampService,
+        public lassoService: LassoService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
@@ -49,7 +51,8 @@ export class ToolControllerService {
             .set(Globals.ELLIPSIS_SHORTCUT, this.ellipsisService)
             .set(Globals.AEROSOL_SHORTCUT, this.aerosolService)
             .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.selectionService)
-            .set(Globals.STAMP_SHORTCUT, this.stampService);
+            .set(Globals.STAMP_SHORTCUT, this.stampService)
+            .set(Globals.LASSO_SELECTION_SHORTCUT, this.lassoService);
 
         this.functionMap
             .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {
@@ -128,7 +131,7 @@ export class ToolControllerService {
     getTool(toolShortcut: string): Tool {
         if (this.toolMap.has(toolShortcut)) {
             return this.toolMap.get(toolShortcut) as Tool;
-        } else return this.pencilService;
+        } else return this.lassoService;
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
