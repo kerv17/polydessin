@@ -54,4 +54,19 @@ export abstract class ServiceCalculator {
     static rng(max: number): number {
         return Math.floor((Math.random() - 1.0 / 2.0) * 2 * max);
     }
+
+    static maxSize(path: Vec2[]): Vec2[] {
+        const size: Vec2[] = [
+            { x: path[0].x, y: path[0].y },
+            { x: path[0].x, y: path[0].y },
+        ];
+        for (let i = 1; i < path.length; i++) {
+            size[0].x = size[0].x > path[i].x ? path[i].x : size[0].x;
+            size[1].x = size[1].x < path[i].x ? path[i].x : size[1].x;
+
+            size[0].y = size[0].y > path[i].y ? path[i].y : size[0].y;
+            size[1].y = size[1].y < path[i].y ? path[i].y : size[1].y;
+        }
+        return size;
+    }
 }
