@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SelectionResizeService } from './selection-resize.service';
+import { ClipboardService } from './clipboard.service';
 
-describe('SelectionResizeService', () => {
-    let service: SelectionResizeService;
+describe('ClipboardService', () => {
+    let service: ClipboardService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(SelectionResizeService);
+        service = TestBed.inject(ClipboardService);
     });
 
     it('should be created', () => {

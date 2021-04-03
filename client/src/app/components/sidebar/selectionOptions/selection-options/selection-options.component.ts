@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
-import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { ClipboardService } from '@app/services/tools/ToolServices/clipboard/clipboard.service';
 
 @Component({
     selector: 'app-selection-options',
@@ -11,7 +11,7 @@ export class SelectionOptionsComponent {
     copyStyle: { [key: string]: string };
     pasteStyle: { [key: string]: string };
 
-    constructor(public selectionService: SelectionService) {
+    constructor(public clipboardService: ClipboardService) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
         });
@@ -20,13 +20,13 @@ export class SelectionOptionsComponent {
     // transformer en map
     private checkKeyEvent(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === Globals.COPY_SHORTCUT) {
-            this.selectionService.copy();
+            this.clipboardService.copy();
         } else if (event.ctrlKey && event.key === Globals.PASTE_SHORTCUT) {
-            this.selectionService.paste();
+            this.clipboardService.paste();
         } else if (event.ctrlKey && event.key === Globals.CUT_SHORTCUT) {
-            this.selectionService.cut();
+            this.clipboardService.cut();
         } else if (event.key === Globals.DELETE_SHORTCUT) {
-            this.selectionService.delete();
+            this.clipboardService.delete();
         }
     }
 }

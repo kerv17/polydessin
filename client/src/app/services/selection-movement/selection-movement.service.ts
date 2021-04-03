@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
-
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -11,10 +12,12 @@ export class SelectionMovementService {
     private downArrow: boolean = false;
     private rightArrow: boolean = false;
     private upArrow: boolean = false;
-    timeout: number = 0;
-    interval: number = 0;
-    keyDown: boolean = false;
-    firstTime: boolean = true;
+    private timeout: number = 0;
+    private interval: number = 0;
+    private keyDown: boolean = false;
+    private firstTime: boolean = true;
+
+    constructor(private drawingService: DrawingService, private selectionResize: SelectionResizeService) {}
 
     onMouseDown(event: MouseEvent, mousePosition: Vec2, topLeft: Vec2, width: number, height: number): boolean {
         const bottomRight = { x: topLeft.x + width, y: topLeft.y + height };
@@ -65,6 +68,11 @@ export class SelectionMovementService {
     }
 
     onArrowKeyUp(event: KeyboardEvent): void {
+        this.keyDown = false;
+        this.firstTime = true;
+        clearInterval(this.interval);
+        clearTimeout(this.timeout);
+
         if (event.key === 'ArrowLeft') {
             this.leftArrow = false;
         }
@@ -106,5 +114,34 @@ export class SelectionMovementService {
         ctx.fillRect(path[0].x, path[0].y, path[2].x - path[0].x, path[2].y - path[0].y);
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
+    }
+
+    setKeyMovementDelays(selectedArea: ImageData, pathData: Vec2[]): void {
+        if (this.keyDown) {
+            if (this.firstTime) {
+                this.firstTime = false;
+                this.interval = window.setInterval(() => {
+                    this.onArrowDown(selectedArea, pathData);
+                }, Globals.INTERVAL_MS);
+            }
+        } else {
+            this.timeout = window.setTimeout(() => {
+                this.keyDown = true;
+            }, Globals.TIMEOUT_MS);
+        }
+    }
+
+    onArrowDown(selectedArea: ImageData, pathData: Vec2[]): void {
+        if (selectedArea !== undefined) {
+            this.moveSelection(pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.updateCanvasOnMove(this.drawingService.previewCtx, pathData);
+            this.drawingService.previewCtx.putImageData(
+                selectedArea,
+                pathData[Globals.CURRENT_SELECTION_POSITION].x,
+                pathData[Globals.CURRENT_SELECTION_POSITION].y,
+            );
+            this.selectionResize.setPathDataAfterMovement(pathData[Globals.CURRENT_SELECTION_POSITION]);
+        }
     }
 }

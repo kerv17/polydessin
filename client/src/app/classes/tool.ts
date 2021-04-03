@@ -15,7 +15,7 @@ export abstract class Tool {
     pointWidth: number;
     toolMode: string = 'fill';
     shift: boolean = false;
-    protected selectedArea: ImageData;
+    selectedArea: ImageData;
     protected pathData: Vec2[];
 
     constructor(public drawingService: DrawingService) {}
