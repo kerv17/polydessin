@@ -3,14 +3,13 @@ import { ServiceCalculator } from '@app/classes/service-calculator';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
 import { LineService } from './line-service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LassoService extends Tool {
-    constructor(drawingService: DrawingService, private lineService: LineService, private selectionMove: SelectionMovementService) {
+    constructor(drawingService: DrawingService, private lineService: LineService) {
         super(drawingService);
         this.toolMode = 'selection';
         this.clearPath();
