@@ -136,6 +136,18 @@
                 tabindex="0"
             />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire afficher une grille. Le raccourci est 'g'</div>
+            <img
+                src="../../../assets/grid.png"
+                [ngStyle]="{
+                    backgroundColor: gridService.showGrid ? 'gainsboro' : 'white'
+                }"
+                (click)="showGrid()"
+                class="function"
+                tabindex="0"
+            />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
@@ -157,9 +169,11 @@
             <div *ngIf="showLine">
                 <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
-
             <div>
                 <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            </div>
+            <div *ngIf="gridService.showGrid">
+                <app-grid></app-grid>
             </div>
         </div>
     </div>
