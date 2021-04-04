@@ -25,7 +25,7 @@ export class SelectionService extends Tool {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.inMovement = true;
-                this.pathData[4] = this.getActualPosition();
+                this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
                 if (event.repeat) {
                     this.selectionMove.setKeyMovementDelays(this.selectedArea, this.pathData);
                 } else {
@@ -139,7 +139,7 @@ export class SelectionService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             if (this.inMovement) {
                 this.selectionMove.onMouseUp(event, this.getActualPosition(), this.pathData);
-                this.selectionResize.setPathDataAfterMovement(this.pathData[4]);
+                this.selectionResize.setPathDataAfterMovement(this.pathData[Globals.CURRENT_SELECTION_POSITION]);
                 this.inMovement = false;
                 this.inSelection = true;
             } else if (this.inResize) {
@@ -171,7 +171,6 @@ export class SelectionService extends Tool {
         if (this.inSelection && !this.inMovement) {
             this.confirmSelectionMove();
             // crée des actions de trop
-            console.log('escapeSelection');
             this.dispatchAction(this.createAction());
             this.inSelection = false;
             this.mouseDown = false;

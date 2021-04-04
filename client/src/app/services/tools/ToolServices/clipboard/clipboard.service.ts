@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Setting, Tool } from '@app/classes/tool';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
@@ -79,10 +80,10 @@ export class ClipboardService extends Tool {
             x: this.selection.drawingService.canvas.width + this.clipboard.width,
             y: this.selection.drawingService.canvas.height + this.clipboard.height,
         };
-        this.selection.getPathData()[3] = {
+        this.selection.getPathData()[Globals.RIGHT_HANDLER] = {
             x: this.selection.drawingService.canvas.width + this.clipboard.width,
             y: this.selection.drawingService.canvas.height,
         };
-        this.selection.getPathData()[4] = { x: 0, y: 0 };
+        this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION] = { x: 0, y: 0 };
     }
 }

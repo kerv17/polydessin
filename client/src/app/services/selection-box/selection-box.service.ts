@@ -43,10 +43,10 @@ export class SelectionBoxService {
         let pos = 10;
         for (const handler of this.getHandlersPositions()) {
             if (
-                event.offsetX <= handler.x + 10 &&
-                event.offsetX >= handler.x - 10 &&
-                event.offsetY <= handler.y + 10 &&
-                event.offsetY >= handler.y - 10
+                event.offsetX <= handler.x + Globals.HANDLERS_WIDTH &&
+                event.offsetX >= handler.x - Globals.HANDLERS_WIDTH &&
+                event.offsetY <= handler.y + Globals.HANDLERS_WIDTH &&
+                event.offsetY >= handler.y - Globals.HANDLERS_WIDTH
             ) {
                 pos = this.getHandlersPositions().indexOf(handler);
             }

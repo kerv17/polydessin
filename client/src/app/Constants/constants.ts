@@ -94,6 +94,7 @@ export const BOTTOM_RIGHT_HANDLER = 4; // coin bas droite
 export const BOTTOM_HANDLER = 5; // centre bas
 export const BOTTOM_LEFT_HANDLER = 6; // coin bas gauche
 export const LEFT_HANDLER = 7; // centre gauche
+export const HANDLERS_WIDTH = 10;
 
 // Constante pour tests de sélection
 export const mouseDownEvent = {
