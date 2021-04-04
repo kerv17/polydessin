@@ -71,18 +71,18 @@
         </div>
 
         <div class="ToolContainer">
-          <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
-          <img
-              src="../../../assets/stamp.png"
-              [ngStyle]="{
-                  backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
-              }"
-              class="function"
-              (click)="setTool('d')"
-              (click)="this.openTool(true, 'd')"
-              tabindex="0"
-          />
-      </div>
+            <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
+            <img
+                src="../../../assets/stamp.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('d')"
+                (click)="this.openTool(true, 'd')"
+                tabindex="0"
+            />
+        </div>
 
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton annule la derniere action. Le raccourci est 'Ctrl+z'</div>
@@ -132,6 +132,19 @@
                 }"
                 (click)="setTool('r')"
                 (click)="this.openTool(false, 'r')"
+                class="function"
+                tabindex="0"
+            />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de remplir une surface . Le raccourci est 'b'</div>
+            <img
+                src="../../../assets/bucket.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'b' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('b')"
+                (click)="this.openTool(false, 'b')"
                 class="function"
                 tabindex="0"
             />
