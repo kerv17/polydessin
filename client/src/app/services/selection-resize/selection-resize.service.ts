@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 
 @Injectable({
@@ -21,7 +22,7 @@ export class SelectionResizeService {
             for (const position of path) {
                 this.resizePathData.push({ x: position.x, y: position.y });
             }
-            if (this.resizePathData.length < 4) {
+            if (this.resizePathData.length < Globals.CURRENT_SELECTION_POSITION) {
                 this.resizePathData.push({ x: path[0].x, y: path[0].y });
             }
         }
@@ -32,7 +33,7 @@ export class SelectionResizeService {
     }
 
     getActualResizedPosition(): Vec2 {
-        return this.resizePathData[4];
+        return this.resizePathData[Globals.CURRENT_SELECTION_POSITION];
     }
 
     getActualResizedWidth(): number {
@@ -48,10 +49,10 @@ export class SelectionResizeService {
         this.positions = this.selectionBox.getHandlersPositions();
         for (const handlers of this.positions) {
             if (
-                mousePosition.x <= handlers.x + 10 &&
-                mousePosition.x >= handlers.x - 10 &&
-                mousePosition.y <= handlers.y + 10 &&
-                mousePosition.y >= handlers.y - 10
+                mousePosition.x <= handlers.x + Globals.HANDLERS_WIDTH &&
+                mousePosition.x >= handlers.x - Globals.HANDLERS_WIDTH &&
+                mousePosition.y <= handlers.y + Globals.HANDLERS_WIDTH &&
+                mousePosition.y >= handlers.y - Globals.HANDLERS_WIDTH
             ) {
                 this.actualHandler = this.positions.indexOf(handlers);
                 return true;
@@ -64,23 +65,26 @@ export class SelectionResizeService {
     onMouseMove(selectedArea: ImageData, ctx: CanvasRenderingContext2D, mousePosition: Vec2, shifted: boolean): void {
         this.hasResized = true;
         this.resizeMap.get(this.actualHandler)?.call(this, mousePosition, shifted);
-        this.resizePathData[4] = { x: this.resizePathData[0].x, y: this.resizePathData[0].y };
+        this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[0].x, y: this.resizePathData[0].y };
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
             const width = this.resizePathData[2].x - this.resizePathData[0].x;
             const height = this.resizePathData[2].y - this.resizePathData[0].y;
 
             if (width < 0 && height < 0) {
-                ctx.scale(-1, -1);
+                ctx.scale(Globals.MIRROR_SCALE, Globals.MIRROR_SCALE);
                 ctx.drawImage(imgBitmap, -this.resizePathData[0].x, -this.resizePathData[0].y, -width, -height);
-                this.resizePathData[4] = { x: this.resizePathData[2].x, y: this.resizePathData[2].y };
+                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[2].x, y: this.resizePathData[2].y };
             } else if (width < 0) {
-                ctx.scale(-1, 1);
+                ctx.scale(Globals.MIRROR_SCALE, 1);
                 ctx.drawImage(imgBitmap, -this.resizePathData[0].x, this.resizePathData[0].y, -width, height);
-                this.resizePathData[4] = { x: this.resizePathData[3].x, y: this.resizePathData[3].y };
+                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = {
+                    x: this.resizePathData[Globals.RIGHT_HANDLER].x,
+                    y: this.resizePathData[Globals.RIGHT_HANDLER].y,
+                };
             } else if (height < 0) {
-                ctx.scale(1, -1);
+                ctx.scale(1, Globals.MIRROR_SCALE);
                 ctx.drawImage(imgBitmap, this.resizePathData[0].x, -this.resizePathData[0].y, width, -height);
-                this.resizePathData[4] = { x: this.resizePathData[1].x, y: this.resizePathData[1].y };
+                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[1].x, y: this.resizePathData[1].y };
             } else if (width > 0 && height > 0) {
                 ctx.drawImage(imgBitmap, this.resizePathData[0].x, this.resizePathData[0].y, width, height);
             }
@@ -96,8 +100,8 @@ export class SelectionResizeService {
     }
 
     setPathDataAfterMovement(path: Vec2): void {
-        if (this.resizePathData.length !== 0 && path !== this.resizePathData[4]) {
-            this.resizePathData[4] = { x: path.x, y: path.y };
+        if (this.resizePathData.length !== 0 && path !== this.resizePathData[Globals.CURRENT_SELECTION_POSITION]) {
+            this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: path.x, y: path.y };
             this.updatePathData();
         }
     }
@@ -105,66 +109,87 @@ export class SelectionResizeService {
     private updatePathData(): void {
         const width = Math.abs(this.resizePathData[2].x - this.resizePathData[0].x);
         const height = Math.abs(this.resizePathData[2].y - this.resizePathData[0].y);
-        this.resizePathData[0] = { x: this.resizePathData[4].x, y: this.resizePathData[4].y };
-        this.resizePathData[1] = { x: this.resizePathData[4].x, y: this.resizePathData[4].y + height };
-        this.resizePathData[2] = { x: this.resizePathData[4].x + width, y: this.resizePathData[4].y + height };
-        this.resizePathData[3] = { x: this.resizePathData[4].x + width, y: this.resizePathData[4].y };
+        this.resizePathData[0] = {
+            x: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].x,
+            y: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].y,
+        };
+        this.resizePathData[1] = {
+            x: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].x,
+            y: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].y + height,
+        };
+        this.resizePathData[2] = {
+            x: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].x + width,
+            y: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].y + height,
+        };
+        this.resizePathData[Globals.RIGHT_HANDLER] = {
+            x: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].x + width,
+            y: this.resizePathData[Globals.CURRENT_SELECTION_POSITION].y,
+        };
     }
 
     private initMap(): void {
         this.resizeMap
-            .set(0, this.resizeHandler0)
-            .set(1, this.resizeHandler1)
-            .set(2, this.resizeHandler2)
-            .set(3, this.resizeHandler3)
-            .set(4, this.resizeHandler4)
-            .set(5, this.resizeHandler5)
-            .set(6, this.resizeHandler6)
-            .set(7, this.resizeHandler7);
+            .set(Globals.TOP_LEFT_HANDLER, this.resizeHandler0)
+            .set(Globals.TOP_HANDLER, this.resizeHandler1)
+            .set(Globals.TOP_RIGHT_HANDLER, this.resizeHandler2)
+            .set(Globals.RIGHT_HANDLER, this.resizeHandler3)
+            .set(Globals.CURRENT_SELECTION_POSITION, this.resizeHandler4)
+            .set(Globals.BOTTOM_HANDLER, this.resizeHandler5)
+            .set(Globals.BOTTOM_LEFT_HANDLER, this.resizeHandler6)
+            .set(Globals.LEFT_HANDLER, this.resizeHandler7);
     }
 
     private resizeHandler0(mousePosition: Vec2, shifted: boolean): void {
         if (shifted) {
-            this.resizePathData[0] = { x: this.resizePathData[1].x - (this.resizePathData[3].y - mousePosition.y), y: mousePosition.y };
+            this.resizePathData[0] = {
+                x: this.resizePathData[1].x - (this.resizePathData[Globals.RIGHT_HANDLER].y - mousePosition.y),
+                y: mousePosition.y,
+            };
             this.resizePathData[1] = { x: this.resizePathData[0].x, y: this.resizePathData[2].y };
-            this.resizePathData[3] = { x: this.resizePathData[2].x, y: mousePosition.y };
+            this.resizePathData[Globals.RIGHT_HANDLER] = { x: this.resizePathData[2].x, y: mousePosition.y };
         } else {
             this.resizePathData[0] = mousePosition;
-            this.resizePathData[3].y = mousePosition.y;
+            this.resizePathData[Globals.RIGHT_HANDLER].y = mousePosition.y;
             this.resizePathData[1].x = mousePosition.x;
         }
     }
 
     private resizeHandler1(mousePosition: Vec2, shifted: boolean): void {
         this.resizePathData[0].y = mousePosition.y;
-        this.resizePathData[3].y = mousePosition.y;
+        this.resizePathData[Globals.RIGHT_HANDLER].y = mousePosition.y;
     }
 
     private resizeHandler2(mousePosition: Vec2, shifted: boolean): void {
         if (shifted) {
-            this.resizePathData[3] = { x: this.resizePathData[2].x + this.resizePathData[0].y - mousePosition.y, y: mousePosition.y };
-            this.resizePathData[2] = { x: this.resizePathData[3].x, y: this.resizePathData[1].y };
+            this.resizePathData[Globals.RIGHT_HANDLER] = {
+                x: this.resizePathData[2].x + this.resizePathData[0].y - mousePosition.y,
+                y: mousePosition.y,
+            };
+            this.resizePathData[2] = { x: this.resizePathData[Globals.RIGHT_HANDLER].x, y: this.resizePathData[1].y };
             this.resizePathData[0] = { x: this.resizePathData[1].x, y: mousePosition.y };
         } else {
-            this.resizePathData[3] = mousePosition;
+            this.resizePathData[Globals.RIGHT_HANDLER] = mousePosition;
             this.resizePathData[0].y = mousePosition.y;
             this.resizePathData[2].x = mousePosition.x;
         }
     }
 
     private resizeHandler3(mousePosition: Vec2, shifted: boolean): void {
-        this.resizePathData[3].x = mousePosition.x;
+        this.resizePathData[Globals.RIGHT_HANDLER].x = mousePosition.x;
         this.resizePathData[2].x = mousePosition.x;
     }
 
     private resizeHandler4(mousePosition: Vec2, shifted: boolean): void {
         if (shifted) {
-            this.resizePathData[2] = { x: this.resizePathData[3].x + mousePosition.y - this.resizePathData[1].y, y: mousePosition.y };
+            this.resizePathData[2] = {
+                x: this.resizePathData[Globals.RIGHT_HANDLER].x + mousePosition.y - this.resizePathData[1].y,
+                y: mousePosition.y,
+            };
             this.resizePathData[1] = { x: this.resizePathData[1].x, y: mousePosition.y };
-            this.resizePathData[3] = { x: this.resizePathData[2].x, y: this.resizePathData[3].y };
+            this.resizePathData[Globals.RIGHT_HANDLER] = { x: this.resizePathData[2].x, y: this.resizePathData[Globals.RIGHT_HANDLER].y };
         } else {
             this.resizePathData[2] = mousePosition;
-            this.resizePathData[3].x = mousePosition.x;
+            this.resizePathData[Globals.RIGHT_HANDLER].x = mousePosition.x;
             this.resizePathData[1].y = mousePosition.y;
         }
     }
@@ -177,8 +202,8 @@ export class SelectionResizeService {
     private resizeHandler6(mousePosition: Vec2, shifted: boolean): void {
         if (shifted) {
             this.resizePathData[1] = { x: this.resizePathData[0].x - (mousePosition.y - this.resizePathData[2].y), y: mousePosition.y };
-            this.resizePathData[2] = { x: this.resizePathData[3].x, y: mousePosition.y };
-            this.resizePathData[0] = { x: this.resizePathData[1].x, y: this.resizePathData[3].y };
+            this.resizePathData[2] = { x: this.resizePathData[Globals.RIGHT_HANDLER].x, y: mousePosition.y };
+            this.resizePathData[0] = { x: this.resizePathData[1].x, y: this.resizePathData[Globals.RIGHT_HANDLER].y };
         } else {
             this.resizePathData[1] = mousePosition;
             this.resizePathData[0].x = mousePosition.x;
