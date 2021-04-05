@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
@@ -34,6 +35,7 @@ describe('DrawingComponent', () => {
     let carouselService: CarouselService;
     let selectionBoxService: SelectionBoxService;
     let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
@@ -41,14 +43,15 @@ describe('DrawingComponent', () => {
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
-        selectionMoveService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
             {} as LineService,
             {} as EllipsisService,
             {} as AerosolService,
-            new SelectionService(drawingStub, selectionMoveService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
 

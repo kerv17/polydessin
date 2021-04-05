@@ -56,29 +56,34 @@ describe('SelectionBoxService', () => {
         expect(service.getHandlersPositions()).toEqual(service[handlersPosition]);
     });
 
-    it('getCursor should return all-scroll if the cursor is not on one of the 8 handlers', () => {
+    it('getCursor should return the value of the setCursor method based on the position of the mouse', () => {
+        const expectedPos = 10;
+        expect(service.getCursor(mouseEvent)).toEqual(service.setCursor(expectedPos));
+    });
+
+    it('setCursor should return all-scroll if the cursor is not on one of the 8 handlers', () => {
         const pos = 12;
-        expect(service.getCursor(pos)).toEqual('all-scroll');
+        expect(service.setCursor(pos)).toEqual('all-scroll');
     });
 
-    it('getCursor should return nw-resize if the cursor is on the top left or bottom right handler', () => {
-        expect(service.getCursor(Globals.TOP_LEFT_HANDLER)).toEqual('nw-resize');
-        expect(service.getCursor(Globals.BOTTOM_RIGHT_HANDLER)).toEqual('nw-resize');
+    it('setCursor should return nw-resize if the cursor is on the top left or bottom right handler', () => {
+        expect(service.setCursor(Globals.TOP_LEFT_HANDLER)).toEqual('nw-resize');
+        expect(service.setCursor(Globals.BOTTOM_RIGHT_HANDLER)).toEqual('nw-resize');
     });
 
-    it('getCursor should return n-resize if the cursor is on the top or bottom handler', () => {
-        expect(service.getCursor(Globals.TOP_HANDLER)).toEqual('n-resize');
-        expect(service.getCursor(Globals.BOTTOM_HANDLER)).toEqual('n-resize');
+    it('setCursor should return n-resize if the cursor is on the top or bottom handler', () => {
+        expect(service.setCursor(Globals.TOP_HANDLER)).toEqual('n-resize');
+        expect(service.setCursor(Globals.BOTTOM_HANDLER)).toEqual('n-resize');
     });
 
-    it('getCursor should return ne-resize if the cursor is on the top right or bottom left handler', () => {
-        expect(service.getCursor(Globals.TOP_RIGHT_HANDLER)).toEqual('ne-resize');
-        expect(service.getCursor(Globals.BOTTOM_LEFT_HANDLER)).toEqual('ne-resize');
+    it('setCursor should return ne-resize if the cursor is on the top right or bottom left handler', () => {
+        expect(service.setCursor(Globals.TOP_RIGHT_HANDLER)).toEqual('ne-resize');
+        expect(service.setCursor(Globals.BOTTOM_LEFT_HANDLER)).toEqual('ne-resize');
     });
 
-    it('getCursor should return e-resize if the cursor is on the right or left handler', () => {
-        expect(service.getCursor(Globals.RIGHT_HANDLER)).toEqual('e-resize');
-        expect(service.getCursor(Globals.LEFT_HANDLER)).toEqual('e-resize');
+    it('setCursor should return e-resize if the cursor is on the right or left handler', () => {
+        expect(service.setCursor(Globals.RIGHT_HANDLER)).toEqual('e-resize');
+        expect(service.setCursor(Globals.LEFT_HANDLER)).toEqual('e-resize');
     });
 
     it('getLeftPosition should return a string with the x value of the corresponding handler', () => {
@@ -101,9 +106,9 @@ describe('SelectionBoxService', () => {
         expect(service.selectionBox.height).toEqual('100px');
     });
 
-    it('cursorChange should set the cursor to all-scroll if the mouse is over the selection', () => {
+    it('cursorChange should call getCursor if the mouse is over the selection', () => {
         service.cursorChange(mouseEvent, true, { x: width, y: height }, width, height);
-        expect(service.cursor.cursor).toEqual('all-scroll');
+        expect(service.cursor.cursor).toEqual(service.getCursor(mouseEvent));
     });
 
     it('cursorChange should set the cursor to crosshair if the mouse is not over the selection', () => {

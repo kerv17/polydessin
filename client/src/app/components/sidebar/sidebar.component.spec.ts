@@ -12,7 +12,9 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
@@ -50,7 +52,9 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
     let carouselService: CarouselService;
-    let selectionMovementService: SelectionMovementService;
+    let selectionBoxService: SelectionBoxService;
+    let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let canvasTestHelper;
 
     let eventSpy: jasmine.Spy;
@@ -59,14 +63,16 @@ describe('SidebarComponent', () => {
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
         remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
-        selectionMovementService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionBoxService = new SelectionBoxService();
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             new PencilService(drawingStub),
             new RectangleService(drawingStub),
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
-            new SelectionService(drawingStub, selectionMovementService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
@@ -85,18 +91,15 @@ describe('SidebarComponent', () => {
             ],
         }).compileComponents();
     }));
-
     beforeEach(() => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         toolControllerSpy = spyOn(toolController, 'setTool');
     });
-
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
     it('should add two event listeners in the constructor', () => {
         const c: CustomEvent = new CustomEvent('undoRedoState', {
             detail: [false, true],
@@ -130,14 +133,12 @@ describe('SidebarComponent', () => {
         expect(colorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
     });
-
     it('should open the export modal', () => {
         component.exportService.showModalExport = false;
         component.openExport();
 
         expect(component.exportService.showModalExport).toBe(true);
     });
-
     it('should call toolControllerSetTool ', () => {
         component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
@@ -152,25 +153,21 @@ describe('SidebarComponent', () => {
         component.selectCanvas();
         expect(selectionSpy).toHaveBeenCalled();
     });
-
     it('should open the Carrousel Modal when we click on the button ', () => {
         const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
         component.openCarousel();
         expect(carouselSpy).toHaveBeenCalled();
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
