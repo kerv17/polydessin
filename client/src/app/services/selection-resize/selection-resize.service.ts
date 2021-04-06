@@ -22,7 +22,7 @@ export class SelectionResizeService {
             for (const position of path) {
                 this.resizePathData.push({ x: position.x, y: position.y });
             }
-            if (this.resizePathData.length < Globals.CURRENT_SELECTION_POSITION) {
+            if (this.resizePathData.length <= Globals.CURRENT_SELECTION_POSITION) {
                 this.resizePathData.push({ x: path[0].x, y: path[0].y });
             }
         }

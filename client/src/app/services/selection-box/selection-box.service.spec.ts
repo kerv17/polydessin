@@ -56,9 +56,21 @@ describe('SelectionBoxService', () => {
         expect(service.getHandlersPositions()).toEqual(service[handlersPosition]);
     });
 
-    it('getCursor should return the value of the setCursor method based on the position of the mouse', () => {
+    it('getCursor should return the value of the setCursor method based on the position of the mouse, if no handler was clicked, pos = 10', () => {
         const expectedPos = 10;
         expect(service.getCursor(mouseEvent)).toEqual(service.setCursor(expectedPos));
+    });
+
+    it('getCursor should return the value of the setCursor method based on the position of the mouse', () => {
+        service.setHandlersPositions(topLeft, width, height);
+        const mouseEventHandler = {
+            offsetX: 100,
+            offsetY: 100,
+            x: 100,
+            y: 100,
+            button: 0,
+        } as MouseEvent;
+        expect(service.getCursor(mouseEventHandler)).toEqual(service.setCursor(0));
     });
 
     it('setCursor should return all-scroll if the cursor is not on one of the 8 handlers', () => {

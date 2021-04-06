@@ -10,7 +10,7 @@ import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
     providedIn: 'root',
 })
 export class ClipboardService extends Tool {
-    clipboard: ImageData;
+    private clipboard: ImageData;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selection: SelectionService) {
         super(drawingService);
@@ -42,7 +42,7 @@ export class ClipboardService extends Tool {
 
     paste(): void {
         if (this.clipboard !== undefined) {
-            if (this.selection.inSelection) {
+            if (this.getSelectionStatus()) {
                 this.selection.onEscape();
             }
             this.selection.selectedArea = new ImageData(this.clipboard.data, this.clipboard.width, this.clipboard.height);
