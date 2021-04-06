@@ -67,28 +67,7 @@ export class SelectionResizeService {
         this.resizeMap.get(this.actualHandler)?.call(this, mousePosition, shifted);
         this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[0].x, y: this.resizePathData[0].y };
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
-            const width = this.resizePathData[2].x - this.resizePathData[0].x;
-            const height = this.resizePathData[2].y - this.resizePathData[0].y;
-
-            if (width < 0 && height < 0) {
-                ctx.scale(Globals.MIRROR_SCALE, Globals.MIRROR_SCALE);
-                ctx.drawImage(imgBitmap, -this.resizePathData[0].x, -this.resizePathData[0].y, -width, -height);
-                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[2].x, y: this.resizePathData[2].y };
-            } else if (width < 0) {
-                ctx.scale(Globals.MIRROR_SCALE, 1);
-                ctx.drawImage(imgBitmap, -this.resizePathData[0].x, this.resizePathData[0].y, -width, height);
-                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = {
-                    x: this.resizePathData[Globals.RIGHT_HANDLER].x,
-                    y: this.resizePathData[Globals.RIGHT_HANDLER].y,
-                };
-            } else if (height < 0) {
-                ctx.scale(1, Globals.MIRROR_SCALE);
-                ctx.drawImage(imgBitmap, this.resizePathData[0].x, -this.resizePathData[0].y, width, -height);
-                this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[1].x, y: this.resizePathData[1].y };
-            } else if (width > 0 && height > 0) {
-                ctx.drawImage(imgBitmap, this.resizePathData[0].x, this.resizePathData[0].y, width, height);
-            }
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.resizeImage(ctx, imgBitmap);
         });
     }
 
@@ -104,6 +83,31 @@ export class SelectionResizeService {
             this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: path.x, y: path.y };
             this.updatePathData();
         }
+    }
+
+    private resizeImage(ctx: CanvasRenderingContext2D, imgBitmap: ImageBitmap): void {
+        const width = this.resizePathData[2].x - this.resizePathData[0].x;
+        const height = this.resizePathData[2].y - this.resizePathData[0].y;
+
+        if (width < 0 && height < 0) {
+            ctx.scale(Globals.MIRROR_SCALE, Globals.MIRROR_SCALE);
+            ctx.drawImage(imgBitmap, -this.resizePathData[0].x, -this.resizePathData[0].y, -width, -height);
+            this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[2].x, y: this.resizePathData[2].y };
+        } else if (width < 0) {
+            ctx.scale(Globals.MIRROR_SCALE, 1);
+            ctx.drawImage(imgBitmap, -this.resizePathData[0].x, this.resizePathData[0].y, -width, height);
+            this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = {
+                x: this.resizePathData[Globals.RIGHT_HANDLER].x,
+                y: this.resizePathData[Globals.RIGHT_HANDLER].y,
+            };
+        } else if (height < 0) {
+            ctx.scale(1, Globals.MIRROR_SCALE);
+            ctx.drawImage(imgBitmap, this.resizePathData[0].x, -this.resizePathData[0].y, width, -height);
+            this.resizePathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.resizePathData[1].x, y: this.resizePathData[1].y };
+        } else {
+            ctx.drawImage(imgBitmap, this.resizePathData[0].x, this.resizePathData[0].y, width, height);
+        }
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     private updatePathData(): void {
