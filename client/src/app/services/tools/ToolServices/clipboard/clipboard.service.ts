@@ -14,6 +14,7 @@ export class ClipboardService extends Tool {
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selection: SelectionService) {
         super(drawingService);
+        this.pathData = [];
     }
 
     getClipboardStatus(): boolean {
@@ -48,6 +49,7 @@ export class ClipboardService extends Tool {
             this.selection.selectedArea = new ImageData(this.clipboard.data, this.clipboard.width, this.clipboard.height);
             this.selection.drawingService.previewCtx.putImageData(this.clipboard, 0, 0);
             this.fakePath();
+            this.updatePath();
             this.selection.inSelection = true;
         }
     }
@@ -61,13 +63,21 @@ export class ClipboardService extends Tool {
 
     delete(): void {
         if (this.selection.inSelection) {
-            this.pathData = this.selection.getPathData();
+            this.updatePath();
             this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
             this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
             this.selection.inSelection = false;
         }
+    }
+
+    private updatePath(): void {
+        this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
+        this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
+        this.pathData[2] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y + this.clipboard.height };
+        this.pathData[Globals.RIGHT_HANDLER] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y };
+        this.pathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.pathData[0].x, y: this.pathData[0].y };
     }
 
     private fakePath(): void {

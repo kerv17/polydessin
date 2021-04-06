@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
@@ -21,6 +22,7 @@ describe('ClipboardService', () => {
     const pathData = 'pathData';
     const createAction = 'createAction';
     const fakePath = 'fakePath';
+    const updatePath = 'updatePath';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -101,6 +103,8 @@ describe('ClipboardService', () => {
     });
 
     it('paste should call putImageData, fakePath and set inSelection to true if there is an image stored in the clipboard', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[pathData] = selectionService[pathData];
         selectionService.inSelection = false;
         service[clipboard] = selectionService.selectedArea;
         const fakePathSpy = spyOn<any>(service, 'fakePath');
@@ -117,6 +121,9 @@ describe('ClipboardService', () => {
     });
 
     it('cut should call the copy and delete method if there is an active selection', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[pathData] = selectionService[pathData];
+        service[clipboard] = selectionService.selectedArea;
         selectionService.inSelection = true;
         const copySpy = spyOn(service, 'copy');
         service.cut();
@@ -133,6 +140,9 @@ describe('ClipboardService', () => {
     });
 
     it('delete should call updateCanvasOnMove, dispatchAction and set inSelection to false if inSelection is true', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[pathData] = selectionService[pathData];
+        service[clipboard] = selectionService.selectedArea;
         selectionService.inSelection = true;
         selectionMovementSpy = spyOn(selectionMoveService, 'updateCanvasOnMove');
         selectionSpy = spyOn<any>(service, 'dispatchAction');
@@ -140,6 +150,16 @@ describe('ClipboardService', () => {
         expect(selectionService.inSelection).toBeFalse();
         expect(selectionMovementSpy).toHaveBeenCalled();
         expect(selectionSpy).toHaveBeenCalled();
+    });
+
+    it('updatepath should update the clipboard pathData based on the actual position of the selection', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[clipboard] = selectionService.selectedArea;
+        service[updatePath]();
+        expect(service[pathData][0]).toEqual({ x: 50, y: 50 });
+        expect(service[pathData][1]).toEqual({ x: 50, y: 50 + width });
+        expect(service[pathData][2]).toEqual({ x: 50 + width, y: 50 + width });
+        expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: 50 + width, y: 50 });
     });
 
     it('fakePath should create a fake path that is outside the current canvas with the width and height of the selection', () => {
