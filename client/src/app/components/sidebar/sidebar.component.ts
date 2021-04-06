@@ -5,10 +5,10 @@ import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
-
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -43,6 +43,7 @@ export class SidebarComponent {
         public carouselService: CarouselService,
         private undoRedoService: UndoRedoService,
         public remoteSaveService: RemoteSaveService,
+        public gridService: GridService,
     ) {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
@@ -62,6 +63,7 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
+        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
@@ -123,8 +125,13 @@ export class SidebarComponent {
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
         this.drawing.newCanvas();
+        this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
+        this.setTool(Globals.CRAYON_SHORTCUT);
+    }
+    showGrid(): void {
+        this.gridService.toggleGrid();
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -149,6 +156,7 @@ export class SidebarComponent {
             .set([false, false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
             .set([false, false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
             .set([false, false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.STAMP_SHORTCUT].join(), { showWidth: true, toolName: Globals.STAMP_SHORTCUT } as ToolParam)
             .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
@@ -163,7 +171,8 @@ export class SidebarComponent {
             .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
             .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
             .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
-            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);
+            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction)
+            .set([false, false, Globals.GRID_SHORTCUT].join(), this.showGrid);
     }
 
     handleShortcuts(event: KeyboardEvent): void {

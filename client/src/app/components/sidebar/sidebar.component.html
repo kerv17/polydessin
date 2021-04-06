@@ -36,6 +36,13 @@
         </div>
 
         <div class="ToolContainer">
+            <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
+            <img src="../../../assets/stamp.png" [ngStyle]="{
+                  backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
+              }" class="function" (click)="setTool('d')" (click)="this.openTool(true, 'd')" tabindex="0" />
+        </div>
+
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton annule la derniere action. Le raccourci est 'Ctrl+z'</div>
             <img src="../../../assets/undo.png" [ngStyle]="undo" class="function" (click)="undoAction()" tabindex="0" />
         </div>
@@ -73,6 +80,12 @@
                     backgroundColor: currentTool == 'r' ? 'gainsboro' : 'white'
                 }" (click)="setTool('r')" (click)="this.openTool(false, 'r')" class="function" tabindex="0" />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire afficher une grille. Le raccourci est 'g'</div>
+            <img src="../../../assets/grid.png" [ngStyle]="{
+                    backgroundColor: gridService.showGrid ? 'gainsboro' : 'white'
+                }" (click)="showGrid()" class="function" tabindex="0" />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
@@ -86,7 +99,7 @@
             </div>
 
             <div>
-                <app-color [reset]="resetAttributes"></app-color>
+                <app-color [reset]="resetAttributes" *ngIf="currentTool != 'd'"></app-color>
             </div>
             <div *ngIf="shapeOptions">
                 <app-shape-options [change]="resetAttributes"></app-shape-options>
@@ -96,6 +109,12 @@
             </div>
             <div *ngIf="selectionOptions">
                 <app-selection-options></app-selection-options>
+            </div>
+            <div>
+                <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            </div>
+            <div *ngIf="gridService.showGrid">
+                <app-grid></app-grid>
             </div>
         </div>
     </div>

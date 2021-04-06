@@ -1,0 +1,25 @@
+.ToolContainer {
+  align-self: center;
+  display: inline;
+  padding: 25px;
+}
+
+.function {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  background-color: white;
+  align-self: center;
+  border-color: black;
+  flex-grow: 0.1;
+  display:inline;
+}
+
+.function:focus {
+  background-color: gainsboro;
+}
+
+.StampList {
+  align-self: center;
+}

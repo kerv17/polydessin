@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MILS_TO_SEC } from '@app/Constants/constants';
+import { MILS_TO_SEC, MouseButton } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
@@ -15,7 +15,7 @@ export class AerosolService extends Tool {
     }
 
     sprayRadius: number = 50;
-    sprayAmountPerSecond: number = 10;
+    sprayAmountPerSecond: number = 100;
     lastPosition: Vec2;
     mouseDown: boolean = false;
     // tslint:disable-next-line: no-any
@@ -27,7 +27,7 @@ export class AerosolService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.lastPosition = this.getPositionFromMouse(event);
-        this.mouseDown = true;
+        this.mouseDown = event.button === MouseButton.Left;
         this.timeoutID = setInterval(() => {
             this.onTimeout();
         }, MILS_TO_SEC / this.sprayAmountPerSecond);
@@ -47,7 +47,7 @@ export class AerosolService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && event.button === MouseButton.Left) {
             this.drawSpray(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 

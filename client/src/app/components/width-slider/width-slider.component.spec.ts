@@ -1,7 +1,7 @@
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatSlider } from '@angular/material/slider';
+import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,6 +12,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { WidthSliderComponent } from './width-slider.component';
 
 describe('WidthSliderComponent', () => {
@@ -31,11 +32,12 @@ describe('WidthSliderComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             {} as SelectionService,
+            {} as StampService,
         );
 
         pencil = new PencilService({} as DrawingService);
         TestBed.configureTestingModule({
-            imports: [FormsModule],
+            imports: [FormsModule, MatSliderModule],
             declarations: [WidthSliderComponent, MatSlider],
             providers: [
                 WidthSliderComponent,

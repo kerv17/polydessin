@@ -17,6 +17,7 @@ import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
+import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { DrawingComponent } from './drawing.component';
 class ToolStub extends Tool {}
 
@@ -52,6 +53,7 @@ describe('DrawingComponent', () => {
             {} as EllipsisService,
             {} as AerosolService,
             new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
+            {} as StampService,
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
 
@@ -122,6 +124,7 @@ describe('DrawingComponent', () => {
     it(' ngOnChanges takes the old drawing and puts it on a new canva if view is initialized and mouseDown is false', () => {
         component.widthPrev = 2;
         component.heightPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
         fillNewSpaceSpy = spyOn(drawingStub, 'fillNewSpace');
         putImageDataSpy = spyOn((component as any).drawingService['baseCtx'], 'putImageData');
         component['viewInitialized'] = true;
@@ -129,6 +132,7 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({});
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(fillNewSpaceSpy).toHaveBeenCalled();
+        expect(spyDispatch).toHaveBeenCalled();
     });
     it(' ngOnChanges set previewCanvas.nativeElement.width if view is initialized, mouseDown is true and changes to widthPrev have occured', () => {
         const expectedValue = 500;
@@ -153,9 +157,11 @@ describe('DrawingComponent', () => {
         component['controller'].selectionService.inSelection = true;
         component.widthPrev = 2;
         component.heightPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
         const escapeSpy = spyOn<any>(component['controller'].selectionService, 'onEscape');
         component.ngOnChanges({});
         expect(escapeSpy).toHaveBeenCalled();
+        expect(spyDispatch).toHaveBeenCalled();
     });
 
     it('should get stubTool', () => {
@@ -191,6 +197,15 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
+
+    it(" should call the tool's onWheel when receiving a mouse wheel event", () => {
+        const event = {} as WheelEvent;
+        const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
+        component.onWheel(event);
+        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
     it(" should call the tool's double click when receiving a mouse dblclick event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'ondbClick');
@@ -216,21 +231,36 @@ describe('DrawingComponent', () => {
     it('ngOnChanges should dispatch an action Event only when allowed', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        const nymberOfTimesDispatchCalled = 3;
 
-        let actionCalled = false;
-        addEventListener('action', (event: CustomEvent) => {
-            actionCalled = true;
-        });
         (component as any).viewInitialized = true;
         (component as any).mouseDown = false;
 
         (component as any).allowUndoCall = false;
         component.ngOnChanges({} as SimpleChanges);
-        expect(actionCalled).toBeFalse();
+
+        expect(spyDispatch).toHaveBeenCalledTimes(1);
 
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
-        expect(actionCalled).toBeTrue();
+
+        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+    });
+    it('ngOnChanges should dispatch a grid Event only after view is initialised', () => {
+        (component as any).heightPrev = 2;
+        (component as any).widthPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+
+        (component as any).viewInitialized = false;
+        (component as any).mouseDown = false;
+
+        component.ngOnChanges({} as SimpleChanges);
+        expect(spyDispatch).not.toHaveBeenCalled();
+
+        (component as any).viewInitialized = true;
+        component.ngOnChanges({} as SimpleChanges);
+        expect(spyDispatch).toHaveBeenCalled();
     });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {

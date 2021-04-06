@@ -11,6 +11,7 @@ export const LINE_SHORTCUT = 'l';
 export const RECTANGLE_SHORTCUT = '1';
 export const ELLIPSIS_SHORTCUT = '2';
 export const AEROSOL_SHORTCUT = 'a';
+export const STAMP_SHORTCUT = 'd';
 export const SHIFT_SHORTCUT = 'Shift';
 export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
@@ -26,6 +27,10 @@ export const COPY_SHORTCUT = 'c';
 export const PASTE_SHORTCUT = 'v';
 export const CUT_SHORTCUT = 'x';
 export const DELETE_SHORTCUT = 'Delete';
+export const GRID_SHORTCUT = 'g';
+export const GRID_INCREMENT_PLUS_SHORTCUT = '+';
+export const GRID_INCREMENT_EQUAL_SHORTCUT = '=';
+export const GRID_DECREMENT_SHORTCUT = '-';
 
 // Variables d'editor
 export const RESIZE_CONSTANT = 1.1;
@@ -107,3 +112,10 @@ export const mouseDownEvent = {
     y: 125,
     button: 0,
 } as MouseEvent;
+
+// Constante pour Grille
+export const GRID_BOX_INIT_VALUE = 20;
+export const GRID_OPACITY_INIT_VALUE = 40;
+export const GRID_VARIATION_VALUE = 5;
+export const GRID_MAX_BOX_VALUE = 100;
+export const GRID_MIN_BOX_VALUE = 10;
