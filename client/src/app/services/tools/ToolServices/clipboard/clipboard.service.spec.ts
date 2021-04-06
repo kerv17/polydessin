@@ -157,9 +157,9 @@ describe('ClipboardService', () => {
         service[clipboard] = selectionService.selectedArea;
         service[updatePath]();
         expect(service[pathData][0]).toEqual({ x: 50, y: 50 });
-        expect(service[pathData][1]).toEqual({ x: 50, y: 50 + width });
-        expect(service[pathData][2]).toEqual({ x: 50 + width, y: 50 + width });
-        expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: 50 + width, y: 50 });
+        expect(service[pathData][1]).toEqual({ x: 50, y: width / 2 + width });
+        expect(service[pathData][2]).toEqual({ x: width / 2 + width, y: width / 2 + width });
+        expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: width / 2 + width, y: 50 });
     });
 
     it('fakePath should create a fake path that is outside the current canvas with the width and height of the selection', () => {
