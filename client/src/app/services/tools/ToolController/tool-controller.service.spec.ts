@@ -20,7 +20,7 @@ describe('ToolControllerService', () => {
     let rectangleServiceSpy: jasmine.SpyObj<RectangleService>;
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
-    let selectionServiceSpy: jasmine.SpyObj<AerosolService>;
+    let selectionServiceSpy: jasmine.SpyObj<SelectionService>;
     let stampServiceSpy: jasmine.SpyObj<StampService>;
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['clearPreviewCtx'], { color: 'test' });
@@ -148,7 +148,6 @@ describe('ToolControllerService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    // À VÉRIFIER : TypeError: this.currentTool.clearPreviewCtx is not a function
     it('setTool should set the right tool', () => {
         let test = true;
 

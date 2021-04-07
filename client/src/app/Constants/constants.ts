@@ -23,6 +23,10 @@ export const UNDO_SHORTCUT = 'z';
 export const REDO_SHORTCUT = 'Z';
 export const RIGHT_ARROW_SHORTCUT = 'ArrowRight';
 export const LEFT_ARROW_SHORTCUT = 'ArrowLeft';
+export const COPY_SHORTCUT = 'c';
+export const PASTE_SHORTCUT = 'v';
+export const CUT_SHORTCUT = 'x';
+export const DELETE_SHORTCUT = 'Delete';
 export const GRID_SHORTCUT = 'g';
 export const GRID_INCREMENT_PLUS_SHORTCUT = '+';
 export const GRID_INCREMENT_EQUAL_SHORTCUT = '=';
@@ -95,6 +99,8 @@ export const BOTTOM_RIGHT_HANDLER = 4; // coin bas droite
 export const BOTTOM_HANDLER = 5; // centre bas
 export const BOTTOM_LEFT_HANDLER = 6; // coin bas gauche
 export const LEFT_HANDLER = 7; // centre gauche
+export const HANDLERS_WIDTH = 10;
+export const MIRROR_SCALE = -1;
 
 // Constante pour tests de sélection
 export const mouseDownEvent = {

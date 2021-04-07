@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 @Component({
@@ -211,6 +211,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     drawHandlers(): boolean {
         return this.controller.selectionService.inSelection;
     }
+
     loadCarouselCanvas(): void {
         if (this.carousel.loadImage) {
             this.carousel.loadImage = false;

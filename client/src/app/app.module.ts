@@ -21,6 +21,7 @@ import { RadiusSliderComponent } from './components/radius-slider/radius-slider/
 import { RemoteSaveComponent } from './components/remote-save/remote-save.component';
 import { GridComponent } from './components/sidebar/gridOptions/grid/grid.component';
 import { LineOptionsComponent } from './components/sidebar/lineOptions/line-options/line-options.component';
+import { SelectionOptionsComponent } from './components/sidebar/selectionOptions/selection-options/selection-options.component';
 import { ShapeOptionsComponent } from './components/sidebar/shapeOptions/shape-options/shape-options.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SprayAmountSliderComponent } from './components/spray-amount-slider/spray-amount-slider/spray-amount-slider.component';
@@ -48,6 +49,7 @@ import { ColorService } from './services/color/color.service';
         RadiusSliderComponent,
         SprayAmountSliderComponent,
         RemoteSaveComponent,
+        SelectionOptionsComponent,
         GridComponent,
         StampComponent,
     ],
