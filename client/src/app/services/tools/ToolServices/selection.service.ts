@@ -196,7 +196,8 @@ export class SelectionService extends Tool {
         }
     }
 
-    private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+    updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+        this.clearPreviewCtx();
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
         if (this.toolMode != 'v'){
