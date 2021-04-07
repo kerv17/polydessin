@@ -146,7 +146,7 @@ export class SelectionService extends Tool {
                         this.getSelectionWidth(),
                         this.getSelectionHeight(),
                     );
-                    this.pathData[4] = this.getActualPosition();
+                    this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
                 }
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
                 this.setTopLeftHandler();

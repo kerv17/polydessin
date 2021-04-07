@@ -152,7 +152,7 @@ describe('ClipboardService', () => {
         expect(selectionSpy).toHaveBeenCalled();
     });
 
-    it('updatepath should update the clipboard pathData based on the actual position of the selection', () => {
+    it('updatepath should update the clipboard pathData based on the actual position of the selection if there is a selection saved', () => {
         selectionService[pathData].push({ x: 50, y: 50 });
         service[clipboard] = selectionService.selectedArea;
         service[updatePath]();
@@ -160,6 +160,12 @@ describe('ClipboardService', () => {
         expect(service[pathData][1]).toEqual({ x: 50, y: width / 2 + width });
         expect(service[pathData][2]).toEqual({ x: width / 2 + width, y: width / 2 + width });
         expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: width / 2 + width, y: 50 });
+    });
+
+    it('updatepath should update the clipboard pathData with the selection pathData if there is no image saved in the clipboard', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[updatePath]();
+        expect(service[pathData]).toEqual(selectionService[pathData]);
     });
 
     it('fakePath should create a fake path that is outside the current canvas with the width and height of the selection', () => {
