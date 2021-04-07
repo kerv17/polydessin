@@ -1,17 +1,28 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { SelectionService } from './selection.service';
-
+export class SelectionMoveStub extends SelectionMovementService {
+    onArrowDown(selectedArea: ImageData, pathData: Vec2[]): void {
+        return;
+    }
+}
 // justifié pour pouvoir faire des spys sur des méthodes privées
 // tslint:disable: no-any
 describe('SelectionService', () => {
     let service: SelectionService;
     let drawService: DrawingService;
+    let selectionMoveStub: SelectionMoveStub;
     let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
+    let selectionBoxService: SelectionBoxService;
     let drawServiceSpy: jasmine.Spy;
     let selectionSpy: jasmine.Spy;
     let canvasTestHelper: CanvasTestHelper;
@@ -31,15 +42,27 @@ describe('SelectionService', () => {
     const setTopLeftHandler = 'setTopLeftHandler';
     const keyDown = 'keyDown';
     const firstTime = 'firstTime';
-    const selectionResize = 'selectionResize';
     const rectangleService = 'rectangleService';
+    const upArrow = 'upArrow';
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        drawService = new DrawingService({} as ResizePoint);
+        selectionBoxService = new SelectionBoxService();
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
+        selectionMoveService = new SelectionMovementService(drawService, selectionResizeService);
+        canvasTestHelper = new CanvasTestHelper();
+        selectionMoveStub = new SelectionMoveStub(drawService, selectionResizeService);
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: DrawingService, useValue: drawService },
+                { provide: SelectionMovementService, useValue: selectionMoveService },
+                { provide: SelectionResizeService, useValue: selectionResizeService },
+                { provide: SelectionMoveStub, useValue: selectionMoveStub },
+                { provide: SelectionBoxService, useValue: selectionBoxService },
+                { provide: CanvasTestHelper, useValue: canvasTestHelper },
+            ],
+        });
         service = TestBed.inject(SelectionService);
-        drawService = TestBed.inject(DrawingService);
-        selectionMoveService = TestBed.inject(SelectionMovementService);
-        canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.canvas = canvasTestHelper.canvas;
@@ -51,7 +74,8 @@ describe('SelectionService', () => {
             { x: 200, y: 200 },
             { x: 100, y: 200 },
         ];
-        service[selectionResize].initializePath(service[pathData]);
+        selectionBoxService.setHandlersPositions({ x: 100, y: 100 }, width, width);
+        selectionResizeService.initializePath(service[pathData]);
         service[rectangleService].setPath(service[pathData]);
     });
 
@@ -186,15 +210,16 @@ describe('SelectionService', () => {
     });
 
     // IDK WTF IS GOING ON
-    it('EventListener on keydown should call arrowDown if the arrowKey pressed while inSelection is not repeated', () => {
+    xit('EventListener on keydown should call arrowDown if the arrowKey pressed while inSelection is not repeated', () => {
         service.inSelection = true;
+        selectionMoveService[upArrow] = true;
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
         service[pathData].push({ x: width, y: height });
-        selectionSpy = spyOn(selectionMoveService, 'setKeyMovementDelays');
-        const keyEventData = { key: 'ArrowUp', repeat: false };
+        selectionSpy = spyOn(selectionMoveStub, 'onArrowDown');
+        const keyEventData = { isTrusted: true, key: 'ArrowUp', repeat: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
         document.dispatchEvent(keyDownEvent);
-        expect(selectionSpy).not.toHaveBeenCalled();
+        expect(selectionSpy).toHaveBeenCalled();
     });
 
     it('EventListener on keyup should do nothing if there is no active selection', () => {
