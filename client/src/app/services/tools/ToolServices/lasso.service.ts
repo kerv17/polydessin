@@ -4,12 +4,15 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
+import { SelectionService } from './selection.service';
+import * as Globals from '@app/Constants/constants';
+import { path } from './stamp.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LassoService extends Tool {
-    constructor(drawingService: DrawingService, private lineService: LineService) {
+    constructor(drawingService: DrawingService, private lineService: LineService, private selectionService:SelectionService) {
         super(drawingService);
         this.toolMode = 'selection';
         this.clearPath();
@@ -21,11 +24,9 @@ export class LassoService extends Tool {
         }
         if (this.toolMode === 'movement') {
             this.clearPreviewCtx();
-            const box = ServiceCalculator.maxSize(this.pathData);
-            const ctx = this.selectArea(this.pathData);
-            this.drawingService.previewCtx.drawImage(ctx, box[0].x, box[0].y);
+            this.passToSelectionService(this.selectArea(this.pathData));
+            dispatchEvent(new CustomEvent('changeTool', {detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT]}));
             this.clearPath();
-            this.toolMode = 'selection';
         }
     }
 
@@ -70,14 +71,16 @@ export class LassoService extends Tool {
         return false;
     }
 
-    selectArea(points: Vec2[]): ImageBitmap {
+    selectArea(points: Vec2[]): ImageData {
         const pathList = new Path2D();
         const box = ServiceCalculator.maxSize(points);
         const canvas = new OffscreenCanvas(box[1].x - box[0].x, box[1].y - box[0].y);
         const ctx = canvas.getContext('2d') || new OffscreenCanvasRenderingContext2D();
+        
         pathList.moveTo(this.pathData[0].x, this.pathData[0].y);
+        pathList.closePath();
         for (let i = 1; i < points.length; i++) {
-            pathList.lineTo(points[i].x - box[0].x, points[i].y - box[0].y);
+            pathList.lineTo(points[i].x, points[i].y);
         }
         pathList.closePath();
 
@@ -88,9 +91,25 @@ export class LassoService extends Tool {
         ctx.fillStyle = 'black';
         ctx.fill(pathList);
 
-        const imageData = canvas.transferToImageBitmap();
+        const imageData = ctx.getImageData(0, 0, box[1].x - box[0].x, box[1].y - box[0].y);
 
-        this.clearPreviewCtx();
+        //this.clearPreviewCtx();
+        //this.clearZone(pathList);
         return imageData;
+    }
+
+    
+
+    passToSelectionService(ctx:ImageData){
+        this.selectionService.inSelection = true;
+        this.selectionService.inMovement = true;
+        this.selectionService.selectedArea = ctx;
+        this.selectionService.setPathData(ServiceCalculator.maxSize(this.pathData));
+        this.selectionService.setTopLeftHandler();
+    }
+
+    clearZone(path:Path2D): void {
+        this.drawingService.baseCtx.fillStyle = 'white';
+        this.drawingService.baseCtx.fill(path);
     }
 }

@@ -40,6 +40,12 @@ export class ToolControllerService {
             this.checkFocus(event);
         });
 
+        addEventListener('changeTool', (event: CustomEvent) => {
+            this.setTool(event.detail[0]);
+            this.currentTool.toolMode = event.detail[1];
+            console.log(event.detail[0], this.currentTool);
+        })
+
         this.initMap();
         this.currentTool = pencilService;
     }

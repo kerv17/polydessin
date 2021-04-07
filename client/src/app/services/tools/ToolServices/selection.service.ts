@@ -12,8 +12,8 @@ import { RectangleService } from './rectangle-service';
 export class SelectionService extends Tool {
     rectangleService: RectangleService;
     inSelection: boolean = false;
-    private inMovement: boolean = false;
-    private selectedArea: ImageData;
+    inMovement: boolean = false;
+    selectedArea: ImageData;
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -205,11 +205,15 @@ export class SelectionService extends Tool {
 
     private confirmSelectionMove(): void {
         this.updateCanvasOnMove(this.drawingService.baseCtx);
-        this.drawingService.baseCtx.putImageData(
-            this.selectedArea,
+        this.drawingService.baseCtx.drawImage(
+            this.createCanvasWithSelection(this.selectedArea),
             this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
             this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
         );
+
+        if(this.toolMode != ''){
+            dispatchEvent(new CustomEvent('changeTool', {detail: [Globals.LASSO_SELECTION_SHORTCUT, 'selection']}));
+        }
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D): void {
@@ -235,7 +239,7 @@ export class SelectionService extends Tool {
 
     // Ajuste le pathData pour permettre la selection à partir de n'importe quel coin
     // donc pour tracer le rectangle de selection dans n'importe quelle direction
-    private setTopLeftHandler(): void {
+    setTopLeftHandler(): void {
         const firstCorner = { x: this.pathData[0].x, y: this.pathData[0].y };
         const oppositeCorner = { x: this.pathData[2].x, y: this.pathData[2].y };
 
@@ -284,5 +288,18 @@ export class SelectionService extends Tool {
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
             );
         }
+    }
+
+    setPathData(points: Vec2[]): void {
+        this.pathData = [];
+        this.pathData.push(points[0], { x: points[0].x, y: points[1].y }, points[1], { x: points[1].x, y: points[0].y });
+
+    }
+
+    createCanvasWithSelection(imageData: ImageData):OffscreenCanvas {
+        const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+        canvas.getContext('2d')?.putImageData(imageData,0,0);
+        console.log(imageData);
+        return canvas;
     }
 }
