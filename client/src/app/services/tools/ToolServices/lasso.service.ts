@@ -6,7 +6,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
 import { SelectionService } from './selection.service';
 import * as Globals from '@app/Constants/constants';
-import { path } from './stamp.service';
 
 @Injectable({
     providedIn: 'root',
@@ -26,6 +25,7 @@ export class LassoService extends Tool {
             this.clearPreviewCtx();
             this.passToSelectionService(this.selectArea(this.pathData));
             dispatchEvent(new CustomEvent('changeTool', {detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT]}));
+            this.drawingService.baseCtx.putImageData(this.selectArea(this.pathData),0,0);
             this.clearPath();
         }
     }
@@ -77,12 +77,9 @@ export class LassoService extends Tool {
         const canvas = new OffscreenCanvas(box[1].x - box[0].x, box[1].y - box[0].y);
         const ctx = canvas.getContext('2d') || new OffscreenCanvasRenderingContext2D();
         
-        pathList.moveTo(this.pathData[0].x, this.pathData[0].y);
-        pathList.closePath();
         for (let i = 1; i < points.length; i++) {
-            pathList.lineTo(points[i].x, points[i].y);
+            pathList.lineTo(points[i].x - box[0].x, points[i].y - box[0].y);
         }
-        pathList.closePath();
 
         ctx.globalCompositeOperation = 'destination-in';
 
@@ -104,6 +101,7 @@ export class LassoService extends Tool {
         this.selectionService.inSelection = true;
         this.selectionService.inMovement = true;
         this.selectionService.selectedArea = ctx;
+        
         this.selectionService.setPathData(ServiceCalculator.maxSize(this.pathData));
         this.selectionService.setTopLeftHandler();
     }
