@@ -14,6 +14,7 @@ export class SelectionService extends Tool {
     inSelection: boolean = false;
     inMovement: boolean = false;
     selectedArea: ImageData;
+    lassoPath: Vec2[];
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService) {
         super(drawingService);
@@ -198,7 +199,20 @@ export class SelectionService extends Tool {
     private updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
-        ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.selectedArea.width, this.selectedArea.height);
+        if (this.toolMode != 'v'){
+            
+            ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.selectedArea.width, this.selectedArea.height);
+            
+        }
+        else{
+            const pathList = new Path2D();
+            pathList.moveTo(this.lassoPath[0].x, this.lassoPath[0].y)
+            for (let i = 1; i < this.lassoPath.length; i++) {
+                pathList.lineTo(this.lassoPath[i].x, this.lassoPath[i].y);
+            }
+            ctx.fill(pathList);
+
+        }
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
     }
@@ -282,8 +296,8 @@ export class SelectionService extends Tool {
             this.selectionMove.moveSelection(this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.putImageData(
-                this.selectedArea,
+            this.drawingService.previewCtx.drawImage(
+                this.createCanvasWithSelection(this.selectedArea),
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].x,
                 this.pathData[Globals.CURRENT_SELECTION_POSITION].y,
             );

@@ -101,7 +101,7 @@ export class LassoService extends Tool {
         this.selectionService.inSelection = true;
         this.selectionService.inMovement = true;
         this.selectionService.selectedArea = ctx;
-        
+        this.selectionService.lassoPath = this.pathData;
         this.selectionService.setPathData(ServiceCalculator.maxSize(this.pathData));
         this.selectionService.setTopLeftHandler();
     }
