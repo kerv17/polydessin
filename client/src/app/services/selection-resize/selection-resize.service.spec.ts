@@ -11,7 +11,6 @@ describe('SelectionResizeService', () => {
     let canvasTestHelper: CanvasTestHelper;
     let drawService: DrawingService;
     let path: Vec2[];
-    let img: ImageBitmap;
     let selectedArea: ImageData;
     const width = 100;
     const height = 100;
@@ -51,9 +50,6 @@ describe('SelectionResizeService', () => {
         ];
         service[selectionBox].setHandlersPositions(path[0], path[0].x, path[0].y);
         selectedArea = drawService.previewCtx.getImageData(path[0].x, path[0].y, width, height);
-        createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
-            img = imgBitmap;
-        });
     });
 
     it('should be created', () => {
@@ -154,7 +150,7 @@ describe('SelectionResizeService', () => {
         expect(service[resizePathData][0]).toEqual({ x: 25, y: 25 });
     });
 
-    it('resizeImage should call scale with -1, -1 and set the bottom right handler as the actual position of the path if width and height are negative', () => {
+    it('resizeImage should call scale with -1, -1 and set the bottom right handler as the actual position of the path if width and height are negative', (done) => {
         service[resizePathData] = [
             { x: 100, y: 100 },
             { x: 50, y: 100 },
@@ -164,12 +160,15 @@ describe('SelectionResizeService', () => {
         ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = Globals.CURRENT_SELECTION_POSITION;
-        service[resizeImage](drawService.previewCtx, img);
-        expect(ctxSpy).toHaveBeenCalledWith(Globals.MIRROR_SCALE, Globals.MIRROR_SCALE);
-        expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][2]);
+        createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
+            service[resizeImage](drawService.previewCtx, imgBitmap);
+            expect(ctxSpy).toHaveBeenCalledWith(Globals.MIRROR_SCALE, Globals.MIRROR_SCALE);
+            expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][2]);
+            done();
+        });
     });
 
-    it('resizeImage should call scale with -1, 1 and set the topright handler as the actual position if only width is negative', () => {
+    it('resizeImage should call scale with -1, 1 and set the topright handler as the actual position if only width is negative', (done) => {
         service[resizePathData] = [
             { x: 100, y: 100 },
             { x: 50, y: 100 },
@@ -179,12 +178,15 @@ describe('SelectionResizeService', () => {
         ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = 2;
-        service[resizeImage](drawService.previewCtx, img);
-        expect(ctxSpy).toHaveBeenCalledWith(Globals.MIRROR_SCALE, 1);
-        expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][Globals.RIGHT_HANDLER]);
+        createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
+            service[resizeImage](drawService.previewCtx, imgBitmap);
+            expect(ctxSpy).toHaveBeenCalledWith(Globals.MIRROR_SCALE, 1);
+            expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][Globals.RIGHT_HANDLER]);
+            done();
+        });
     });
 
-    it('resizeImage should call scale with 1, -1 and set the bottomleft handler as the actual position if only height is negative', () => {
+    it('resizeImage should call scale with 1, -1 and set the bottomleft handler as the actual position if only height is negative', (done) => {
         service[resizePathData] = [
             { x: 100, y: 100 },
             { x: 150, y: 100 },
@@ -194,12 +196,15 @@ describe('SelectionResizeService', () => {
         ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = Globals.BOTTOM_HANDLER;
-        service[resizeImage](drawService.previewCtx, img);
-        expect(ctxSpy).toHaveBeenCalledWith(1, Globals.MIRROR_SCALE);
-        expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][1]);
+        createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
+            service[resizeImage](drawService.previewCtx, imgBitmap);
+            expect(ctxSpy).toHaveBeenCalledWith(1, Globals.MIRROR_SCALE);
+            expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][1]);
+            done();
+        });
     });
 
-    it('resizeImage should call drawImage if both width and height are positive', () => {
+    it('resizeImage should call drawImage if both width and height are positive', (done) => {
         service[resizePathData] = [
             { x: 100, y: 100 },
             { x: 200, y: 100 },
@@ -209,9 +214,12 @@ describe('SelectionResizeService', () => {
         ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'drawImage');
         service[actualHandler] = Globals.CURRENT_SELECTION_POSITION;
-        service[resizeImage](drawService.previewCtx, img);
-        expect(ctxSpy).toHaveBeenCalled();
-        expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][0]);
+        createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
+            service[resizeImage](drawService.previewCtx, imgBitmap);
+            expect(ctxSpy).toHaveBeenCalled();
+            expect(service[resizePathData][Globals.CURRENT_SELECTION_POSITION]).toEqual(service[resizePathData][0]);
+            done();
+        });
     });
 
     it('onMouseUp should return the hasResized boolean value', () => {
