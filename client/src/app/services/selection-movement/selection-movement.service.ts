@@ -116,12 +116,20 @@ export class SelectionMovementService {
         ctx.strokeStyle = 'black';
     }
 
-    setKeyMovementDelays(selectedArea: ImageData, pathData: Vec2[]): void {
+    onArrowDown(repeated: boolean, selectedArea: ImageData, pathData: Vec2[]): void {
+        if (repeated) {
+            this.setKeyMovementDelays(selectedArea, pathData);
+        } else {
+            this.drawSelection(selectedArea, pathData);
+        }
+    }
+
+    private setKeyMovementDelays(selectedArea: ImageData, pathData: Vec2[]): void {
         if (this.keyDown) {
             if (this.firstTime) {
                 this.firstTime = false;
                 this.interval = window.setInterval(() => {
-                    this.onArrowDown(selectedArea, pathData);
+                    this.drawSelection(selectedArea, pathData);
                 }, Globals.INTERVAL_MS);
             }
         } else {
@@ -131,7 +139,7 @@ export class SelectionMovementService {
         }
     }
 
-    onArrowDown(selectedArea: ImageData, pathData: Vec2[]): void {
+    private drawSelection(selectedArea: ImageData, pathData: Vec2[]): void {
         if (selectedArea !== undefined) {
             this.moveSelection(pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

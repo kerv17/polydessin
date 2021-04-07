@@ -26,11 +26,7 @@ export class SelectionService extends Tool {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.inMovement = true;
                 this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
-                if (event.repeat) {
-                    this.selectionMove.setKeyMovementDelays(this.selectedArea, this.pathData);
-                } else {
-                    this.selectionMove.onArrowDown(this.selectedArea, this.pathData);
-                }
+                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData);
             }
         });
 
