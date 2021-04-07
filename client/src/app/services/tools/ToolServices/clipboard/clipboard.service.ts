@@ -64,8 +64,8 @@ export class ClipboardService extends Tool {
     delete(): void {
         if (this.selection.inSelection) {
             this.updatePath();
-            this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
-            this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+            this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.selection.getPathData());
+            this.clearPreviewCtx();
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
             this.selection.inSelection = false;
@@ -73,11 +73,15 @@ export class ClipboardService extends Tool {
     }
 
     private updatePath(): void {
-        this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
-        this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
-        this.pathData[2] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y + this.clipboard.height };
-        this.pathData[Globals.RIGHT_HANDLER] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y };
-        this.pathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.pathData[0].x, y: this.pathData[0].y };
+        if (this.clipboard !== undefined) {
+            this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
+            this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
+            this.pathData[2] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y + this.clipboard.height };
+            this.pathData[Globals.RIGHT_HANDLER] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y };
+            this.pathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.pathData[0].x, y: this.pathData[0].y };
+        } else {
+            this.pathData = this.selection.getPathData();
+        }
     }
 
     private fakePath(): void {

@@ -8,12 +8,12 @@ canvas {
 
 #canvas {
     z-index: 0;
-    
 }
 
 #drawCanvas {
     z-index: 1;
 }
+
 #gridLayer {
     z-index: 3;
     background-color: transparent;
@@ -31,9 +31,11 @@ canvas {
 
 .selection-box {
     pointer-events: none;
+    z-index: 4;
 }
 
 .handlers {
+    z-index: 4;
     height: 10px;
     width: 10px;
     background-color: gainsboro;

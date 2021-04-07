@@ -146,6 +146,7 @@ export class SelectionService extends Tool {
                         this.getSelectionWidth(),
                         this.getSelectionHeight(),
                     );
+                    this.pathData[4] = this.getActualPosition();
                 }
             } else if (this.pathData[0].x !== mousePosition.x && this.pathData[0].y !== mousePosition.y) {
                 this.setTopLeftHandler();
@@ -166,7 +167,6 @@ export class SelectionService extends Tool {
     onEscape(): void {
         if (this.inSelection && !this.inMovement) {
             this.confirmSelectionMove();
-            // crée des actions de trop
             this.dispatchAction(this.createAction());
             this.inSelection = false;
             this.mouseDown = false;
