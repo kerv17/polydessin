@@ -11,6 +11,7 @@ import { SelectionMovementService } from '@app/services/SelectionMovement/select
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -51,6 +52,7 @@ describe('DrawingComponent', () => {
             {} as AerosolService,
             new SelectionService(drawingStub, selectionMoveService),
             {} as StampService,
+            {} as BucketService,
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
 
@@ -188,6 +190,15 @@ describe('DrawingComponent', () => {
         const mouseEventSpy = spyOn(toolController.currentTool, 'onClick');
         component.onClick(event);
         expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(" should call the tool's right click when receiving a contextmenu event", () => {
+        const event = new MouseEvent('keyDown');
+        const preventDefaultSpy = spyOn(event, 'preventDefault');
+        const mouseEventSpy = spyOn(toolController.currentTool, 'onRightClick');
+        component.onRightClick(event);
+        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 

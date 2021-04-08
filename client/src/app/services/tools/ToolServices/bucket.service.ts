@@ -10,19 +10,23 @@ export class BucketService extends Tool {
     color: string;
     private pixelStack: Vec2[];
     tolerance: number = 0;
-    added: boolean[][];
+    private added: boolean[][];
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
     }
 
+    onRightClick(event: MouseEvent): void {
+        this.drawingService.baseCtx.fillStyle = this.color;
+        this.changeColorEverywhere(event);
+    }
     onClick(event: MouseEvent): void {
         this.drawingService.baseCtx.fillStyle = this.color;
-        this.changeAllPixels(event);
+        this.localFill(event);
     }
 
-    changeAllPixels(event: MouseEvent): void {
+    private localFill(event: MouseEvent): void {
         const image: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
 
         const coords = this.getPositionFromMouse(event);
@@ -36,12 +40,13 @@ export class BucketService extends Tool {
 
         this.pixelStack = new Array();
         this.pixelStack.push(coords);
-        this.addPixelToStack(color, image);
+        this.fillArea(color, image);
     }
 
-    addPixelToStack(color: number[], image: ImageData): void {
+    private fillArea(color: number[], image: ImageData): void {
         while (this.pixelStack.length !== 0) {
             const currentCoords = this.pixelStack.pop();
+
             if (!(currentCoords === undefined || !this.shouldReplacePixel(currentCoords, color, image))) {
                 this.drawingService.baseCtx.fillRect(currentCoords.x, currentCoords.y, 1, 1);
                 this.addRightPixel(currentCoords, color);
@@ -52,9 +57,9 @@ export class BucketService extends Tool {
         }
     }
 
-    addLeftPixel(currentCoords: Vec2, color: number[]): void {
+    private addLeftPixel(currentCoords: Vec2, color: number[]): void {
         if (
-            currentCoords.x > 0 &&
+            currentCoords.x >= 0 &&
             this.coordsIsOnCanvas({ x: currentCoords.x - 1, y: currentCoords.y } as Vec2) &&
             !this.added[currentCoords.x - 1][currentCoords.y]
         ) {
@@ -63,9 +68,9 @@ export class BucketService extends Tool {
         }
     }
 
-    addRightPixel(currentCoords: Vec2, color: number[]): void {
+    private addRightPixel(currentCoords: Vec2, color: number[]): void {
         if (
-            currentCoords.x < this.drawingService.baseCtx.canvas.width &&
+            currentCoords.x <= this.drawingService.baseCtx.canvas.width &&
             this.coordsIsOnCanvas({ x: currentCoords.x + 1, y: currentCoords.y } as Vec2) &&
             !this.added[currentCoords.x + 1][currentCoords.y]
         ) {
@@ -74,9 +79,9 @@ export class BucketService extends Tool {
         }
     }
 
-    addTopPixel(currentCoords: Vec2, color: number[]): void {
+    private addTopPixel(currentCoords: Vec2, color: number[]): void {
         if (
-            currentCoords.y < this.drawingService.baseCtx.canvas.height &&
+            currentCoords.y <= this.drawingService.baseCtx.canvas.height &&
             this.coordsIsOnCanvas({ x: currentCoords.x, y: currentCoords.y + 1 } as Vec2) &&
             !this.added[currentCoords.x][currentCoords.y + 1]
         ) {
@@ -84,9 +89,9 @@ export class BucketService extends Tool {
             this.added[currentCoords.x][currentCoords.y + 1] = true;
         }
     }
-    addBottomPixel(currentCoords: Vec2, color: number[]): void {
+    private addBottomPixel(currentCoords: Vec2, color: number[]): void {
         if (
-            currentCoords.y > 0 &&
+            currentCoords.y >= 0 &&
             this.coordsIsOnCanvas({ x: currentCoords.x, y: currentCoords.y - 1 } as Vec2) &&
             !this.added[currentCoords.x][currentCoords.y - 1]
         ) {
@@ -94,11 +99,11 @@ export class BucketService extends Tool {
             this.added[currentCoords.x][currentCoords.y - 1] = true;
         }
     }
-    coordsIsOnCanvas(coords: Vec2): boolean {
-        return coords.x > 0 && coords.x < this.added.length && coords.y > 0 && coords.y < this.added[0].length;
+    private coordsIsOnCanvas(coords: Vec2): boolean {
+        return coords.x >= 0 && coords.x < this.added.length && coords.y >= 0 && coords.y < this.added[0].length;
     }
 
-    getColorOfPixel(x: number, y: number, image: ImageData): number[] {
+    private getColorOfPixel(x: number, y: number, image: ImageData): number[] {
         const color: number[] = new Array(4);
 
         color[0] = image.data[(x + y * this.drawingService.canvas.width) * 4];
@@ -109,21 +114,22 @@ export class BucketService extends Tool {
         return color;
     }
 
-    shouldReplacePixel(coords: Vec2, color: number[], image: ImageData): boolean {
+    private shouldReplacePixel(coords: Vec2, color: number[], image: ImageData): boolean {
         const currentColor = this.getColorOfPixel(coords.x, coords.y, image);
-        let isAcceptable = true;
-        for (let i = 0; i < currentColor.length; i++) {
-            if (!this.isAcceptableValue(currentColor[i], color[i])) isAcceptable = false;
+
+        return this.isAcceptableValue(currentColor, color);
+    }
+
+    private isAcceptableValue(current: number[], reference: number[]): boolean {
+        for (let i = 0; i < current.length; i++) {
+            if (Math.abs((current[i] - reference[i]) / 255) > this.tolerance) {
+                return false;
+            }
         }
-
-        return isAcceptable;
+        return true;
     }
 
-    isAcceptableValue(current: number, reference: number): boolean {
-        return Math.abs((current - reference) / 255) <= this.tolerance;
-    }
-
-    changeAllColors(event: MouseEvent): void {
+    private changeColorEverywhere(event: MouseEvent): void {
         const image: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
         const coords = this.getPositionFromMouse(event);
         const color = this.getColorOfPixel(coords.x, coords.y, image);
@@ -133,26 +139,11 @@ export class BucketService extends Tool {
                 x: (i / Globals.PIXEL_SIZE) % this.drawingService.baseCtx.canvas.width,
                 y: Math.trunc(i / Globals.PIXEL_SIZE / this.drawingService.baseCtx.canvas.width),
             };
+            const currentColor = [image.data[i], image.data[i + 1], image.data[i + 2], image.data[i + 3]];
 
-            let isAcceptable = true;
-            for (let j = 0; j < color.length; j++) {
-                if (!this.isAcceptableValue(color[j], image.data[i + j])) {
-                    isAcceptable = false;
-                }
-            }
-            if (isAcceptable) {
+            if (this.isAcceptableValue(currentColor, color)) {
                 this.drawingService.baseCtx.fillRect(currentCoords.x, currentCoords.y, 1, 1);
             }
         }
-    }
-
-    onMouseLeave(event: MouseEvent): void {
-        if (this.mouseDown) {
-            this.outOfBounds = true;
-        }
-    }
-
-    onMouseEnter(event: MouseEvent): void {
-        this.outOfBounds = false;
     }
 }

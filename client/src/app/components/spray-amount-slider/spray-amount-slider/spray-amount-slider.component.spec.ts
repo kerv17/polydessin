@@ -1,3 +1,4 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
@@ -6,15 +7,15 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
-
-import { SimpleChange } from '@angular/core';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SprayAmountSliderComponent } from './spray-amount-slider.component';
+
 // tslint:disable:no-any
 describe('SprayAmountSliderComponent', () => {
     let component: SprayAmountSliderComponent;
@@ -32,6 +33,7 @@ describe('SprayAmountSliderComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
             {} as StampService,
+            {} as BucketService,
         );
 
         aerosol = new AerosolService({} as DrawingService);
