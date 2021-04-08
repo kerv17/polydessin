@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawAction } from '../undoRedo/undo-redo.service';
 
 const COLOR_ARRAY_LENGTH = 4;
 const MAX_COLOR_VALUE = 255;
@@ -26,18 +27,21 @@ export class BucketService extends Tool {
     onRightClick(event: MouseEvent): void {
         this.drawingService.baseCtx.fillStyle = this.color;
         this.changeColorEverywhere(event);
+        this.dispatchAction(this.createAction());
+        this.clearPath();
     }
     onClick(event: MouseEvent): void {
         this.drawingService.baseCtx.fillStyle = this.color;
         this.localFill(event);
+        this.dispatchAction(this.createAction());
+        this.clearPath();
     }
 
     private localFill(event: MouseEvent): void {
         const image: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
 
-        const coords = this.getPositionFromMouse(event);
         this.added = new Array(this.drawingService.canvas.width);
-
+        const coords = this.getPositionFromMouse(event);
         for (let i = 0; i < this.added.length; i++) {
             this.added[i] = new Array(this.drawingService.canvas.height).fill(false);
         }
@@ -59,6 +63,8 @@ export class BucketService extends Tool {
                 this.addLeftPixel(currentCoords, color);
                 this.addTopPixel(currentCoords, color);
                 this.addBottomPixel(currentCoords, color);
+
+                this.pathData.push(currentCoords);
             }
         }
     }
@@ -149,7 +155,18 @@ export class BucketService extends Tool {
 
             if (this.isAcceptableValue(currentColor, color)) {
                 this.drawingService.baseCtx.fillRect(currentCoords.x, currentCoords.y, 1, 1);
+                this.pathData.push(currentCoords);
             }
         }
+    }
+
+    doAction(action: DrawAction) {
+        const savedSetting = this.saveSetting();
+        this.loadSetting(action.setting);
+        for (const currentCoords of this.pathData) {
+            this.drawingService.baseCtx.fillStyle = this.color;
+            this.drawingService.baseCtx.fillRect(currentCoords.x, currentCoords.y, 1, 1);
+        }
+        this.loadSetting(savedSetting);
     }
 }
