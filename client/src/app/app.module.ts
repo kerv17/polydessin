@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
+import { BucketToleranceComponent } from './components/bucket-tolerance/bucket-tolerance.component';
 import { CarousselComponent } from './components/caroussel/caroussel/caroussel.component';
 import { ColorModalComponent } from './components/color/color-modal/color-modal.component';
 import { ColorPaletteComponent } from './components/color/color-palette/color-palette.component';
@@ -48,6 +49,7 @@ import { ColorService } from './services/color/color.service';
         SprayAmountSliderComponent,
         RemoteSaveComponent,
         StampComponent,
+        BucketToleranceComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
     providers: [ColorService],

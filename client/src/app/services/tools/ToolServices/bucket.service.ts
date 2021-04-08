@@ -3,6 +3,12 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+
+const COLOR_ARRAY_LENGTH = 4;
+const MAX_COLOR_VALUE = 255;
+const LAST_INDEX = 3;
+const PERCENTAGE_DIVIDER = 100;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -104,12 +110,12 @@ export class BucketService extends Tool {
     }
 
     private getColorOfPixel(x: number, y: number, image: ImageData): number[] {
-        const color: number[] = new Array(4);
+        const color: number[] = new Array(COLOR_ARRAY_LENGTH);
 
-        color[0] = image.data[(x + y * this.drawingService.canvas.width) * 4];
-        color[1] = image.data[(x + y * this.drawingService.canvas.width) * 4 + 1];
-        color[2] = image.data[(x + y * this.drawingService.canvas.width) * 4 + 2];
-        color[3] = image.data[(x + y * this.drawingService.canvas.width) * 4 + 3];
+        color[0] = image.data[(x + y * this.drawingService.canvas.width) * COLOR_ARRAY_LENGTH];
+        color[1] = image.data[(x + y * this.drawingService.canvas.width) * COLOR_ARRAY_LENGTH + 1];
+        color[2] = image.data[(x + y * this.drawingService.canvas.width) * COLOR_ARRAY_LENGTH + 2];
+        color[LAST_INDEX] = image.data[(x + y * this.drawingService.canvas.width) * COLOR_ARRAY_LENGTH + LAST_INDEX];
 
         return color;
     }
@@ -122,7 +128,7 @@ export class BucketService extends Tool {
 
     private isAcceptableValue(current: number[], reference: number[]): boolean {
         for (let i = 0; i < current.length; i++) {
-            if (Math.abs((current[i] - reference[i]) / 255) > this.tolerance) {
+            if (Math.abs((current[i] - reference[i]) / MAX_COLOR_VALUE) > this.tolerance / PERCENTAGE_DIVIDER) {
                 return false;
             }
         }
@@ -139,7 +145,7 @@ export class BucketService extends Tool {
                 x: (i / Globals.PIXEL_SIZE) % this.drawingService.baseCtx.canvas.width,
                 y: Math.trunc(i / Globals.PIXEL_SIZE / this.drawingService.baseCtx.canvas.width),
             };
-            const currentColor = [image.data[i], image.data[i + 1], image.data[i + 2], image.data[i + 3]];
+            const currentColor = [image.data[i], image.data[i + 1], image.data[i + 2], image.data[i + LAST_INDEX]];
 
             if (this.isAcceptableValue(currentColor, color)) {
                 this.drawingService.baseCtx.fillRect(currentCoords.x, currentCoords.y, 1, 1);

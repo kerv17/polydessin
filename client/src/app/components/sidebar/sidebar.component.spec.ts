@@ -286,7 +286,6 @@ describe('SidebarComponent', () => {
         component.currentTool = Globals.CRAYON_SHORTCUT;
         mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = true;
-
         window.dispatchEvent(keyDownEvent);
         expect(mapSpy).toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
         expect(component.currentTool).toEqual(Globals.ELLIPSIS_SHORTCUT);
