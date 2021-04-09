@@ -78,6 +78,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
+        const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
+        dispatchEvent(getSaved);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -105,7 +107,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.gridCtx.canvas.height = this.heightPrev;
                 const eventGrid: CustomEvent = new CustomEvent('grid');
                 dispatchEvent(eventGrid);
-
                 this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
                 if (this.allowUndoCall) {
@@ -118,6 +119,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
+                const eventContinue: CustomEvent = new CustomEvent('saveState');
+                dispatchEvent(eventContinue);
                 this.allowUndoCall = true;
             }
         }
