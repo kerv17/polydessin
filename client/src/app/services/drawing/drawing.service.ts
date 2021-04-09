@@ -10,6 +10,8 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
+    gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
     canvas: HTMLCanvasElement;
     canvasSize: Vec2 = { x: 0, y: 0 };
@@ -57,6 +59,7 @@ export class DrawingService {
         }
         this.setCanvassSize(newCanvasSize);
         this.clearCanvas(this.previewCtx);
+        this.clearCanvas(this.gridCtx);
 
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -103,6 +106,8 @@ export class DrawingService {
         this.canvas.width = newCanvasSize.x;
         this.previewCanvas.height = newCanvasSize.y;
         this.previewCanvas.width = newCanvasSize.x;
+        this.gridCanvas.height = newCanvasSize.y;
+        this.gridCanvas.width = newCanvasSize.x;
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
     resetCanvas(size: Vec2): void {
@@ -110,9 +115,12 @@ export class DrawingService {
         this.canvas.height = size.y;
         this.previewCanvas.width = size.x;
         this.previewCanvas.height = size.y;
+        this.gridCanvas.width = size.x;
+        this.gridCanvas.height = size.y;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.clearCanvas(this.previewCtx);
+        this.clearCanvas(this.gridCtx);
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
 

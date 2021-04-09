@@ -1,4 +1,4 @@
-<div id="myModal" class="modal">
+<div id="myModal" (window:resize)="onResize()" class="modal">
     <div class="modal-content">
         <div class="close" (click)="close()">&times;</div>
         <div>
@@ -92,6 +92,9 @@
             <p>Voici le canvas de prévisualisation</p>
             <canvas id="export" #export [attr.width]="width" [attr.height]="height"></canvas>
         </div>
-        <button (click)="exportPicture()">Export</button>
+        <div>
+            <button (click)="exportPicture()">Export</button>
+            <button (click)="exportImgur()">Export to Imgur</button>
+        </div>
     </div>
 </div>

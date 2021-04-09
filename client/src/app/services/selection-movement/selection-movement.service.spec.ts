@@ -4,11 +4,14 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from './selection-movement.service';
+
+// tslint:disable: no-any
 describe('SelectionMovementService', () => {
     let service: SelectionMovementService;
     let drawService: DrawingService;
     let drawServiceSpy: jasmine.Spy;
     let canvasTestHelper: CanvasTestHelper;
+    let selectionSpy: jasmine.Spy;
     const initialMousePosition = 'initialMousePosition';
     const leftArrow = 'leftArrow';
     const downArrow = 'downArrow';
@@ -18,6 +21,15 @@ describe('SelectionMovementService', () => {
     const width = 100;
     const height = 100;
     let mouseEvent: MouseEvent;
+    let pathData: Vec2[];
+    let selectedArea: ImageData;
+    // le but est ici d'avoir une imagedata non initialisée
+    // tslint:disable-next-line: prefer-const
+    let undefinedSelectedArea: ImageData;
+    const keyDown = 'keyDown';
+    const firstTime = 'firstTime';
+    const setKeyMovementDelays = 'setKeyMovementDelays';
+    const drawSelection = 'drawSelection';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -25,9 +37,17 @@ describe('SelectionMovementService', () => {
         drawService = TestBed.inject(DrawingService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawService.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.canvas = canvasTestHelper.canvas;
         topLeft = { x: 100, y: 100 };
         mouseEvent = Globals.mouseDownEvent;
+        pathData = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+        ];
+        selectedArea = undefinedSelectedArea;
     });
 
     it('should be created', () => {
@@ -54,7 +74,7 @@ describe('SelectionMovementService', () => {
 
     it('onMouseMove should move the selected area to its new position on the canvas', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'putImageData');
-        const selectedArea = drawService.baseCtx.getImageData(0, 0, drawService.canvas.width, drawService.canvas.height);
+        selectedArea = drawService.baseCtx.getImageData(0, 0, drawService.canvas.width, drawService.canvas.height);
         service[initialMousePosition] = { x: 125, y: 125 };
         service.onMouseMove(mouseEvent, drawService.baseCtx, topLeft, selectedArea);
         expect(drawServiceSpy).toHaveBeenCalledWith(selectedArea, width, height);
@@ -228,5 +248,81 @@ describe('SelectionMovementService', () => {
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
         expect(path.length).toEqual(expectedLength);
+    });
+
+    it('updateCanvasOnMove should call fillrect on the argument context', () => {
+        drawServiceSpy = spyOn(drawService.baseCtx, 'fillRect');
+        service.updateCanvasOnMove(drawService.baseCtx, pathData);
+        expect(drawServiceSpy).toHaveBeenCalled();
+    });
+
+    it('onArrowDown should call setKeyMovementDelays if repeated is true', () => {
+        selectionSpy = spyOn<any>(service, 'setKeyMovementDelays');
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service.onArrowDown(true, selectedArea, pathData);
+        expect(selectionSpy).toHaveBeenCalled();
+    });
+
+    it('onArrowDown should call drawSelection if repeated is false', () => {
+        selectionSpy = spyOn<any>(service, 'drawSelection');
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service.onArrowDown(false, selectedArea, pathData);
+        expect(selectionSpy).toHaveBeenCalled();
+    });
+
+    it('setKeyMovementDelays should call setTimeout if keyDown is false', () => {
+        service[keyDown] = false;
+        jasmine.clock().install();
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service[setKeyMovementDelays](selectedArea, pathData);
+        jasmine.clock().tick(Globals.TIMEOUT_MS + 1);
+        expect(service[keyDown]).toBeTrue();
+        jasmine.clock().uninstall();
+    });
+
+    it('setKeyMovementDelays should call setInterval if keyDown is true and firstTime is true', () => {
+        service[keyDown] = true;
+        service[firstTime] = true;
+        selectionSpy = spyOn<any>(service, 'drawSelection');
+        jasmine.clock().install();
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service[setKeyMovementDelays](selectedArea, pathData);
+        jasmine.clock().tick(Globals.INTERVAL_MS + 1);
+        expect(service[firstTime]).not.toBeTrue();
+        expect(selectionSpy).toHaveBeenCalled();
+        jasmine.clock().uninstall();
+    });
+
+    it('setKeyMovementDelays should not call setInterval if keyDown is true and firstTime is false', () => {
+        service[keyDown] = true;
+        service[firstTime] = false;
+        selectionSpy = spyOn<any>(service, 'drawSelection');
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service[setKeyMovementDelays](selectedArea, pathData);
+        expect(service[firstTime]).not.toBeTrue();
+        expect(selectionSpy).not.toHaveBeenCalled();
+    });
+
+    it('drawSelection should call moveSelection, clearCanvas, updateCanvasOnMove and putImageData if ImageData is not undefined', () => {
+        const moveSpy = spyOn(service, 'moveSelection');
+        selectionSpy = spyOn(service, 'updateCanvasOnMove');
+        drawServiceSpy = spyOn(drawService, 'clearCanvas');
+        pathData.push({ x: width, y: height });
+        selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
+        service[drawSelection](selectedArea, pathData);
+        expect(moveSpy).toHaveBeenCalled();
+        expect(selectionSpy).toHaveBeenCalled();
+        expect(drawServiceSpy).toHaveBeenCalled();
+    });
+
+    it('drawSelection should not call moveSelection, clearCanvas, updateCanvasOnMove and putImageData if ImageData is undefined', () => {
+        const selectionMovementSpy = spyOn(service, 'moveSelection');
+        selectionSpy = spyOn(service, 'updateCanvasOnMove');
+        drawServiceSpy = spyOn(drawService, 'clearCanvas');
+        pathData.push({ x: width, y: height });
+        service[drawSelection](selectedArea, pathData);
+        expect(selectionMovementSpy).not.toHaveBeenCalled();
+        expect(selectionSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy).not.toHaveBeenCalled();
     });
 });

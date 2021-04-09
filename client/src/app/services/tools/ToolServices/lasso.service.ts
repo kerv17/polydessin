@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { ServiceCalculator } from '@app/classes/service-calculator';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line-service';
 import { SelectionService } from './selection.service';
-import * as Globals from '@app/Constants/constants';
 
 @Injectable({
     providedIn: 'root',
 })
 export class LassoService extends Tool {
-    constructor(drawingService: DrawingService, private lineService: LineService, private selectionService:SelectionService) {
+    constructor(drawingService: DrawingService, private lineService: LineService, private selectionService: SelectionService) {
         super(drawingService);
         this.toolMode = 'selection';
         this.clearPath();
@@ -24,7 +24,7 @@ export class LassoService extends Tool {
         if (this.toolMode === 'movement') {
             this.clearPreviewCtx();
             this.passToSelectionService(this.selectArea(this.pathData));
-            dispatchEvent(new CustomEvent('changeTool', {detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT]}));
+            dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT] }));
             this.clearPath();
             // this.selectionService.updateCanvasOnMove(this.drawingService.previewCtx);
         }
@@ -76,7 +76,7 @@ export class LassoService extends Tool {
         const box = ServiceCalculator.maxSize(points);
         const canvas = new OffscreenCanvas(box[1].x - box[0].x, box[1].y - box[0].y);
         const ctx = canvas.getContext('2d') || new OffscreenCanvasRenderingContext2D();
-        
+
         for (let i = 1; i < points.length; i++) {
             pathList.lineTo(points[i].x - box[0].x, points[i].y - box[0].y);
         }
@@ -90,27 +90,27 @@ export class LassoService extends Tool {
 
         const imageData = ctx.getImageData(0, 0, box[1].x - box[0].x, box[1].y - box[0].y);
 
-        //this.clearPreviewCtx();
-        this.clearZone();
+        // this.clearPreviewCtx();
+        // this.clearZone();
         return imageData;
     }
 
-    
-
-    passToSelectionService(ctx:ImageData){
+    passToSelectionService(ctx: ImageData): void {
         this.selectionService.inSelection = true;
         this.selectionService.inMovement = true;
         this.selectionService.selectedArea = ctx;
         this.selectionService.lassoPath = this.pathData;
-        this.selectionService.setPathData(ServiceCalculator.maxSize(this.pathData));
+        const maxSize = ServiceCalculator.maxSize(this.pathData);
+        const path = [];
+        path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y }, maxSize[0]);
+        this.selectionService.setPathData(path);
         this.selectionService.setTopLeftHandler();
-        
     }
 
     clearZone(): void {
         this.drawingService.baseCtx.fillStyle = 'white';
         const path = new Path2D();
-        path.moveTo(this.pathData[0].x, this.pathData[0].y)
+        path.moveTo(this.pathData[0].x, this.pathData[0].y);
         for (let i = 1; i < this.pathData.length; i++) {
             path.lineTo(this.pathData[i].x, this.pathData[i].y);
         }
