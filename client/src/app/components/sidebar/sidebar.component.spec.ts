@@ -11,9 +11,12 @@ import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
@@ -25,13 +28,12 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SidebarComponent } from './sidebar.component';
-
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
         return;
     }
 }
-
+// tslint:disable:no-any
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -53,24 +55,27 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
     let carouselService: CarouselService;
-    let selectionMovementService: SelectionMovementService;
+    let selectionBoxService: SelectionBoxService;
+    let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let canvasTestHelper;
     let exportService: ExportService;
     let eventSpy: jasmine.Spy;
     const router = jasmine.createSpyObj(Router, ['navigate']);
-
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
         exportService = new ExportService(drawingStub, {} as ServerRequestService);
         remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
-        selectionMovementService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionBoxService = new SelectionBoxService();
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             new PencilService(drawingStub),
             new RectangleService(drawingStub),
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
-            new SelectionService(drawingStub, selectionMovementService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             new StampService(drawingStub),
             new BucketService(drawingStub),
         );
@@ -92,18 +97,15 @@ describe('SidebarComponent', () => {
             ],
         }).compileComponents();
     }));
-
     beforeEach(() => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         toolControllerSpy = spyOn(toolController, 'setTool');
     });
-
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
     it('should add two event listeners in the constructor', () => {
         const c: CustomEvent = new CustomEvent('undoRedoState', {
             detail: [false, true],
@@ -137,19 +139,17 @@ describe('SidebarComponent', () => {
         expect(colorSpy).toHaveBeenCalled();
         expect(resetWidthSpy).toHaveBeenCalled();
     });
-
     it('should open the export modal', () => {
         component.exportService.showModalExport = false;
         component.openExport();
 
         expect(component.exportService.showModalExport).toBe(true);
     });
-
     it('should call toolControllerSetTool ', () => {
         component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
-    // tslint:disable:no-any
+
     it('should call the selectionService method select Canvas with the full size ', () => {
         canvasTestHelper = new CanvasTestHelper();
         (component as any).drawing.canvas = (canvasTestHelper as any).createCanvas();
@@ -159,25 +159,21 @@ describe('SidebarComponent', () => {
         component.selectCanvas();
         expect(selectionSpy).toHaveBeenCalled();
     });
-
     it('should open the Carrousel Modal when we click on the button ', () => {
         const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
         component.openCarousel();
         expect(carouselSpy).toHaveBeenCalled();
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
         expect(component.remoteSaveService.showModalSave).toEqual(true);
     });
-
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
         component.openSave();
@@ -269,6 +265,12 @@ describe('SidebarComponent', () => {
         expect(resetWidthSpy).toHaveBeenCalled();
         expect(resetToolsModeSpy).toHaveBeenCalled();
     });
+    it('showGrid should call the toggleGrid method from GridService', () => {
+        component.gridService = new GridService(drawingStub);
+        const spy = spyOn(component.gridService, 'toggleGrid');
+        component.showGrid();
+        expect(spy).toHaveBeenCalled();
+    });
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
         const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
@@ -321,29 +323,5 @@ describe('SidebarComponent', () => {
         component.onKeyPress(keyDownEvent);
         expect(functionSpy).toHaveBeenCalled();
         expect(newDrawingSpy).not.toHaveBeenCalled();
-    });
-    it('should call the undoRedoService redo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).toHaveBeenCalled();
-    });
-    it('should call the undoRedoService undo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService redo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).not.toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService undo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).not.toHaveBeenCalled();
     });
 });

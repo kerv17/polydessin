@@ -5,10 +5,10 @@ import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { UndoRedoService } from '@app/services/tools/undoRedo/undo-redo.service';
-
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -24,6 +24,7 @@ export class SidebarComponent {
     showAerosol: boolean = false;
     shapeOptions: boolean = false;
     showLine: boolean = false;
+    selectionOptions: boolean = false;
     currentTool: string;
     resetAttributes: boolean = false;
 
@@ -42,6 +43,7 @@ export class SidebarComponent {
         public carouselService: CarouselService,
         private undoRedoService: UndoRedoService,
         public remoteSaveService: RemoteSaveService,
+        public gridService: GridService,
     ) {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
@@ -61,6 +63,7 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
+        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
@@ -71,6 +74,7 @@ export class SidebarComponent {
     }
 
     selectCanvas(): void {
+        this.selectionOptions = true;
         this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
         this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
@@ -94,7 +98,11 @@ export class SidebarComponent {
     showShapeOptions(): void {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
+    showSelectionOptions(): void {
+        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT;
+    }
 
+    // TODO : changer le nom en anglais
     annulerSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
@@ -105,6 +113,7 @@ export class SidebarComponent {
         this.resetAttributes = !this.resetAttributes;
         this.currentTool = toolname;
 
+        this.showSelectionOptions();
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
@@ -116,9 +125,13 @@ export class SidebarComponent {
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
         this.drawing.newCanvas();
+        this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+    }
+    showGrid(): void {
+        this.gridService.toggleGrid();
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -162,7 +175,8 @@ export class SidebarComponent {
             .set([false, true, Globals.CANVAS_SELECTION_EVENT].join(), this.selectCanvas)
             .set([false, true, Globals.CANVAS_SAVE_SHORTCUT].join(), this.openSave)
             .set([true, true, Globals.REDO_SHORTCUT].join(), this.redoAction)
-            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction);
+            .set([false, true, Globals.UNDO_SHORTCUT].join(), this.undoAction)
+            .set([false, false, Globals.GRID_SHORTCUT].join(), this.showGrid);
     }
 
     handleShortcuts(event: KeyboardEvent): void {

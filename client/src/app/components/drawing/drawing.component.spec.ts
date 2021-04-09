@@ -6,8 +6,9 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
@@ -36,6 +37,7 @@ describe('DrawingComponent', () => {
     let carouselService: CarouselService;
     let selectionBoxService: SelectionBoxService;
     let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
@@ -43,14 +45,15 @@ describe('DrawingComponent', () => {
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
-        selectionMoveService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
             {} as LineService,
             {} as EllipsisService,
             {} as AerosolService,
-            new SelectionService(drawingStub, selectionMoveService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             {} as StampService,
             {} as BucketService,
         );
@@ -123,6 +126,7 @@ describe('DrawingComponent', () => {
     it(' ngOnChanges takes the old drawing and puts it on a new canva if view is initialized and mouseDown is false', () => {
         component.widthPrev = 2;
         component.heightPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
         fillNewSpaceSpy = spyOn(drawingStub, 'fillNewSpace');
         putImageDataSpy = spyOn((component as any).drawingService['baseCtx'], 'putImageData');
         component['viewInitialized'] = true;
@@ -130,6 +134,7 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({});
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(fillNewSpaceSpy).toHaveBeenCalled();
+        expect(spyDispatch).toHaveBeenCalled();
     });
     it(' ngOnChanges set previewCanvas.nativeElement.width if view is initialized, mouseDown is true and changes to widthPrev have occured', () => {
         const expectedValue = 500;
@@ -154,9 +159,11 @@ describe('DrawingComponent', () => {
         component['controller'].selectionService.inSelection = true;
         component.widthPrev = 2;
         component.heightPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
         const escapeSpy = spyOn<any>(component['controller'].selectionService, 'onEscape');
         component.ngOnChanges({});
         expect(escapeSpy).toHaveBeenCalled();
+        expect(spyDispatch).toHaveBeenCalled();
     });
 
     it('should get stubTool', () => {
@@ -235,21 +242,36 @@ describe('DrawingComponent', () => {
     it('ngOnChanges should dispatch an action Event only when allowed', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        const nymberOfTimesDispatchCalled = 3;
 
-        let actionCalled = false;
-        addEventListener('action', (event: CustomEvent) => {
-            actionCalled = true;
-        });
         (component as any).viewInitialized = true;
         (component as any).mouseDown = false;
 
         (component as any).allowUndoCall = false;
         component.ngOnChanges({} as SimpleChanges);
-        expect(actionCalled).toBeFalse();
+
+        expect(spyDispatch).toHaveBeenCalledTimes(1);
 
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
-        expect(actionCalled).toBeTrue();
+
+        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+    });
+    it('ngOnChanges should dispatch a grid Event only after view is initialised', () => {
+        (component as any).heightPrev = 2;
+        (component as any).widthPrev = 2;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+
+        (component as any).viewInitialized = false;
+        (component as any).mouseDown = false;
+
+        component.ngOnChanges({} as SimpleChanges);
+        expect(spyDispatch).not.toHaveBeenCalled();
+
+        (component as any).viewInitialized = true;
+        component.ngOnChanges({} as SimpleChanges);
+        expect(spyDispatch).toHaveBeenCalled();
     });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {

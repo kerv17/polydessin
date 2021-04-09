@@ -3,7 +3,9 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { BucketService } from './bucket.service';
+
 // tslint:disable: no-any
 describe('BucketService', () => {
     let service: BucketService;
@@ -230,5 +232,16 @@ describe('BucketService', () => {
         expect(getColorSpy).toHaveBeenCalled();
         expect(getPositionSpy).toHaveBeenCalled();
         expect(acceptableSpy).toHaveBeenCalled();
+    });
+
+    it('should call doAction for undoRedo', () => {
+        const saveSettingSpy = spyOn(service as any, 'saveSetting').and.returnValue({});
+        const loadSettingSpy = spyOn(service as any, 'loadSetting').and.returnValue({});
+        (service as any).pathData.push({ x: 0, y: 0 });
+        const fillRectSpy = spyOn((service as any).drawingService.baseCtx, 'fillRect').and.returnValue({});
+        service.doAction({} as DrawAction);
+        expect(saveSettingSpy).toHaveBeenCalled();
+        expect(loadSettingSpy).toHaveBeenCalledTimes(2);
+        expect(fillRectSpy).toHaveBeenCalledTimes(1);
     });
 });

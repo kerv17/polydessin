@@ -39,7 +39,22 @@ export class SelectionBoxService {
         return this.handlersPositions;
     }
 
-    getCursor(pos: number): string {
+    getCursor(event: MouseEvent): string {
+        let pos = 10;
+        for (const handler of this.getHandlersPositions()) {
+            if (
+                event.offsetX <= handler.x + Globals.HANDLERS_WIDTH &&
+                event.offsetX >= handler.x - Globals.HANDLERS_WIDTH &&
+                event.offsetY <= handler.y + Globals.HANDLERS_WIDTH &&
+                event.offsetY >= handler.y - Globals.HANDLERS_WIDTH
+            ) {
+                pos = this.getHandlersPositions().indexOf(handler);
+            }
+        }
+        return this.setCursor(pos);
+    }
+
+    setCursor(pos: number): string {
         if (pos === Globals.TOP_LEFT_HANDLER || pos === Globals.BOTTOM_RIGHT_HANDLER) return 'nw-resize';
         if (pos === Globals.TOP_HANDLER || pos === Globals.BOTTOM_HANDLER) return 'n-resize';
         if (pos === Globals.TOP_RIGHT_HANDLER || pos === Globals.BOTTOM_LEFT_HANDLER) return 'ne-resize';
@@ -66,14 +81,16 @@ export class SelectionBoxService {
         };
     }
 
+    // à améliorer
     cursorChange(event: MouseEvent, inSelection: boolean, topLeft: Vec2, width: number, height: number): void {
         const bottomRight = {
             x: topLeft.x + width,
             y: topLeft.y + height,
         };
+
         if (event.offsetX > topLeft.x && event.offsetX < bottomRight.x && event.offsetY > topLeft.y && event.offsetY < bottomRight.y && inSelection) {
             this.cursor = {
-                cursor: 'all-scroll',
+                cursor: this.getCursor(event),
             };
         } else {
             this.cursor = {

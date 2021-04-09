@@ -3,7 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawAction } from '../undoRedo/undo-redo.service';
+import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 const COLOR_ARRAY_LENGTH = 4;
 const MAX_COLOR_VALUE = 255;
@@ -160,7 +160,7 @@ export class BucketService extends Tool {
         }
     }
 
-    doAction(action: DrawAction) {
+    doAction(action: DrawAction): void {
         const savedSetting = this.saveSetting();
         this.loadSetting(action.setting);
         for (const currentCoords of this.pathData) {
