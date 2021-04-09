@@ -102,7 +102,7 @@ export class LassoService extends Tool {
         this.selectionService.lassoPath = this.pathData;
         const maxSize = ServiceCalculator.maxSize(this.pathData);
         const path = [];
-        path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y }, maxSize[0]);
+        path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y });
         this.selectionService.setPathData(path);
         this.selectionService.setTopLeftHandler();
     }

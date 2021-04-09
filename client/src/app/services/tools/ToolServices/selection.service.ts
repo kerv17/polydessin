@@ -121,7 +121,7 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+                this.updateCanvasOnMove(this.drawingService.previewCtx);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
                 this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
@@ -235,6 +235,8 @@ export class SelectionService extends Tool {
     }
 
     updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+        console.log(this.pathData);
+        console.log(this.lassoPath);
         this.clearPreviewCtx();
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
