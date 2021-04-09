@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
-import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { SelectionService } from './selection.service';
 // justifié pour pouvoir faire des spys sur des méthodes privées
 // tslint:disable: no-any
@@ -11,6 +11,7 @@ describe('SelectionService', () => {
     let service: SelectionService;
     let drawService: DrawingService;
     let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let rectangleSpy: jasmine.Spy;
     let drawServiceSpy: jasmine.Spy;
     let selectionSpy: jasmine.Spy;
@@ -20,25 +21,23 @@ describe('SelectionService', () => {
     let drawBorderSpy: jasmine.Spy;
     let selectAreaSpy: jasmine.Spy;
     let selectionMovementSpy: jasmine.Spy;
+    let selectionResizeSpy: jasmine.Spy;
     const width = 100;
     const height = 100;
     const canvasWidth = 500;
     const canvasHeight = 500;
     const pathData = 'pathData';
     const inMovement = 'inMovement';
-    const createAction = 'createAction';
-    const selectArea = 'selectArea';
-    const updateCanvasOnMove = 'updateCanvasOnMove';
     const selectedArea = 'selectedArea';
     const rectangleService = 'rectangleService';
-    const drawBorder = 'drawBorder';
-    const confirmSelectionMove = 'confirmSelectionMove';
+    const inResize = 'inResize';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(SelectionService);
         drawService = TestBed.inject(DrawingService);
         selectionMoveService = TestBed.inject(SelectionMovementService);
+        selectionResizeService = TestBed.inject(SelectionResizeService);
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -65,6 +64,21 @@ describe('SelectionService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('getPathData should return the pathData', () => {
+        expect(service.getPathData()).toEqual(service[pathData]);
+    });
+
+    it('setPathData should set the pathData with the path passed in arguments', () => {
+        const expectedPath = [
+            { x: 50, y: 50 },
+            { x: 100, y: 50 },
+            { x: 100, y: 100 },
+            { x: 50, y: 100 },
+        ];
+        service.setPathData(expectedPath);
+        expect(service[pathData]).toEqual(expectedPath);
+    });
+
     it('getActualPosition should return (0,0) if pathData is empty', () => {
         service[pathData] = [];
         expect(service.getActualPosition()).toEqual({ x: 0, y: 0 });
@@ -79,12 +93,35 @@ describe('SelectionService', () => {
         expect(service.getActualPosition()).toEqual({ x: 100, y: 100 });
     });
 
+    it('getActualPosition should call getActualResizedPosition from the selection resize service and return its value', () => {
+        selectionResizeSpy = spyOn(selectionResizeService, 'getActualResizedPosition');
+        service[inResize] = true;
+        service.getActualPosition();
+        expect(selectionResizeSpy).toHaveBeenCalled();
+    });
+
     it('getSelectionWidth should return 0 if the selectedArea is undefined', () => {
         expect(service.getSelectionWidth()).toEqual(0);
     });
 
+    it('getSelectionWidth should return 0 if there is no active selection', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service.inSelection = false;
+        expect(service.getSelectionWidth()).toEqual(0);
+    });
+
+    it('getSelectionWidth should call getActualResizeWidth from selectionResize if the selection has been resized', () => {
+        selectionResizeSpy = spyOn(selectionResizeService, 'getActualResizedWidth');
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service[inResize] = true;
+        service.inSelection = true;
+        service.getSelectionWidth();
+        expect(selectionResizeSpy).toHaveBeenCalled();
+    });
+
     it('getSelectionWidth should return the width of the selected area if there is a selection', () => {
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service.inSelection = true;
         expect(service.getSelectionWidth()).toEqual(width);
     });
 
@@ -94,7 +131,23 @@ describe('SelectionService', () => {
 
     it('getSelectionHeight should return the height of the selected area if there is a selection', () => {
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service.inSelection = true;
         expect(service.getSelectionHeight()).toEqual(height);
+    });
+
+    it('getSelectionHeight should return 0 if there is no active selection', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service.inSelection = false;
+        expect(service.getSelectionHeight()).toEqual(0);
+    });
+
+    it('getSelectionHeight should call getActualResizeHeight from selectionResize if the selection has been resized', () => {
+        selectionResizeSpy = spyOn(selectionResizeService, 'getActualResizedHeight');
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service[inResize] = true;
+        service.inSelection = true;
+        service.getSelectionHeight();
+        expect(selectionResizeSpy).toHaveBeenCalled();
     });
 
     it('onMouseDown should set mouseDown to true if it was a left click', () => {
@@ -119,15 +172,26 @@ describe('SelectionService', () => {
     });
 
     it('onMouseDown should call onEscape if the event occured outside the selected area limits', () => {
-        const outsideSelection = 10;
+        const outsideSelection = 1000;
         service.inSelection = true;
-        service[pathData].push({ x: width, y: height });
-        service[selectedArea] = drawService.baseCtx.getImageData(width, height, outsideSelection, outsideSelection);
-        selectionSpy = spyOn(service, 'onEscape');
+        service[inMovement] = false;
+        service[inResize] = false;
+        service[pathData].push({ x: outsideSelection, y: outsideSelection });
+        service[selectedArea] = drawService.baseCtx.getImageData(outsideSelection, outsideSelection, outsideSelection, outsideSelection);
+        selectionSpy = spyOn(service, 'onEscape').and.callThrough();
         service.onMouseDown(mouseDownEvent);
-        expect(service.inSelection).toBeTrue();
-        expect(service[inMovement]).not.toBeTrue();
         expect(selectionSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseDown should set inResize to true and call initializePath from selectionResize if one of the handlers was clicked', () => {
+        selectionResizeSpy = spyOn(selectionResizeService, 'onMouseDown').and.returnValue(true);
+        const selectionResizeSpy2 = spyOn(selectionResizeService, 'initializePath');
+        const selectionResizeSpy3 = spyOn(selectionResizeService, 'setPathDataAfterMovement');
+        service.inSelection = true;
+        service.onMouseDown(mouseDownEvent);
+        expect(service[inResize]).toBeTrue();
+        expect(selectionResizeSpy2).toHaveBeenCalledWith(service[pathData]);
+        expect(selectionResizeSpy3).toHaveBeenCalled();
     });
 
     it('onMouseMove should do nothing if mouseDown is false', () => {
@@ -145,9 +209,10 @@ describe('SelectionService', () => {
         expect(drawServiceSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should call drawBorder and select area if inMovement is false', () => {
+    it('onMouseMove should call drawBorder and select area if inMovement and inResize are false', () => {
         service.mouseDown = true;
         service[inMovement] = false;
+        service[inResize] = false;
         drawBorderSpy = spyOn<any>(service, 'drawBorder').and.callThrough();
         selectAreaSpy = spyOn<any>(service, 'selectArea').and.callThrough();
         service[rectangleService].setPath(service[pathData]);
@@ -161,11 +226,24 @@ describe('SelectionService', () => {
         service[inMovement] = true;
         service[pathData].push({ x: width, y: height });
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
-        selectionSpy = spyOn<any>(service, 'updateCanvasOnMove').and.callThrough();
+        selectionSpy = spyOn<any>(selectionMoveService, 'updateCanvasOnMove').and.callThrough();
         selectionMovementSpy = spyOn(selectionMoveService, 'onMouseMove');
         service.onMouseMove(mouseDownEvent);
         expect(selectionSpy).toHaveBeenCalled();
         expect(selectionMovementSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseMove should call updateCanvasOnMove and onMouseMove from Resize in in resize is true', () => {
+        service.mouseDown = true;
+        service[inResize] = true;
+        service[inMovement] = false;
+        service[pathData].push({ x: width, y: height });
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        selectionMovementSpy = spyOn<any>(selectionMoveService, 'updateCanvasOnMove').and.callThrough();
+        selectionResizeSpy = spyOn(selectionResizeService, 'onMouseMove');
+        service.onMouseMove(mouseDownEvent);
+        expect(selectionMovementSpy).toHaveBeenCalled();
+        expect(selectionResizeSpy).toHaveBeenCalled();
     });
 
     it('onMouseUp should do nothing if mouseDown is false', () => {
@@ -213,6 +291,29 @@ describe('SelectionService', () => {
         expect(selectionMovementSpy).toHaveBeenCalled();
     });
 
+    it('onMouseUp should call onMouseUp from selection resize and getImageData from drawingService if inResize is true', () => {
+        service.mouseDown = true;
+        service[inMovement] = false;
+        service[inResize] = true;
+        selectionResizeSpy = spyOn(selectionResizeService, 'onMouseUp').and.returnValue(true);
+        selectAreaSpy = spyOn(drawService.previewCtx, 'getImageData');
+        selectionSpy = spyOn(service, 'getActualPosition').and.returnValue({ x: 100, y: 100 });
+        service.onMouseUp(mouseUpEvent);
+        expect(selectionResizeSpy).toHaveBeenCalled();
+        expect(selectAreaSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseUp should call onMouseUp from selection resize if inResize is true but not the mouseUp', () => {
+        service.mouseDown = true;
+        service[inMovement] = false;
+        service[inResize] = true;
+        selectionResizeSpy = spyOn(selectionResizeService, 'onMouseUp').and.returnValue(false);
+        selectAreaSpy = spyOn(drawService.previewCtx, 'getImageData');
+        service.onMouseUp(mouseUpEvent);
+        expect(selectionResizeSpy).toHaveBeenCalled();
+        expect(selectAreaSpy).not.toHaveBeenCalled();
+    });
+
     it('onShift should set shift to the argument value and call onMouseMove with the lastMoveEvent', () => {
         selectionSpy = spyOn(service, 'onMouseMove');
         service.onShift(true);
@@ -231,6 +332,7 @@ describe('SelectionService', () => {
         selectionSpy = spyOn<any>(service, 'confirmSelectionMove').and.callThrough();
         const selectionSpy2 = spyOn<any>(service, 'dispatchAction').and.callThrough();
         const selectionSpy3 = spyOn(service, 'clearPath');
+        selectionResizeSpy = spyOn(selectionResizeService, 'resetPath');
         service[pathData].push({ x: width, y: height });
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
         service.onEscape();
@@ -239,108 +341,8 @@ describe('SelectionService', () => {
         expect(service.inSelection).not.toBeTrue();
         expect(service.mouseDown).not.toBeTrue();
         expect(service[inMovement]).not.toBeTrue();
+        expect(service[inResize]).not.toBeTrue();
         expect(selectionSpy3).toHaveBeenCalled();
-    });
-
-    it('selectCanvas should call getImageData with the width and height passed as arguments', () => {
-        selectAreaSpy = spyOn(drawService.baseCtx, 'getImageData');
-        service.selectCanvas(width, height);
-        expect(selectAreaSpy).toHaveBeenCalled();
-        expect(service.inSelection).toBeTrue();
-    });
-
-    it('selectCanvas should set the path based on the width and height arguments', () => {
-        service.selectCanvas(width, height);
-        expect(service[pathData][0]).toEqual({ x: 0, y: 0 });
-        expect(service[pathData][1]).toEqual({ x: 0, y: 100 });
-        expect(service[pathData][2]).toEqual({ x: 100, y: 100 });
-        expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: 100, y: 0 });
-        expect(service[pathData][Globals.BOTTOM_RIGHT_HANDLER]).toEqual({ x: 0, y: 0 });
-    });
-
-    it('doAction should call saveSetting, loadSetting, selectArea and confirmSelectionMove', () => {
-        const action: DrawAction = service[createAction]();
-        selectAreaSpy = spyOn<any>(service, 'selectArea').and.callThrough();
-        selectionSpy = spyOn<any>(service, 'loadSetting');
-        service[pathData].push({ x: width, y: height });
-        service.doAction(action);
-        expect(selectAreaSpy).toHaveBeenCalled();
-        expect(selectionSpy).toHaveBeenCalled();
-    });
-
-    it('getPositionFromMouse should limit the x value to the width of the canvas if mouse is on the right of the canvas', () => {
-        const mouseEvent = {
-            pageX: 1000,
-            pageY: 125,
-            button: 0,
-        } as MouseEvent;
-        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth, y: 125 });
-    });
-
-    it('getPositionFromMouse should limit the x value to 0 if mouse is on the left of the canvas', () => {
-        const mouseEvent = {
-            pageX: 300,
-            pageY: 125,
-            button: 0,
-        } as MouseEvent;
-        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: 0, y: 125 });
-    });
-
-    it('getPositionFromMouse should limit the y value to the height of the canvas if mouse is below the canvas', () => {
-        const mouseEvent = {
-            pageX: canvasWidth,
-            pageY: 1000,
-            button: 0,
-        } as MouseEvent;
-        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth - Globals.SIDEBAR_WIDTH, y: canvasHeight });
-    });
-
-    it('getPositionFromMouse should limit the y value to 0 if mouse is on top of the canvas', () => {
-        const mouseEvent = {
-            pageX: canvasWidth,
-            pageY: -125,
-            button: 0,
-        } as MouseEvent;
-        expect(service.getPositionFromMouse(mouseEvent)).toEqual({ x: canvasWidth - Globals.SIDEBAR_WIDTH, y: 0 });
-    });
-
-    it('selectArea should call getImageData if the width and height are not 0', () => {
-        drawServiceSpy = spyOn(drawService.baseCtx, 'getImageData');
-        service[selectArea](drawService.baseCtx);
-        expect(drawServiceSpy).toHaveBeenCalled();
-    });
-
-    it('selectArea should not call getImageData if the width and height are 0', () => {
-        service[pathData] = [
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-        ];
-        drawServiceSpy = spyOn(drawService.baseCtx, 'getImageData');
-        service[selectArea](drawService.baseCtx);
-        expect(drawServiceSpy).not.toHaveBeenCalled();
-    });
-
-    it('updateCanvasOnMove should call fillrect on the argument context', () => {
-        drawServiceSpy = spyOn(drawService.baseCtx, 'fillRect');
-        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
-        service[updateCanvasOnMove](drawService.baseCtx);
-        expect(drawServiceSpy).toHaveBeenCalled();
-    });
-
-    it('confirmSelectionMove should call updateCanvasOnMove and putImageData on the basectx', () => {
-        selectionSpy = spyOn<any>(service, 'updateCanvasOnMove');
-        drawServiceSpy = spyOn(drawService.baseCtx, 'putImageData');
-        service[pathData].push({ x: width, y: height });
-        service[confirmSelectionMove]();
-        expect(selectionSpy).toHaveBeenCalled();
-        expect(drawServiceSpy).toHaveBeenCalled();
-    });
-
-    it('drawBorder should call lineTo and setlinedash', () => {
-        drawServiceSpy = spyOn(drawService.baseCtx, 'lineTo');
-        service[drawBorder](drawService.baseCtx);
-        expect(drawServiceSpy).toHaveBeenCalled();
+        expect(selectionResizeSpy).toHaveBeenCalled();
     });
 });

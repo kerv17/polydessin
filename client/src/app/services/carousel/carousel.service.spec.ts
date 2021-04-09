@@ -199,7 +199,7 @@ describe('CarouselService', () => {
         expect(service.currentSearch).toEqual('');
     });
 
-    it('should initialise the carousel and get all the pictures', () => {
+    it('should initialise the carousel and get all the pictures and recieve an erro if one was thrown', () => {
         const getImagesSpy = spyOn(service, 'getImages').and.returnValue();
 
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({});

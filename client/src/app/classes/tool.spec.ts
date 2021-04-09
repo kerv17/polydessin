@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { SIDEBAR_WIDTH } from '@app/Constants/constants';
+import { HANDLERS_WIDTH, SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { CanvasTestHelper } from './canvas-test-helper';
-
 import { Setting, Tool } from './tool';
 import { Vec2 } from './vec2';
 
@@ -35,6 +34,7 @@ describe('Tool', () => {
             toolMode: 'alphabet',
             shift: true,
             pathData: [{} as Vec2, {} as Vec2, {} as Vec2],
+            selectedArea: new ImageData(HANDLERS_WIDTH, HANDLERS_WIDTH),
         };
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         // baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

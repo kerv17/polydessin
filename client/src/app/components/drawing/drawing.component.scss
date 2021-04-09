@@ -14,22 +14,32 @@ canvas {
     z-index: 1;
 }
 
+#gridLayer {
+    z-index: 3;
+    background-color: transparent;
+}
+
 #canvas-container {
     position: relative;
 }
 
 #previewLayer {
+    z-index: 2; //rajouter
     border-style: dashed;
+    background-color: transparent; //rajouter
 }
 
 .selection-box {
     pointer-events: none;
+    z-index: 4;
 }
 
 .handlers {
+    z-index: 4;
     height: 10px;
     width: 10px;
     background-color: gainsboro;
     position: absolute;
     border: 1px solid blue;
+    pointer-events: none;
 }
