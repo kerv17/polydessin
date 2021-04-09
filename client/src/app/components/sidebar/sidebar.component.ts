@@ -124,6 +124,7 @@ export class SidebarComponent {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
+        this.annulerSelection();
         this.drawing.newCanvas();
         this.gridService.resetGrid();
         this.toolController.lineService.clearPath();

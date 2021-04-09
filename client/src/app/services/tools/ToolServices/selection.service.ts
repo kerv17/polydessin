@@ -48,13 +48,6 @@ export class SelectionService extends Tool {
         this.pathData = path;
     }
 
-    // à voir
-    /*setPathData(points: Vec2[]): void {
-        this.pathData = [];
-        this.pathData.push(points[0], { x: points[0].x, y: points[1].y }, points[1], { x: points[1].x, y: points[0].y });
-
-    }*/
-
     getActualPosition(): Vec2 {
         if (this.inResize) {
             return this.selectionResize.getActualResizedPosition();
@@ -99,7 +92,15 @@ export class SelectionService extends Tool {
                 /*if (this.inResize) {
                     this.selectArea(this.drawingService.baseCtx);
                 }*/
+                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionResize.onMouseMove(
+                    this.selectedArea,
+                    this.drawingService.previewCtx,
+                    this.getPositionFromMouse(event),
+                    this.rectangleService.shift,
+                );
                 this.inResize = true;
+                this.inMovement = false;
             } else if (
                 this.selectionMove.onMouseDown(event, mousePosition, this.getActualPosition(), this.getSelectionWidth(), this.getSelectionHeight())
             ) {
@@ -121,10 +122,10 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.updateCanvasOnMove(this.drawingService.previewCtx);
+                this.updateCanvasOnMove(this.drawingService.baseCtx);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+                // this.updateCanvasOnMove(this.drawingService.previewCtx);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -235,8 +236,6 @@ export class SelectionService extends Tool {
     }
 
     updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
-        console.log(this.pathData);
-        console.log(this.lassoPath);
         this.clearPreviewCtx();
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
