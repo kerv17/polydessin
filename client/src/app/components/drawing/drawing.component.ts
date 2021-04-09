@@ -159,6 +159,12 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.onClick(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.controller.currentTool.onRightClick(event);
+    }
+
     @HostListener('dblclick', ['$event'])
     ondbClick(event: MouseEvent): void {
         this.controller.currentTool.ondbClick(event);

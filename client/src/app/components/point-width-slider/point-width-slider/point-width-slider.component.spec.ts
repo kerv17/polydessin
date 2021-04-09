@@ -6,6 +6,7 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -33,6 +34,7 @@ describe('PointWidthSliderComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
             {} as StampService,
+            {} as BucketService,
         );
         toolController.currentTool = line;
         TestBed.configureTestingModule({

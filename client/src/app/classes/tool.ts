@@ -32,6 +32,8 @@ export abstract class Tool {
 
     onClick(event: MouseEvent): void {}
 
+    onRightClick(event: MouseEvent): void {}
+
     ondbClick(event: MouseEvent): void {}
 
     onShift(shift: boolean): void {}

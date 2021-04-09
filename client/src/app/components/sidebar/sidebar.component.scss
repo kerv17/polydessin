@@ -17,7 +17,7 @@
 .function {
     display: flex;
     width: 50px;
-    height: 5vh;
+    height: 3.8vh;
     border-radius: 4px;
     background-color: white;
     max-height: 100px;
@@ -69,4 +69,5 @@
     width: 70px;
     background-image: url(../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png);
     background-color: black;
+    justify-content: center;
 }

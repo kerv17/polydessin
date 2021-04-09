@@ -3,6 +3,7 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -22,6 +23,7 @@ describe('ToolControllerService', () => {
     let aerosolServiceSpy: jasmine.SpyObj<AerosolService>;
     let selectionServiceSpy: jasmine.SpyObj<SelectionService>;
     let stampServiceSpy: jasmine.SpyObj<StampService>;
+    let bucketServiceSpy: jasmine.SpyObj<BucketService>;
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['clearPreviewCtx'], { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', ['clearPreviewCtx'], { color: 'test' });
@@ -31,7 +33,7 @@ describe('ToolControllerService', () => {
         selectionServiceSpy = jasmine.createSpyObj('SelectionService', ['clearPreviewCtx'], { color: 'test' });
         stampServiceSpy = jasmine.createSpyObj('StampService', ['clearPreviewCtx'], { color: 'test' });
         drawingService = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-
+        bucketServiceSpy = jasmine.createSpyObj('BucketService', ['clearPreviewCtx'], { color: 'test' });
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
@@ -42,6 +44,7 @@ describe('ToolControllerService', () => {
                 { provide: SelectionService, useValue: selectionServiceSpy },
                 { provide: StampService, useValue: stampServiceSpy },
                 { provide: DrawingService, useValue: drawingService },
+                { provide: BucketService, useValue: bucketServiceSpy },
             ],
         });
         TestBed.configureTestingModule({});

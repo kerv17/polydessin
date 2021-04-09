@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class ImgurSaveService {
-    private token: string = '5b34cdfdfaa5535b3ec50bb72548f36a2646124b';
+    //  private token: string = '5b34cdfdfaa5535b3ec50bb72548f36a2646124b';
 
     async uploadImage(information: CanvasInformation): Promise<string> {
         const base64Data = information.imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -17,7 +17,7 @@ export class ImgurSaveService {
         };
 
         const header = {
-            Authorization: 'Bearer ' + this.token,
+            Authorization: 'Client-ID ' + '2ab87126888d8b5',
         };
 
         return axios

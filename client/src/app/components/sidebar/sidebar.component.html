@@ -6,40 +6,82 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil crayon. Le raccourci est 'c'</div>
-            <img src="../../../assets/pencil.png/" [ngStyle]="{
+            <img
+                src="../../../assets/pencil.png/"
+                [ngStyle]="{
                     backgroundColor: currentTool == 'c' ? 'gainsboro' : 'white'
-                }" class="function" (click)="setTool('c')" (click)="this.openTool(true, 'c')" tabindex="0" />
+                }"
+                class="function"
+                (click)="setTool('c')"
+                (click)="this.openTool(true, 'c')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil ligne. Le raccourci est 'l'</div>
-            <img src="../../../assets/line.png" [ngStyle]="{
+            <img
+                src="../../../assets/line.png"
+                [ngStyle]="{
                     backgroundColor: currentTool == 'l' ? 'gainsboro' : 'white'
-                }" (click)="setTool('l')" (click)="this.openTool(true, 'l')" class="function" tabindex="0" />
+                }"
+                (click)="setTool('l')"
+                (click)="this.openTool(true, 'l')"
+                class="function"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil rectangle. Le raccourci est '1'</div>
-            <img src="../../../assets/rectangle.png" [ngStyle]="{
+            <img
+                src="../../../assets/rectangle.png"
+                [ngStyle]="{
                     backgroundColor: currentTool == '1' ? 'gainsboro' : 'white'
-                }" class="function" (click)="setTool('1')" (click)="this.openTool(true, '1')" tabindex="0" />
+                }"
+                class="function"
+                (click)="setTool('1')"
+                (click)="this.openTool(true, '1')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'ellipse. Le raccourci est '2'</div>
-            <img src="../../../assets/oval.png" [ngStyle]="{
+            <img
+                src="../../../assets/oval.png"
+                [ngStyle]="{
                     backgroundColor: currentTool == '2' ? 'gainsboro' : 'white'
-                }" class="function" (click)="setTool('2')" (click)="this.openTool(true, '2')" tabindex="0" />
+                }"
+                class="function"
+                (click)="setTool('2')"
+                (click)="this.openTool(true, '2')"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'aerosol. Le raccourci est 'a'</div>
-            <img src="../../../assets/aerosol.png" [ngStyle]="{
+            <img
+                src="../../../assets/aerosol.png"
+                [ngStyle]="{
                     backgroundColor: currentTool == 'a' ? 'gainsboro' : 'white'
-                }" class="function" (click)="setTool('a')" (click)="this.openTool(true, 'a')" tabindex="0" />
+                }"
+                class="function"
+                (click)="setTool('a')"
+                (click)="this.openTool(true, 'a')"
+                tabindex="0"
+            />
         </div>
 
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
-            <img src="../../../assets/stamp.png" [ngStyle]="{
-                  backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
-              }" class="function" (click)="setTool('d')" (click)="this.openTool(true, 'd')" tabindex="0" />
+            <img
+                src="../../../assets/stamp.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('d')"
+                (click)="this.openTool(true, 'd')"
+                tabindex="0"
+            />
         </div>
 
         <div class="ToolContainer">
@@ -68,7 +110,14 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de sélectionner toute la surface de dessin. Le raccourci est 'Ctrl+a'</div>
-            <img src="../../../assets/selection.png" (click)="setTool('r')" (click)="this.openTool(false, 'r')" (click)="selectCanvas()" class="function" tabindex="0" />
+            <img
+                src="../../../assets/selection.png"
+                (click)="setTool('r')"
+                (click)="this.openTool(false, 'r')"
+                (click)="selectCanvas()"
+                class="function"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton sauvegarde le dessin sur le serveur. Le raccourci est 'Ctrl+s'</div>
@@ -76,9 +125,16 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de faire une sélection rectangulaire. Le raccourci est 'r'</div>
-            <img src="../../../assets/Rectangleselection.png" [ngStyle]="{
+            <img
+                src="../../../assets/Rectangleselection.png"
+                [ngStyle]="{
                     backgroundColor: currentTool == 'r' ? 'gainsboro' : 'white'
-                }" (click)="setTool('r')" (click)="this.openTool(false, 'r')" class="function" tabindex="0" />
+                }"
+                (click)="setTool('r')"
+                (click)="this.openTool(false, 'r')"
+                class="function"
+                tabindex="0"
+            />
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de faire une sélection par lasso polygonal. Le raccourci est 'v'</div>
@@ -88,9 +144,28 @@
         </div>
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de faire afficher une grille. Le raccourci est 'g'</div>
-            <img src="../../../assets/grid.png" [ngStyle]="{
+            <img
+                src="../../../assets/grid.png"
+                [ngStyle]="{
                     backgroundColor: gridService.showGrid ? 'gainsboro' : 'white'
-                }" (click)="showGrid()" class="function" tabindex="0" />
+                }"
+                (click)="showGrid()"
+                class="function"
+                tabindex="0"
+            />
+        </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de remplir une surface . Le raccourci est 'b'</div>
+            <img
+                src="../../../assets/bucket.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'b' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('b')"
+                (click)="this.openTool(false, 'b')"
+                class="function"
+                tabindex="0"
+            />
         </div>
     </div>
     <div class="BackgroundServices">
@@ -118,6 +193,10 @@
             </div>
             <div>
                 <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            </div>
+
+            <div *ngIf="currentTool == 'b'">
+                <app-bucket-tolerance [change]="resetAttributes"></app-bucket-tolerance>
             </div>
             <div *ngIf="gridService.showGrid">
                 <app-grid></app-grid>

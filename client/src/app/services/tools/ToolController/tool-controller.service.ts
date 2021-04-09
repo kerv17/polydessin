@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
@@ -28,6 +29,7 @@ export class ToolControllerService {
         public selectionService: SelectionService,
         public stampService: StampService,
         public lassoService: LassoService,
+        private bucketService: BucketService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.checkKeyEvent(event);
@@ -44,7 +46,7 @@ export class ToolControllerService {
             this.setTool(event.detail[0]);
             this.currentTool.toolMode = event.detail[1];
             console.log(event.detail[0], this.currentTool);
-        })
+        });
 
         this.initMap();
         this.currentTool = pencilService;
@@ -58,7 +60,8 @@ export class ToolControllerService {
             .set(Globals.AEROSOL_SHORTCUT, this.aerosolService)
             .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.selectionService)
             .set(Globals.STAMP_SHORTCUT, this.stampService)
-            .set(Globals.LASSO_SELECTION_SHORTCUT, this.lassoService);
+            .set(Globals.LASSO_SELECTION_SHORTCUT, this.lassoService)
+            .set(Globals.BUCKET_SHORTCUT, this.bucketService);
 
         this.functionMap
             .set(Globals.SHIFT_SHORTCUT, (event: KeyboardEvent) => {

@@ -20,6 +20,7 @@ import { SelectionResizeService } from '@app/services/selection-resize/selection
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -32,6 +33,7 @@ export class DrawingServiceStub extends DrawingService {
         return;
     }
 }
+// tslint:disable:no-any
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -75,6 +77,7 @@ describe('SidebarComponent', () => {
             new AerosolService(drawingStub),
             new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             new StampService(drawingStub),
+            new BucketService(drawingStub),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
@@ -146,7 +149,7 @@ describe('SidebarComponent', () => {
         component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
-    // tslint:disable:no-any
+
     it('should call the selectionService method select Canvas with the full size ', () => {
         canvasTestHelper = new CanvasTestHelper();
         (component as any).drawing.canvas = (canvasTestHelper as any).createCanvas();
@@ -271,7 +274,6 @@ describe('SidebarComponent', () => {
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
         const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
@@ -321,29 +323,5 @@ describe('SidebarComponent', () => {
         component.onKeyPress(keyDownEvent);
         expect(functionSpy).toHaveBeenCalled();
         expect(newDrawingSpy).not.toHaveBeenCalled();
-    });
-    it('should call the undoRedoService redo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).toHaveBeenCalled();
-    });
-    it('should call the undoRedoService undo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService redo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).not.toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService undo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).not.toHaveBeenCalled();
     });
 });
