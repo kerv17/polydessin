@@ -1,5 +1,5 @@
 // Buttons in sidebar
-export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
+export const BACKGROUND_GAINSBORO = { backgroundColor: '#7bf6da' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
 export const BACKGROUND_DARKGREY = { backgroundColor: 'DimGray' };
 
