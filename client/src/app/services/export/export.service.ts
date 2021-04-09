@@ -27,6 +27,7 @@ export class ExportService {
     exportToImgur(type: string, name: string, filtre: string): void {
         if (!this.createExportImage(type, name, filtre)) return;
         const data = this.canvas.toDataURL('image/' + type);
+
         const info = { name, format: type, imageData: data } as CanvasInformation;
 
         this.serverRequestService.basicPost(info, 'imgur').subscribe(
@@ -45,6 +46,7 @@ export class ExportService {
     downloadImage(type: string, name: string, filtre: string): void {
         if (!this.createExportImage(type, name, filtre)) return;
         this.anchor.href = this.canvas.toDataURL('image/' + type);
+
         this.anchor.download = name;
         document.body.appendChild(this.anchor);
         this.anchor.click();

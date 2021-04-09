@@ -97,6 +97,7 @@ export class DrawingService {
         this.setCanvassSize(newSize);
         const image = new Image();
         image.src = oldCanvas.imageData;
+        console.log(image.src);
         this.baseCtx.drawImage(image, 0, 0);
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
