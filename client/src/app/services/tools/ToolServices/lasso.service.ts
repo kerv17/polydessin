@@ -26,7 +26,6 @@ export class LassoService extends Tool {
             this.passToSelectionService(this.selectArea(this.pathData));
             dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT] }));
             this.clearPath();
-            // this.selectionService.updateCanvasOnMove(this.drawingService.previewCtx);
         }
     }
 
@@ -90,8 +89,6 @@ export class LassoService extends Tool {
 
         const imageData = ctx.getImageData(0, 0, box[1].x - box[0].x, box[1].y - box[0].y);
 
-        // this.clearPreviewCtx();
-        // this.clearZone();
         return imageData;
     }
 
@@ -114,6 +111,5 @@ export class LassoService extends Tool {
         for (let i = 1; i < this.pathData.length; i++) {
             path.lineTo(this.pathData[i].x, this.pathData[i].y);
         }
-        //this.drawingService.baseCtx.fill(path);
     }
 }

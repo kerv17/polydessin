@@ -28,7 +28,7 @@ export class SelectionService extends Tool {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.inMovement = true;
                 this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
-                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData);
+                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData, this.lassoPath, this.toolMode);
             }
         });
 
@@ -92,7 +92,7 @@ export class SelectionService extends Tool {
                 /*if (this.inResize) {
                     this.selectArea(this.drawingService.baseCtx);
                 }*/
-                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -122,7 +122,7 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
                 // this.updateCanvasOnMove(this.drawingService.previewCtx);
@@ -235,7 +235,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+    /*updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
         this.clearPreviewCtx();
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
@@ -251,7 +251,7 @@ export class SelectionService extends Tool {
         }
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
-    }
+    }*/
 
     createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
         const canvas = new OffscreenCanvas(imageData.width, imageData.height);
@@ -260,7 +260,8 @@ export class SelectionService extends Tool {
     }
 
     private confirmSelectionMove(): void {
-        this.updateCanvasOnMove(this.drawingService.baseCtx);
+        this.clearPreviewCtx();
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
         this.drawingService.baseCtx.drawImage(
             this.createCanvasWithSelection(this.selectedArea),
             this.getActualPosition().x,

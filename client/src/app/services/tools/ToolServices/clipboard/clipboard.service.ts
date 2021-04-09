@@ -31,7 +31,7 @@ export class ClipboardService extends Tool {
     doAction(action: DrawAction): void {
         const previousSetting: Setting = this.saveSetting();
         this.loadSetting(action.setting);
-        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.selection.lassoPath, this.selection.toolMode);
         this.loadSetting(previousSetting);
     }
 
@@ -43,6 +43,7 @@ export class ClipboardService extends Tool {
 
     paste(): void {
         if (this.clipboard !== undefined) {
+            console.log(this.toolMode);
             if (this.getSelectionStatus()) {
                 this.selection.onEscape();
             }
@@ -51,11 +52,13 @@ export class ClipboardService extends Tool {
             this.fakePath();
             this.updatePath();
             this.selection.inSelection = true;
+            this.selection.inMovement = false;
         }
     }
 
     cut(): void {
         if (this.selection.inSelection) {
+            console.log(this.toolMode);
             this.copy();
             this.delete();
         }
@@ -64,11 +67,17 @@ export class ClipboardService extends Tool {
     delete(): void {
         if (this.selection.inSelection) {
             this.updatePath();
-            this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.selection.getPathData());
+            this.selectionMove.updateCanvasOnMove(
+                this.drawingService.baseCtx,
+                this.selection.getPathData(),
+                this.selection.lassoPath,
+                this.selection.toolMode,
+            );
             this.clearPreviewCtx();
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
             this.selection.inSelection = false;
+            console.log(this.toolMode);
         }
     }
 
@@ -99,5 +108,7 @@ export class ClipboardService extends Tool {
             y: this.selection.drawingService.canvas.height,
         };
         this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION] = { x: 0, y: 0 };
+        this.selection.lassoPath = [];
+        this.selection.lassoPath.push({ x: 0, y: 0 });
     }
 }
