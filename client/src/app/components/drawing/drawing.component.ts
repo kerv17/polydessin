@@ -75,11 +75,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
+        const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
+        dispatchEvent(getSaved);
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
-        const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
-        dispatchEvent(getSaved);
     }
 
     ngOnChanges(changes: SimpleChanges): void {

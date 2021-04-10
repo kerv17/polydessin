@@ -57,6 +57,8 @@ export class AerosolService extends Tool {
             this.mouseDown = false;
             clearTimeout(this.timeoutID);
             this.onMouseMove(event);
+            const eventContinue: CustomEvent = new CustomEvent('saveState');
+            dispatchEvent(eventContinue);
         }
     }
 

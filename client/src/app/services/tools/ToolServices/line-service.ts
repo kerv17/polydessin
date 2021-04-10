@@ -62,6 +62,8 @@ export class LineService extends Tool {
                 this.dispatchAction(this.createAction());
 
                 this.clearPath();
+                const eventContinue: CustomEvent = new CustomEvent('saveState');
+                dispatchEvent(eventContinue);
             }
         }
     }

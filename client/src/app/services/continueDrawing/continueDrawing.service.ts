@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
@@ -53,7 +54,7 @@ export class ContinueDrawingService {
                 width: canvasWidthValue,
                 imageData: dataUrl,
             } as CanvasInformation;
-            this.drawingService.reloadOldCanvas(information);
+            this.insertSavedCanvas(information);
         }
         // pour remetre la valeur a false pour assurer que creer un nouveaux dessin cree un nouveux dessin
         localStorage.setItem(this.continueDrawing, 'false');
@@ -63,5 +64,15 @@ export class ContinueDrawingService {
     }
     canvasContinue(): boolean {
         return localStorage.getItem(this.continueDrawing) === 'true';
+    }
+    private insertSavedCanvas(oldCanvas: CanvasInformation): void {
+        const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
+
+        this.drawingService.setCanvassSize(newSize);
+        const image = new Image();
+        image.src = oldCanvas.imageData;
+        window.setTimeout(() => {
+            this.drawingService.baseCtx.drawImage(image, 0, 0);
+        }, 0);
     }
 }

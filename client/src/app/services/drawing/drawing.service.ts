@@ -97,9 +97,11 @@ export class DrawingService {
         this.setCanvassSize(newSize);
         const image = new Image();
         image.src = oldCanvas.imageData;
-        window.setTimeout(() => {
-            this.baseCtx.drawImage(image, 0, 0);
-        }, 0);
+
+        this.baseCtx.drawImage(image, 0, 0);
+
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     setCanvassSize(newCanvasSize: Vec2): void {

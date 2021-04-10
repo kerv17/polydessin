@@ -26,6 +26,8 @@ export class StampService extends Tool {
             this.drawStamp(this.drawingService.baseCtx);
             this.dispatchAction(this.createAction());
             this.clearPreviewCtx();
+            const eventContinue: CustomEvent = new CustomEvent('saveState');
+            dispatchEvent(eventContinue);
         }
     }
 
