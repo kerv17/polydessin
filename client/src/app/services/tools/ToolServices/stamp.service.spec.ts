@@ -3,8 +3,8 @@ import { Setting } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-
 import { angleTurnPerRotation, StampService } from './stamp.service';
+
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 describe('StampService', () => {

@@ -22,6 +22,8 @@ describe('SelectionMovementService', () => {
     const height = 100;
     let mouseEvent: MouseEvent;
     let pathData: Vec2[];
+    let lassoPath: Vec2[];
+    let toolMode: string;
     let selectedArea: ImageData;
     // le but est ici d'avoir une imagedata non initialisée
     // tslint:disable-next-line: prefer-const
@@ -47,6 +49,13 @@ describe('SelectionMovementService', () => {
             { x: 200, y: 200 },
             { x: 100, y: 200 },
         ];
+        lassoPath = [
+            { x: 100, y: 100 },
+            { x: 70, y: 150 },
+            { x: 150, y: 200 },
+            { x: 100, y: 100 },
+        ];
+        toolMode = '';
         selectedArea = undefinedSelectedArea;
     });
 
@@ -73,11 +82,11 @@ describe('SelectionMovementService', () => {
     });
 
     it('onMouseMove should move the selected area to its new position on the canvas', () => {
-        drawServiceSpy = spyOn(drawService.baseCtx, 'putImageData');
+        drawServiceSpy = spyOn(drawService.baseCtx, 'drawImage');
         selectedArea = drawService.baseCtx.getImageData(0, 0, drawService.canvas.width, drawService.canvas.height);
         service[initialMousePosition] = { x: 125, y: 125 };
         service.onMouseMove(mouseEvent, drawService.baseCtx, topLeft, selectedArea);
-        expect(drawServiceSpy).toHaveBeenCalledWith(selectedArea, width, height);
+        expect(drawServiceSpy).toHaveBeenCalled();
     });
 
     it('onMouseUp should set initialMousePosition to 0,0 and return the new position', () => {
@@ -252,21 +261,21 @@ describe('SelectionMovementService', () => {
 
     it('updateCanvasOnMove should call fillrect on the argument context', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'fillRect');
-        service.updateCanvasOnMove(drawService.baseCtx, pathData);
+        service.updateCanvasOnMove(drawService.baseCtx, pathData, lassoPath, toolMode);
         expect(drawServiceSpy).toHaveBeenCalled();
     });
 
     it('onArrowDown should call setKeyMovementDelays if repeated is true', () => {
         selectionSpy = spyOn<any>(service, 'setKeyMovementDelays');
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service.onArrowDown(true, selectedArea, pathData);
+        service.onArrowDown(true, selectedArea, pathData, lassoPath, toolMode);
         expect(selectionSpy).toHaveBeenCalled();
     });
 
     it('onArrowDown should call drawSelection if repeated is false', () => {
         selectionSpy = spyOn<any>(service, 'drawSelection');
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service.onArrowDown(false, selectedArea, pathData);
+        service.onArrowDown(false, selectedArea, pathData, lassoPath, toolMode);
         expect(selectionSpy).toHaveBeenCalled();
     });
 
@@ -274,7 +283,7 @@ describe('SelectionMovementService', () => {
         service[keyDown] = false;
         jasmine.clock().install();
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service[setKeyMovementDelays](selectedArea, pathData);
+        service[setKeyMovementDelays](selectedArea, pathData, lassoPath, toolMode);
         jasmine.clock().tick(Globals.TIMEOUT_MS + 1);
         expect(service[keyDown]).toBeTrue();
         jasmine.clock().uninstall();
@@ -286,7 +295,7 @@ describe('SelectionMovementService', () => {
         selectionSpy = spyOn<any>(service, 'drawSelection');
         jasmine.clock().install();
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service[setKeyMovementDelays](selectedArea, pathData);
+        service[setKeyMovementDelays](selectedArea, pathData, lassoPath, toolMode);
         jasmine.clock().tick(Globals.INTERVAL_MS + 1);
         expect(service[firstTime]).not.toBeTrue();
         expect(selectionSpy).toHaveBeenCalled();
@@ -298,7 +307,7 @@ describe('SelectionMovementService', () => {
         service[firstTime] = false;
         selectionSpy = spyOn<any>(service, 'drawSelection');
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service[setKeyMovementDelays](selectedArea, pathData);
+        service[setKeyMovementDelays](selectedArea, pathData, lassoPath, toolMode);
         expect(service[firstTime]).not.toBeTrue();
         expect(selectionSpy).not.toHaveBeenCalled();
     });
@@ -309,7 +318,7 @@ describe('SelectionMovementService', () => {
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
         pathData.push({ x: width, y: height });
         selectedArea = drawService.baseCtx.getImageData(width, height, width, height);
-        service[drawSelection](selectedArea, pathData);
+        service[drawSelection](selectedArea, pathData, lassoPath, toolMode);
         expect(moveSpy).toHaveBeenCalled();
         expect(selectionSpy).toHaveBeenCalled();
         expect(drawServiceSpy).toHaveBeenCalled();
@@ -320,7 +329,7 @@ describe('SelectionMovementService', () => {
         selectionSpy = spyOn(service, 'updateCanvasOnMove');
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
         pathData.push({ x: width, y: height });
-        service[drawSelection](selectedArea, pathData);
+        service[drawSelection](selectedArea, pathData, lassoPath, toolMode);
         expect(selectionMovementSpy).not.toHaveBeenCalled();
         expect(selectionSpy).not.toHaveBeenCalled();
         expect(drawServiceSpy).not.toHaveBeenCalled();

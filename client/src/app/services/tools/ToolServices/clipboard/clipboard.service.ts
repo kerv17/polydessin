@@ -110,7 +110,7 @@ export class ClipboardService extends Tool {
             y: this.selection.drawingService.canvas.height,
         };
         this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION] = { x: 0, y: 0 };
-        /*this.selection.lassoPath = [];
-        this.selection.lassoPath.push({ x: 0, y: 0 });*/
+        this.selection.lassoPath = [];
+        this.selection.lassoPath.push({ x: 0, y: 0 });
     }
 }

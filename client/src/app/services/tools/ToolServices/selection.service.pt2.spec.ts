@@ -35,6 +35,7 @@ describe('SelectionService', () => {
     const keyDown = 'keyDown';
     const firstTime = 'firstTime';
     const rectangleService = 'rectangleService';
+    const selectedArea = 'selectedArea';
 
     beforeEach(() => {
         drawService = new DrawingService({} as ResizePoint);
@@ -116,9 +117,11 @@ describe('SelectionService', () => {
         expect(drawServiceSpy).not.toHaveBeenCalled();
     });
 
-    it('confirmSelectionMove should call updateCanvasOnMove and putImageData on the basectx', () => {
+    // fail
+    it('confirmSelectionMove should call updateCanvasOnMove and createCanvasWithSelection on the basectx', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
         selectionSpy = spyOn(selectionMoveService, 'updateCanvasOnMove');
-        drawServiceSpy = spyOn(drawService.baseCtx, 'putImageData');
+        drawServiceSpy = spyOn(service, 'createCanvasWithSelection').and.returnValue(new OffscreenCanvas(width, height));
         service[pathData].push({ x: width, y: height });
         service[confirmSelectionMove]();
         expect(selectionSpy).toHaveBeenCalled();

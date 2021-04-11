@@ -111,7 +111,6 @@ export class SelectionMovementService {
     }
 
     updateCanvasOnMove(ctx: CanvasRenderingContext2D, selectionPath: Vec2[], lassoPath: Vec2[], toolMode: string): void {
-        // this.clearPreviewCtx();
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
         if (toolMode !== 'v') {

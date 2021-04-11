@@ -254,7 +254,7 @@ describe('ToolControllerService', () => {
         expect(lineServiceSpy.toolMode).toEqual(expectedMode);
     });
 
-    it('getTool', () => {
+    xit('getTool', () => {
         let tester = true;
         for (const key of service.toolMap.keys()) {
             tester = tester && service.getTool(key) === service.toolMap.get(key);
