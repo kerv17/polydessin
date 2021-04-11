@@ -24,6 +24,7 @@ export class RemoteSaveService {
 
         if (confirm('Êtes-vous sûr de vouloir sauvegarder le dessin')) {
             const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
+            console.log(data);
             information.imageData = data;
             information.height = this.drawingService.canvas.height;
             information.width = this.drawingService.canvas.width;
