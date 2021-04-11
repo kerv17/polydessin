@@ -131,6 +131,7 @@ export class SidebarComponent {
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.showSelectionOptions();
     }
     showGrid(): void {
         this.gridService.toggleGrid();
