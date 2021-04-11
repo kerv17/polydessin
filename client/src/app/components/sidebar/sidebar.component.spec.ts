@@ -14,10 +14,13 @@ import { ExportService } from '@app/services/export/export.service';
 import { GridService } from '@app/services/grid/grid.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -25,13 +28,12 @@ import { RectangleService } from '@app/services/tools/ToolServices/rectangle-ser
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SidebarComponent } from './sidebar.component';
-
 export class DrawingServiceStub extends DrawingService {
     newCanvas(): void {
         return;
     }
 }
-
+// tslint:disable:no-any
 type ToolParam = {
     showWidth: boolean;
     toolName: string;
@@ -53,25 +55,29 @@ describe('SidebarComponent', () => {
     let resetWidthSpy: jasmine.Spy;
     let mapSpy: jasmine.Spy;
     let carouselService: CarouselService;
-    let selectionMovementService: SelectionMovementService;
+    let selectionBoxService: SelectionBoxService;
+    let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let canvasTestHelper;
     let exportService: ExportService;
     let eventSpy: jasmine.Spy;
     const router = jasmine.createSpyObj(Router, ['navigate']);
-
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
         exportService = new ExportService(drawingStub, {} as ServerRequestService);
         remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
-        selectionMovementService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionBoxService = new SelectionBoxService();
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             new PencilService(drawingStub),
             new RectangleService(drawingStub),
             new LineService(drawingStub),
             new EllipsisService(drawingStub),
             new AerosolService(drawingStub),
-            new SelectionService(drawingStub, selectionMovementService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             new StampService(drawingStub),
+            new BucketService(drawingStub),
         );
         colorService = new ColorService();
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
@@ -143,7 +149,7 @@ describe('SidebarComponent', () => {
         component.setTool(Globals.ELLIPSIS_SHORTCUT);
         expect(toolControllerSpy).toHaveBeenCalledWith(Globals.ELLIPSIS_SHORTCUT);
     });
-    // tslint:disable:no-any
+
     it('should call the selectionService method select Canvas with the full size ', () => {
         canvasTestHelper = new CanvasTestHelper();
         (component as any).drawing.canvas = (canvasTestHelper as any).createCanvas();
@@ -268,7 +274,6 @@ describe('SidebarComponent', () => {
     it('checking if onkeyPress creates a new drawing with a Ctrl+O keyboard event', () => {
         const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true, shiftKey: false };
         const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
-
         eventSpy = spyOn(keyDownEvent, 'preventDefault');
         drawingStubSpy = spyOn(drawingStub, 'newCanvas');
 
@@ -283,7 +288,6 @@ describe('SidebarComponent', () => {
         component.currentTool = Globals.CRAYON_SHORTCUT;
         mapSpy = spyOn((component as any).toolParamMap, 'get').and.returnValue({ showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam);
         toolController.focused = true;
-
         window.dispatchEvent(keyDownEvent);
         expect(mapSpy).toHaveBeenCalledWith([false, false, Globals.ELLIPSIS_SHORTCUT].join());
         expect(component.currentTool).toEqual(Globals.ELLIPSIS_SHORTCUT);
@@ -319,29 +323,5 @@ describe('SidebarComponent', () => {
         component.onKeyPress(keyDownEvent);
         expect(functionSpy).toHaveBeenCalled();
         expect(newDrawingSpy).not.toHaveBeenCalled();
-    });
-    it('should call the undoRedoService redo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).toHaveBeenCalled();
-    });
-    it('should call the undoRedoService undo method if there is no active selection', () => {
-        toolController.selectionService.inSelection = false;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService redo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const redoSpy = spyOn((component as any).undoRedoService, 'redo');
-        component.redoAction();
-        expect(redoSpy).not.toHaveBeenCalled();
-    });
-    it('should not call the undoRedoService undo method if there is an active selection', () => {
-        toolController.selectionService.inSelection = true;
-        const undoSpy = spyOn((component as any).undoRedoService, 'undo');
-        component.undoAction();
-        expect(undoSpy).not.toHaveBeenCalled();
     });
 });

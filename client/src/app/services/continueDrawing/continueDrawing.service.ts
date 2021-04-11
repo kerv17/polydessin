@@ -31,23 +31,24 @@ export class ContinueDrawingService {
     Quelques modifications y ont été apportées
 */
     private saveCanvas(): void {
+        console.log('event');
         // this.drawingExists = true;
-        localStorage.removeItem(this.canvasName);
-        localStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));
-        localStorage.setItem(this.drawingSavedName, 'true');
-        localStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
-        localStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
+        sessionStorage.removeItem(this.canvasName);
+        sessionStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));
+        sessionStorage.setItem(this.drawingSavedName, 'true');
+        sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
+        sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
     }
     private continueCanvas(): void {
-        localStorage.setItem(this.continueDrawing, 'true');
+        sessionStorage.setItem(this.continueDrawing, 'true');
     }
     getSavedCanvas(): void {
         if (!this.canvasExists() || !this.canvasContinue()) {
             return;
         }
-        const dataUrl = localStorage.getItem(this.canvasName);
-        const canvasHeightValue = Number(localStorage.getItem(this.canvasHeight));
-        const canvasWidthValue = Number(localStorage.getItem(this.canvasWidth));
+        const dataUrl = sessionStorage.getItem(this.canvasName);
+        const canvasHeightValue = Number(sessionStorage.getItem(this.canvasHeight));
+        const canvasWidthValue = Number(sessionStorage.getItem(this.canvasWidth));
         if (dataUrl !== null) {
             const information: CanvasInformation = {
                 height: canvasHeightValue,
@@ -57,13 +58,13 @@ export class ContinueDrawingService {
             this.insertSavedCanvas(information);
         }
         // pour remetre la valeur a false pour assurer que creer un nouveaux dessin cree un nouveux dessin
-        localStorage.setItem(this.continueDrawing, 'false');
+        sessionStorage.setItem(this.continueDrawing, 'false');
     }
     canvasExists(): boolean {
-        return localStorage.getItem(this.drawingSavedName) === 'true';
+        return sessionStorage.getItem(this.drawingSavedName) === 'true';
     }
     canvasContinue(): boolean {
-        return localStorage.getItem(this.continueDrawing) === 'true';
+        return sessionStorage.getItem(this.continueDrawing) === 'true';
     }
     private insertSavedCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { MatSliderChange } from '@angular/material/slider/slider';
+import { BucketToleranceComponent } from '@app/components/bucket-tolerance/bucket-tolerance.component';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -14,17 +15,17 @@ import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
-import { RadiusSliderComponent } from './radius-slider.component';
-
-// tslint:disable:no-any
-describe('RadiusSliderComponent', () => {
-    let component: RadiusSliderComponent;
-    let fixture: ComponentFixture<RadiusSliderComponent>;
-    let toolController: ToolControllerService;
-    let aerosol: AerosolService;
+describe('BucketToleranceComponent', () => {
+    let component: BucketToleranceComponent;
+    let fixture: ComponentFixture<BucketToleranceComponent>;
     let matSliderChange: MatSliderChange;
+    let toolController: ToolControllerService;
+    let bucket: BucketService;
+
     const defaultToolValue = 5;
+
     beforeEach(async(() => {
+        bucket = new BucketService({} as DrawingService);
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
@@ -33,18 +34,13 @@ describe('RadiusSliderComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
             {} as StampService,
-            {} as BucketService,
+            bucket,
         );
 
-        aerosol = new AerosolService({} as DrawingService);
         TestBed.configureTestingModule({
             imports: [FormsModule],
-            declarations: [RadiusSliderComponent, MatSlider],
-            providers: [
-                RadiusSliderComponent,
-                { provide: ToolControllerService, useValue: toolController },
-                { provide: AerosolService, useValue: aerosol },
-            ],
+            declarations: [BucketToleranceComponent, MatSlider],
+            providers: [BucketToleranceComponent, { provide: ToolControllerService, useValue: toolController }],
         }).compileComponents();
     }));
 
@@ -53,16 +49,16 @@ describe('RadiusSliderComponent', () => {
             value: Globals.TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
 
-        aerosol.width = defaultToolValue;
+        bucket.tolerance = defaultToolValue;
 
-        toolController.currentTool = aerosol;
-        fixture = TestBed.createComponent(RadiusSliderComponent);
+        toolController.currentTool = bucket;
+        fixture = TestBed.createComponent(BucketToleranceComponent);
         component = fixture.componentInstance;
         component.change = true;
         fixture.detectChanges();
     });
-    it('should create AerosolService', () => {
-        expect(aerosol).toBeTruthy();
+    it('should create PencilService', () => {
+        expect(component).toBeTruthy();
     });
 
     it('should create PencilService and attribute it to toolController', () => {
@@ -80,33 +76,33 @@ describe('RadiusSliderComponent', () => {
     it('Verifying that the component sets the right width value', () => {
         component.updateWidthValues(matSliderChange);
 
-        expect(component.width).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(bucket.tolerance).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
     });
 
     it('Verifying that updateWidthValues does nothing if the evt.value is null', () => {
-        const previousWidth: number = component.width;
-        const previousToolWidth: number = (toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius;
+        const previousTolerance: number = component.tolerance;
+        const previousToolTolerance: number = bucket.tolerance;
         matSliderChange.value = null;
         component.updateWidthValues(matSliderChange);
-        expect(component.width).toEqual(previousWidth);
-        expect((toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius).toEqual(previousToolWidth);
+        expect(component.tolerance).toEqual(previousTolerance);
+        expect(bucket.tolerance).toEqual(previousToolTolerance);
     });
 
     it('Verifying that the component sets the right width value for the tool', () => {
         component.updateWidthValues(matSliderChange);
-        expect((toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(bucket.tolerance).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
     });
 
     it('verifying ngOnchanges with the change value changing', () => {
         component.updateWidthValues(matSliderChange);
         const newValue = 8;
-        (toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius = newValue;
+        bucket.tolerance = newValue;
         // On doit faire comme si le form contenait une nouvelle valeur
-        const temp = (toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius;
+        const temp = bucket.tolerance;
 
         component.ngOnChanges({ change: new SimpleChange(null, component.change, true) });
-        expect((toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius).toEqual(temp);
-        expect(component.width).toEqual(newValue);
+        expect(bucket.tolerance).toEqual(temp);
+        expect(component.tolerance).toEqual(newValue);
     });
 
     it('verifying ngOnchanges with the change value not changing', () => {
@@ -116,7 +112,7 @@ describe('RadiusSliderComponent', () => {
         // On doit faire comme si le form contenait une nouvelle valeur
 
         // on change pas la valeur de set
-        expect(component.width).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
-        expect((toolController.getTool(Globals.AEROSOL_SHORTCUT) as any).sprayRadius).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(component.tolerance).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(bucket.tolerance).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
     });
 });

@@ -3,8 +3,9 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
+// import { ContinueDrawingService } from '@app/services/continueDrawing/continueDrawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 @Component({
@@ -46,11 +47,15 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private colorService: ColorService,
         private controller: ToolControllerService,
         private carousel: CarouselService,
-        public selectionBoxLayout: SelectionBoxService,
+        public selectionBoxLayout: SelectionBoxService, // public contiueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
             this.allowUndoCall = event.detail;
+        });
+        window.addEventListener('beforeunload', () => {
+            const eventContinue: CustomEvent = new CustomEvent('continue');
+            dispatchEvent(eventContinue);
         });
     }
 
@@ -77,6 +82,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         };
         const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
         dispatchEvent(getSaved);
+        // this.contiueService.getSavedCanvas();
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
@@ -162,6 +168,12 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.controller.currentTool.onClick(event);
     }
 
+    @HostListener('contextmenu', ['$event'])
+    onRightClick(event: MouseEvent): void {
+        event.preventDefault();
+        this.controller.currentTool.onRightClick(event);
+    }
+
     @HostListener('dblclick', ['$event'])
     ondbClick(event: MouseEvent): void {
         this.controller.currentTool.ondbClick(event);
@@ -214,6 +226,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     drawHandlers(): boolean {
         return this.controller.selectionService.inSelection;
     }
+
     loadCarouselCanvas(): void {
         if (this.carousel.loadImage) {
             this.carousel.loadImage = false;

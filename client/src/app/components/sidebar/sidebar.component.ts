@@ -24,6 +24,7 @@ export class SidebarComponent {
     showAerosol: boolean = false;
     shapeOptions: boolean = false;
     showLine: boolean = false;
+    selectionOptions: boolean = false;
     currentTool: string;
     resetAttributes: boolean = false;
 
@@ -73,6 +74,7 @@ export class SidebarComponent {
     }
 
     selectCanvas(): void {
+        this.selectionOptions = true;
         this.toolController.selectionService.selectCanvas(this.drawing.canvas.width, this.drawing.canvas.height);
         this.currentTool = Globals.RECTANGLE_SELECTION_SHORTCUT;
         this.setTool(Globals.RECTANGLE_SELECTION_SHORTCUT);
@@ -96,7 +98,11 @@ export class SidebarComponent {
     showShapeOptions(): void {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
+    showSelectionOptions(): void {
+        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT;
+    }
 
+    // TODO : changer le nom en anglais
     annulerSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
@@ -107,6 +113,7 @@ export class SidebarComponent {
         this.resetAttributes = !this.resetAttributes;
         this.currentTool = toolname;
 
+        this.showSelectionOptions();
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
@@ -155,6 +162,10 @@ export class SidebarComponent {
             .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
+            } as ToolParam)
+            .set([false, false, Globals.BUCKET_SHORTCUT].join(), {
+                showWidth: false,
+                toolName: Globals.BUCKET_SHORTCUT,
             } as ToolParam);
     }
     initFunctionMap(): void {

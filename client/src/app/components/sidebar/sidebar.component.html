@@ -71,18 +71,18 @@
         </div>
 
         <div class="ToolContainer">
-          <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
-          <img
-              src="../../../assets/stamp.png"
-              [ngStyle]="{
-                  backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
-              }"
-              class="function"
-              (click)="setTool('d')"
-              (click)="this.openTool(true, 'd')"
-              tabindex="0"
-          />
-      </div>
+            <div class="infobulle">Ce bouton active l'outil d'etampe. Le raccourci est 'd'</div>
+            <img
+                src="../../../assets/stamp.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'd' ? 'gainsboro' : 'white'
+                }"
+                class="function"
+                (click)="setTool('d')"
+                (click)="this.openTool(true, 'd')"
+                tabindex="0"
+            />
+        </div>
 
         <div class="ToolContainer">
             <div class="infobulle">Ce bouton annule la derniere action. Le raccourci est 'Ctrl+z'</div>
@@ -148,6 +148,19 @@
                 tabindex="0"
             />
         </div>
+        <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de remplir une surface . Le raccourci est 'b'</div>
+            <img
+                src="../../../assets/bucket.png"
+                [ngStyle]="{
+                    backgroundColor: currentTool == 'b' ? 'gainsboro' : 'white'
+                }"
+                (click)="setTool('b')"
+                (click)="this.openTool(false, 'b')"
+                class="function"
+                tabindex="0"
+            />
+        </div>
     </div>
     <div class="BackgroundServices">
         <div class="services">
@@ -169,8 +182,15 @@
             <div *ngIf="showLine">
                 <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
+            <div *ngIf="selectionOptions">
+                <app-selection-options></app-selection-options>
+            </div>
             <div>
                 <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            </div>
+
+            <div *ngIf="currentTool == 'b'">
+                <app-bucket-tolerance [change]="resetAttributes"></app-bucket-tolerance>
             </div>
             <div *ngIf="gridService.showGrid">
                 <app-grid></app-grid>

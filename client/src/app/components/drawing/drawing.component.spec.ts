@@ -6,11 +6,13 @@ import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { SelectionBoxService } from '@app/services/selectionBox/selection-box.service';
-import { SelectionMovementService } from '@app/services/SelectionMovement/selection-movement.service';
+import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
+import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
+import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
@@ -35,6 +37,7 @@ describe('DrawingComponent', () => {
     let carouselService: CarouselService;
     let selectionBoxService: SelectionBoxService;
     let selectionMoveService: SelectionMovementService;
+    let selectionResizeService: SelectionResizeService;
     let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
@@ -42,15 +45,17 @@ describe('DrawingComponent', () => {
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
-        selectionMoveService = new SelectionMovementService();
+        selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
+        selectionResizeService = new SelectionResizeService(selectionBoxService);
         toolController = new ToolControllerService(
             {} as PencilService,
             {} as RectangleService,
             {} as LineService,
             {} as EllipsisService,
             {} as AerosolService,
-            new SelectionService(drawingStub, selectionMoveService),
+            new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             {} as StampService,
+            {} as BucketService,
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
 
@@ -192,6 +197,15 @@ describe('DrawingComponent', () => {
         const mouseEventSpy = spyOn(toolController.currentTool, 'onClick');
         component.onClick(event);
         expect(mouseEventSpy).toHaveBeenCalled();
+        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(" should call the tool's right click when receiving a contextmenu event", () => {
+        const event = new MouseEvent('keyDown');
+        const preventDefaultSpy = spyOn(event, 'preventDefault');
+        const mouseEventSpy = spyOn(toolController.currentTool, 'onRightClick');
+        component.onRightClick(event);
+        expect(preventDefaultSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
 

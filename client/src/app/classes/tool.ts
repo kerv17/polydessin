@@ -15,6 +15,7 @@ export abstract class Tool {
     pointWidth: number;
     toolMode: string = 'fill';
     shift: boolean = false;
+    selectedArea: ImageData;
     protected pathData: Vec2[];
 
     constructor(public drawingService: DrawingService) {}
@@ -30,6 +31,8 @@ export abstract class Tool {
     onMouseEnter(event: MouseEvent): void {}
 
     onClick(event: MouseEvent): void {}
+
+    onRightClick(event: MouseEvent): void {}
 
     ondbClick(event: MouseEvent): void {}
 
@@ -70,6 +73,7 @@ export abstract class Tool {
             toolMode: this.toolMode,
             shift: this.shift,
             pathData: this.pathData,
+            selectedArea: this.selectedArea,
         };
         return setting;
     }
@@ -85,6 +89,7 @@ export abstract class Tool {
         this.toolMode = setting.toolMode;
         this.shift = setting.shift;
         this.pathData = setting.pathData;
+        this.selectedArea = setting.selectedArea;
     }
 
     protected createAction(): DrawAction {
@@ -114,4 +119,5 @@ export interface Setting {
     toolMode: string;
     shift: boolean;
     pathData: Vec2[];
+    selectedArea: ImageData;
 }
