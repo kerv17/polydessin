@@ -25,7 +25,7 @@ export class BucketService extends Tool {
     }
 
     onRightClick(event: MouseEvent): void {
-        this.drawingService.baseCtx.fillStyle = this.color;
+        this.initialiseColor();
         this.changeColorEverywhere(event);
         this.dispatchAction(this.createAction());
         this.clearPath();
@@ -33,7 +33,7 @@ export class BucketService extends Tool {
         dispatchEvent(eventContinue);
     }
     onClick(event: MouseEvent): void {
-        this.drawingService.baseCtx.fillStyle = this.color;
+        this.initialiseColor();
         this.localFill(event);
         this.dispatchAction(this.createAction());
         this.clearPath();
@@ -41,6 +41,9 @@ export class BucketService extends Tool {
         dispatchEvent(eventContinue);
     }
 
+    private initialiseColor(): void {
+        this.drawingService.baseCtx.fillStyle = this.color || 'black';
+    }
     private localFill(event: MouseEvent): void {
         const image: ImageData = this.drawingService.baseCtx.getImageData(0, 0, this.drawingService.canvas.width, this.drawingService.canvas.height);
 

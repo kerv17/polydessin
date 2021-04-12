@@ -46,10 +46,8 @@ describe('ColorPaletteComponent', () => {
 
     it(' ngOnChanges does not call draw function if hue did not change ', () => {
         drawSpy = spyOn(component, 'draw');
-
         component.ngOnChanges({});
         fixture.detectChanges();
-
         expect(drawSpy).not.toHaveBeenCalled();
     });
 
@@ -170,5 +168,12 @@ describe('ColorPaletteComponent', () => {
         const imageData = component.ctx.getImageData(x, y, 1, 1).data;
         const expectedResult: string = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',' + '0.54' + ')';
         expect(component.getColorAtPosition(x, y)).toEqual(expectedResult);
+    });
+    it('should not draw anything if canvas is undefined', () => {
+        // tslint:disable-next-line: no-any
+        (component as any).canvas = undefined;
+        const fillRectSpy = spyOn(component.ctx, 'fillRect');
+        component.draw();
+        expect(fillRectSpy).not.toHaveBeenCalled();
     });
 });
