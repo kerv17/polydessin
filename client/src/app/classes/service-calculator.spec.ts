@@ -2,6 +2,6 @@ import { ServiceCalculator } from './service-calculator';
 
 describe('ServiceCalculator', () => {
     it('', () => {
-      ServiceCalculator.rng(5);
+        ServiceCalculator.rng(5);
     });
 });

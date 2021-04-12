@@ -33,7 +33,7 @@ export class SelectionMovementService {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
         const canvas: OffscreenCanvas = new OffscreenCanvas(selectedArea.width, selectedArea.height);
-        canvas.getContext('2d')?.putImageData(selectedArea,0,0);
+        canvas.getContext('2d')?.putImageData(selectedArea, 0, 0);
         ctx.drawImage(canvas, position.x, position.y);
     }
 

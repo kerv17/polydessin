@@ -114,6 +114,6 @@ export class LassoService extends Tool {
         for (let i = 1; i < this.pathData.length; i++) {
             path.lineTo(this.pathData[i].x, this.pathData[i].y);
         }
-        //this.drawingService.baseCtx.fill(path);
+        // this.drawingService.baseCtx.fill(path);
     }
 }

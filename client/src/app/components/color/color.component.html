@@ -1,6 +1,5 @@
 <main class='table'>
     <div class='cells'>
-        <p class='text'>Principale :</p>
         <div class='color-div' [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'>
             <div class='infobulle' *ngIf="!visibility">Cliquer pour modifier la couleur principale</div>
         </div>
@@ -9,21 +8,22 @@
         <img src="../../../assets/exchange-alt-solid.svg" (click)='invert()' class='image'>
         <div class='infobulle' *ngIf="!visibility">Cliquer pour inverser les 2 couleurs</div>
     </div>
+
     <div class='cells'>
-        <p class='text'>Secondaire :</p>
-        <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(0,0,0,1)'}" (click)="openModal('Secondary')">
+        <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(255,255,255,1)'}" (click)="openModal('Secondary')">
             <div class='infobulle' *ngIf="!visibility">Cliquer pour modifier la couleur secondaire</div>
         </div>
     </div>
+    <br>
+    <p class='text'>Principale</p>
+    <p class='text'>Secondaire</p>
 </main>
 
-<br>
-
 <div class='recentColorsWrapper'>
-    <p *ngIf='recentColors.length' class='text'>Couleurs récemment utilisées :</p>
+    <p *ngIf='recentColors.length' class='text-recent'>Couleurs récentes</p>
     <main class='table'>
         <div class='recentColors' *ngFor="let colors of recentColors">
-            <div class="color-div" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
+            <div class="color-div-recent" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
         </div>
     </main>
 </div>

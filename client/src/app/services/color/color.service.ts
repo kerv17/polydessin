@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     DEFAULT_COLOR,
+    DEFAULT_COLOR_S,
     MAX_OPACITY,
     MAX_RGB_VALUE,
     MAX_SIZE_RECENT_COLORS,
@@ -8,13 +9,12 @@ import {
     RGB_STRING_VALUE_POSITION,
     SECONDARY_COLOR,
 } from '@app/Constants/constants';
-
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService {
     primaryColor: string = DEFAULT_COLOR;
-    secondaryColor: string = DEFAULT_COLOR;
+    secondaryColor: string = DEFAULT_COLOR_S;
     currentColor: string;
     modalVisibility: boolean = false;
     recentColors: string[] = [];
