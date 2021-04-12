@@ -31,7 +31,6 @@ export class ContinueDrawingService {
     Quelques modifications y ont été apportées
 */
     private saveCanvas(): void {
-        console.log('event');
         // this.drawingExists = true;
         sessionStorage.removeItem(this.canvasName);
         sessionStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));

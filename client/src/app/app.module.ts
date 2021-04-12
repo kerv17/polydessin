@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ContinueDrawingService } from '@app/services/continueDrawing/continueDrawing.service';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';

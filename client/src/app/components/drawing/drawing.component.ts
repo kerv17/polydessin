@@ -3,11 +3,12 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
-// import { ContinueDrawingService } from '@app/services/continueDrawing/continueDrawing.service';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
+
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -47,7 +48,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private colorService: ColorService,
         private controller: ToolControllerService,
         private carousel: CarouselService,
-        public selectionBoxLayout: SelectionBoxService, // public contiueService: ContinueDrawingService,
+        public selectionBoxLayout: SelectionBoxService,
+        public contiueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -80,9 +82,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
-        const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
-        dispatchEvent(getSaved);
-        // this.contiueService.getSavedCanvas();
+        // const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
+        // dispatchEvent(getSaved);
+        this.contiueService.getSavedCanvas();
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();

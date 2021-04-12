@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { ContinueDrawingService } from './continueDrawing.service';
+import { ContinueDrawingService } from './continue-drawing.service';
 
 describe('Service: ContinueDrawing', () => {
   beforeEach(() => {
