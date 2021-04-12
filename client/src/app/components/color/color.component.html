@@ -1,6 +1,6 @@
 <main class='table'>
     <div class='cells'>
-        <div class='color-div' [ngStyle]="{'background-color': primaryColor || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'>
+        <div class='color-div' [ngStyle]="{'background-color': getPrimaryColor() || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'>
             <div class='infobulle' *ngIf="!visibility">Cliquer pour modifier la couleur principale</div>
         </div>
     </div>
@@ -10,7 +10,7 @@
     </div>
 
     <div class='cells'>
-        <div class="color-div" [ngStyle]="{'background-color': secondaryColor || 'rgba(255,255,255,1)'}" (click)="openModal('Secondary')">
+        <div class="color-div" [ngStyle]="{'background-color': getSecondaryColor() || 'rgba(255,255,255,1)'}" (click)="openModal('Secondary')">
             <div class='infobulle' *ngIf="!visibility">Cliquer pour modifier la couleur secondaire</div>
         </div>
     </div>
@@ -27,5 +27,7 @@
         </div>
     </main>
 </div>
+<!--
 <br>
 <app-color-modal (isVisible)="closeModal()" (colorModified)="updateColor()" *ngIf="visibility"></app-color-modal>
+-->

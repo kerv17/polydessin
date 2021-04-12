@@ -71,4 +71,12 @@ export class EditorComponent {
     hideResizer(): boolean {
         return !this.drawingService.resizePoint.mouseDown;
     }
+
+    get visibility(): boolean {
+        return this.colorService.modalVisibility;
+    }
+
+    closeModal(): void {
+        this.colorService.modalVisibility = false;
+    }
 }

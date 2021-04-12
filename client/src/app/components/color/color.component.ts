@@ -34,6 +34,7 @@ export class ColorComponent implements AfterViewInit, OnChanges {
 
     invert(): void {
         if (!this.colorService.modalVisibility) {
+            this.updateColor();
             const tempColor: string = this.primaryColor;
             this.primaryColor = this.secondaryColor;
             this.secondaryColor = tempColor;
@@ -52,6 +53,14 @@ export class ColorComponent implements AfterViewInit, OnChanges {
 
     closeModal(): void {
         this.colorService.modalVisibility = false;
+    }
+
+    getPrimaryColor(): string {
+        return this.colorService.primaryColor;
+    }
+
+    getSecondaryColor(): string {
+        return this.colorService.secondaryColor;
     }
 
     updateColor(): void {
