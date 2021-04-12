@@ -259,8 +259,15 @@ describe('SelectionMovementService', () => {
         expect(path.length).toEqual(expectedLength);
     });
 
-    it('updateCanvasOnMove should call fillrect on the argument context', () => {
+    it('updateCanvasOnMove should call fillrect on the argument context if toolMode is not v', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'fillRect');
+        service.updateCanvasOnMove(drawService.baseCtx, pathData, lassoPath, toolMode);
+        expect(drawServiceSpy).toHaveBeenCalled();
+    });
+
+    it('updateCanvasOnMove should call fill if toolMode = v', () => {
+        drawServiceSpy = spyOn(drawService.baseCtx, 'fill');
+        toolMode = Globals.LASSO_SELECTION_SHORTCUT;
         service.updateCanvasOnMove(drawService.baseCtx, pathData, lassoPath, toolMode);
         expect(drawServiceSpy).toHaveBeenCalled();
     });

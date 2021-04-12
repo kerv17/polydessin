@@ -99,6 +99,14 @@ describe('SelectionOptionsComponent', () => {
         expect(clipboardSpy).toHaveBeenCalled();
     });
 
+    it('checkKeyEvent should call the resetClipboard method from clipboard if CTRL+O was pressed', () => {
+        clipboardSpy = spyOn(clipboardService, 'resetClipboard');
+        const keyEventData = { isTrusted: true, key: Globals.NEW_DRAWING_EVENT, ctrlKey: true };
+        const keyDownEvent = new KeyboardEvent('keydown', keyEventData);
+        component[checkKeyEvent](keyDownEvent);
+        expect(clipboardSpy).toHaveBeenCalled();
+    });
+
     it('checkKeyEvent should do nothing if none of the 4 actions were triggered', () => {
         clipboardSpy = spyOn(clipboardService, 'copy');
         const keyEventData = { isTrusted: true, key: '65', ctrlKey: false };

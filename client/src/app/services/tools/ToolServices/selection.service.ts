@@ -230,7 +230,7 @@ export class SelectionService extends Tool {
         }
     }
 
-    createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
+    private createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
         const canvas = new OffscreenCanvas(imageData.width, imageData.height);
         canvas.getContext('2d')?.putImageData(imageData, 0, 0);
         return canvas;
