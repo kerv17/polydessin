@@ -3,8 +3,8 @@ import { Setting } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-
 import { angleTurnPerRotation, StampService } from './stamp.service';
+
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 describe('StampService', () => {
@@ -137,5 +137,11 @@ describe('StampService', () => {
         const image: HTMLImageElement = { naturalWidth: 960, naturalHeight: 678 } as HTMLImageElement;
         console.log(image.naturalWidth, image.naturalHeight);
         expect(service.scaleImage(image)).toEqual({ x: 176.5625, y: 250 });
+    });
+
+    it('onClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
     });
 });

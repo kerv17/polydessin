@@ -49,7 +49,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
-        public contiueService: ContinueDrawingService,
+        private contiueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -82,8 +82,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
-        // const getSaved: CustomEvent = new CustomEvent('getSave', { detail: action });
-        // dispatchEvent(getSaved);
         this.contiueService.getSavedCanvas();
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
