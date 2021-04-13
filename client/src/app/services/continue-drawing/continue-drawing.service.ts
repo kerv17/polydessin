@@ -9,7 +9,7 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 export class ContinueDrawingService {
     private drawingSavedName: string = 'thereIsSavedDrawing';
     private continueDrawing: string = 'userWantsContinue';
-    private canvasName: string = 'dessin';
+    private canvasName: string = 'drawing';
     private canvasHeight: string = 'imageHeight';
     private canvasWidth: string = 'imageWidth';
 
