@@ -16,6 +16,8 @@ export class MainPageComponent {
     constructor(private router: Router, public carouselService: CarouselService, public contiueService: ContinueDrawingService) {}
 
     goToEditor(): void {
+        const eventContinue: CustomEvent = new CustomEvent('newCanvas');
+        dispatchEvent(eventContinue);
         this.router.navigate(['/editor']);
     }
     openCarousel(): void {

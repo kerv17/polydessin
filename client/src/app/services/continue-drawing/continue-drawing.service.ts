@@ -20,6 +20,9 @@ export class ContinueDrawingService {
         addEventListener('continue', (event: CustomEvent) => {
             this.continueCanvas();
         });
+        addEventListener('newCanvas', (event: CustomEvent) => {
+            this.newCanvas();
+        });
         addEventListener('getSave', (event: CustomEvent) => {
             this.getSavedCanvas();
         });
@@ -40,6 +43,9 @@ export class ContinueDrawingService {
     }
     private continueCanvas(): void {
         sessionStorage.setItem(this.continueDrawing, 'true');
+    }
+    private newCanvas(): void {
+        sessionStorage.clear();
     }
     getSavedCanvas(): void {
         if (!this.canvasExists() || !this.canvasContinue()) {
