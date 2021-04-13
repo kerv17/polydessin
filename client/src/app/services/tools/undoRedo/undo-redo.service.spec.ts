@@ -182,4 +182,16 @@ describe('UndoRedoService', () => {
         service.sendUndoButtonState();
         expect(result).toEqual([true, false]);
     });
+
+    it('undo should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.redo();
+        expect(spyDispatch).toHaveBeenCalled();
+    });
+
+    it('redo should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.undo();
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

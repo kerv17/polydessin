@@ -3,10 +3,12 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
+
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -47,10 +49,15 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
+        private contiueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
             this.allowUndoCall = event.detail;
+        });
+        window.addEventListener('beforeunload', () => {
+            const eventContinue: CustomEvent = new CustomEvent('continue');
+            dispatchEvent(eventContinue);
         });
     }
 
@@ -75,6 +82,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
+        this.contiueService.getSavedCanvas();
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
@@ -105,7 +113,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.gridCtx.canvas.height = this.heightPrev;
                 const eventGrid: CustomEvent = new CustomEvent('grid');
                 dispatchEvent(eventGrid);
-
                 this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
                 if (this.allowUndoCall) {
@@ -118,6 +125,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
+                const eventContinue: CustomEvent = new CustomEvent('saveState');
+                dispatchEvent(eventContinue);
                 this.allowUndoCall = true;
             }
         }

@@ -255,4 +255,16 @@ describe('BucketService', () => {
         expect(loadSettingSpy).toHaveBeenCalledTimes(2);
         expect(fillRectSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('onRightClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onRightClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
+
+    it('onClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

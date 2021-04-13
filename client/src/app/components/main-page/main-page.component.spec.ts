@@ -73,4 +73,15 @@ describe('MainPageComponent', () => {
         window.dispatchEvent(keyDownEvent);
         expect(openSpy).not.toHaveBeenCalled();
     });
+    it('should go to editor and dispatch an action Event ', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        component.goContinue();
+        expect(spyDispatch).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalledWith(['/editor']);
+    });
+    it('should return the value of canvasExists', () => {
+        sessionStorage.setItem('thereIsSavedDrawing', 'false');
+        const result = component.verifDessinExistant();
+        expect(result).toEqual(false);
+    });
 });
