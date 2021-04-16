@@ -94,7 +94,7 @@ describe('EditorComponent', () => {
     it(' mouseMoveHandler should call the tool mouseMoveHandlerCorner when receiving a mouse move event with position 0', () => {
         component.drawingService.resizePoint.resizerId = 0;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerCorner');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerCorner').and.returnValue();
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
@@ -103,7 +103,7 @@ describe('EditorComponent', () => {
     it(' mouseMoveHandler should call the tool mouseMoveHandlerBottom when receiving a mouse move event with position 1', () => {
         component.drawingService.resizePoint.resizerId = 1;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerBottom');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerBottom').and.returnValue();
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
@@ -112,7 +112,7 @@ describe('EditorComponent', () => {
     it(' mouseMoveHandler should call the tool mouseMoveHandlerRight when receiving a mouse move event with position 2', () => {
         component.drawingService.resizePoint.resizerId = 2;
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerRight');
+        const mouseEventSpy = spyOn(resizeStub, 'mouseMoveHandlerRight').and.returnValue();
         component.mouseMoveHandler(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
