@@ -3,15 +3,14 @@
     height: 100%;
     position: relative;
     //min-height: 100vh;
-    width: 400px;
+    width: 375px;
     //padding: 0 5px 0 5px;
 }
 
 .services {
     flex-direction: column;
-    margin-left: 20px;
     margin-right: 3px;
-    width: 350px;
+    width: 305px;
 }
 
 .function {
@@ -60,7 +59,7 @@
     background-size: cover;
     border: 1px solid black;
     flex-shrink: 0;
-    width: 330px;
+    width: 305px;
 }
 
 //J'utilise ca pour faire la rangé de bouton a gauche
@@ -80,4 +79,5 @@
 .attributes-block {
     padding-bottom: 10px;
     border-bottom: black solid 2px;
+    text-align: center;
 }
