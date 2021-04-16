@@ -22,6 +22,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -77,6 +78,7 @@ describe('SidebarComponent', () => {
             new AerosolService(drawingStub),
             new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             new StampService(drawingStub),
+            new LassoService(drawingStub,{} as LineService,{} as SelectionService),
             new BucketService(drawingStub),
         );
         colorService = new ColorService();
