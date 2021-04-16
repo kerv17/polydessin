@@ -48,6 +48,7 @@
 }
 
 .table {
+    padding-left: 23px;
     display: table;
     margin-left: auto;
     margin-right: auto;
@@ -60,8 +61,10 @@
 }
 
 .recentColorsWrapper {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
     width: 143px;
-    border-radius: 3%;
 }
 
 .cells {
