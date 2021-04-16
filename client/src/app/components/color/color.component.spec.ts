@@ -113,12 +113,6 @@ describe('ColorComponent', () => {
         expect(colorService.currentColor).not.toEqual(PRIMARY_COLOR);
     });
 
-    it(' closeModal should toggle visibility attribute to false ', () => {
-        component.closeModal();
-        expect(component.visibility).toEqual(false);
-        expect(colorService.modalVisibility).toEqual(false);
-    });
-
     it(' updateColor should initialise the color values ', () => {
         colorService.primaryColor = 'rgba(23,4,56,1)';
         colorService.secondaryColor = 'rgba(5,78,fa,0.5)';

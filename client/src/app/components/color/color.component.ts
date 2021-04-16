@@ -51,10 +51,6 @@ export class ColorComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    closeModal(): void {
-        this.colorService.modalVisibility = false;
-    }
-
     getPrimaryColor(): string {
         return this.colorService.primaryColor;
     }
