@@ -94,7 +94,6 @@ export class LassoService extends Tool {
 
     passToSelectionService(ctx: ImageData): void {
         this.selectionService.inSelection = true;
-        this.selectionService.inMovement = true;
         this.selectionService.selectedArea = ctx;
         this.selectionService.lassoPath = this.pathData;
         const maxSize = ServiceCalculator.maxSize(this.pathData);

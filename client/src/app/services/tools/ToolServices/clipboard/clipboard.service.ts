@@ -82,7 +82,7 @@ export class ClipboardService extends Tool {
     }
 
     private updatePath(): void {
-        if (this.clipboard !== undefined) {
+        /*if (this.clipboard !== undefined) {
             if (this.pathData.length === 0) {
                 this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
                 this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
@@ -92,7 +92,9 @@ export class ClipboardService extends Tool {
             }
         } else {
             this.pathData = this.selection.getPathData();
-        }
+        }*/
+
+        this.pathData = this.selection.getPathData();
     }
 
     private fakePath(): void {
