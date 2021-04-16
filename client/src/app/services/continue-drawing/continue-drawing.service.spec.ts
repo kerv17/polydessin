@@ -18,43 +18,41 @@ describe('Service: ContinueDrawing', () => {
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         drawService.baseCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.previewCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawService.gridCtx = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         drawService.canvas = canvasTestHelper.canvas;
         drawService.previewCanvas = canvasTestHelper.canvas;
         drawService.gridCanvas = canvasTestHelper.canvas;
-        drawService.canvas.width = 1;
-        drawService.canvas.height = 1;
+        drawService.baseCtx.canvas.width = 1;
+        drawService.baseCtx.canvas.height = 1;
     });
 
     it('should be created ', () => {
         expect(service).toBeTruthy();
     });
 
-    it('saveCanvas is called when a grid is saveState', () => {
+    it('saveCanvas is called when a baseCtx is modified so saveState is dispatched', () => {
         const spy = spyOn(service as any, 'saveCanvas');
         const event = new CustomEvent('saveState', {});
         dispatchEvent(event);
         expect(spy).toHaveBeenCalled();
     });
 
-    it('continueCanvas is called when a grid is continue', () => {
+    it('continueCanvas is called when main page button continue is clicked', () => {
         const spy = spyOn(service as any, 'continueCanvas');
         const event = new CustomEvent('continue', {});
         dispatchEvent(event);
         expect(spy).toHaveBeenCalled();
     });
 
-    it('getSavedCanvas is called when a grid is getSave', () => {
-        const spy = spyOn(service as any, 'getSavedCanvas');
-        const event = new CustomEvent('getSave', {});
-        dispatchEvent(event);
-        expect(spy).toHaveBeenCalled();
-    });
 
     it('saveCanvas stores information in sessionStorage', () => {
+        jasmine.clock().install();
         (service as any).saveCanvas();
+        jasmine.clock().tick(1);
         expect(sessionStorage.getItem('imageHeight')).toEqual('1');
         expect(sessionStorage.getItem('imageWidth')).toEqual('1');
         expect(sessionStorage.getItem('thereIsSavedDrawing')).toEqual('true');
+        jasmine.clock().uninstall();
     });
 
     it('continueCanvas set continueDrawing at true in sessionStorage', () => {

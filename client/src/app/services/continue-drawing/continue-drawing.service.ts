@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
-import { DrawingAction } from '../tools/undoRedo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,14 +31,14 @@ export class ContinueDrawingService {
     disponible à l'adresse suivante : "https://stackoverflow.com/questions/20507534/how-to-save-and-load-html5-canvas-to-from-localstorage"
     Quelques modifications y ont été apportées
 */
-    saveCanvas(): void {
+    private saveCanvas(): void {
         sessionStorage.removeItem(this.canvasName);
-
-        console.log(this.drawingService.canvas.toDataURL('image/'));
-        sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
-        sessionStorage.setItem(this.drawingSavedName, 'true');
-        sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
-        sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
+        setTimeout(() => {
+            sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
+            sessionStorage.setItem(this.drawingSavedName, 'true');
+            sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
+            sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
+        });
     }
     private continueCanvas(): void {
         sessionStorage.setItem(this.continueDrawing, 'true');
@@ -79,27 +79,23 @@ export class ContinueDrawingService {
         image.src = oldCanvas.imageData;
         setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
-            this.sendCanvasToUndoRedo(image,newSize);
+            this.sendCanvasToUndoRedo(image, newSize);
         }, 0);
-
-
-       
     }
 
-    private sendCanvasToUndoRedo(image: HTMLImageElement, newSize:Vec2){
+    private sendCanvasToUndoRedo(image: HTMLImageElement, newSize: Vec2): void {
         const canvas = new OffscreenCanvas(newSize.x, newSize.y).getContext('2d') || new OffscreenCanvasRenderingContext2D();
-            canvas.drawImage(image,0,0);
-        //Wipe UndoRedo
-        const drawingImage:DrawingAction = {
-            type:'Drawing',
-            drawing: canvas.getImageData(0,0,newSize.x,newSize.y),
-            width:newSize.x,
-            height:newSize.y
+        canvas.drawImage(image, 0, 0);
+        // Wipe UndoRedo
+        const drawingImage: DrawingAction = {
+            type: 'Drawing',
+            drawing: canvas.getImageData(0, 0, newSize.x, newSize.y),
+            width: newSize.x,
+            height: newSize.y,
         };
-        
+
         const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
         dispatchEvent(event);
-        dispatchEvent(new CustomEvent('undoRedoWipe',{detail:drawingImage}));
-        console.log('hat');
+        dispatchEvent(new CustomEvent('undoRedoWipe', { detail: drawingImage }));
     }
 }
