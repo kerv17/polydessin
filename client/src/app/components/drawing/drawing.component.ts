@@ -131,8 +131,10 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
-                const eventSave: CustomEvent = new CustomEvent('saveState');
-                dispatchEvent(eventSave);
+                this.baseCanvas.nativeElement.onload = () => {
+                    const eventSave: CustomEvent = new CustomEvent('saveState');
+                    dispatchEvent(eventSave);
+                };
 
                 this.allowUndoCall = true;
             }

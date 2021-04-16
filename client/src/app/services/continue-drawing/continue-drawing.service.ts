@@ -33,12 +33,11 @@ export class ContinueDrawingService {
 */
     private saveCanvas(): void {
         localStorage.removeItem(this.canvasName);
-        window.setTimeout(() => {
-            localStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
-            localStorage.setItem(this.drawingSavedName, 'true');
-            localStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
-            localStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
-        });
+
+        localStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
+        localStorage.setItem(this.drawingSavedName, 'true');
+        localStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
+        localStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
     }
 
     private continueCanvas(): void {
@@ -83,10 +82,10 @@ export class ContinueDrawingService {
 
         const image = new Image();
         image.src = oldCanvas.imageData;
-        window.setTimeout(() => {
+        image.onload = () => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
             this.sendCanvasToUndoRedo(image, newSize);
-        });
+        };
     }
 
     private sendCanvasToUndoRedo(image: HTMLImageElement, newSize: Vec2): void {

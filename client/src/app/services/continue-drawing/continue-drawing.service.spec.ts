@@ -80,12 +80,11 @@ describe('Service: ContinueDrawing', () => {
 
     it('insertSavedCanvas should charge the image into the canvas and call sendCanvasToUndoredo', () => {
         jasmine.clock().install();
+        const delay = 50;
         const setCanvasSpy = spyOn(service.drawingService, 'setCanvassSize');
-        const sendCanvasSpy = spyOn(service as any, 'sendCanvasToUndoRedo').and.returnValue({});
         (service as any).insertSavedCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
-        jasmine.clock().tick(1);
+        jasmine.clock().tick(delay);
         expect(setCanvasSpy).toHaveBeenCalled();
-        expect(sendCanvasSpy).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
 

@@ -248,7 +248,7 @@ describe('DrawingComponent', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        const nymberOfTimesDispatchCalled = 2;
+        const numberOfTimesDispatchCalled = 1;
 
         (component as any).viewInitialized = true;
         (component as any).mouseDown = false;
@@ -256,19 +256,19 @@ describe('DrawingComponent', () => {
         (component as any).allowUndoCall = false;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
 
-        const nymberOfTimesDispatchCalledFull = 5;
+        const numberOfTimesDispatchCalledFull = 3;
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalledFull);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalledFull);
     });
     it('ngOnChanges should dispatch a grid and saveState Event only after view is initialised', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        const nymberOfTimesDispatchCalled = 3;
+        const numberOfTimesDispatchCalled = 2;
 
         (component as any).viewInitialized = false;
         (component as any).mouseDown = false;
@@ -278,7 +278,7 @@ describe('DrawingComponent', () => {
 
         (component as any).viewInitialized = true;
         component.ngOnChanges({} as SimpleChanges);
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
     });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
