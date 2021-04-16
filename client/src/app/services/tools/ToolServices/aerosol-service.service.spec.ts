@@ -61,22 +61,6 @@ describe('AerosolService', () => {
         expect(service).toBeTruthy();
     });
 
-    // TODO : FIX LE TEST : service.rng n'existe pas
-    /*it('rng generates a random number between -max et max', () => {
-        // It just works, trust me
-        let result = true;
-        const coefficientDeTest = 250;
-        const max = 5;
-        const nbTest = max * coefficientDeTest;
-
-        for (let i = 0; i < nbTest && result; i++) {
-            const value = service.rng(max);
-            result = Math.abs(value) <= max;
-        }
-
-        expect(result).toBeTrue();
-    });*/
-
     it(' mouseDown should set lastPosition to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
 
@@ -158,11 +142,11 @@ describe('AerosolService', () => {
     /*it('addPoint Creates a random point within the bounds', () => {
         const radius = 10;
         pos = { x: 0, y: 0 };
-        const rngSpy = spyOn(service, 'rng').and.callThrough();
+        // const rngSpy = spyOn(service, 'rng').and.callThrough();
         const distanceSpy = spyOn(service, 'distance').and.callThrough();
         const point = service.addPoint(pos, radius);
 
-        expect(rngSpy).toHaveBeenCalled();
+        // expect(rngSpy).toHaveBeenCalled();
         expect(distanceSpy).toHaveBeenCalled();
         expect(service.distance(point.x, point.y)).toBeLessThanOrEqual(radius);
     });*/

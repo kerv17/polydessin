@@ -18,14 +18,17 @@ export class LassoService extends Tool {
     }
 
     onClick(event: MouseEvent): void {
-        if (this.toolMode === 'selection') {
-            this.addPoint(this.getPositionFromMouse(event));
-        }
-        if (this.toolMode === 'movement') {
-            this.clearPreviewCtx();
-            this.passToSelectionService(this.selectArea(this.pathData));
-            dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT] }));
-            this.clearPath();
+        if (event.button === Globals.MouseButton.Left) {
+            if (this.toolMode === 'selection') {
+                this.addPoint(this.getPositionFromMouse(event));
+            }
+            if (this.toolMode === 'movement') {
+                this.clearPreviewCtx();
+                this.passToSelectionService(this.selectArea(this.pathData));
+                dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT] }));
+                this.clearPath();
+                // this.selectionService.updateCanvasOnMove(this.drawingService.previewCtx);
+            }
         }
     }
 
@@ -44,8 +47,12 @@ export class LassoService extends Tool {
     }
 
     addPoint(point: Vec2): void {
-        // tslint:disable-next-line: no-magic-numbers
-        if (this.pathData.length >= 3 && ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= 20) {
+        const closeRadius = 20;
+        if (
+            this.pathData.length >= 3 && //Enough points to create a shape
+            ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= closeRadius && //Point close enough to close the shape
+            this.checkIsPointValid(this.pathData[0]) // Able to be closed
+            ) {
             this.pathData.push(this.pathData[0]);
             this.toolMode = 'movement';
         } else if (this.checkIsPointValid(point)) {
@@ -54,7 +61,7 @@ export class LassoService extends Tool {
     }
 
     checkIsPointValid(point: Vec2): boolean {
-        if (this.pathData.length === 0) {
+        if (this.pathData.length <= 1) {
             return true;
         } else {
             return !this.intersect(point);
@@ -67,6 +74,7 @@ export class LassoService extends Tool {
                 return true;
             }
         }
+        
         return false;
     }
 

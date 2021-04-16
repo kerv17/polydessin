@@ -78,6 +78,7 @@ describe('SidebarComponent', () => {
             new AerosolService(drawingStub),
             new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             new StampService(drawingStub),
+
             new LassoService(
                 drawingStub,
                 new LineService(drawingStub),

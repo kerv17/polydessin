@@ -248,6 +248,7 @@ export class SelectionService extends Tool {
         if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
             dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'] }));
         }
+        this.toolMode = '';
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D): void {
