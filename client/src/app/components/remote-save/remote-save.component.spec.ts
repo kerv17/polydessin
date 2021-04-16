@@ -2,6 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
@@ -16,7 +17,7 @@ describe('RemoteSaveComponent', () => {
     const drawingStub = new DrawingService({} as ResizePoint);
 
     beforeEach(async(() => {
-        remoteSaveService = new RemoteSaveService(drawingStub, {} as ServerRequestService);
+        remoteSaveService = new RemoteSaveService(drawingStub, {} as ServerRequestService, {} as PopupService);
         TestBed.configureTestingModule({
             imports: [FormsModule],
             declarations: [RemoteSaveComponent],
