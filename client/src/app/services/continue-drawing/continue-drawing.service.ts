@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+import { DrawingAction } from '../tools/undoRedo/undo-redo.service';
 
 @Injectable({
     providedIn: 'root',
@@ -79,6 +80,27 @@ export class ContinueDrawingService {
         image.src = oldCanvas.imageData;
         window.setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
+            this.sendCanvasToUndoRedo(image,newSize);
         }, 0);
+
+
+       
+    }
+
+    private sendCanvasToUndoRedo(image: HTMLImageElement, newSize:Vec2){
+        const canvas = new OffscreenCanvas(newSize.x, newSize.y).getContext('2d') || new OffscreenCanvasRenderingContext2D();
+            canvas.drawImage(image,0,0);
+        //Wipe UndoRedo
+        const drawingImage:DrawingAction = {
+            type:'Drawing',
+            drawing: canvas.getImageData(0,0,newSize.x,newSize.y),
+            width:newSize.x,
+            height:newSize.y
+        };
+        
+        const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
+        dispatchEvent(event);
+        dispatchEvent(new CustomEvent('undoRedoWipe',{detail:drawingImage}));
+        console.log('hat');
     }
 }
