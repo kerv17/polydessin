@@ -40,12 +40,15 @@ export class ContinueDrawingService {
             sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
         });
     }
+
     private continueCanvas(): void {
         sessionStorage.setItem(this.continueDrawing, 'true');
     }
+
     private newCanvas(): void {
         sessionStorage.clear();
     }
+
     getSavedCanvas(): void {
         if (!this.canvasExists() || !this.canvasContinue()) {
             return;
@@ -64,12 +67,15 @@ export class ContinueDrawingService {
         // pour remetre la valeur a false pour assurer que creer un nouveaux dessin cree un nouveux dessin
         sessionStorage.setItem(this.continueDrawing, 'false');
     }
+
     canvasExists(): boolean {
         return sessionStorage.getItem(this.drawingSavedName) === 'true';
     }
+
     canvasContinue(): boolean {
         return sessionStorage.getItem(this.continueDrawing) === 'true';
     }
+
     private insertSavedCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
@@ -80,22 +86,17 @@ export class ContinueDrawingService {
         window.setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
             this.sendCanvasToUndoRedo(image, newSize);
-        }, 0);
+        });
     }
 
     private sendCanvasToUndoRedo(image: HTMLImageElement, newSize: Vec2): void {
-        const canvas = new OffscreenCanvas(newSize.x, newSize.y).getContext('2d') || new OffscreenCanvasRenderingContext2D();
-        canvas.drawImage(image, 0, 0);
-        // Wipe UndoRedo
         const drawingImage: DrawingAction = {
             type: 'Drawing',
-            drawing: canvas.getImageData(0, 0, newSize.x, newSize.y),
+            drawing: this.drawingService.baseCtx.getImageData(0, 0, newSize.x, newSize.y),
             width: newSize.x,
             height: newSize.y,
         };
 
-        const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
-        dispatchEvent(event);
         dispatchEvent(new CustomEvent('undoRedoWipe', { detail: drawingImage }));
     }
 }

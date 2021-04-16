@@ -2,6 +2,7 @@
 // tslint:disable:no-any
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { ContinueDrawingService } from './continue-drawing.service';
@@ -77,10 +78,15 @@ describe('Service: ContinueDrawing', () => {
         expect(answer).toEqual(true);
     });
 
-    it('insertSavedCanvas should charge the image into the canvas', () => {
+    it('insertSavedCanvas should charge the image into the canvas and call sendCanvasToUndoredo', () => {
+        jasmine.clock().install();
         const setCanvasSpy = spyOn(service.drawingService, 'setCanvassSize');
+        const sendCanvasSpy = spyOn(service as any, 'sendCanvasToUndoRedo').and.returnValue({});
         (service as any).insertSavedCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        jasmine.clock().tick(1);
         expect(setCanvasSpy).toHaveBeenCalled();
+        expect(sendCanvasSpy).toHaveBeenCalled();
+        jasmine.clock().uninstall();
     });
 
     it('getSavedCanvas should do nothing if canvas doesnt exist', () => {
@@ -124,5 +130,15 @@ describe('Service: ContinueDrawing', () => {
         const insertSpy = spyOn(service as any, 'insertSavedCanvas');
         service.getSavedCanvas();
         expect(insertSpy).toHaveBeenCalled();
+    });
+
+    it('sendCanvasToUndoRedo dispatch  allowUndoCall and undoRedoWipe', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+
+        const img = new Image();
+        const size: Vec2 = { x: 1, y: 1 };
+        (service as any).sendCanvasToUndoRedo(img, size);
+
+        expect(spyDispatch).toHaveBeenCalled();
     });
 });
