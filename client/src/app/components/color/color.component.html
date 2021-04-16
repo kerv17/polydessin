@@ -21,9 +21,9 @@
 
 <div *ngIf='recentColors.length' class='recentColorsWrapper'>
     <p class='text-recent'>Couleurs récentes</p>
-    <main class='table'>
-        <div class='recentColors' *ngFor="let colors of recentColors">
-            <div class="color-div-recent" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
-        </div>
-    </main>
+
+    <div class='recentColors' *ngFor="let colors of recentColors">
+        <div class="color-div-recent" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
+    </div>
+
 </div>

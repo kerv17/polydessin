@@ -44,12 +44,14 @@
 }
 
 .text-recent {
-    padding-left: 18px;
     font-size: small;
 }
 
 .table {
+    padding-left: 23px;
     display: table;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .recentColors {
@@ -59,10 +61,10 @@
 }
 
 .recentColorsWrapper {
-    //background-color: lightblue;
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
     width: 143px;
-    border-radius: 3%;
-    //border: 1px solid black;
 }
 
 .cells {
