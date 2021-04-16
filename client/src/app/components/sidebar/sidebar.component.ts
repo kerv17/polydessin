@@ -53,6 +53,7 @@ export class SidebarComponent {
         this.initFunctionMap();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.annulerSelection();
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
@@ -99,7 +100,7 @@ export class SidebarComponent {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
     showSelectionOptions(): void {
-        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT || this.currentTool === Globals.LASSO_SELECTION_SHORTCUT;
     }
 
     // TODO : changer le nom en anglais
@@ -130,6 +131,7 @@ export class SidebarComponent {
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.showSelectionOptions();
     }
     showGrid(): void {
         this.gridService.toggleGrid();

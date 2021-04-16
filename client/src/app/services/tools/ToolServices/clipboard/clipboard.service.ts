@@ -31,8 +31,12 @@ export class ClipboardService extends Tool {
     doAction(action: DrawAction): void {
         const previousSetting: Setting = this.saveSetting();
         this.loadSetting(action.setting);
-        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.selection.lassoPath, this.selection.toolMode);
         this.loadSetting(previousSetting);
+    }
+
+    resetClipboard(): void {
+        this.clipboard = this.selectedArea;
     }
 
     copy(): void {
@@ -49,8 +53,8 @@ export class ClipboardService extends Tool {
             this.selection.selectedArea = new ImageData(this.clipboard.data, this.clipboard.width, this.clipboard.height);
             this.selection.drawingService.previewCtx.putImageData(this.clipboard, 0, 0);
             this.fakePath();
-            this.updatePath();
             this.selection.inSelection = true;
+            this.selection.inMovement = false;
         }
     }
 
@@ -64,7 +68,12 @@ export class ClipboardService extends Tool {
     delete(): void {
         if (this.selection.inSelection) {
             this.updatePath();
-            this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.selection.getPathData());
+            this.selectionMove.updateCanvasOnMove(
+                this.drawingService.baseCtx,
+                this.selection.getPathData(),
+                this.selection.lassoPath,
+                this.selection.toolMode,
+            );
             this.clearPreviewCtx();
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
@@ -74,11 +83,13 @@ export class ClipboardService extends Tool {
 
     private updatePath(): void {
         if (this.clipboard !== undefined) {
-            this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
-            this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
-            this.pathData[2] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y + this.clipboard.height };
-            this.pathData[Globals.RIGHT_HANDLER] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y };
-            this.pathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.pathData[0].x, y: this.pathData[0].y };
+            if (this.pathData.length === 0) {
+                this.pathData[0] = this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION];
+                this.pathData[1] = { x: this.pathData[0].x, y: this.pathData[0].y + this.clipboard.height };
+                this.pathData[2] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y + this.clipboard.height };
+                this.pathData[Globals.RIGHT_HANDLER] = { x: this.pathData[0].x + this.clipboard.width, y: this.pathData[0].y };
+                this.pathData[Globals.CURRENT_SELECTION_POSITION] = { x: this.pathData[0].x, y: this.pathData[0].y };
+            }
         } else {
             this.pathData = this.selection.getPathData();
         }
@@ -99,5 +110,7 @@ export class ClipboardService extends Tool {
             y: this.selection.drawingService.canvas.height,
         };
         this.selection.getPathData()[Globals.CURRENT_SELECTION_POSITION] = { x: 0, y: 0 };
+        this.selection.lassoPath = [];
+        this.selection.lassoPath.push({ x: 0, y: 0 });
     }
 }

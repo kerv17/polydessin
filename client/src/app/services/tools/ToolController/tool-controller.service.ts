@@ -45,7 +45,6 @@ export class ToolControllerService {
         addEventListener('changeTool', (event: CustomEvent) => {
             this.setTool(event.detail[0]);
             this.currentTool.toolMode = event.detail[1];
-            console.log(event.detail[0], this.currentTool);
         });
 
         this.initMap();
@@ -84,11 +83,19 @@ export class ToolControllerService {
         this.currentTool.clearPreviewCtx();
         const tempTool: Tool | undefined = this.toolMap.get(shortcut);
         if (tempTool != undefined) this.currentTool = tempTool;
+        this.setSelectionToolMode(shortcut);
     }
 
     shift(eventType: string): void {
         this.currentTool.onShift(eventType === 'keydown');
     }
+
+    setSelectionToolMode(shortcut: string): void {
+        if (shortcut === Globals.RECTANGLE_SELECTION_SHORTCUT) {
+            this.selectionService.toolMode = '';
+        }
+    }
+
     escape(eventType: string): void {
         if (eventType === 'keydown') {
             if (!this.escapeIsDown) {

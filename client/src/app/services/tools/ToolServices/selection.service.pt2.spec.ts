@@ -21,6 +21,7 @@ describe('SelectionService', () => {
     let canvasTestHelper: CanvasTestHelper;
     let selectionMovementSpy: jasmine.Spy;
     let selectAreaSpy: jasmine.Spy;
+    const lassoPath = 'lassoPath';
     const width = 100;
     const height = 100;
     const canvasWidth = 500;
@@ -35,6 +36,8 @@ describe('SelectionService', () => {
     const keyDown = 'keyDown';
     const firstTime = 'firstTime';
     const rectangleService = 'rectangleService';
+    const selectedArea = 'selectedArea';
+    const createCanvasWithSelection = 'createCanvasWithSelection';
 
     beforeEach(() => {
         drawService = new DrawingService({} as ResizePoint);
@@ -62,6 +65,12 @@ describe('SelectionService', () => {
             { x: 200, y: 100 },
             { x: 200, y: 200 },
             { x: 100, y: 200 },
+        ];
+        service[lassoPath] = [
+            { x: 100, y: 100 },
+            { x: 70, y: 150 },
+            { x: 150, y: 200 },
+            { x: 100, y: 100 },
         ];
         selectionBoxService.setHandlersPositions({ x: 100, y: 100 }, width, width);
         selectionResizeService.initializePath(service[pathData]);
@@ -116,13 +125,30 @@ describe('SelectionService', () => {
         expect(drawServiceSpy).not.toHaveBeenCalled();
     });
 
-    it('confirmSelectionMove should call updateCanvasOnMove and putImageData on the basectx', () => {
+    it('createCanvasWithSelection should return an Offscreen canvas and call putImageData', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(0, 0, width, height);
+        const offCanvas = service[createCanvasWithSelection](service[selectedArea]);
+        expect(offCanvas.width).toEqual(width);
+        expect(offCanvas.height).toEqual(height);
+    });
+
+    it('confirmSelectionMove should call updateCanvasOnMove and createCanvasWithSelection on the basectx', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
         selectionSpy = spyOn(selectionMoveService, 'updateCanvasOnMove');
-        drawServiceSpy = spyOn(drawService.baseCtx, 'putImageData');
+        drawServiceSpy = spyOn<any>(service, 'createCanvasWithSelection').and.returnValue(new OffscreenCanvas(width, height));
         service[pathData].push({ x: width, y: height });
         service[confirmSelectionMove]();
         expect(selectionSpy).toHaveBeenCalled();
         expect(drawServiceSpy).toHaveBeenCalled();
+    });
+
+    it('confirmSelectionMove should dispatchEvent if toolMode is Lasso', () => {
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        selectionSpy = spyOn(global, 'dispatchEvent');
+        service[pathData].push({ x: width, y: height });
+        service.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        service[confirmSelectionMove]();
+        expect(selectionSpy).toHaveBeenCalled();
     });
 
     it('drawBorder should call lineTo and setlinedash', () => {

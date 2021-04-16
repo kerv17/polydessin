@@ -74,6 +74,12 @@ describe('ClipboardService', () => {
         expect(selectionMovementSpy).toHaveBeenCalled();
     });
 
+    it('resetClipboard should update clipboard with selectedArea', () => {
+        service[clipboard] = selectionService.selectedArea;
+        service.resetClipboard();
+        expect(service[clipboard]).not.toEqual(selectionService.selectedArea);
+    });
+
     it('copy should store the ImageData of the selection in the clipboard value if there is an active selection', () => {
         selectionService.inSelection = true;
         service.copy();

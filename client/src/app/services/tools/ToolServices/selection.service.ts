@@ -28,7 +28,7 @@ export class SelectionService extends Tool {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.inMovement = true;
                 this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
-                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData);
+                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData, this.lassoPath, this.toolMode);
             }
         });
 
@@ -88,11 +88,7 @@ export class SelectionService extends Tool {
             if (this.selectionResize.onMouseDown(mousePosition)) {
                 this.selectionResize.initializePath(this.pathData);
                 this.selectionResize.setPathDataAfterMovement(this.getActualPosition());
-                // pour annuler l'effet paint qui fait perdre de la résolution de pixels
-                /*if (this.inResize) {
-                    this.selectArea(this.drawingService.baseCtx);
-                }*/
-                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -122,10 +118,9 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
-                // this.updateCanvasOnMove(this.drawingService.previewCtx);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -235,32 +230,15 @@ export class SelectionService extends Tool {
         }
     }
 
-    updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
-        this.clearPreviewCtx();
-        ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'white';
-        if (this.toolMode !== 'v') {
-            ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.pathData[2].x - this.pathData[0].x, this.pathData[2].y - this.pathData[0].y);
-        } else {
-            const pathList = new Path2D();
-            pathList.moveTo(this.lassoPath[0].x, this.lassoPath[0].y);
-            for (let i = 1; i < this.lassoPath.length; i++) {
-                pathList.lineTo(this.lassoPath[i].x, this.lassoPath[i].y);
-            }
-            ctx.fill(pathList);
-        }
-        ctx.fillStyle = 'black';
-        ctx.strokeStyle = 'black';
-    }
-
-    createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
+    private createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
         const canvas = new OffscreenCanvas(imageData.width, imageData.height);
         canvas.getContext('2d')?.putImageData(imageData, 0, 0);
         return canvas;
     }
 
     private confirmSelectionMove(): void {
-        this.updateCanvasOnMove(this.drawingService.baseCtx);
+        this.clearPreviewCtx();
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
         this.drawingService.baseCtx.drawImage(
             this.createCanvasWithSelection(this.selectedArea),
             this.getActualPosition().x,
