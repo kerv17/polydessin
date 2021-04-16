@@ -23,11 +23,6 @@ export class ContinueDrawingService {
         addEventListener('newCanvas', (event: CustomEvent) => {
             this.newCanvas();
         });
-
-        // TODO remove this no longer necessary
-        addEventListener('getSave', (event: CustomEvent) => {
-            this.getSavedCanvas();
-        });
     }
     /*
     RÉFÉRENCES POUR LE CODE DU service ContinueDrawingService:
@@ -36,16 +31,10 @@ export class ContinueDrawingService {
     Quelques modifications y ont été apportées
 */
     saveCanvas(): void {
-        // const isContinue = this.canvasContinue();
-        // sessionStorage.clear();
-        // if(isContinue){
-        //    sessionStorage.setItem(this.continueDrawing, 'true');
-        // }
-        // this.drawingExists = true;
         sessionStorage.removeItem(this.canvasName);
-        // localStorage
+
         console.log(this.drawingService.canvas.toDataURL('image/'));
-        sessionStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));
+        sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
         sessionStorage.setItem(this.drawingSavedName, 'true');
         sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
         sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
@@ -61,7 +50,6 @@ export class ContinueDrawingService {
             return;
         }
         const dataUrl = sessionStorage.getItem(this.canvasName);
-        // console.log(dataUrl);
         const canvasHeightValue = Number(sessionStorage.getItem(this.canvasHeight));
         const canvasWidthValue = Number(sessionStorage.getItem(this.canvasWidth));
         if (dataUrl !== null) {
@@ -83,28 +71,13 @@ export class ContinueDrawingService {
     }
     private insertSavedCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
-        console.log(oldCanvas);
 
         this.drawingService.setCanvassSize(newSize);
 
-        /* to remove
-       const drawingSize: DrawingSize = {
-            width: newSize.x,
-            height: newSize.y,
-        };
-        const event: CustomEvent = new CustomEvent('ChangeSize', { detail: drawingSize });
-        dispatchEvent(event);
-        */
         const image = new Image();
-        // console.log(oldCanvas.imageData);
         image.src = oldCanvas.imageData;
-        // delay(0);
-        window.setTimeout(() => {
+        setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
-        }, 0);
+        });
     }
-}
-export interface DrawingSize {
-    width: number;
-    height: number;
 }

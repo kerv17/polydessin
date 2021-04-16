@@ -59,20 +59,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             const eventContinue: CustomEvent = new CustomEvent('continue');
             dispatchEvent(eventContinue);
         });
-
-        // to remove
-        addEventListener('ChangeSize', (event: CustomEvent) => {
-            this.baseCanvas.nativeElement.width = event.detail.width;
-            this.baseCanvas.nativeElement.height = event.detail.height;
-            this.previewCanvas.nativeElement.width = event.detail.width;
-            this.previewCanvas.nativeElement.height = event.detail.height;
-            this.gridCtx.canvas.width = event.detail.width;
-            this.gridCtx.canvas.height = event.detail.height;
-        });
     }
 
     ngAfterViewInit(): void {
-        // delay(0);
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -89,7 +78,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        // this.viewInitialized = true;
         const action: DrawingAction = {
             type: 'Drawing',
             drawing: this.baseCtx.getImageData(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y),
@@ -102,10 +90,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         dispatchEvent(event);
         this.loadCarouselCanvas();
         this.viewInitialized = true;
-        window.alert('savedafter');
-        // this.contiueService.saveCanvas();
-        // const eventSave: CustomEvent = new CustomEvent('saveState');
-        // dispatchEvent(eventSave);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -121,7 +105,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 if (this.controller.selectionService.inSelection) {
                     this.controller.selectionService.onEscape();
                 }
-                // delay(0);
                 const newHeight = Math.floor(this.heightPrev);
                 const newWidth = Math.floor(this.widthPrev);
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
@@ -148,10 +131,10 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
-                this.contiueService.saveCanvas();
-                window.alert('saved');
-                // const eventSave: CustomEvent = new CustomEvent('saveState');
-                // dispatchEvent(eventSave);
+                setTimeout(() => {
+                    const eventSave: CustomEvent = new CustomEvent('saveState');
+                    dispatchEvent(eventSave);
+                });
                 this.allowUndoCall = true;
             }
         }
