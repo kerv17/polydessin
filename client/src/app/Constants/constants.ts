@@ -75,7 +75,7 @@ export class Metadata {
 // Constante affichage éditeur et canvas
 export const CORRECTION_CONTROL_MARGIN = 2.5;
 export const CANVAS_SIZE_MIN = 250;
-export const SIDEBAR_WIDTH = 470;
+export const SIDEBAR_WIDTH = 400;
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
 

@@ -5,7 +5,7 @@
 .modal {
     display: flex;
     position: fixed;
-    z-index: 4;
+    z-index: 5;
     left: 0;
     top: 0;
     width: 100%;
@@ -24,7 +24,7 @@
     height: 72vh;
     min-width: 600px;
     min-height: 500px;
-    border: 10px solid black;
+    border: 4px solid black;
 }
 
 .close {
@@ -70,10 +70,14 @@
     z-index: 3;
 }
 
+.navigation {
+    font-size: 40px;
+    background-color: white;
+}
+
 .left {
     position: relative;
     margin-right: 40px;
-    scale: 1.5;
 }
 .left:hover,
 .right:hover {
@@ -83,7 +87,6 @@
     position: relative;
 
     margin-left: 10px;
-    scale: 1.5;
 }
 .info {
     z-index: 0;
