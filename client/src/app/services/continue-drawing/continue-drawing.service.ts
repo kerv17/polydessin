@@ -24,9 +24,6 @@ export class ContinueDrawingService {
         addEventListener('newCanvas', (event: CustomEvent) => {
             this.newCanvas();
         });
-        addEventListener('getSave', (event: CustomEvent) => {
-            this.getSavedCanvas();
-        });
     }
     /*
     RÉFÉRENCES POUR LE CODE DU service ContinueDrawingService:
@@ -34,10 +31,11 @@ export class ContinueDrawingService {
     disponible à l'adresse suivante : "https://stackoverflow.com/questions/20507534/how-to-save-and-load-html5-canvas-to-from-localstorage"
     Quelques modifications y ont été apportées
 */
-    private saveCanvas(): void {
-        // this.drawingExists = true;
+    saveCanvas(): void {
         sessionStorage.removeItem(this.canvasName);
-        sessionStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));
+
+        console.log(this.drawingService.canvas.toDataURL('image/'));
+        sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
         sessionStorage.setItem(this.drawingSavedName, 'true');
         sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
         sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
@@ -76,9 +74,10 @@ export class ContinueDrawingService {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
         this.drawingService.setCanvassSize(newSize);
+
         const image = new Image();
         image.src = oldCanvas.imageData;
-        window.setTimeout(() => {
+        setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
             this.sendCanvasToUndoRedo(image,newSize);
         }, 0);
