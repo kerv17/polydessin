@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+import { PopupService } from '../modal/popup.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -10,7 +11,7 @@ export class ExportService {
     anchor: HTMLAnchorElement;
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
-    constructor(public drawingService: DrawingService, private serverRequestService: ServerRequestService) {
+    constructor(public drawingService: DrawingService, private serverRequestService: ServerRequestService, private popupService: PopupService) {
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         this.anchor = document.createElement('a');
@@ -27,16 +28,17 @@ export class ExportService {
     exportToImgur(type: string, name: string, filtre: string): void {
         if (!this.createExportImage(type, name, filtre)) return;
         const data = this.canvas.toDataURL('image/' + type);
+
         const info = { name, format: type, imageData: data } as CanvasInformation;
 
         this.serverRequestService.basicPost(info, 'imgur').subscribe(
             (response) => {
-                window.alert("Lien de l'image:" + response.body?.body);
+                this.popupService.openPopup("Lien de l'image: " + response.body?.body);
             },
             (err: HttpErrorResponse) => {
-                if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                if (err.status === 0) this.popupService.openPopup('Aucune connection avec le serveur');
                 else {
-                    window.alert(err.error);
+                    this.popupService.openPopup(err.error);
                 }
             },
         );
@@ -45,6 +47,7 @@ export class ExportService {
     downloadImage(type: string, name: string, filtre: string): void {
         if (!this.createExportImage(type, name, filtre)) return;
         this.anchor.href = this.canvas.toDataURL('image/' + type);
+
         this.anchor.download = name;
         document.body.appendChild(this.anchor);
         this.anchor.click();
@@ -57,7 +60,7 @@ export class ExportService {
                 return true;
             }
         } else {
-            window.alert('Veuillez entrer un nom et choisir le type de fichier ');
+            this.popupService.openPopup('Veuillez entrer un nom et choisir le type de fichier ');
         }
         return false;
     }

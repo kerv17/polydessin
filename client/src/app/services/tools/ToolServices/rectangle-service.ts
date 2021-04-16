@@ -45,6 +45,8 @@ export class RectangleService extends Tool {
         this.mouseDown = false;
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     onMouseMove(event: MouseEvent): void {

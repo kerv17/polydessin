@@ -54,6 +54,17 @@ describe('BucketService', () => {
         expect((service as any).drawingService.baseCtx.fillStyle).toEqual(service.color);
     });
 
+    it('should  set the right color', () => {
+        (service as any).color = '#ff0000';
+        (service as any).initialiseColor();
+        expect((service as any).drawingService.baseCtx.fillStyle).toEqual('#ff0000');
+    });
+
+    it('should  set the color to black if color is undefined', () => {
+        (service as any).initialiseColor();
+        expect((service as any).drawingService.baseCtx.fillStyle).toEqual('#000000');
+    });
+
     it('should create the two dimensional array and gather all the information on the selected pixel and then call filArea', () => {
         const getImageDataSpy = spyOn((service as any).drawingService.baseCtx, 'getImageData').and.returnValue({});
         const getPositionSpy = spyOn(service as any, 'getPositionFromMouse').and.returnValue({ x: 1, y: 1 } as Vec2);
@@ -243,5 +254,17 @@ describe('BucketService', () => {
         expect(saveSettingSpy).toHaveBeenCalled();
         expect(loadSettingSpy).toHaveBeenCalledTimes(2);
         expect(fillRectSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('onRightClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onRightClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
+
+    it('onClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
     });
 });

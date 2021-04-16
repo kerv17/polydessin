@@ -78,10 +78,9 @@ export class DrawingService {
         const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (!this.canvasNotEmpty(data) || confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
             this.reloadOldCanvas(oldCanvas);
-            const imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
             const action: DrawingAction = {
                 type: 'Drawing',
-                drawing: imageData,
+                drawing: data,
                 width: this.canvas.width,
                 height: this.canvas.height,
             };
@@ -94,11 +93,15 @@ export class DrawingService {
 
     reloadOldCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
+
         this.setCanvassSize(newSize);
         const image = new Image();
         image.src = oldCanvas.imageData;
+
         this.baseCtx.drawImage(image, 0, 0);
-        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     setCanvassSize(newCanvasSize: Vec2): void {

@@ -216,4 +216,10 @@ describe('RectangleService', () => {
         service.doAction(action);
         expect(drawRectangleSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
+
+    it('onMouseUp should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onMouseUp(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

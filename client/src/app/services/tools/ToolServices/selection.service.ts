@@ -185,6 +185,8 @@ export class SelectionService extends Tool {
             this.selectionResize.resetPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
+            const eventContinue: CustomEvent = new CustomEvent('saveState');
+            dispatchEvent(eventContinue);
         }
     }
 

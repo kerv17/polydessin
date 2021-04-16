@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
@@ -17,6 +19,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportComponent } from './components/export/export/export.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { PopupComponent } from './components/modal/popup/popup.component';
 import { PointWidthSliderComponent } from './components/point-width-slider/point-width-slider/point-width-slider.component';
 import { RadiusSliderComponent } from './components/radius-slider/radius-slider/radius-slider.component';
 import { RemoteSaveComponent } from './components/remote-save/remote-save.component';
@@ -29,6 +32,7 @@ import { SprayAmountSliderComponent } from './components/spray-amount-slider/spr
 import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { PopupService } from './services/modal/popup.service';
 
 @NgModule({
     declarations: [
@@ -54,9 +58,10 @@ import { ColorService } from './services/color/color.service';
         GridComponent,
         StampComponent,
         BucketToleranceComponent,
+        PopupComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
-    providers: [ColorService],
+    providers: [ColorService, ContinueDrawingService, DrawingService, PopupService],
     bootstrap: [AppComponent],
     exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })

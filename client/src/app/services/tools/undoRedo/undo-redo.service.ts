@@ -39,6 +39,8 @@ export class UndoRedoService {
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.sendUndoButtonState();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     redo(): void {
@@ -48,6 +50,8 @@ export class UndoRedoService {
             this.doAction(action);
         }
         this.sendUndoButtonState();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     resetPile(info: DrawingAction): void {

@@ -322,4 +322,17 @@ describe('LineService', () => {
         service.doAction(action);
         expect(drawLineSpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
+
+    it('ondbClick should dispatch saveState Event', () => {
+        mouseEvent = {
+            // tslint:disable-next-line: no-magic-numbers
+            pageX: 20 + SIDEBAR_WIDTH,
+            pageY: 20,
+            button: 0,
+        } as MouseEvent;
+        (service as any).pathData.push({ x: 20, y: 20 }, { x: 20, y: 20 });
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.ondbClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

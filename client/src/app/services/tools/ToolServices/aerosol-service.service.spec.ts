@@ -196,4 +196,11 @@ describe('AerosolService', () => {
         service.doAction(action);
         expect(drawSpraySpy).toHaveBeenCalledWith(action.canvas, action.setting.pathData);
     });
+
+    it('onMouseUp should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

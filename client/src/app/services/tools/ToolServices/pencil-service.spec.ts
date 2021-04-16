@@ -324,4 +324,13 @@ describe('PencilService', () => {
         }
         expect(result).toEqual(expectedResult);
     });
+
+    it('onMouseUp should dispatch saveState Event', () => {
+        service.mouseDown = true;
+        (service as any).pathData.push({ x: 0, y: 0 });
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

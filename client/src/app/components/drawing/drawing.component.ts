@@ -7,6 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
+
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
@@ -52,6 +53,10 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         addEventListener('allowUndoCall', (event: CustomEvent) => {
             this.allowUndoCall = event.detail;
         });
+        window.addEventListener('beforeunload', () => {
+            const eventContinue: CustomEvent = new CustomEvent('continue');
+            dispatchEvent(eventContinue);
+        });
     }
 
     ngAfterViewInit(): void {
@@ -75,6 +80,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
+
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
@@ -105,7 +111,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 this.gridCtx.canvas.height = this.heightPrev;
                 const eventGrid: CustomEvent = new CustomEvent('grid');
                 dispatchEvent(eventGrid);
-
                 this.baseCtx.putImageData(dessin, 0, 0);
                 this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
                 if (this.allowUndoCall) {
@@ -118,6 +123,8 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
+                const eventContinue: CustomEvent = new CustomEvent('saveState');
+                dispatchEvent(eventContinue);
                 this.allowUndoCall = true;
             }
         }

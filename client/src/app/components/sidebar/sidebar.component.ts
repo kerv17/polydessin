@@ -130,6 +130,8 @@ export class SidebarComponent {
         this.toolController.lineService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
     showGrid(): void {
         this.gridService.toggleGrid();

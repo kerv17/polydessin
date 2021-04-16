@@ -246,6 +246,11 @@ describe('DrawingService', () => {
         expect(setCanvasSpy).toHaveBeenCalled();
         expect(ctxSpy).toHaveBeenCalled();
     });
+    it('reloadOldCanvas should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 
     it('should return true if the canvas is not empty', () => {
         service.baseCtx.fillStyle = 'black';
