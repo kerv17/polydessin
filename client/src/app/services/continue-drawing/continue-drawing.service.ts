@@ -33,7 +33,7 @@ export class ContinueDrawingService {
 */
     private saveCanvas(): void {
         sessionStorage.removeItem(this.canvasName);
-        setTimeout(() => {
+        window.setTimeout(() => {
             sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
             sessionStorage.setItem(this.drawingSavedName, 'true');
             sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
@@ -77,7 +77,7 @@ export class ContinueDrawingService {
 
         const image = new Image();
         image.src = oldCanvas.imageData;
-        setTimeout(() => {
+        window.setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
             this.sendCanvasToUndoRedo(image, newSize);
         }, 0);
