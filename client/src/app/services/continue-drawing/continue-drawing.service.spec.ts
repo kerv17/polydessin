@@ -44,7 +44,6 @@ describe('Service: ContinueDrawing', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-
     it('saveCanvas stores information in sessionStorage', () => {
         jasmine.clock().install();
         (service as any).saveCanvas();
