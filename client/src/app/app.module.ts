@@ -31,6 +31,7 @@ import { SprayAmountSliderComponent } from './components/spray-amount-slider/spr
 import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { ResizePoint } from './services/resize-Point/resize-point.service';
 
 @NgModule({
     declarations: [
@@ -58,7 +59,7 @@ import { ColorService } from './services/color/color.service';
         BucketToleranceComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
-    providers: [ColorService, ContinueDrawingService, DrawingService],
+    providers: [ColorService, ContinueDrawingService, DrawingService, ResizePoint],
     bootstrap: [AppComponent],
     exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })

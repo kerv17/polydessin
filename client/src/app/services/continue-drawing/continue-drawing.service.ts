@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
 @Injectable({
@@ -20,8 +21,8 @@ export class ContinueDrawingService {
         addEventListener('continue', (event: CustomEvent) => {
             this.continueCanvas();
         });
-        addEventListener('getSave', (event: CustomEvent) => {
-            this.getSavedCanvas();
+        addEventListener('newCanvas', (event: CustomEvent) => {
+            this.newCanvas();
         });
     }
     /*
@@ -31,15 +32,19 @@ export class ContinueDrawingService {
     Quelques modifications y ont été apportées
 */
     private saveCanvas(): void {
-        // this.drawingExists = true;
         sessionStorage.removeItem(this.canvasName);
-        sessionStorage.setItem(this.canvasName, this.drawingService.canvas.toDataURL('image/'));
-        sessionStorage.setItem(this.drawingSavedName, 'true');
-        sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
-        sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
+        window.setTimeout(() => {
+            sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
+            sessionStorage.setItem(this.drawingSavedName, 'true');
+            sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
+            sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
+        });
     }
     private continueCanvas(): void {
         sessionStorage.setItem(this.continueDrawing, 'true');
+    }
+    private newCanvas(): void {
+        sessionStorage.clear();
     }
     getSavedCanvas(): void {
         if (!this.canvasExists() || !this.canvasContinue()) {
@@ -69,10 +74,28 @@ export class ContinueDrawingService {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
         this.drawingService.setCanvassSize(newSize);
+
         const image = new Image();
         image.src = oldCanvas.imageData;
         window.setTimeout(() => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
+            this.sendCanvasToUndoRedo(image, newSize);
         }, 0);
+    }
+
+    private sendCanvasToUndoRedo(image: HTMLImageElement, newSize: Vec2): void {
+        const canvas = new OffscreenCanvas(newSize.x, newSize.y).getContext('2d') || new OffscreenCanvasRenderingContext2D();
+        canvas.drawImage(image, 0, 0);
+        // Wipe UndoRedo
+        const drawingImage: DrawingAction = {
+            type: 'Drawing',
+            drawing: canvas.getImageData(0, 0, newSize.x, newSize.y),
+            width: newSize.x,
+            height: newSize.y,
+        };
+
+        const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
+        dispatchEvent(event);
+        dispatchEvent(new CustomEvent('undoRedoWipe', { detail: drawingImage }));
     }
 }
