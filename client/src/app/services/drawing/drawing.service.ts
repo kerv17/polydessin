@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+
 @Injectable({
     providedIn: 'root',
 })
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
+    baseCanvas: ElementRef<HTMLCanvasElement>;
     previewCtx: CanvasRenderingContext2D;
     gridCtx: CanvasRenderingContext2D;
     gridCanvas: HTMLCanvasElement;
@@ -35,12 +37,12 @@ export class DrawingService {
         if ((dimensionPageX - Globals.SIDEBAR_WIDTH) / 2 < Globals.CANVAS_SIZE_MIN) {
             vec.x = Globals.CANVAS_SIZE_MIN;
         } else {
-            vec.x = (dimensionPageX - Globals.SIDEBAR_WIDTH) / 2;
+            vec.x = Math.floor((dimensionPageX - Globals.SIDEBAR_WIDTH) / 2);
         }
         if (dimensionPageY / 2 < Globals.CANVAS_SIZE_MIN) {
             vec.y = Globals.CANVAS_SIZE_MIN;
         } else {
-            vec.y = dimensionPageY / 2;
+            vec.y = Math.floor(dimensionPageY / 2);
         }
         this.controlSize.x = vec.x;
         this.controlSize.y = vec.y;
@@ -105,13 +107,13 @@ export class DrawingService {
     }
 
     setCanvassSize(newCanvasSize: Vec2): void {
-        this.canvas.height = newCanvasSize.y;
-        this.canvas.width = newCanvasSize.x;
-        this.previewCanvas.height = newCanvasSize.y;
-        this.previewCanvas.width = newCanvasSize.x;
-        this.gridCanvas.height = newCanvasSize.y;
-        this.gridCanvas.width = newCanvasSize.x;
-        this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
+        this.baseCtx.canvas.height = newCanvasSize.y;
+        this.baseCtx.canvas.width = newCanvasSize.x;
+        this.previewCtx.canvas.height = newCanvasSize.y;
+        this.previewCtx.canvas.width = newCanvasSize.x;
+        this.gridCtx.canvas.height = newCanvasSize.y;
+        this.gridCtx.canvas.width = newCanvasSize.x;
+        this.resizePoint.resetControlPoints(this.baseCtx.canvas.width, this.baseCtx.canvas.height);
     }
     resetCanvas(size: Vec2): void {
         this.canvas.width = size.x;
