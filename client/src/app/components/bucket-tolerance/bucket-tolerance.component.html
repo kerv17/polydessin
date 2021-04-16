@@ -1,4 +1,4 @@
-<p>Veuiller entrez la tolerance de l'outil sceau en pourcentage</p>
+<p>Tolérance de l'outil sceau</p>
 
 <mat-slider thumbLabel min="0" max="100" [(ngModel)]="tolerance" (change)="updateWidthValues($event)"></mat-slider>
-<div class="value">La tolérance courante est de {{ tolerance }}%</div>
+<div class="value"> : {{ tolerance }}%</div>
