@@ -4,6 +4,7 @@ import * as Globals from '@app/Constants/constants';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -27,6 +28,7 @@ export class ToolControllerService {
         private aerosolService: AerosolService,
         public selectionService: SelectionService,
         public stampService: StampService,
+        public lassoService: LassoService,
         private bucketService: BucketService,
     ) {
         document.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -38,6 +40,12 @@ export class ToolControllerService {
 
         document.addEventListener('focusin', (event: FocusEvent) => {
             this.checkFocus(event);
+        });
+
+        addEventListener('changeTool', (event: CustomEvent) => {
+            this.setTool(event.detail[0]);
+            this.currentTool.toolMode = event.detail[1];
+            console.log(event.detail[0], this.currentTool);
         });
 
         this.initMap();
@@ -52,6 +60,7 @@ export class ToolControllerService {
             .set(Globals.AEROSOL_SHORTCUT, this.aerosolService)
             .set(Globals.RECTANGLE_SELECTION_SHORTCUT, this.selectionService)
             .set(Globals.STAMP_SHORTCUT, this.stampService)
+            .set(Globals.LASSO_SELECTION_SHORTCUT, this.lassoService)
             .set(Globals.BUCKET_SHORTCUT, this.bucketService);
 
         this.functionMap
@@ -131,7 +140,7 @@ export class ToolControllerService {
     getTool(toolShortcut: string): Tool {
         if (this.toolMap.has(toolShortcut)) {
             return this.toolMap.get(toolShortcut) as Tool;
-        } else return this.pencilService;
+        } else return this.lassoService;
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));

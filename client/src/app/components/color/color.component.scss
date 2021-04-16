@@ -1,6 +1,12 @@
 .color-div {
-    width: 24px;
-    height: 24px;
+    width: 35px;
+    height: 35px;
+    border: 1px solid black;
+}
+
+.color-div-recent {
+    width: 20px;
+    height: 20px;
     border: 1px solid black;
 }
 
@@ -32,8 +38,14 @@
 }
 
 .text {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-right: 25px;
+    display: inline-block;
+    font-size: small;
+}
+
+.text-recent {
+    padding-left: 18px;
+    font-size: small;
 }
 
 .table {
@@ -48,7 +60,7 @@
 
 .recentColorsWrapper {
     background-color: lightblue;
-    width: 326px;
+    width: 143px;
     border-radius: 3%;
     border: 1px solid black;
 }
@@ -57,8 +69,9 @@
     line-height: 0px;
     display: flex;
     float: left;
-    padding-right: 20px;
+    padding-right: 10px;
     padding-top: 5px;
+    padding-left: 10px;
 }
 
 .image {
@@ -73,6 +86,6 @@
     width: 20px;
     height: 20px;
     float: left;
-    padding-right: 15px;
-    padding-top: 8px;
+    padding-top: 11px;
+    padding-right: 5px;
 }

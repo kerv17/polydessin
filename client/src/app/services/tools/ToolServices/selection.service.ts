@@ -13,13 +13,15 @@ import { RectangleService } from './rectangle-service';
 export class SelectionService extends Tool {
     rectangleService: RectangleService;
     inSelection: boolean = false;
-    private inMovement: boolean = false;
+    inMovement: boolean = false;
     private inResize: boolean = false;
+    lassoPath: Vec2[];
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selectionResize: SelectionResizeService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
+        this.toolMode = '';
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -90,7 +92,15 @@ export class SelectionService extends Tool {
                 /*if (this.inResize) {
                     this.selectArea(this.drawingService.baseCtx);
                 }*/
+                this.updateCanvasOnMove(this.drawingService.baseCtx);
+                this.selectionResize.onMouseMove(
+                    this.selectedArea,
+                    this.drawingService.previewCtx,
+                    this.getPositionFromMouse(event),
+                    this.rectangleService.shift,
+                );
                 this.inResize = true;
+                this.inMovement = false;
             } else if (
                 this.selectionMove.onMouseDown(event, mousePosition, this.getActualPosition(), this.getSelectionWidth(), this.getSelectionHeight())
             ) {
@@ -112,10 +122,10 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+                this.updateCanvasOnMove(this.drawingService.baseCtx);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+                // this.updateCanvasOnMove(this.drawingService.previewCtx);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -227,9 +237,41 @@ export class SelectionService extends Tool {
         }
     }
 
+    updateCanvasOnMove(ctx: CanvasRenderingContext2D): void {
+        this.clearPreviewCtx();
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'white';
+        if (this.toolMode !== 'v') {
+            ctx.fillRect(this.pathData[0].x, this.pathData[0].y, this.pathData[2].x - this.pathData[0].x, this.pathData[2].y - this.pathData[0].y);
+        } else {
+            const pathList = new Path2D();
+            pathList.moveTo(this.lassoPath[0].x, this.lassoPath[0].y);
+            for (let i = 1; i < this.lassoPath.length; i++) {
+                pathList.lineTo(this.lassoPath[i].x, this.lassoPath[i].y);
+            }
+            ctx.fill(pathList);
+        }
+        ctx.fillStyle = 'black';
+        ctx.strokeStyle = 'black';
+    }
+
+    createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
+        const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+        canvas.getContext('2d')?.putImageData(imageData, 0, 0);
+        return canvas;
+    }
+
     private confirmSelectionMove(): void {
-        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
-        this.drawingService.baseCtx.putImageData(this.selectedArea, this.getActualPosition().x, this.getActualPosition().y);
+        this.updateCanvasOnMove(this.drawingService.baseCtx);
+        this.drawingService.baseCtx.drawImage(
+            this.createCanvasWithSelection(this.selectedArea),
+            this.getActualPosition().x,
+            this.getActualPosition().y,
+        );
+
+        if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
+            dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'] }));
+        }
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D): void {
@@ -255,7 +297,7 @@ export class SelectionService extends Tool {
 
     // Ajuste le pathData pour permettre la selection à partir de n'importe quel coin
     // donc pour tracer le rectangle de selection dans n'importe quelle direction
-    private setTopLeftHandler(): void {
+    setTopLeftHandler(): void {
         const firstCorner = { x: this.pathData[0].x, y: this.pathData[0].y };
         const oppositeCorner = { x: this.pathData[2].x, y: this.pathData[2].y };
 

@@ -1,5 +1,5 @@
 // Buttons in sidebar
-export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
+export const BACKGROUND_GAINSBORO = { backgroundColor: '#7bf6da' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
 export const BACKGROUND_DARKGREY = { backgroundColor: 'DimGray' };
 
@@ -17,6 +17,7 @@ export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
 export const EXPORT_SHORTCUT = 'e';
 export const RECTANGLE_SELECTION_SHORTCUT = 'r';
+export const LASSO_SELECTION_SHORTCUT = 'v';
 export const CANVAS_SELECTION_EVENT = 'a';
 export const CANVAS_SAVE_SHORTCUT = 's';
 export const UNDO_SHORTCUT = 'z';
@@ -50,6 +51,7 @@ export const GRADIENT_LEVEL_3 = 0.51;
 export const GRADIENT_LEVEL_4 = 0.68;
 export const GRADIENT_LEVEL_5 = 0.81;
 export const DEFAULT_COLOR = 'rgba(0,0,0,1)';
+export const DEFAULT_COLOR_S = 'rgba(255,255,255,1)';
 export const PRIMARY_COLOR = 'Primary';
 export const SECONDARY_COLOR = 'Secondary';
 export const MAX_SIZE_RECENT_COLORS = 10;

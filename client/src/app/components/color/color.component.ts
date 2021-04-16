@@ -34,6 +34,7 @@ export class ColorComponent implements AfterViewInit, OnChanges {
 
     invert(): void {
         if (!this.colorService.modalVisibility) {
+            this.updateColor();
             const tempColor: string = this.primaryColor;
             this.primaryColor = this.secondaryColor;
             this.secondaryColor = tempColor;
@@ -54,6 +55,14 @@ export class ColorComponent implements AfterViewInit, OnChanges {
         this.colorService.modalVisibility = false;
     }
 
+    getPrimaryColor(): string {
+        return this.colorService.primaryColor;
+    }
+
+    getSecondaryColor(): string {
+        return this.colorService.secondaryColor;
+    }
+
     updateColor(): void {
         this.primaryColor = this.colorService.primaryColor;
         this.secondaryColor = this.colorService.secondaryColor;
@@ -61,6 +70,7 @@ export class ColorComponent implements AfterViewInit, OnChanges {
 
     selectPrimaryColor(color: string): void {
         if (!this.colorService.modalVisibility) {
+            this.updateColor();
             this.colorService.saveColor(this.primaryColor);
             this.primaryColor = color;
             this.colorService.primaryColor = this.primaryColor;
@@ -69,6 +79,7 @@ export class ColorComponent implements AfterViewInit, OnChanges {
 
     selectSecondaryColor(color: string, event: MouseEvent): boolean {
         if (!this.colorService.modalVisibility) {
+            this.updateColor();
             this.colorService.saveColor(this.secondaryColor);
             this.secondaryColor = color;
             this.colorService.secondaryColor = this.secondaryColor;

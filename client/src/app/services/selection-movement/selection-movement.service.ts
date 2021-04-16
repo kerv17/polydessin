@@ -32,7 +32,9 @@ export class SelectionMovementService {
     onMouseMove(event: MouseEvent, ctx: CanvasRenderingContext2D, topLeft: Vec2, selectedArea: ImageData): void {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
-        ctx.putImageData(selectedArea, position.x, position.y);
+        const canvas: OffscreenCanvas = new OffscreenCanvas(selectedArea.width, selectedArea.height);
+        canvas.getContext('2d')?.putImageData(selectedArea, 0, 0);
+        ctx.drawImage(canvas, position.x, position.y);
     }
 
     onMouseUp(event: MouseEvent, topLeft: Vec2, path: Vec2[]): Vec2 {

@@ -100,6 +100,7 @@ export class EllipsisService extends Tool {
 
         ctx.stroke();
         this.drawPerimeter(this.drawingService.previewCtx, this.perimerterPathData);
+        ctx.closePath();
         ctx.stroke();
     }
 
