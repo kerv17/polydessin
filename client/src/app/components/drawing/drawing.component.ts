@@ -3,7 +3,6 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
-import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -49,7 +48,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
-        private contiueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -82,7 +80,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             width: this.drawingService.canvasSize.x,
             height: this.drawingService.canvasSize.y,
         };
-        this.contiueService.getSavedCanvas();
+
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();

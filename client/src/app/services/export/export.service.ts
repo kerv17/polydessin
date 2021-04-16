@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+import { PopupService } from '../modal/popup.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -10,7 +11,7 @@ export class ExportService {
     anchor: HTMLAnchorElement;
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
-    constructor(public drawingService: DrawingService, private serverRequestService: ServerRequestService) {
+    constructor(public drawingService: DrawingService, private serverRequestService: ServerRequestService, private popupService: PopupService) {
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
         this.anchor = document.createElement('a');
@@ -32,12 +33,12 @@ export class ExportService {
 
         this.serverRequestService.basicPost(info, 'imgur').subscribe(
             (response) => {
-                window.alert("Lien de l'image:" + response.body?.body);
+                this.popupService.openPopup("Lien de l'image: " + response.body?.body);
             },
             (err: HttpErrorResponse) => {
-                if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                if (err.status === 0) this.popupService.openPopup('Aucune connection avec le serveur');
                 else {
-                    window.alert(err.error);
+                    this.popupService.openPopup(err.error);
                 }
             },
         );
@@ -59,7 +60,7 @@ export class ExportService {
                 return true;
             }
         } else {
-            window.alert('Veuillez entrer un nom et choisir le type de fichier ');
+            this.popupService.openPopup('Veuillez entrer un nom et choisir le type de fichier ');
         }
         return false;
     }

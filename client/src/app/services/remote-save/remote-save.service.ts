@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
+import { PopupService } from '../modal/popup.service';
 
 const MAX_SIZE_TAG = 10;
 const MIN_SIZE_TAG = 3;
@@ -13,12 +14,12 @@ const MAX_NUMBER_TAG = 5;
     providedIn: 'root',
 })
 export class RemoteSaveService {
-    constructor(public drawingService: DrawingService, private requestService: ServerRequestService) {}
+    constructor(public drawingService: DrawingService, private requestService: ServerRequestService, private popupService: PopupService) {}
     showModalSave: boolean = false;
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
-            window.alert('Il faut respecter les critères pour le tag et le nom');
+            this.popupService.openPopup('Il faut respecter les critères pour le tag et le nom');
             return;
         }
 
@@ -31,12 +32,12 @@ export class RemoteSaveService {
 
             this.requestService.basicPost(information).subscribe(
                 (response) => {
-                    window.alert(response.body?.title);
+                    if (response.body) this.popupService.openPopup(response.body.title);
                 },
                 (err: HttpErrorResponse) => {
-                    if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                    if (err.status === 0) this.popupService.openPopup('Aucune connection avec le serveur');
                     else {
-                        window.alert(err.error);
+                        this.popupService.openPopup(err.error);
                     }
                 },
             );

@@ -6,6 +6,7 @@ import { ServerRequestService } from '@app/services/server-request/server-reques
 import { CanvasInformation } from '@common/communication/canvas-information';
 import * as Httpstatus from 'http-status-codes';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
+import { PopupService } from '../modal/popup.service';
 
 @Injectable({
     providedIn: 'root',
@@ -18,7 +19,12 @@ export class CarouselService {
     imageToLoad: CanvasInformation = {} as CanvasInformation;
     showLoad: boolean = false;
     currentSearch: string = '';
-    constructor(private requestService: ServerRequestService, private drawingService: DrawingService, private router: Router) {}
+    constructor(
+        private requestService: ServerRequestService,
+        private drawingService: DrawingService,
+        private router: Router,
+        private popupService: PopupService,
+    ) {}
 
     close(): void {
         this.showCarousel = false;
@@ -33,11 +39,11 @@ export class CarouselService {
         if (confirm('Voulez-vous supprimez ce dessin')) {
             this.requestService.basicDelete(selectedSlide.id).subscribe(
                 (response) => {
-                    window.alert(response.body?.title);
+                    if (response.body) this.popupService.openPopup(response.body.title);
 
                     this.removeCanvasInformation(selectedSlide.id);
                     if (this.pictures.length === 0) {
-                        window.alert('Il ne reste plus de dessin avec ces critères');
+                        this.popupService.openPopup('Il ne reste plus de dessin avec ces critères');
                     }
                 },
                 (err: HttpErrorResponse) => {
@@ -111,9 +117,9 @@ export class CarouselService {
     }
     handleCarouselErrors(err: HttpErrorResponse): void {
         if (err.status === Httpstatus.StatusCodes.NOT_FOUND) {
-            window.alert(err.error);
+            this.popupService.openPopup(err.error);
         } else if (err.status === 0) {
-            window.alert('Aucune connection avec le serveur');
+            this.popupService.openPopup('Aucune connection avec le serveur');
             this.close();
         }
     }
