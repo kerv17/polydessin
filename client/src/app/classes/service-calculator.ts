@@ -1,7 +1,7 @@
 import { Vec2 } from './vec2';
 
 export abstract class ServiceCalculator {
-    // STRAIGHT UP ROBBED FROM STACKOVERFLOW
+    // Inspiré de
     // https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
     static intersect(line1: Vec2[], line2: Vec2[]): boolean {
         const intersect1 = this.ccw(line1[0], line2[0], line2[1]) !== this.ccw(line1[1], line2[0], line2[1]);
