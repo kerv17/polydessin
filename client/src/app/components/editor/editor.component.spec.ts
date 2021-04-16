@@ -8,6 +8,7 @@ import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ResizedEvent } from 'angular-resize-event';
@@ -21,12 +22,14 @@ describe('EditorComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let resizeStub: ResizePoint;
+    let colorService: ColorService;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
         drawingStub.resizePoint = resizeStub;
+        colorService = new ColorService();
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule, HttpClientTestingModule],
             declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent, WidthSliderComponent, MatSlider],
@@ -34,6 +37,7 @@ describe('EditorComponent', () => {
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ResizePoint, useValue: resizeStub },
+                { provide: ColorService, useValue: colorService },
             ],
         }).compileComponents();
     }));
@@ -128,5 +132,18 @@ describe('EditorComponent', () => {
     it('hideResizer should return opposite of ResizePoint.mouseDown', () => {
         component.drawingService.resizePoint.mouseDown = false;
         expect(component.hideResizer()).toEqual(true);
+    });
+
+    it('get visibility should return the visibility value from the colorService', () => {
+        colorService.modalVisibility = true;
+        expect(component.visibility).toEqual(true);
+        colorService.modalVisibility = false;
+        expect(component.visibility).toEqual(false);
+    });
+
+    it(' closeModal should toggle visibility attribute to false ', () => {
+        component.closeModal();
+        expect(component.visibility).toEqual(false);
+        expect(colorService.modalVisibility).toEqual(false);
     });
 });

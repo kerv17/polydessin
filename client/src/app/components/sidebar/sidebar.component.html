@@ -125,35 +125,34 @@
     <div class="BackgroundServices">
         <div class="services">
             <br>
-            <div>
+            <div class="attributes-block">
                 <app-color [reset]="resetAttributes" *ngIf="currentTool != 'd'"></app-color>
             </div>
 
-            <div *ngIf="showWidth">
+            <div *ngIf="showWidth" class="attributes-block">
                 <app-width-slider [change]="resetAttributes"></app-width-slider>
             </div>
-            <br />
-            <div *ngIf="showAerosol">
+            <div *ngIf="showAerosol" class="attributes-block">
                 <radius-slider [change]="resetAttributes"></radius-slider>
                 <spray-amount-slider [change]="resetAttributes"></spray-amount-slider>
             </div>
-            <div *ngIf="shapeOptions">
+            <div *ngIf="shapeOptions" class="attributes-block">
                 <app-shape-options [change]="resetAttributes"></app-shape-options>
             </div>
-            <div *ngIf="showLine">
+            <div *ngIf="showLine" class="attributes-block">
                 <app-line-options [change]="resetAttributes"></app-line-options>
             </div>
-            <div *ngIf="selectionOptions">
+            <div *ngIf="selectionOptions" class="attributes-block">
                 <app-selection-options></app-selection-options>
             </div>
-            <div>
-                <stamp-selector *ngIf="currentTool == 'd'"></stamp-selector>
+            <div *ngIf="currentTool == 'd'" class="attributes-block">
+                <stamp-selector></stamp-selector>
             </div>
 
-            <div *ngIf="currentTool == 'b'">
+            <div *ngIf="currentTool == 'b'" class="attributes-block">
                 <app-bucket-tolerance [change]="resetAttributes"></app-bucket-tolerance>
             </div>
-            <div *ngIf="gridService.showGrid">
+            <div *ngIf="gridService.showGrid" class="attributes-block">
                 <app-grid></app-grid>
             </div>
         </div>

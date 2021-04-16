@@ -9,7 +9,7 @@
 
 .services {
     flex-direction: column;
-    margin-left: 50px;
+    margin-left: 20px;
     margin-right: 3px;
     width: 350px;
 }
@@ -72,6 +72,11 @@
     justify-content: center;
 }
 
-.sidebar-block{
+.sidebar-block {
     border-top: black solid 2px;
+}
+
+.attributes-block {
+    padding-bottom: 10px;
+    border-bottom: black solid 2px;
 }

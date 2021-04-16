@@ -99,7 +99,7 @@ export class SidebarComponent {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
     showSelectionOptions(): void {
-        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT || this.currentTool === Globals.LASSO_SELECTION_SHORTCUT;
     }
 
     // TODO : changer le nom en anglais
