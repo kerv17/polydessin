@@ -4,7 +4,7 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LassoService } from './lasso.service';
 
-fdescribe('LassoService', () => {
+describe('LassoService', () => {
     let service: LassoService;
     let mouseEvent: MouseEvent;
     let passSpy: jasmine.Spy;
