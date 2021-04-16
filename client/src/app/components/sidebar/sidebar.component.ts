@@ -59,7 +59,7 @@ export class SidebarComponent {
             this.redo = event.detail[1] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
         });
     }
-    // TODO REFACTOR ALL TOOLS
+
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();

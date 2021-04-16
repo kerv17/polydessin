@@ -5,6 +5,7 @@ import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { Message } from '@common/communication/message';
 import { of, throwError } from 'rxjs';
+import { PopupService } from '../modal/popup.service';
 import { ExportService } from './export.service';
 //  tslint:disable: no-any
 describe('ExportService', () => {
@@ -14,6 +15,7 @@ describe('ExportService', () => {
     let createElementSpy: jasmine.Spy;
     let serverRequestService: ServerRequestService;
     let exportImageSpy: jasmine.Spy;
+    const popupService = new PopupService();
 
     beforeEach(() => {
         drawingService = new DrawingService({} as ResizePoint);
@@ -24,6 +26,7 @@ describe('ExportService', () => {
                 ExportService,
                 { provide: DrawingService, useValue: drawingService },
                 { provide: ServerRequestService, useValue: serverRequestService },
+                { provide: PopupService, useValue: popupService },
             ],
         });
         service = TestBed.inject(ExportService);
@@ -68,12 +71,12 @@ describe('ExportService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.exportToImgur('png', 'DessinTest', 'none');
 
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(windowSpy).toHaveBeenCalledWith("Lien de l'image:" + message.body);
+        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image:" + message.body);
     });
 
     it('should export the canvas to Imgur if the image is exportable and  not show the body of the message if there is none', () => {
@@ -82,12 +85,12 @@ describe('ExportService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: null });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.exportToImgur('png', 'DessinTest', 'none');
 
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(windowSpy).toHaveBeenCalledWith("Lien de l'image:undefined");
+        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image:undefined");
     });
 
     it('should not export the canvas to Imgur if the image is exportable', () => {
@@ -95,11 +98,11 @@ describe('ExportService', () => {
         const message = { title: 'test' } as Message;
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).not.toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(windowSpy).not.toHaveBeenCalledWith("Lien de l'image" + message.body);
+        expect(popupSpy).not.toHaveBeenCalledWith("Lien de l'image" + message.body);
     });
 
     it('should export the canvas to Imgur if the image is exportable and receive an error if something is wrong', () => {
@@ -107,11 +110,11 @@ describe('ExportService', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 0 });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(throwError(errorResponse));
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(windowSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
+        expect(popupSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
     });
 
     it('should export the canvas to Imgur if the image is exportable and receive an error if something is wrong', () => {
@@ -119,11 +122,11 @@ describe('ExportService', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 404, error: 'test' });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(throwError(errorResponse));
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(windowSpy).toHaveBeenCalledWith('test');
+        expect(popupSpy).toHaveBeenCalledWith('test');
     });
     it('should  not export the image if the type and name arent undefined avec un comfirm true ', () => {
         const type = 'png';
@@ -145,10 +148,10 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).not.toHaveBeenCalled();
-        expect(windowSpy).not.toHaveBeenCalled();
+        expect(popupSpy).not.toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
     });
 
@@ -158,10 +161,10 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).toHaveBeenCalled();
-        expect(windowSpy).not.toHaveBeenCalled();
+        expect(popupSpy).not.toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
     });
 
@@ -171,10 +174,10 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const windowSpy = spyOn(window, 'alert');
+        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).not.toHaveBeenCalled();
-        expect(windowSpy).toHaveBeenCalled();
+        expect(popupSpy).toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
     });
 

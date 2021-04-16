@@ -8,79 +8,152 @@
         <div class="sidebar-block">
             <div class="ToolContainer">
                 <div class="infobulle">(c) Outil Crayon</div>
-                <img src="../../../assets/pencil.png/" [ngStyle]="{
+                <img
+                    src="../../../assets/pencil.png/"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'c' ? '#7bf6da' : 'white'
-                    }" class="function" (click)="setTool('c')" (click)="this.openTool(true, 'c')" tabindex="0" />
+                    }"
+                    class="function"
+                    (click)="setTool('c')"
+                    (click)="this.openTool(true, 'c')"
+                    tabindex="0"
+                />
             </div>
             <div class="ToolContainer">
                 <div class="infobulle">(l) Outil Ligne</div>
-                <img src="../../../assets/line.png" [ngStyle]="{
+                <img
+                    src="../../../assets/line.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'l' ? '#7bf6da' : 'white'
-                    }" (click)="setTool('l')" (click)="this.openTool(true, 'l')" class="function" tabindex="0" />
+                    }"
+                    (click)="setTool('l')"
+                    (click)="this.openTool(true, 'l')"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
             <div class="ToolContainer">
                 <div class="infobulle">(1) Outil Rectangle</div>
-                <img src="../../../assets/rectangle.png" [ngStyle]="{
+                <img
+                    src="../../../assets/rectangle.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == '1' ? '#7bf6da' : 'white'
-                    }" class="function" (click)="setTool('1')" (click)="this.openTool(true, '1')" tabindex="0" />
+                    }"
+                    class="function"
+                    (click)="setTool('1')"
+                    (click)="this.openTool(true, '1')"
+                    tabindex="0"
+                />
             </div>
             <div class="ToolContainer">
                 <div class="infobulle">(2) Outil Ellipse</div>
-                <img src="../../../assets/oval.png" [ngStyle]="{
+                <img
+                    src="../../../assets/oval.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == '2' ? '#7bf6da' : 'white'
-                    }" class="function" (click)="setTool('2')" (click)="this.openTool(true, '2')" tabindex="0" />
+                    }"
+                    class="function"
+                    (click)="setTool('2')"
+                    (click)="this.openTool(true, '2')"
+                    tabindex="0"
+                />
             </div>
             <div class="ToolContainer">
                 <div class="infobulle">(a) Outil Aerosol</div>
-                <img src="../../../assets/aerosol.png" [ngStyle]="{
+                <img
+                    src="../../../assets/sprayer.svg"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'a' ? '#7bf6da' : 'white'
-                    }" class="function" (click)="setTool('a')" (click)="this.openTool(true, 'a')" tabindex="0" />
+                    }"
+                    class="function"
+                    (click)="setTool('a')"
+                    (click)="this.openTool(true, 'a')"
+                    tabindex="0"
+                />
             </div>
 
             <div class="ToolContainer">
                 <div class="infobulle">(d) Outil Etampe</div>
-                <img src="../../../assets/stamp.png" [ngStyle]="{
+                <img
+                    src="../../../assets/stamp.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'd' ? '#7bf6da' : 'white'
-                    }" class="function" (click)="setTool('d')" (click)="this.openTool(true, 'd')" tabindex="0" />
+                    }"
+                    class="function"
+                    (click)="setTool('d')"
+                    (click)="this.openTool(true, 'd')"
+                    tabindex="0"
+                />
             </div>
 
             <div class="ToolContainer">
                 <div class="infobulle">(b) Remplissage d'une surface</div>
-                <img src="../../../assets/bucket.png" [ngStyle]="{
+                <img
+                    src="../../../assets/bucket.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'b' ? '#7bf6da' : 'white'
-                    }" (click)="setTool('b')" (click)="this.openTool(false, 'b')" class="function" tabindex="0" />
+                    }"
+                    (click)="setTool('b')"
+                    (click)="this.openTool(false, 'b')"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
         </div>
-
-
 
         <div class="sidebar-block">
             <div class="ToolContainer">
                 <div class="infobulle">(Ctrl + a) Sélectionne toute la surface de dessin.</div>
-                <img src="../../../assets/selection.png" (click)="setTool('r')" (click)="this.openTool(false, 'r')" (click)="selectCanvas()" class="function" tabindex="0" />
+                <img
+                    src="../../../assets/selection.png"
+                    (click)="setTool('r')"
+                    (click)="this.openTool(false, 'r')"
+                    (click)="selectCanvas()"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
 
             <div class="ToolContainer">
                 <div class="infobulle">(r) Sélection rectangulaire</div>
-                <img src="../../../assets/Rectangleselection.png" [ngStyle]="{
+                <img
+                    src="../../../assets/Rectangleselection.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'r' ? '#7bf6da' : 'white'
-                    }" (click)="setTool('r')" (click)="this.openTool(false, 'r')" class="function" tabindex="0" />
+                    }"
+                    (click)="setTool('r')"
+                    (click)="this.openTool(false, 'r')"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
             <div class="ToolContainer">
                 <div class="infobulle">(v) Selection par lasso polygonal</div>
-                <img src="../../../assets/lasso.png" [ngStyle]="{
+                <img
+                    src="../../../assets/lasso.png"
+                    [ngStyle]="{
                         backgroundColor: currentTool == 'v' ? '#7bf6da' : 'white'
-                    }" (click)="setTool('v')" (click)="this.openTool(false, 'v')" class="function" tabindex="0" />
+                    }"
+                    (click)="setTool('v')"
+                    (click)="this.openTool(false, 'v')"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
         </div>
-
 
         <div class="sidebar-block">
             <div class="ToolContainer">
                 <div class="infobulle">(g) Outil grille</div>
-                <img src="../../../assets/grid.png" [ngStyle]="{
+                <img
+                    src="../../../assets/grid.png"
+                    [ngStyle]="{
                         backgroundColor: gridService.showGrid ? '#7bf6da' : 'white'
-                    }" (click)="showGrid()" class="function" tabindex="0" />
+                    }"
+                    (click)="showGrid()"
+                    class="function"
+                    tabindex="0"
+                />
             </div>
 
             <div class="ToolContainer">
@@ -93,8 +166,6 @@
                 <img src="../../../assets/redo.png" [ngStyle]="redo" class="function" (click)="redoAction()" tabindex="0" />
             </div>
         </div>
-
-
 
         <div class="sidebar-block">
             <div class="ToolContainer">
@@ -117,14 +188,10 @@
                 <img src="../../../assets/save.png" class="function" (click)="openSave()" tabindex="0" />
             </div>
         </div>
-
-
-
-
     </div>
     <div class="BackgroundServices">
         <div class="services">
-            <br>
+            <br />
             <div class="attributes-block">
                 <app-color [reset]="resetAttributes" *ngIf="currentTool != 'd'"></app-color>
             </div>

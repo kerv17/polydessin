@@ -5,6 +5,7 @@ import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
@@ -57,7 +58,7 @@ describe('DrawingComponent', () => {
             {} as StampService,
             {} as BucketService,
         );
-        carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router, {} as PopupService);
 
         selectionBoxService = new SelectionBoxService();
         TestBed.configureTestingModule({

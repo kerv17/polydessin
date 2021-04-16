@@ -12,6 +12,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { GridService } from '@app/services/grid/grid.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
@@ -64,8 +65,8 @@ describe('SidebarComponent', () => {
     const router = jasmine.createSpyObj(Router, ['navigate']);
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
-        exportService = new ExportService(drawingStub, {} as ServerRequestService);
-        remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
+        exportService = new ExportService(drawingStub, {} as ServerRequestService, {} as PopupService);
+        remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService, {} as PopupService);
         selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
         selectionBoxService = new SelectionBoxService();
         selectionResizeService = new SelectionResizeService(selectionBoxService);
@@ -80,7 +81,7 @@ describe('SidebarComponent', () => {
             new BucketService(drawingStub),
         );
         colorService = new ColorService();
-        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router, {} as PopupService);
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],

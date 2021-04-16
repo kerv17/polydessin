@@ -7,20 +7,22 @@ import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { of, throwError } from 'rxjs';
+import { PopupService } from '../modal/popup.service';
 // import { SlideModel } from '../../../../node_modules/ngx-owl-carousel-o/lib/models/slide.model';
 import { CarouselService } from './carousel.service';
 export class SlideModel {
     id: string;
 } // tslint:disable: no-any
-describe('CarouselService', () => {
+fdescribe('CarouselService', () => {
     let service: CarouselService;
 
     let confirmSpy: jasmine.Spy;
     let getSpy: jasmine.Spy;
-    let alertSpy: jasmine.Spy;
+    let popupSpy: jasmine.Spy;
     let requestService: ServerRequestService;
-
+    let popupService: PopupService;
     beforeEach(() => {
+        popupService = new PopupService();
         requestService = new ServerRequestService({} as HttpClient);
         const router = {
             navigate: jasmine.createSpy('navigate'),
@@ -35,6 +37,7 @@ describe('CarouselService', () => {
                     provide: ServerRequestService,
                     useValue: requestService,
                 },
+                { provide: PopupService, useValue: popupService },
             ],
         });
         service = TestBed.inject(CarouselService);
@@ -61,12 +64,12 @@ describe('CarouselService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
         // tslint:disable-next-line: no-any
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(of(response));
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.delete(slideArray);
         expect(confirmSpy).toHaveBeenCalled();
         expect(getSpy).toHaveBeenCalled();
         expect(removeCanvasSpy).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledTimes(2);
+        expect(popupSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should delete the current slide with an active slide set to 1', () => {
@@ -80,12 +83,12 @@ describe('CarouselService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: null });
         // tslint:disable-next-line: no-any
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(of(response));
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.delete(slideArray);
         expect(confirmSpy).toHaveBeenCalled();
         expect(getSpy).toHaveBeenCalled();
         expect(removeCanvasSpy).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledTimes(1);
+        expect(popupSpy).toHaveBeenCalledTimes(1);
     });
 
     it('shouldnt delete the current slide if confirm returns false', () => {
@@ -99,12 +102,12 @@ describe('CarouselService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
         // tslint:disable-next-line: no-any
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(of(response));
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.delete(slideArray);
         expect(confirmSpy).toHaveBeenCalled();
         expect(getSpy).not.toHaveBeenCalled();
         expect(removeCanvasSpy).not.toHaveBeenCalled();
-        expect(alertSpy).not.toHaveBeenCalled();
+        expect(popupSpy).not.toHaveBeenCalled();
     });
     it('shouldnt delete the current slide if delete returns an error', () => {
         const slideArray: SlideModel[] = new Array(1);
@@ -118,7 +121,7 @@ describe('CarouselService', () => {
         // tslint:disable-next-line: no-any
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(throwError(response));
 
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.delete(slideArray);
         expect(confirmSpy).toHaveBeenCalled();
         expect(getSpy).toHaveBeenCalled();
@@ -136,7 +139,7 @@ describe('CarouselService', () => {
 
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(throwError(response));
 
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.delete(undefined);
         expect(confirmSpy).not.toHaveBeenCalled();
         expect(getSpy).not.toHaveBeenCalled();
@@ -254,23 +257,23 @@ describe('CarouselService', () => {
 
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 404, error: 'test' });
-        const windowSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.handleCarouselErrors(errorResponse);
-        expect(windowSpy).toHaveBeenCalledWith(errorResponse.error);
+        expect(popupSpy).toHaveBeenCalledWith(errorResponse.error);
     });
 
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 0, error: 'test' });
-        const windowSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.handleCarouselErrors(errorResponse);
-        expect(windowSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
+        expect(popupSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
     });
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 10, error: 'test' });
-        const windowSpy = spyOn(window, 'alert');
+        popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
         service.handleCarouselErrors(errorResponse);
-        expect(windowSpy).not.toHaveBeenCalledWith('Aucune connection avec le serveur');
-        expect(windowSpy).not.toHaveBeenCalledWith(errorResponse.error);
+        expect(popupSpy).not.toHaveBeenCalledWith('Aucune connection avec le serveur');
+        expect(popupSpy).not.toHaveBeenCalledWith(errorResponse.error);
     });
     it('should get the images from the HttpResponse', () => {
         const canvasArray: CanvasInformation[] = new Array(1);

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CarouselComponent, CarouselModule } from 'ngx-owl-carousel-o';
@@ -26,7 +27,7 @@ describe('CarousselComponent', () => {
 
     beforeEach(async(() => {
         carousel = new CarouselStub();
-        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router, {} as PopupService);
         TestBed.configureTestingModule({
             imports: [CarouselModule, FormsModule],
             declarations: [CarousselComponent],
