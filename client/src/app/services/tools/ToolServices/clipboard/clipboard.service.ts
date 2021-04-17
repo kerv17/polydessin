@@ -55,6 +55,10 @@ export class ClipboardService extends Tool {
             // Il faut ajouter un customEvent pour faire changer le toolmode de lasso sans que lasso devienne le next tool.
             // Cet event devra être appelé ici si le toolMode est 'v'.
             // On fait passer le toolMode du lasso de movement à selection, sans que lasso devienne l'outil actif.
+            if(this.selection.toolMode === Globals.LASSO_SELECTION_SHORTCUT){
+                dispatchEvent(new CustomEvent('resetLassoToolMode'));
+            }
+            
             this.selection.toolMode = '';
             this.selection.selectedArea = new ImageData(this.clipboard.data, this.clipboard.width, this.clipboard.height);
             this.selection.drawingService.previewCtx.putImageData(this.clipboard, 0, 0);
