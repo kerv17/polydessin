@@ -180,6 +180,11 @@ export class SelectionService extends Tool {
             this.selectionResize.resetPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
+            if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
+                dispatchEvent(new CustomEvent('changeTool', { detail:{nextTool:[Globals.LASSO_SELECTION_SHORTCUT, 'selection'],currentTool:this}  }));
+                this.toolMode = '';
+                console.log(this.toolMode);
+            }
         }
     }
 
@@ -244,11 +249,6 @@ export class SelectionService extends Tool {
             this.getActualPosition().x,
             this.getActualPosition().y,
         );
-
-        if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
-            dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'] }));
-        }
-        this.toolMode = '';
     }
 
     private drawBorder(ctx: CanvasRenderingContext2D): void {

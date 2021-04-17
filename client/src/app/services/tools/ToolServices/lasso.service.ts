@@ -25,7 +25,7 @@ export class LassoService extends Tool {
             if (this.toolMode === 'movement') {
                 this.clearPreviewCtx();
                 this.passToSelectionService(this.selectArea(this.pathData));
-                dispatchEvent(new CustomEvent('changeTool', { detail: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT] }));
+                dispatchEvent(new CustomEvent('changeTool', { detail: {nextTool:[Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT],currentTool:this} }));
                 this.clearPath();
                 // this.selectionService.updateCanvasOnMove(this.drawingService.previewCtx);
             }
