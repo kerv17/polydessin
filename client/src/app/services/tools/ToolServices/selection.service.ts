@@ -181,7 +181,9 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
             if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
-                dispatchEvent(new CustomEvent('changeTool', { detail:{nextTool:[Globals.LASSO_SELECTION_SHORTCUT, 'selection'],currentTool:this}  }));
+                dispatchEvent(
+                    new CustomEvent('changeTool', { detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: this } }),
+                );
                 this.toolMode = '';
             }
         }

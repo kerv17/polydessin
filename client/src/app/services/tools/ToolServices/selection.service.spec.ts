@@ -327,19 +327,19 @@ describe('SelectionService', () => {
         expect(selectionSpy).not.toHaveBeenCalled();
     });
 
-    it('onEscape should return to Lasso if toolMode matches',()=>{
+    it('onEscape should return to Lasso if toolMode matches', () => {
         service.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
         let result = false;
-        selectionSpy = spyOn<any>(service, 'confirmSelectionMove')
+        selectionSpy = spyOn<any>(service, 'confirmSelectionMove');
         service.inSelection = true;
         service.inMovement = false;
-        addEventListener('changeTool', (event:CustomEvent)=>{
-            result = event.detail.nextTool[0]===Globals.LASSO_SELECTION_SHORTCUT && event.detail.nextTool[1]==='selection';
-        })
+        addEventListener('changeTool', (event: CustomEvent) => {
+            result = event.detail.nextTool[0] === Globals.LASSO_SELECTION_SHORTCUT && event.detail.nextTool[1] === 'selection';
+        });
         service.onEscape();
         expect(service.toolMode).toEqual('');
         expect(result).toBeTrue();
-    })
+    });
 
     it('onEscape should call confirmSelectionMove, dispatchAction and reset attributes to their initial values if there is a selection', () => {
         service.inSelection = true;

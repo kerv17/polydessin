@@ -47,9 +47,8 @@ describe('ToolControllerService', () => {
                 { provide: SelectionService, useValue: selectionServiceSpy },
                 { provide: StampService, useValue: stampServiceSpy },
                 { provide: DrawingService, useValue: drawingService },
-                { provide: LassoService, useValue: lassoServiceSpy},
+                { provide: LassoService, useValue: lassoServiceSpy },
                 { provide: BucketService, useValue: bucketServiceSpy },
-                
             ],
         });
         TestBed.configureTestingModule({});
@@ -269,12 +268,20 @@ describe('ToolControllerService', () => {
         expect(service.getTool('fake tool name')).toEqual((service as any).pencilService);
     });
 
-    it('changeTool event',()=>{
-        dispatchEvent(new CustomEvent('changeTool', { detail:{nextTool:[Globals.LASSO_SELECTION_SHORTCUT, 'selection'],currentTool:(service as any).lassoService}  }));
+    it('changeTool event', () => {
+        dispatchEvent(
+            new CustomEvent('changeTool', {
+                detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: (service as any).lassoService },
+            }),
+        );
         expect(service.currentTool).not.toEqual((service as any).lassoService);
         expect(service.currentTool.toolMode).not.toEqual('selection');
 
-        dispatchEvent(new CustomEvent('changeTool', { detail:{nextTool:[Globals.LASSO_SELECTION_SHORTCUT, 'selection'],currentTool:service.currentTool}  }));
+        dispatchEvent(
+            new CustomEvent('changeTool', {
+                detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: service.currentTool },
+            }),
+        );
         expect(service.currentTool).toEqual((service as any).lassoService);
         expect(service.currentTool.toolMode).toEqual('selection');
     });

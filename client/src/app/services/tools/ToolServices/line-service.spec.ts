@@ -32,7 +32,7 @@ describe('LineService', () => {
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        
+
         service = TestBed.inject(LineService);
         drawLineSpy = spyOn<any>(service, 'drawLine');
         pointToPushSpy = spyOn<any>(service, 'getPointToPush').and.callThrough();
@@ -209,9 +209,6 @@ describe('LineService', () => {
         (service as any).clearPath();
         expect((service as any).pathData.length).toEqual(0);
     });
-
-    
-    
 
     it(' onShift should set the value of shift and call onMouseMove', () => {
         const spy = spyOn(service, 'onMouseMove');

@@ -25,7 +25,11 @@ export class LassoService extends Tool {
             if (this.toolMode === 'movement') {
                 this.clearPreviewCtx();
                 this.passToSelectionService(this.selectArea(this.pathData));
-                dispatchEvent(new CustomEvent('changeTool', { detail: {nextTool:[Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT],currentTool:this} }));
+                dispatchEvent(
+                    new CustomEvent('changeTool', {
+                        detail: { nextTool: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT], currentTool: this },
+                    }),
+                );
                 this.clearPath();
             }
         }
@@ -48,10 +52,10 @@ export class LassoService extends Tool {
     addPoint(point: Vec2): void {
         const closeRadius = 20;
         if (
-            this.pathData.length >= 3 && //Enough points to create a shape
-            ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= closeRadius && //Point close enough to close the shape
+            this.pathData.length >= 3 && // Enough points to create a shape
+            ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= closeRadius && // Point close enough to close the shape
             this.checkIsPointValid(this.pathData[0]) // Able to be closed
-            ) {
+        ) {
             this.pathData.push(this.pathData[0]);
             this.toolMode = 'movement';
         } else if (this.checkIsPointValid(point)) {
@@ -73,7 +77,7 @@ export class LassoService extends Tool {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -86,7 +90,6 @@ export class LassoService extends Tool {
         for (let i = 1; i < points.length; i++) {
             pathList.lineTo(points[i].x - box[0].x, points[i].y - box[0].y);
         }
-
         ctx.globalCompositeOperation = 'destination-in';
 
         ctx.putImageData(this.drawingService.baseCtx.getImageData(box[0].x, box[0].y, box[1].x - box[0].x, box[1].y - box[0].y), 0, 0);
@@ -107,7 +110,6 @@ export class LassoService extends Tool {
         const path = [];
         path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y });
         this.selectionService.setPathData(path);
-        
         this.selectionService.setTopLeftHandler();
     }
 }

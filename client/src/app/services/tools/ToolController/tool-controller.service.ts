@@ -43,9 +43,9 @@ export class ToolControllerService {
         });
 
         addEventListener('changeTool', (event: CustomEvent) => {
-            if (this.currentTool === event.detail.currentTool){
-            this.setTool(event.detail.nextTool[0]);
-            this.currentTool.toolMode = event.detail.nextTool[1];
+            if (this.currentTool === event.detail.currentTool) {
+                this.setTool(event.detail.nextTool[0]);
+                this.currentTool.toolMode = event.detail.nextTool[1];
             }
         });
 
