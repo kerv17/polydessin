@@ -1,7 +1,7 @@
+<div *ngIf="popupService.showModal" class="popup">
+    <app-popup></app-popup>
+</div>
 <div class="container" [ngStyle]="container" (window:resize)="onResize($event)">
-    <div *ngIf="popupService.showModal">
-        <app-popup></app-popup>
-    </div>
     <div class="sidebar">
         <app-sidebar> </app-sidebar>
     </div>
