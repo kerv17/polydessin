@@ -42,7 +42,12 @@ describe('SelectionResizeService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         drawService.canvas.width = canvasWidth;
         drawService.canvas.height = canvasHeight;
-        path = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
+        path = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+        ];
         service[selectionBox].setHandlersPositions(path[0], path[0].x, path[0].y);
         selectedArea = drawService.previewCtx.getImageData(path[0].x, path[0].y, width, height);
     });
@@ -59,7 +64,13 @@ describe('SelectionResizeService', () => {
     });
 
     it('initializePath should push the first value of the path as the actual position if the path only has 4 values', () => {
-        const expectedPath = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }];
+        const expectedPath = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+            { x: 100, y: 100 },
+        ];
         service[resizePathData] = [];
         service.initializePath(path);
         expect(service[resizePathData]).toEqual(expectedPath);
@@ -84,13 +95,23 @@ describe('SelectionResizeService', () => {
     });
 
     it('getActualResizedWidth should return the absolute value of the width', () => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 50, y: 50 }, { x: 100, y: 200 }];
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 50, y: 50 },
+            { x: 100, y: 200 },
+        ];
         const expectedWidth = 50;
         expect(service.getActualResizedWidth()).toEqual(expectedWidth);
     });
 
     it('getActualResizedHeight should return the absolute value of the height', () => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 50, y: 50 }, { x: 100, y: 200 }];
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 50, y: 50 },
+            { x: 100, y: 200 },
+        ];
         const expectedHeight = 50;
         expect(service.getActualResizedHeight()).toEqual(expectedHeight);
     });
@@ -129,8 +150,14 @@ describe('SelectionResizeService', () => {
         expect(service[resizePathData][0]).toEqual({ x: 25, y: 25 });
     });
 
-    it('resizeImage should call scale with -1, -1 and set the bottom right handler as the actual position of the path if width and height are negative', done => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 50, y: 100 }, { x: 50, y: 50 }, { x: 100, y: 50 }, { x: 0, y: 0 }];
+    it('resizeImage should call scale with -1, -1 and set the bottom right handler as the actual position of the path if width and height are negative', (done) => {
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 50, y: 100 },
+            { x: 50, y: 50 },
+            { x: 100, y: 50 },
+            { x: 0, y: 0 },
+        ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = Globals.CURRENT_SELECTION_POSITION;
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
@@ -141,8 +168,14 @@ describe('SelectionResizeService', () => {
         });
     });
 
-    it('resizeImage should call scale with -1, 1 and set the topright handler as the actual position if only width is negative', done => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 50, y: 100 }, { x: 50, y: 150 }, { x: 100, y: 150 }, { x: 0, y: 0 }];
+    it('resizeImage should call scale with -1, 1 and set the topright handler as the actual position if only width is negative', (done) => {
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 50, y: 100 },
+            { x: 50, y: 150 },
+            { x: 100, y: 150 },
+            { x: 0, y: 0 },
+        ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = 2;
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
@@ -153,8 +186,14 @@ describe('SelectionResizeService', () => {
         });
     });
 
-    it('resizeImage should call scale with 1, -1 and set the bottomleft handler as the actual position if only height is negative', done => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 150, y: 100 }, { x: 150, y: 50 }, { x: 100, y: 50 }, { x: 0, y: 0 }];
+    it('resizeImage should call scale with 1, -1 and set the bottomleft handler as the actual position if only height is negative', (done) => {
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 150, y: 100 },
+            { x: 150, y: 50 },
+            { x: 100, y: 50 },
+            { x: 0, y: 0 },
+        ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'scale');
         service[actualHandler] = Globals.BOTTOM_HANDLER;
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {
@@ -165,8 +204,14 @@ describe('SelectionResizeService', () => {
         });
     });
 
-    it('resizeImage should call drawImage if both width and height are positive', done => {
-        service[resizePathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }];
+    it('resizeImage should call drawImage if both width and height are positive', (done) => {
+        service[resizePathData] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+            { x: 100, y: 100 },
+        ];
         const ctxSpy = spyOn<any>(drawService.previewCtx, 'drawImage');
         service[actualHandler] = Globals.CURRENT_SELECTION_POSITION;
         createImageBitmap(selectedArea).then((imgBitmap: ImageBitmap) => {

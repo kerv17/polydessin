@@ -42,10 +42,11 @@ describe('EditorComponent', () => {
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.editorSizeX = 1;
-        component.editorSizeY = 1;
-        drawingStub.baseCtx.canvas.width = 1;
-        drawingStub.baseCtx.canvas.height = 1;
+        const minSizeCanvas = 250;
+        component.editorSizeX = minSizeCanvas;
+        component.editorSizeY = minSizeCanvas;
+        drawingStub.baseCtx.canvas.width = minSizeCanvas;
+        drawingStub.baseCtx.canvas.height = minSizeCanvas;
     });
 
     it('should create', () => {

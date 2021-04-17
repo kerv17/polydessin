@@ -16,7 +16,7 @@ export class ExportComponent implements AfterViewInit {
     exportMode: string;
     width: number;
     height: number;
-    filtre: string = 'none';
+    filter: string = 'none';
     fileName: string = 'canvas';
     constructor(private exportService: ExportService) {
         this.width = window.innerWidth / WINDOW_DIVISION;
@@ -26,7 +26,7 @@ export class ExportComponent implements AfterViewInit {
     onResize(): void {
         this.ctx.canvas.height = window.innerHeight / WINDOW_DIVISION;
         this.ctx.canvas.width = window.innerWidth / WINDOW_DIVISION;
-        this.ctx.filter = this.filtre;
+        this.ctx.filter = this.filter;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
     ngAfterViewInit(): void {
@@ -40,18 +40,18 @@ export class ExportComponent implements AfterViewInit {
         this.exportMode = mode;
     }
 
-    setFiltre(buttonfiltre: string): void {
-        this.filtre = buttonfiltre;
-        this.ctx.filter = this.filtre;
+    setFilter(buttonFilter: string): void {
+        this.filter = buttonFilter;
+        this.ctx.filter = this.filter;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }
 
     exportImgur(): void {
-        this.exportService.exportToImgur(this.exportMode, this.fileName, this.filtre);
+        this.exportService.exportToImgur(this.exportMode, this.fileName, this.filter);
     }
 
     exportPicture(): void {
-        this.exportService.downloadImage(this.exportMode, this.fileName, this.filtre);
+        this.exportService.downloadImage(this.exportMode, this.fileName, this.filter);
     }
     close(): void {
         this.exportService.showModalExport = false;

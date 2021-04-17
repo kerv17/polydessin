@@ -47,13 +47,8 @@ export class RemoteSaveService {
     }
 
     tagsHandler(tags: string): string[] {
-        if (tags === '') {
-            const emptyArray: string[] = [];
-            return emptyArray;
-        } else {
-            const tagInArray: string[] = tags.split(',');
-            return tagInArray;
-        }
+        const emptyArray: string[] = [];
+        return tags === '' ? emptyArray : tags.split(',');
     }
 
     private validateName(name: string): boolean {
@@ -67,14 +62,10 @@ export class RemoteSaveService {
     }
 
     private validateTags(tags: string[]): boolean {
-        if (tags.length === 0) {
-            // il est accepter qu'un dessin peut ne pas avoir de tag
-            return true;
-        } else {
-            return (
-                this.verifyTagsNotNull(tags) && this.verifyTagsLength(tags) && this.verifyTagsNoSpecialChracter(tags) && this.verifyTagsNumber(tags)
-            );
-        }
+        return (
+            tags.length === 0 ||
+            (this.verifyTagsNotNull(tags) && this.verifyTagsLength(tags) && this.verifyTagsNoSpecialChracter(tags) && this.verifyTagsNumber(tags))
+        );
     }
     private verifyTagsNumber(tags: string[]): boolean {
         return tags.length <= MAX_NUMBER_TAG;

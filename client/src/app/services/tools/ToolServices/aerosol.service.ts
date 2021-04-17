@@ -98,8 +98,7 @@ export class AerosolService extends Tool {
     }
 
     distance(x: number, y: number): number {
-        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        return distance;
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     doAction(action: DrawAction): void {

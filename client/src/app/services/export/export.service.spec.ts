@@ -142,11 +142,11 @@ describe('ExportService', () => {
     it('should do nothing if the type is undefined or the name is empty', () => {
         const type = 'png';
         const name = 'test';
-        const filtre = 'none';
+        const filter = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
         const windowSpy = spyOn(window, 'alert');
-        service.createExportImage(type, name, filtre);
+        service.createExportImage(type, name, filter);
         expect(setExportSpy).not.toHaveBeenCalled();
         expect(windowSpy).not.toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
@@ -155,11 +155,11 @@ describe('ExportService', () => {
     it('should export the image if the type and name arent undefined avec un comfirm true ', () => {
         const type = 'png';
         const name = 'test';
-        const filtre = 'none';
+        const filter = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         const windowSpy = spyOn(window, 'alert');
-        service.createExportImage(type, name, filtre);
+        service.createExportImage(type, name, filter);
         expect(setExportSpy).toHaveBeenCalled();
         expect(windowSpy).not.toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
@@ -168,11 +168,11 @@ describe('ExportService', () => {
     it('shouldnt export the image if the type or name are undefined  ', () => {
         const type = 'png';
         const name = ' ';
-        const filtre = 'none';
+        const filter = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         const windowSpy = spyOn(window, 'alert');
-        service.createExportImage(type, name, filtre);
+        service.createExportImage(type, name, filter);
         expect(setExportSpy).not.toHaveBeenCalled();
         expect(windowSpy).toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();

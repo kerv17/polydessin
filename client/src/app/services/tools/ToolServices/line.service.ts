@@ -98,14 +98,12 @@ export class LineService extends Tool {
     private distanceBewteenPoints(a: Vec2, b: Vec2): number {
         const x = Math.abs(a.x - b.x);
         const y = Math.abs(a.y - b.y);
-        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        return distance;
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     private getAngle(p1: Vec2, p2: Vec2): number {
         const HALF_CIRCLE_DEG = 180;
-        const angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG / Math.PI;
-        return angleDeg;
+        return (Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG) / Math.PI;
     }
 
     private getShiftAngle(p1: Vec2, p2: Vec2): Vec2 {
