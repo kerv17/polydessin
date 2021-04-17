@@ -11,6 +11,8 @@ import { SelectionService } from './selection.service';
     providedIn: 'root',
 })
 export class LassoService extends Tool {
+    lastMoveEvent: MouseEvent;
+
     constructor(drawingService: DrawingService, private lineService: LineService, private selectionService: SelectionService) {
         super(drawingService);
         this.toolMode = 'selection';
@@ -23,7 +25,7 @@ export class LassoService extends Tool {
     onClick(event: MouseEvent): void {
         if (event.button === Globals.MouseButton.Left) {
             if (this.toolMode === 'selection') {
-                this.addPoint(this.getPositionFromMouse(event));
+                this.addPoint(this.getPointToPush(event));
             }
             if (this.toolMode === 'movement') {
                 this.clearPreviewCtx();
@@ -39,10 +41,11 @@ export class LassoService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.lastMoveEvent = event;
         if (this.toolMode === 'selection' && this.pathData.length > 0) {
             this.clearPreviewCtx();
             this.lineService.drawLine(this.drawingService.previewCtx, this.pathData);
-            const point = this.getPositionFromMouse(event);
+            const point = this.getPointToPush(event);
             const prevPoint = this.pathData[this.pathData.length - 1];
             this.drawingService.previewCtx.strokeStyle = this.checkIsPointValid(point) ? 'black' : 'red';
             this.drawingService.previewCtx.beginPath();
@@ -50,6 +53,20 @@ export class LassoService extends Tool {
             this.drawingService.previewCtx.lineTo(point.x, point.y);
             this.drawingService.previewCtx.stroke();
         }
+    }
+
+    onBackspace(): void {
+        this.pathData.pop();
+        this.onMouseMove(this.lastMoveEvent);
+    }
+
+    onEscape(): void {
+        this.clearPath();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+    onShift(shifted: boolean): void {
+        this.shift = shifted;
+        this.onMouseMove(this.lastMoveEvent);
     }
 
     addPoint(point: Vec2): void {
@@ -114,5 +131,16 @@ export class LassoService extends Tool {
         path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y });
         this.selectionService.setPathData(path);
         this.selectionService.setTopLeftHandler();
+    }
+
+    getPointToPush(event: MouseEvent): Vec2 {
+        const mousePosition = this.getPositionFromMouse(event);
+        if (this.pathData.length > 0) {
+            const lastPointInPath = this.pathData[this.pathData.length - 1];
+            const shiftAngle = ServiceCalculator.getShiftAngle(lastPointInPath, mousePosition);
+            return this.shift ? shiftAngle : mousePosition;
+        } else {
+            return mousePosition;
+        }
     }
 }
