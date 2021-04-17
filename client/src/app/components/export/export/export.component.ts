@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ExportService } from '@app/services/export/export.service';
 
-const CONSTANTE_DIVISION_FENETRE = 4;
+const WINDOW_DIVISION = 4;
 @Component({
     selector: 'app-export',
     templateUrl: './export.component.html',
@@ -18,19 +18,19 @@ export class ExportComponent implements AfterViewInit {
     filtre: string = 'none';
     fileName: string = 'canvas';
     constructor(private exportService: ExportService) {
-        this.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
-        this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
+        this.width = window.innerWidth / WINDOW_DIVISION;
+        this.height = window.innerHeight / WINDOW_DIVISION;
     }
 
     onResize(): void {
-        this.ctx.canvas.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
-        this.ctx.canvas.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
+        this.ctx.canvas.height = window.innerHeight / WINDOW_DIVISION;
+        this.ctx.canvas.width = window.innerWidth / WINDOW_DIVISION;
         this.ctx.filter = this.filtre;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
     ngAfterViewInit(): void {
-        this.width = window.innerWidth / CONSTANTE_DIVISION_FENETRE;
-        this.height = window.innerHeight / CONSTANTE_DIVISION_FENETRE;
+        this.width = window.innerWidth / WINDOW_DIVISION;
+        this.height = window.innerHeight / WINDOW_DIVISION;
         this.ctx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.ctx.drawImage(this.exportService.drawingService.canvas, 0, 0, this.width, this.height);
     }

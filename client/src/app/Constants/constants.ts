@@ -84,7 +84,7 @@ export const TEST_MAT_SLIDER_VALUE = 12;
 export const MILS_TO_SEC = 1000;
 
 // constante pour outil sélection
-export const N_PIXELS_DEPLACEMENT = 3;
+export const PIXELS_MOVE_SELECTION = 3;
 export const LINE_DASH = 10;
 export const HANDLERS_POSITION = 5;
 export const CURRENT_SELECTION_POSITION = 4;

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
-const nombreImage = 3;
+const NUMBER_OF_IMAGES = 3;
 
 @Component({
     selector: 'app-caroussel',
@@ -34,16 +34,16 @@ export class CarousselComponent implements AfterViewInit {
             navSpeed: 600,
 
             center: true,
-            items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length,
+            items: this.carouselService.pictures.length >= NUMBER_OF_IMAGES ? NUMBER_OF_IMAGES : this.carouselService.pictures.length,
             autoWidth: false,
 
             // Cette petite partie  fait en sorte que le carousel s'adapate quand ca change de taille
             // J'ai du le mettre sinon parfois il y a des espaces qui se crée
             responsive: {
-                0: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
-                400: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
-                740: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
-                960: { items: this.carouselService.pictures.length >= nombreImage ? nombreImage : this.carouselService.pictures.length },
+                0: { items: this.carouselService.pictures.length >= NUMBER_OF_IMAGES ? NUMBER_OF_IMAGES : this.carouselService.pictures.length },
+                400: { items: this.carouselService.pictures.length >= NUMBER_OF_IMAGES ? NUMBER_OF_IMAGES : this.carouselService.pictures.length },
+                740: { items: this.carouselService.pictures.length >= NUMBER_OF_IMAGES ? NUMBER_OF_IMAGES : this.carouselService.pictures.length },
+                960: { items: this.carouselService.pictures.length >= NUMBER_OF_IMAGES ? NUMBER_OF_IMAGES : this.carouselService.pictures.length },
             },
             // I disactivate the provided nav because it doesnt work if the number of items is equal to amount of images
             nav: false,

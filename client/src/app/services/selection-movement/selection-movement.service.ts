@@ -94,16 +94,16 @@ export class SelectionMovementService {
             path.pop();
         }
         if (this.leftArrow) {
-            topLeft.x -= Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.x -= Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.upArrow) {
-            topLeft.y -= Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.y -= Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.rightArrow) {
-            topLeft.x += Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.x += Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.downArrow) {
-            topLeft.y += Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.y += Globals.PIXELS_MOVE_SELECTION;
         }
         path.push(topLeft);
     }

@@ -6,7 +6,7 @@ import {
     MAX_SIZE_RECENT_COLORS,
     PRIMARY_COLOR,
     RGB_STRING_VALUE_POSITION,
-    SECONDARY_COLOR,
+    SECONDARY_COLOR
 } from '@app/Constants/constants';
 
 @Injectable({
@@ -43,20 +43,16 @@ export class ColorService {
     }
 
     confirmColorSelection(color: string): void {
-        if (this.currentColor === PRIMARY_COLOR) {
-            if (color !== this.primaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
-                    this.saveColor(this.primaryColor);
-                }
-                this.primaryColor = color;
+        if (this.currentColor === PRIMARY_COLOR && color !== this.primaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
+                this.saveColor(this.primaryColor);
             }
-        } else if (this.currentColor === SECONDARY_COLOR) {
-            if (color !== this.secondaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
-                    this.saveColor(this.secondaryColor);
-                }
-                this.secondaryColor = color;
+            this.primaryColor = color;
+        } else if (this.currentColor === SECONDARY_COLOR && color !== this.secondaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
+                this.saveColor(this.secondaryColor);
             }
+            this.secondaryColor = color;
         }
     }
 

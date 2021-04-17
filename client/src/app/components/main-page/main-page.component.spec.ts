@@ -81,7 +81,7 @@ describe('MainPageComponent', () => {
     });
     it('should return the value of canvasExists', () => {
         localStorage.setItem('thereIsSavedDrawing', 'false');
-        const result = component.verifDessinExistant();
+        const result = component.verifyDrawingExist();
         expect(result).toEqual(false);
     });
 });

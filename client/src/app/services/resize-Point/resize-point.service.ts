@@ -48,56 +48,59 @@ export class ResizePoint {
     }
 
     mouseMoveHandlerRight(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.forceMaxWidth(event)) {
-                this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
-            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.posX = event.offsetX;
-            } else {
-                this.posX = Globals.CANVAS_SIZE_MIN;
-            }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+        if (!this.mouseDown) {
+            return;
         }
+        if (this.forceMaxWidth(event)) {
+            this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
+        } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
+            this.posX = event.offsetX;
+        } else {
+            this.posX = Globals.CANVAS_SIZE_MIN;
+        }
+        this.setResizerBottomLine();
+        this.setResizerRightLine();
+        this.setResizerBottomRight();
     }
 
     mouseMoveHandlerBottom(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.forceMaxHeight(event)) {
-                this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
-            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.posY = event.offsetY;
-            } else {
-                this.posY = Globals.CANVAS_SIZE_MIN;
-            }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+        if (!this.mouseDown) {
+            return;
         }
+        if (this.forceMaxHeight(event)) {
+            this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
+        } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
+            this.posY = event.offsetY;
+        } else {
+            this.posY = Globals.CANVAS_SIZE_MIN;
+        }
+        this.setResizerBottomLine();
+        this.setResizerRightLine();
+        this.setResizerBottomRight();
     }
 
     mouseMoveHandlerCorner(event: MouseEvent): void {
-        if (this.mouseDown) {
-            if (this.forceMaxWidth(event)) {
-                this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
-            } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
-                this.posX = event.offsetX;
-            } else {
-                this.posX = Globals.CANVAS_SIZE_MIN;
-            }
-
-            if (this.forceMaxHeight(event)) {
-                this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
-            } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
-                this.posY = event.offsetY;
-            } else {
-                this.posY = Globals.CANVAS_SIZE_MIN;
-            }
-            this.setResizerBottomLine();
-            this.setResizerRightLine();
-            this.setResizerBottomRight();
+        if (!this.mouseDown) {
+            return;
         }
+        if (this.forceMaxWidth(event)) {
+            this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
+        } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
+            this.posX = event.offsetX;
+        } else {
+            this.posX = Globals.CANVAS_SIZE_MIN;
+        }
+
+        if (this.forceMaxHeight(event)) {
+            this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
+        } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
+            this.posY = event.offsetY;
+        } else {
+            this.posY = Globals.CANVAS_SIZE_MIN;
+        }
+        this.setResizerBottomLine();
+        this.setResizerRightLine();
+        this.setResizerBottomRight();
     }
     forceMaxWidth(event: MouseEvent): boolean {
         return event.offsetX >= (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;

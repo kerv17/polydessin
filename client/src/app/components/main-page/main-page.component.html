@@ -4,7 +4,7 @@
     <div id="server-message">
         <button class="button" (click)="goToEditor()">Créer un nouveau dessin</button>
         <button class="button" (click)="openCarousel()">Ouvrir le carrousel de dessins</button>
-        <button class="continue-button" *ngIf="verifDessinExistant()" (click)="goContinue()">Continuer un dessin.</button>
+        <button class="continue-button" *ngIf="verifyDrawingExist()" (click)="goContinue()">Continuer un dessin.</button>
     </div>
 
     <div class="footer-item">

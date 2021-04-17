@@ -210,14 +210,14 @@ describe('SelectionMovementService', () => {
             { x: 100, y: 200 },
         ];
         service[leftArrow] = true;
-        let expectedresult = { x: path[0].x - Globals.N_PIXELS_DEPLACEMENT, y: topLeft.y };
+        let expectedresult = { x: path[0].x - Globals.PIXELS_MOVE_SELECTION, y: topLeft.y };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
 
         service[leftArrow] = false;
         service[upArrow] = true;
         service[rightArrow] = true;
-        expectedresult = { x: expectedresult.x + Globals.N_PIXELS_DEPLACEMENT, y: expectedresult.y - Globals.N_PIXELS_DEPLACEMENT };
+        expectedresult = { x: expectedresult.x + Globals.PIXELS_MOVE_SELECTION, y: expectedresult.y - Globals.PIXELS_MOVE_SELECTION };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
     });
@@ -234,7 +234,7 @@ describe('SelectionMovementService', () => {
         service[downArrow] = true;
         let expectedresult = {
             x: path[Globals.CURRENT_SELECTION_POSITION].x,
-            y: path[Globals.CURRENT_SELECTION_POSITION].y + Globals.N_PIXELS_DEPLACEMENT,
+            y: path[Globals.CURRENT_SELECTION_POSITION].y + Globals.PIXELS_MOVE_SELECTION,
         };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
@@ -244,7 +244,7 @@ describe('SelectionMovementService', () => {
         service[upArrow] = true;
         service[rightArrow] = true;
         service[downArrow] = false;
-        expectedresult = { x: expectedresult.x + Globals.N_PIXELS_DEPLACEMENT, y: expectedresult.y - Globals.N_PIXELS_DEPLACEMENT };
+        expectedresult = { x: expectedresult.x + Globals.PIXELS_MOVE_SELECTION, y: expectedresult.y - Globals.PIXELS_MOVE_SELECTION };
         service.moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
         expect(path.length).toEqual(expectedLength);
