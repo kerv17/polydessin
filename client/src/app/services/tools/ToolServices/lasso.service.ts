@@ -15,6 +15,9 @@ export class LassoService extends Tool {
         super(drawingService);
         this.toolMode = 'selection';
         this.clearPath();
+        addEventListener('resetLassoToolMode',()=>{
+            this.toolMode = 'selection';
+        })
     }
 
     onClick(event: MouseEvent): void {
