@@ -104,7 +104,6 @@ export class SelectionService extends Tool {
                 this.inSelection = false;
             } else {
                 this.onEscape();
-                this.onMouseDown(event);
             }
         } else {
             this.pathData.push(mousePosition);
