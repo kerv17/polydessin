@@ -70,10 +70,10 @@ export class StampService extends Tool {
 
     convertDegToRad(deg: number): number {
         // tslint:disable-next-line: no-magic-numbers
-        return (deg * Math.PI) / 180;
+        return deg * Math.PI / 180;
     }
 
     scaleImage(img: HTMLImageElement): Vec2 {
-        return { x: (maxImageSize / img.naturalWidth) * img.naturalHeight, y: maxImageSize };
+        return { x: maxImageSize / img.naturalWidth * img.naturalHeight, y: maxImageSize };
     }
 }

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HANDLERS_WIDTH, SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { CanvasTestHelper } from './canvas-test-helper';
 import { Setting, Tool } from './tool';

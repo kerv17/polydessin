@@ -14,17 +14,13 @@ import { LINE_HEIGTH_PALETTE, LINE_WIDTH_PALETTE } from '@app/Constants/constant
     Quelques modifications y ont été apportées
 */
 export class ColorPaletteComponent implements AfterViewInit, OnChanges {
-    @Input()
-    hue: string;
+    @Input() hue: string;
 
-    @Input()
-    opacity: string;
+    @Input() opacity: string;
 
-    @Output()
-    color: EventEmitter<string> = new EventEmitter(true);
+    @Output() color: EventEmitter<string> = new EventEmitter(true);
 
-    @ViewChild('canvas')
-    canvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
     ctx: CanvasRenderingContext2D;
     mousedown: boolean = false;

@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { PencilService } from './pencil-service';
+import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
@@ -266,18 +266,11 @@ describe('PencilService', () => {
         mouseEvent = { pageX: 1 + SIDEBAR_WIDTH, pageY: 1, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        expect(drawLineSpy).toHaveBeenCalledWith(service.drawingService.baseCtx, [
-            { x: -1, y: -1 },
-            { x: 1, y: 1 },
-        ]);
+        expect(drawLineSpy).toHaveBeenCalledWith(service.drawingService.baseCtx, [{ x: -1, y: -1 }, { x: 1, y: 1 }]);
     });
 
     it('doAction', () => {
-        (service as any).pathData = [
-            { x: 0, y: 0 },
-            { x: 10, y: 10 },
-            { x: 110, y: 110 },
-        ];
+        (service as any).pathData = [{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 110, y: 110 }];
         const action: DrawAction = (service as any).createAction();
         service.clearPath();
         service.doAction(action);
@@ -289,20 +282,9 @@ describe('PencilService', () => {
         service.drawingService.canvas.width = canvasSize;
         service.drawingService.canvas.height = canvasSize;
 
-        const vec: Vec2[] = [
-            { x: 1, y: 1 },
-            { x: 2, y: 2 },
-            { x: -5, y: -2 },
-            { x: 3, y: 3 },
-        ];
+        const vec: Vec2[] = [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: -5, y: -2 }, { x: 3, y: 3 }];
         const result = service.separatePathLists(vec);
-        const expectedResult = [
-            [
-                { x: 1, y: 1 },
-                { x: 2, y: 2 },
-            ],
-            [{ x: 3, y: 3 }],
-        ];
+        const expectedResult = [[{ x: 1, y: 1 }, { x: 2, y: 2 }], [{ x: 3, y: 3 }]];
         expect(result).toEqual(expectedResult);
     });
 
@@ -310,13 +292,7 @@ describe('PencilService', () => {
         const canvasSize = 10;
         service.drawingService.canvas.width = canvasSize;
         service.drawingService.canvas.height = canvasSize;
-        const points = [
-            { x: 1, y: 1 },
-            { x: 15, y: 1 },
-            { x: 1, y: 15 },
-            { x: -15, y: 1 },
-            { x: 1, y: -1 },
-        ];
+        const points = [{ x: 1, y: 1 }, { x: 15, y: 1 }, { x: 1, y: 15 }, { x: -15, y: 1 }, { x: 1, y: -1 }];
         const expectedResult = [true, false, false, false, false];
         const result: boolean[] = [];
         for (const point of points) {

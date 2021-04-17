@@ -6,7 +6,7 @@ import {
     MAX_SIZE_RECENT_COLORS,
     PRIMARY_COLOR,
     RGB_STRING_VALUE_POSITION,
-    SECONDARY_COLOR
+    SECONDARY_COLOR,
 } from '@app/Constants/constants';
 
 @Injectable({

@@ -102,7 +102,7 @@ describe('DrawingService', () => {
     it('should clear the whole canvas', () => {
         service.clearCanvas(service.baseCtx);
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
-        const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
+        const hasColoredPixels = pixelBuffer.some(color => color !== 0);
         expect(hasColoredPixels).toEqual(false);
     });
 

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
 import { CanvasAction, DrawAction, DrawingAction, UndoRedoService } from './undo-redo.service';
 // tslint:disable:no-any
 describe('UndoRedoService', () => {
@@ -29,11 +29,7 @@ describe('UndoRedoService', () => {
             width: 10,
             height: 10,
         };
-        (testTool as any).pathData = [
-            { x: 5, y: 5 },
-            { x: 50, y: 5 },
-            { x: 5, y: 50 },
-        ];
+        (testTool as any).pathData = [{ x: 5, y: 5 }, { x: 50, y: 5 }, { x: 5, y: 50 }];
         toolAction = (testTool as any).createAction();
 
         TestBed.configureTestingModule({

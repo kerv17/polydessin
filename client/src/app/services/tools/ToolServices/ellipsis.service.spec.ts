@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { EllipsisService } from './ellipsis-service';
+import { EllipsisService } from './ellipsis.service';
 
 // tslint:disable:no-any
 describe('EllipsisService', () => {
@@ -165,14 +165,8 @@ describe('EllipsisService', () => {
     });
 
     it('getRectanglePoints returns a square when shift is true', () => {
-        const tests: Vec2[] = [
-            { x: 6, y: 10 },
-            { x: -3, y: 10 },
-        ];
-        const expectedValues: Vec2[] = [
-            { x: 10, y: 10 },
-            { x: -10, y: 10 },
-        ];
+        const tests: Vec2[] = [{ x: 6, y: 10 }, { x: -3, y: 10 }];
+        const expectedValues: Vec2[] = [{ x: 10, y: 10 }, { x: -10, y: 10 }];
         const points: Vec2[] = [];
         const a: Vec2 = { x: 0, y: 0 };
 
@@ -194,11 +188,7 @@ describe('EllipsisService', () => {
     });
 
     it('Fill changes the center pixels', () => {
-        const path: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 0, y: 0 },
-            { x: 10, y: 10 },
-        ];
+        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
         const spy = spyOn(previewCtxStub, 'fill');
         (service as any).toolMode = 'fill';
         (service as any).drawEllipse(previewCtxStub, path);
@@ -206,11 +196,7 @@ describe('EllipsisService', () => {
     });
 
     it('border changers the border pixels', () => {
-        const path: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 0, y: 0 },
-            { x: 10, y: 10 },
-        ];
+        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
         const spy = spyOn(previewCtxStub, 'ellipse');
         (service as any).toolMode = 'border';
         (service as any).drawEllipse(previewCtxStub, path);
@@ -218,11 +204,7 @@ describe('EllipsisService', () => {
     });
 
     it('fillBorder changers the border pixels', () => {
-        const path: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 0, y: 0 },
-            { x: 10, y: 10 },
-        ];
+        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
 
         const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
         const fillSpy = spyOn(previewCtxStub, 'fill');

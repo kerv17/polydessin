@@ -52,12 +52,7 @@ describe('SelectionService', () => {
             y: 175,
             button: 1,
         } as MouseEvent;
-        service[pathData] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-        ];
+        service[pathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
     });
 
     it('should be created', () => {
@@ -69,12 +64,7 @@ describe('SelectionService', () => {
     });
 
     it('setPathData should set the pathData with the path passed in arguments', () => {
-        const expectedPath = [
-            { x: 50, y: 50 },
-            { x: 100, y: 50 },
-            { x: 100, y: 100 },
-            { x: 50, y: 100 },
-        ];
+        const expectedPath = [{ x: 50, y: 50 }, { x: 100, y: 50 }, { x: 100, y: 100 }, { x: 50, y: 100 }];
         service.setPathData(expectedPath);
         expect(service[pathData]).toEqual(expectedPath);
     });

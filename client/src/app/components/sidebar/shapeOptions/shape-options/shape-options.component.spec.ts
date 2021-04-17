@@ -4,7 +4,7 @@ import { MatSlider } from '@angular/material/slider';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
 import { ShapeOptionsComponent } from './shape-options.component';
 describe('ShapeOptionsComponent', () => {
     let component: ShapeOptionsComponent;

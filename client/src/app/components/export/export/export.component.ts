@@ -8,7 +8,8 @@ const WINDOW_DIVISION = 4;
     styleUrls: ['./export.component.scss'],
 })
 export class ExportComponent implements AfterViewInit {
-    @ViewChild('export', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('export', { static: false })
+    previewCanvas: ElementRef<HTMLCanvasElement>;
     png: string = 'png';
     jpeg: string = 'jpeg';
     ctx: CanvasRenderingContext2D;

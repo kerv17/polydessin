@@ -104,7 +104,7 @@ export class LineService extends Tool {
 
     private getAngle(p1: Vec2, p2: Vec2): number {
         const HALF_CIRCLE_DEG = 180;
-        const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG) / Math.PI;
+        const angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG / Math.PI;
         return angleDeg;
     }
 

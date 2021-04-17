@@ -15,20 +15,20 @@ import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit, OnChanges {
-    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('baseCanvas', { static: false })
+    baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
-    @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewCanvas', { static: false })
+    previewCanvas: ElementRef<HTMLCanvasElement>;
     // on utilise ce canvas pour afficher la grille
-    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridCanvas', { static: false })
+    gridCanvas: ElementRef<HTMLCanvasElement>;
 
-    @Input()
-    widthPrev: number;
+    @Input() widthPrev: number;
 
-    @Input()
-    heightPrev: number;
+    @Input() heightPrev: number;
 
-    @Input()
-    mouseDown: boolean;
+    @Input() mouseDown: boolean;
 
     mouseOut: boolean = false;
 

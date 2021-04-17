@@ -58,12 +58,7 @@ describe('SelectionService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         drawService.canvas.width = canvasWidth;
         drawService.canvas.height = canvasHeight;
-        service[pathData] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-        ];
+        service[pathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
         selectionBoxService.setHandlersPositions({ x: 100, y: 100 }, width, width);
         selectionResizeService.initializePath(service[pathData]);
         service[rectangleService].setPath(service[pathData]);
@@ -106,12 +101,7 @@ describe('SelectionService', () => {
     });
 
     it('selectArea should not call getImageData if the width and height are 0', () => {
-        service[pathData] = [
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 100 },
-        ];
+        service[pathData] = [{ x: 100, y: 100 }, { x: 100, y: 100 }, { x: 100, y: 100 }, { x: 100, y: 100 }];
         drawServiceSpy = spyOn(drawService.baseCtx, 'getImageData');
         service[selectArea](drawService.baseCtx);
         expect(drawServiceSpy).not.toHaveBeenCalled();
@@ -230,32 +220,17 @@ describe('SelectionService', () => {
     });
 
     it('setTopLefthandler should set the path with the new calculated topLeftHandler has the first element of the path', () => {
-        service[pathData] = [
-            { x: 200, y: 200 },
-            { x: 200, y: 100 },
-            { x: 100, y: 100 },
-            { x: 100, y: 200 },
-        ];
+        service[pathData] = [{ x: 200, y: 200 }, { x: 200, y: 100 }, { x: 100, y: 100 }, { x: 100, y: 200 }];
         service[setTopLeftHandler]();
         expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
         expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
 
-        service[pathData] = [
-            { x: 100, y: 200 },
-            { x: 200, y: 200 },
-            { x: 200, y: 100 },
-            { x: 100, y: 100 },
-        ];
+        service[pathData] = [{ x: 100, y: 200 }, { x: 200, y: 200 }, { x: 200, y: 100 }, { x: 100, y: 100 }];
         service[setTopLeftHandler]();
         expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
         expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
 
-        service[pathData] = [
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-            { x: 100, y: 100 },
-        ];
+        service[pathData] = [{ x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }];
         service[setTopLeftHandler]();
         expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
         expect(service[pathData][2]).toEqual({ x: 200, y: 200 });

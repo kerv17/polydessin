@@ -41,12 +41,7 @@ describe('SelectionMovementService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         topLeft = { x: 100, y: 100 };
         mouseEvent = Globals.mouseDownEvent;
-        pathData = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-        ];
+        pathData = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
         selectedArea = undefinedSelectedArea;
     });
 
@@ -98,13 +93,7 @@ describe('SelectionMovementService', () => {
     it('onMouseUp should pop the last element of pathData if there are already 5 values', () => {
         const deplacement = 15;
         const expectedLength = 5;
-        const path: Vec2[] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-            { x: 100, y: 100 },
-        ];
+        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }];
         service[initialMousePosition] = { x: 110, y: 110 };
         const expectedResult = { x: topLeft.x + deplacement, y: topLeft.y + deplacement };
         service.onMouseUp(mouseEvent, topLeft, path);
@@ -203,12 +192,7 @@ describe('SelectionMovementService', () => {
     });
 
     it('moveSelection should add the current topLeft position to the path based on which key is down if path length was 4', () => {
-        const path: Vec2[] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-        ];
+        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
         service[leftArrow] = true;
         let expectedresult = { x: path[0].x - Globals.PIXELS_MOVE_SELECTION, y: topLeft.y };
         service.moveSelection(path);
@@ -224,13 +208,7 @@ describe('SelectionMovementService', () => {
 
     it('moveSelection should update the current topLeft position to the path based on which key is down if path lenth was 5', () => {
         const expectedLength = 5;
-        const path: Vec2[] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-            { x: 103, y: 103 },
-        ];
+        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 103, y: 103 }];
         service[downArrow] = true;
         let expectedresult = {
             x: path[Globals.CURRENT_SELECTION_POSITION].x,

@@ -11,12 +11,12 @@ import { SelectionMovementService } from '@app/services/selection-movement/selec
 import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
-import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
-import { LineService } from '@app/services/tools/ToolServices/line-service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
-import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis.service';
+import { LineService } from '@app/services/tools/ToolServices/line.service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { DrawingComponent } from './drawing.component';

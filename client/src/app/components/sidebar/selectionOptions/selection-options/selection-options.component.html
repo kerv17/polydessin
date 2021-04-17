@@ -1,17 +1,17 @@
 <p>Manipulations de sélection :</p>
-<div class='button' *ngIf='clipboardService.getSelectionStatus()'>
+<div class="button" *ngIf="clipboardService.getSelectionStatus()">
     <div class="infobulle">Ctrl + c</div>
     <button (click)="clipboardService.copy()">Copier</button>
 </div>
-<div class='button' *ngIf='clipboardService.getClipboardStatus()'>
+<div class="button" *ngIf="clipboardService.getClipboardStatus()">
     <div class="infobulle">Ctrl + v</div>
     <button (click)="clipboardService.paste()">Coller</button>
 </div>
-<div class='button' *ngIf='clipboardService.getSelectionStatus()'>
+<div class="button" *ngIf="clipboardService.getSelectionStatus()">
     <div class="infobulle">Ctrl + x</div>
     <button (click)="clipboardService.cut()">Couper</button>
 </div>
-<div class='button' *ngIf='clipboardService.getSelectionStatus()'>
+<div class="button" *ngIf="clipboardService.getSelectionStatus()">
     <div class="infobulle">DELETE</div>
     <button (click)="clipboardService.delete()">Supprimer</button>
 </div>

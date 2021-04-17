@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { LineService } from './line-service';
+import { LineService } from './line.service';
 
 // tslint:disable:no-any
 describe('LineService', () => {
@@ -55,10 +55,7 @@ describe('LineService', () => {
             button: 1,
         } as MouseEvent;
 
-        vec = [
-            { x: 0, y: 0 },
-            { x: 150, y: 150 },
-        ];
+        vec = [{ x: 0, y: 0 }, { x: 150, y: 150 }];
 
         (service as any).pathData = vec.copyWithin(0, 0);
     });
@@ -107,11 +104,7 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 150, y: 150 },
-            { x: 0, y: 0 },
-        ];
+        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -122,11 +115,7 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent2);
         expect(distanceSpy).not.toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).not.toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 150, y: 150 },
-            { x: 0, y: 0 },
-        ];
+        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
         expect(drawLineSpy).not.toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).not.toHaveBeenCalled();
     });
@@ -146,11 +135,7 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 150, y: 150 },
-            { x: 0, y: 0 },
-        ];
+        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -165,11 +150,7 @@ describe('LineService', () => {
         (service as any).pathData.push({ x: 20, y: 20 }, { x: 20, y: 20 });
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
-        const expectedParam: Vec2[] = [
-            { x: 0, y: 0 },
-            { x: 150, y: 150 },
-            { x: 20, y: 20 },
-        ];
+        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 20, y: 20 }];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -312,11 +293,7 @@ describe('LineService', () => {
     });
 
     it('doAction', () => {
-        (service as any).pathData = [
-            { x: 0, y: 0 },
-            { x: 10, y: 10 },
-            { x: 110, y: 110 },
-        ];
+        (service as any).pathData = [{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 110, y: 110 }];
         const action: DrawAction = (service as any).createAction();
         service.clearPath();
         service.doAction(action);
