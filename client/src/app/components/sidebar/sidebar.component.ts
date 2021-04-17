@@ -64,11 +64,13 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
-        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
+        this.gridService.resetGrid();
         this.toolController.resetWidth();
+        this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
     }
     setTool(tool: string): void {
         this.toolController.setTool(tool);
@@ -130,6 +132,7 @@ export class SidebarComponent {
         this.drawing.newCanvas();
         this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
         this.showSelectionOptions();
