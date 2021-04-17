@@ -32,27 +32,29 @@ export class ContinueDrawingService {
     Quelques modifications y ont été apportées
 */
     private saveCanvas(): void {
-        sessionStorage.removeItem(this.canvasName);
-        window.setTimeout(() => {
-            sessionStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
-            sessionStorage.setItem(this.drawingSavedName, 'true');
-            sessionStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
-            sessionStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
-        });
+        localStorage.removeItem(this.canvasName);
+
+        localStorage.setItem(this.canvasName, this.drawingService.baseCtx.canvas.toDataURL('image/'));
+        localStorage.setItem(this.drawingSavedName, 'true');
+        localStorage.setItem(this.canvasHeight, this.drawingService.baseCtx.canvas.height.toString());
+        localStorage.setItem(this.canvasWidth, this.drawingService.baseCtx.canvas.width.toString());
     }
+
     private continueCanvas(): void {
-        sessionStorage.setItem(this.continueDrawing, 'true');
+        localStorage.setItem(this.continueDrawing, 'true');
     }
+
     private newCanvas(): void {
-        sessionStorage.clear();
+        localStorage.clear();
     }
+
     getSavedCanvas(): void {
         if (!this.canvasExists() || !this.canvasContinue()) {
             return;
         }
-        const dataUrl = sessionStorage.getItem(this.canvasName);
-        const canvasHeightValue = Number(sessionStorage.getItem(this.canvasHeight));
-        const canvasWidthValue = Number(sessionStorage.getItem(this.canvasWidth));
+        const dataUrl = localStorage.getItem(this.canvasName);
+        const canvasHeightValue = Number(localStorage.getItem(this.canvasHeight));
+        const canvasWidthValue = Number(localStorage.getItem(this.canvasWidth));
         if (dataUrl !== null) {
             const information: CanvasInformation = {
                 height: canvasHeightValue,
@@ -62,14 +64,17 @@ export class ContinueDrawingService {
             this.insertSavedCanvas(information);
         }
         // pour remetre la valeur a false pour assurer que creer un nouveaux dessin cree un nouveux dessin
-        sessionStorage.setItem(this.continueDrawing, 'false');
+        localStorage.setItem(this.continueDrawing, 'false');
     }
+
     canvasExists(): boolean {
-        return sessionStorage.getItem(this.drawingSavedName) === 'true';
+        return localStorage.getItem(this.drawingSavedName) === 'true';
     }
+
     canvasContinue(): boolean {
-        return sessionStorage.getItem(this.continueDrawing) === 'true';
+        return localStorage.getItem(this.continueDrawing) === 'true';
     }
+
     private insertSavedCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
@@ -77,25 +82,20 @@ export class ContinueDrawingService {
 
         const image = new Image();
         image.src = oldCanvas.imageData;
-        window.setTimeout(() => {
+        image.onload = () => {
             this.drawingService.baseCtx.drawImage(image, 0, 0);
             this.sendCanvasToUndoRedo(image, newSize);
-        }, 0);
+        };
     }
 
     private sendCanvasToUndoRedo(image: HTMLImageElement, newSize: Vec2): void {
-        const canvas = new OffscreenCanvas(newSize.x, newSize.y).getContext('2d') || new OffscreenCanvasRenderingContext2D();
-        canvas.drawImage(image, 0, 0);
-        // Wipe UndoRedo
         const drawingImage: DrawingAction = {
             type: 'Drawing',
-            drawing: canvas.getImageData(0, 0, newSize.x, newSize.y),
+            drawing: this.drawingService.baseCtx.getImageData(0, 0, newSize.x, newSize.y),
             width: newSize.x,
             height: newSize.y,
         };
 
-        const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
-        dispatchEvent(event);
         dispatchEvent(new CustomEvent('undoRedoWipe', { detail: drawingImage }));
     }
 }

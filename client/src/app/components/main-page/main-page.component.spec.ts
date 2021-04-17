@@ -80,7 +80,7 @@ describe('MainPageComponent', () => {
         expect(router.navigate).toHaveBeenCalledWith(['/editor']);
     });
     it('should return the value of canvasExists', () => {
-        sessionStorage.setItem('thereIsSavedDrawing', 'false');
+        localStorage.setItem('thereIsSavedDrawing', 'false');
         const result = component.verifDessinExistant();
         expect(result).toEqual(false);
     });
