@@ -48,6 +48,7 @@ export class ClipboardService extends Tool {
     paste(): void {
         if (this.clipboard !== undefined) {
             if (this.getSelectionStatus()) {
+                this.selection.toolMode ='';
                 this.selection.onEscape();
             }
             this.selection.selectedArea = new ImageData(this.clipboard.data, this.clipboard.width, this.clipboard.height);
