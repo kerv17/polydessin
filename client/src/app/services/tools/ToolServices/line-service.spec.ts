@@ -8,7 +8,7 @@ import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 import { LineService } from './line-service';
 
 // tslint:disable:no-any
-xdescribe('LineService', () => {
+describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
     let mouseEvent2: MouseEvent;

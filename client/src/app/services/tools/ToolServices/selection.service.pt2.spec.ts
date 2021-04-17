@@ -142,15 +142,6 @@ describe('SelectionService', () => {
         expect(drawServiceSpy).toHaveBeenCalled();
     });
 
-    it('confirmSelectionMove should dispatchEvent if toolMode is Lasso', () => {
-        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
-        selectionSpy = spyOn(global, 'dispatchEvent');
-        service[pathData].push({ x: width, y: height });
-        service.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
-        service[confirmSelectionMove]();
-        expect(selectionSpy).toHaveBeenCalled();
-    });
-
     it('drawBorder should call lineTo and setlinedash', () => {
         drawServiceSpy = spyOn(drawService.baseCtx, 'lineTo');
         service[drawBorder](drawService.baseCtx);

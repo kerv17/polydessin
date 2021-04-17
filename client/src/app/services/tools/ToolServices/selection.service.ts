@@ -183,7 +183,6 @@ export class SelectionService extends Tool {
             if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
                 dispatchEvent(new CustomEvent('changeTool', { detail:{nextTool:[Globals.LASSO_SELECTION_SHORTCUT, 'selection'],currentTool:this}  }));
                 this.toolMode = '';
-                console.log(this.toolMode);
             }
         }
     }
@@ -237,7 +236,7 @@ export class SelectionService extends Tool {
 
     private createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
         const canvas = new OffscreenCanvas(imageData.width, imageData.height);
-        canvas.getContext('2d')?.putImageData(imageData, 0, 0);
+        (canvas.getContext('2d') as OffscreenCanvasRenderingContext2D).putImageData(imageData, 0, 0);
         return canvas;
     }
 

@@ -27,7 +27,6 @@ export class LassoService extends Tool {
                 this.passToSelectionService(this.selectArea(this.pathData));
                 dispatchEvent(new CustomEvent('changeTool', { detail: {nextTool:[Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT],currentTool:this} }));
                 this.clearPath();
-                // this.selectionService.updateCanvasOnMove(this.drawingService.previewCtx);
             }
         }
     }
@@ -82,7 +81,7 @@ export class LassoService extends Tool {
         const pathList = new Path2D();
         const box = ServiceCalculator.maxSize(points);
         const canvas = new OffscreenCanvas(box[1].x - box[0].x, box[1].y - box[0].y);
-        const ctx = canvas.getContext('2d') || new OffscreenCanvasRenderingContext2D();
+        const ctx = canvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
         for (let i = 1; i < points.length; i++) {
             pathList.lineTo(points[i].x - box[0].x, points[i].y - box[0].y);
@@ -100,23 +99,15 @@ export class LassoService extends Tool {
         return imageData;
     }
 
-    passToSelectionService(ctx: ImageData): void {
+    passToSelectionService(data: ImageData): void {
         this.selectionService.inSelection = true;
-        this.selectionService.selectedArea = ctx;
+        this.selectionService.selectedArea = data;
         this.selectionService.lassoPath = this.pathData;
         const maxSize = ServiceCalculator.maxSize(this.pathData);
         const path = [];
         path.push(maxSize[0], { x: maxSize[0].x, y: maxSize[1].y }, maxSize[1], { x: maxSize[1].x, y: maxSize[0].y });
         this.selectionService.setPathData(path);
+        
         this.selectionService.setTopLeftHandler();
-    }
-
-    clearZone(): void {
-        this.drawingService.baseCtx.fillStyle = 'white';
-        const path = new Path2D();
-        path.moveTo(this.pathData[0].x, this.pathData[0].y);
-        for (let i = 1; i < this.pathData.length; i++) {
-            path.lineTo(this.pathData[i].x, this.pathData[i].y);
-        }
     }
 }
