@@ -71,10 +71,10 @@ describe('Service: ContinueDrawing', () => {
 
     it('canvasContinue returns true if continueDrawing is true', () => {
         localStorage.setItem('userWantsContinue', 'false');
-        let answer = service.canvasContinue();
+        let answer = (service as any).canvasContinue();
         expect(answer).toEqual(false);
         localStorage.setItem('userWantsContinue', 'true');
-        answer = service.canvasContinue();
+        answer = (service as any).canvasContinue();
         expect(answer).toEqual(true);
     });
 
@@ -98,7 +98,7 @@ describe('Service: ContinueDrawing', () => {
 
     it('getSavedCanvas should do nothing if continue is false', () => {
         const canvasExistSpy = spyOn(service, 'canvasExists').and.returnValue(true);
-        const continueSpy = spyOn(service, 'canvasContinue').and.returnValue(false);
+        const continueSpy = spyOn(service as any, 'canvasContinue').and.returnValue(false);
         const storageGetSpy = spyOn(localStorage, 'getItem');
         service.getSavedCanvas();
         expect(canvasExistSpy).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('Service: ContinueDrawing', () => {
         localStorage.setItem('thereIsSavedDrawing', 'true');
         localStorage.setItem('userWantsContinue', 'true');
         service.getSavedCanvas();
-        const answer = service.canvasContinue();
+        const answer = (service as any).canvasContinue();
         expect(answer).toEqual(false);
     });
 

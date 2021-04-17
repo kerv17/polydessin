@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { DEFAULT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '@app/Constants/constants';
 import { ColorService } from './color.service';
 
+// tslint:disable:no-any
 describe('ColorService', () => {
     let service: ColorService;
     let saveColorSpy: jasmine.Spy;
@@ -214,6 +215,6 @@ describe('ColorService', () => {
     it('rgbaToRgb should return the same color without the opacity value', () => {
         const color = 'rgba(23,255,167,1)';
         const expectedResult = 'rgb(23,255,167)';
-        expect(service.rgbaToRgb(color)).toEqual(expectedResult);
+        expect((service as any).rgbaToRgb(color)).toEqual(expectedResult);
     });
 });

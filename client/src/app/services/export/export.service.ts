@@ -17,7 +17,7 @@ export class ExportService {
     }
     showModalExport: boolean = false;
 
-    setExportCanvas(filter: string): void {
+    private setExportCanvas(filter: string): void {
         this.canvas.height = this.drawingService.canvas.height;
         this.canvas.width = this.drawingService.canvas.width;
         this.context.filter = filter;
@@ -52,7 +52,7 @@ export class ExportService {
         this.anchor.click();
     }
 
-    createExportImage(type: string, name: string, filter: string): boolean {
+    private createExportImage(type: string, name: string, filter: string): boolean {
         if (type != undefined && this.checkifNotEmpty(name)) {
             if (confirm('Êtes-vous sûr de vouloir exporter le dessin')) {
                 this.setExportCanvas(filter);
@@ -63,7 +63,7 @@ export class ExportService {
         }
         return false;
     }
-    checkifNotEmpty(name: string): boolean {
+    private checkifNotEmpty(name: string): boolean {
         if (name === '') return false;
 
         for (const char of name) {

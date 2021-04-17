@@ -55,7 +55,10 @@ describe('LineService', () => {
             button: 1,
         } as MouseEvent;
 
-        vec = [{ x: 0, y: 0 }, { x: 150, y: 150 }];
+        vec = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+        ];
 
         (service as any).pathData = vec.copyWithin(0, 0);
     });
@@ -104,7 +107,11 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
+        const expectedParam: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+            { x: 0, y: 0 },
+        ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -115,7 +122,11 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent2);
         expect(distanceSpy).not.toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).not.toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
+        const expectedParam: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+            { x: 0, y: 0 },
+        ];
         expect(drawLineSpy).not.toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).not.toHaveBeenCalled();
     });
@@ -135,7 +146,11 @@ describe('LineService', () => {
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
         expect((service as any).pathData[length - 1]).toEqual((service as any).pathData[0]);
-        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 0, y: 0 }];
+        const expectedParam: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+            { x: 0, y: 0 },
+        ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -150,7 +165,11 @@ describe('LineService', () => {
         (service as any).pathData.push({ x: 20, y: 20 }, { x: 20, y: 20 });
         service.ondbClick(mouseEvent);
         expect(distanceSpy).toHaveBeenCalled();
-        const expectedParam: Vec2[] = [{ x: 0, y: 0 }, { x: 150, y: 150 }, { x: 20, y: 20 }];
+        const expectedParam: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 150, y: 150 },
+            { x: 20, y: 20 },
+        ];
         expect(drawLineSpy).toHaveBeenCalledWith(baseCtxStub, expectedParam);
         expect(dispatchSpy).toHaveBeenCalled();
     });
@@ -272,13 +291,13 @@ describe('LineService', () => {
     it('getPointToPush should return mouseposition if pathData is empty', () => {
         const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
         (service as any).clearPath();
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
     });
 
     it('getPointToPush should return mouseposition if shift is not pressed', () => {
         const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
     });
     it('getPointToPush should return mouseposition if shift is not pressed', () => {
@@ -287,13 +306,17 @@ describe('LineService', () => {
         });
         const expectedResult: Vec2 = { x: 134, y: 125 };
         service.shift = true;
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
         expect(spy).toHaveBeenCalled();
     });
 
     it('doAction', () => {
-        (service as any).pathData = [{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 110, y: 110 }];
+        (service as any).pathData = [
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+            { x: 110, y: 110 },
+        ];
         const action: DrawAction = (service as any).createAction();
         service.clearPath();
         service.doAction(action);

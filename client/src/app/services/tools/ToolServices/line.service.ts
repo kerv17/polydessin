@@ -109,19 +109,12 @@ export class LineService extends Tool {
     private getShiftAngle(p1: Vec2, p2: Vec2): Vec2 {
         const solution: Vec2 = { x: p1.x, y: p1.y };
 
-        const NOT_IN_INDEX = -1;
-
-        // tslint:disable: no-magic-numbers
-        const X_QUADRANTS: number[] = [0, 7];
-        const Y_QUADRANTS: number[] = [3, 4];
-        // tslint:enable: no-magic-numbers
-        const HALF_QUADRANTS = 22.5;
         const angle = this.getAngle(p1, p2);
-        const octant = Math.floor(Math.abs(angle / HALF_QUADRANTS));
+        const octant = Math.floor(Math.abs(angle / Globals.HALF_QUADRANTS));
 
-        if (X_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+        if (Globals.X_QUADRANTS.indexOf(octant) !== Globals.NOT_IN_INDEX) {
             solution.x = p2.x;
-        } else if (Y_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
+        } else if (Globals.Y_QUADRANTS.indexOf(octant) !== Globals.NOT_IN_INDEX) {
             solution.y = p2.y;
         } else {
             solution.x = p2.x;
@@ -143,7 +136,7 @@ export class LineService extends Tool {
         this.onMouseMove(this.lastMoveEvent);
     }
 
-    getPointToPush(event: MouseEvent): Vec2 {
+    private getPointToPush(event: MouseEvent): Vec2 {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.pathData.length > 0) {
             const lastPointInPath = this.pathData[this.pathData.length - 1];

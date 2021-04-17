@@ -114,28 +114,28 @@ describe('EllipsisService', () => {
         // Bottom right
         {
             const b: Vec2 = { x: 50, y: 50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Bottom left
         {
             const b: Vec2 = { x: -50, y: 50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Top right
         {
             const b: Vec2 = { x: 50, y: -50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Top left
         {
             const b: Vec2 = { x: -50, y: -50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
@@ -165,8 +165,14 @@ describe('EllipsisService', () => {
     });
 
     it('getRectanglePoints returns a square when shift is true', () => {
-        const tests: Vec2[] = [{ x: 6, y: 10 }, { x: -3, y: 10 }];
-        const expectedValues: Vec2[] = [{ x: 10, y: 10 }, { x: -10, y: 10 }];
+        const tests: Vec2[] = [
+            { x: 6, y: 10 },
+            { x: -3, y: 10 },
+        ];
+        const expectedValues: Vec2[] = [
+            { x: 10, y: 10 },
+            { x: -10, y: 10 },
+        ];
         const points: Vec2[] = [];
         const a: Vec2 = { x: 0, y: 0 };
 
@@ -188,7 +194,11 @@ describe('EllipsisService', () => {
     });
 
     it('Fill changes the center pixels', () => {
-        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
         const spy = spyOn(previewCtxStub, 'fill');
         (service as any).toolMode = 'fill';
         (service as any).drawEllipse(previewCtxStub, path);
@@ -196,7 +206,11 @@ describe('EllipsisService', () => {
     });
 
     it('border changers the border pixels', () => {
-        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
         const spy = spyOn(previewCtxStub, 'ellipse');
         (service as any).toolMode = 'border';
         (service as any).drawEllipse(previewCtxStub, path);
@@ -204,7 +218,11 @@ describe('EllipsisService', () => {
     });
 
     it('fillBorder changers the border pixels', () => {
-        const path: Vec2[] = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 10, y: 10 }];
+        const path: Vec2[] = [
+            { x: 0, y: 0 },
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+        ];
 
         const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
         const fillSpy = spyOn(previewCtxStub, 'fill');

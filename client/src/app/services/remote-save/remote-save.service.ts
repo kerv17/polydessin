@@ -42,7 +42,7 @@ export class RemoteSaveService {
             );
         }
     }
-    validateMetadata(information: CanvasInformation): boolean {
+    private validateMetadata(information: CanvasInformation): boolean {
         return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
     }
 

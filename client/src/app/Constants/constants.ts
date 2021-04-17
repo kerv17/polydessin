@@ -120,3 +120,11 @@ export const GRID_OPACITY_INIT_VALUE = 40;
 export const GRID_VARIATION_VALUE = 5;
 export const GRID_MAX_BOX_VALUE = 100;
 export const GRID_MIN_BOX_VALUE = 10;
+
+// Constante pour Ligne
+export const NOT_IN_INDEX = -1;
+// tslint:disable: no-magic-numbers
+export const X_QUADRANTS: number[] = [0, 7];
+export const Y_QUADRANTS: number[] = [3, 4];
+// tslint:enable: no-magic-numbers
+export const HALF_QUADRANTS = 22.5;

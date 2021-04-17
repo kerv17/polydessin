@@ -75,7 +75,7 @@ export class ColorService {
         this.modalVisibility = false;
     }
 
-    rgbaToRgb(color: string): string {
+    private rgbaToRgb(color: string): string {
         const values = this.readRGBValues(color);
         return 'rgb(' + values[0] + ',' + values[1] + ',' + values[2] + ')';
     }

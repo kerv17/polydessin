@@ -41,7 +41,12 @@ describe('SelectionMovementService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         topLeft = { x: 100, y: 100 };
         mouseEvent = Globals.mouseDownEvent;
-        pathData = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
+        pathData = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+        ];
         selectedArea = undefinedSelectedArea;
     });
 
@@ -93,7 +98,13 @@ describe('SelectionMovementService', () => {
     it('onMouseUp should pop the last element of pathData if there are already 5 values', () => {
         const deplacement = 15;
         const expectedLength = 5;
-        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 100, y: 100 }];
+        const path: Vec2[] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+            { x: 100, y: 100 },
+        ];
         service[initialMousePosition] = { x: 110, y: 110 };
         const expectedResult = { x: topLeft.x + deplacement, y: topLeft.y + deplacement };
         service.onMouseUp(mouseEvent, topLeft, path);
@@ -192,29 +203,40 @@ describe('SelectionMovementService', () => {
     });
 
     it('moveSelection should add the current topLeft position to the path based on which key is down if path length was 4', () => {
-        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
+        const path: Vec2[] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+        ];
         service[leftArrow] = true;
         let expectedresult = { x: path[0].x - Globals.PIXELS_MOVE_SELECTION, y: topLeft.y };
-        service.moveSelection(path);
+        (service as any).moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
 
         service[leftArrow] = false;
         service[upArrow] = true;
         service[rightArrow] = true;
         expectedresult = { x: expectedresult.x + Globals.PIXELS_MOVE_SELECTION, y: expectedresult.y - Globals.PIXELS_MOVE_SELECTION };
-        service.moveSelection(path);
+        (service as any).moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
     });
 
     it('moveSelection should update the current topLeft position to the path based on which key is down if path lenth was 5', () => {
         const expectedLength = 5;
-        const path: Vec2[] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }, { x: 103, y: 103 }];
+        const path: Vec2[] = [
+            { x: 100, y: 100 },
+            { x: 200, y: 100 },
+            { x: 200, y: 200 },
+            { x: 100, y: 200 },
+            { x: 103, y: 103 },
+        ];
         service[downArrow] = true;
         let expectedresult = {
             x: path[Globals.CURRENT_SELECTION_POSITION].x,
             y: path[Globals.CURRENT_SELECTION_POSITION].y + Globals.PIXELS_MOVE_SELECTION,
         };
-        service.moveSelection(path);
+        (service as any).moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
         expect(path.length).toEqual(expectedLength);
 
@@ -223,7 +245,7 @@ describe('SelectionMovementService', () => {
         service[rightArrow] = true;
         service[downArrow] = false;
         expectedresult = { x: expectedresult.x + Globals.PIXELS_MOVE_SELECTION, y: expectedresult.y - Globals.PIXELS_MOVE_SELECTION };
-        service.moveSelection(path);
+        (service as any).moveSelection(path);
         expect(path[Globals.CURRENT_SELECTION_POSITION]).toEqual(expectedresult);
         expect(path.length).toEqual(expectedLength);
     });
@@ -282,7 +304,7 @@ describe('SelectionMovementService', () => {
     });
 
     it('drawSelection should call moveSelection, clearCanvas, updateCanvasOnMove and putImageData if ImageData is not undefined', () => {
-        const moveSpy = spyOn(service, 'moveSelection');
+        const moveSpy = spyOn(service as any, 'moveSelection');
         selectionSpy = spyOn(service, 'updateCanvasOnMove');
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
         pathData.push({ x: width, y: height });
@@ -294,7 +316,7 @@ describe('SelectionMovementService', () => {
     });
 
     it('drawSelection should not call moveSelection, clearCanvas, updateCanvasOnMove and putImageData if ImageData is undefined', () => {
-        const selectionMovementSpy = spyOn(service, 'moveSelection');
+        const selectionMovementSpy = spyOn(service as any, 'moveSelection');
         selectionSpy = spyOn(service, 'updateCanvasOnMove');
         drawServiceSpy = spyOn(drawService, 'clearCanvas');
         pathData.push({ x: width, y: height });

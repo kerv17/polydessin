@@ -5,6 +5,7 @@ import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { DrawingService } from './drawing.service';
 
+// tslint:disable:no-any
 describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
@@ -147,7 +148,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -170,7 +171,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -193,7 +194,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm');
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(false);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -215,10 +216,10 @@ describe('DrawingService', () => {
     });
 
     it('should load the saved canvas', () => {
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(false);
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
 
-        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const reloadSpy = spyOn(service as any, 'reloadOldCanvas');
         const dispatchSpy = spyOn(window, 'dispatchEvent');
         service.loadOldCanvas({} as CanvasInformation);
         expect(reloadSpy).toHaveBeenCalled();
@@ -228,9 +229,9 @@ describe('DrawingService', () => {
     });
 
     it('shouldnt load the saved canvas if the user doesnt confirm', () => {
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
-        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const reloadSpy = spyOn(service as any, 'reloadOldCanvas');
         const dispatchSpy = spyOn(window, 'dispatchEvent');
         service.loadOldCanvas({} as CanvasInformation);
         expect(reloadSpy).not.toHaveBeenCalled();
@@ -242,13 +243,13 @@ describe('DrawingService', () => {
     it('should charge the image into the canvas', () => {
         const setCanvasSpy = spyOn(service, 'setCanvassSize');
         const ctxSpy = spyOn(service.baseCtx, 'drawImage');
-        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        (service as any).reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
         expect(setCanvasSpy).toHaveBeenCalled();
         expect(ctxSpy).toHaveBeenCalled();
     });
     it('reloadOldCanvas should dispatch saveState Event', () => {
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        (service as any).reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
         expect(spyDispatch).toHaveBeenCalled();
     });
 
@@ -256,14 +257,14 @@ describe('DrawingService', () => {
         service.baseCtx.fillStyle = 'black';
         service.baseCtx.fillRect(0, 0, 2, 2);
         const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
-        expect(service.canvasNotEmpty(image)).toBeTrue();
+        expect((service as any).canvasNotEmpty(image)).toBeTrue();
     });
 
     it('should return false if the canvas is empty', () => {
         service.baseCtx.fillStyle = 'white';
         service.baseCtx.fillRect(0, 0, service.canvas.width, service.canvas.height);
         const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
-        expect(service.canvasNotEmpty(image)).not.toBeTrue();
+        expect((service as any).canvasNotEmpty(image)).not.toBeTrue();
     });
 
     it('should reset the Canvas', () => {

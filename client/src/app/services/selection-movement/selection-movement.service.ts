@@ -87,7 +87,7 @@ export class SelectionMovementService {
         }
     }
 
-    moveSelection(path: Vec2[]): void {
+    private moveSelection(path: Vec2[]): void {
         let topLeft = { x: path[0].x, y: path[0].y };
         if (path.length > Globals.CURRENT_SELECTION_POSITION) {
             topLeft = { x: path[Globals.CURRENT_SELECTION_POSITION].x, y: path[Globals.CURRENT_SELECTION_POSITION].y };
