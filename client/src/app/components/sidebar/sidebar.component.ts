@@ -107,6 +107,7 @@ export class SidebarComponent {
     annulerSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
+            dispatchEvent(new CustomEvent('resetLassoToolMode'));
         }
     }
     openTool(showWidth: boolean, toolname: string): void {

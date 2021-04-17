@@ -153,5 +153,6 @@ export class ToolControllerService {
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
+        this.lassoService.toolMode = 'selection';
     }
 }
