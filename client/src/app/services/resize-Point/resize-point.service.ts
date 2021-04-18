@@ -17,6 +17,7 @@ export class ResizePoint {
     resetControlPoints(canvasWidth: number, canvasHeight: number): void {
         this.posX = canvasWidth;
         this.posY = canvasHeight;
+
         this.setResizerBottomLine();
         this.setResizerRightLine();
         this.setResizerBottomRight();
@@ -26,7 +27,7 @@ export class ResizePoint {
         this.resizerRightLine = {
             ['cursor']: 'col-resize',
             'margin-left': String(this.posX - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
-            'margin-top': String(this.posY / 2) + 'px',
+            'margin-top': String(Math.floor(this.posY / 2)) + 'px',
         };
     }
 
@@ -41,7 +42,7 @@ export class ResizePoint {
     setResizerBottomLine(): void {
         this.resizerBottomLine = {
             ['cursor']: 'row-resize',
-            'margin-left': String(this.posX / 2) + 'px',
+            'margin-left': String(Math.floor(this.posX / 2)) + 'px',
             'margin-top': String(this.posY - Globals.CORRECTION_CONTROL_MARGIN) + 'px',
         };
     }
@@ -49,7 +50,7 @@ export class ResizePoint {
     mouseMoveHandlerRight(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxWidth(event)) {
-                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+                this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
@@ -64,7 +65,7 @@ export class ResizePoint {
     mouseMoveHandlerBottom(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxHeight(event)) {
-                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+                this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {
@@ -79,7 +80,7 @@ export class ResizePoint {
     mouseMoveHandlerCorner(event: MouseEvent): void {
         if (this.mouseDown) {
             if (this.forceMaxWidth(event)) {
-                this.posX = (window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER;
+                this.posX = Math.floor((window.innerWidth - Globals.SIDEBAR_WIDTH) * Globals.CANVAS_MAX_VW_MULTIPLIER);
             } else if (event.offsetX >= Globals.CANVAS_SIZE_MIN) {
                 this.posX = event.offsetX;
             } else {
@@ -87,7 +88,7 @@ export class ResizePoint {
             }
 
             if (this.forceMaxHeight(event)) {
-                this.posY = window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER;
+                this.posY = Math.floor(window.innerHeight * Globals.CANVAS_MAX_VH_MULTIPLIER);
             } else if (event.offsetY >= Globals.CANVAS_SIZE_MIN) {
                 this.posY = event.offsetY;
             } else {

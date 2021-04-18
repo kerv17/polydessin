@@ -136,6 +136,8 @@ export class SidebarComponent {
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
         this.showSelectionOptions();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
     showGrid(): void {
         this.gridService.toggleGrid();

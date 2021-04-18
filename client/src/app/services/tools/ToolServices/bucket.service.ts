@@ -29,12 +29,16 @@ export class BucketService extends Tool {
         this.changeColorEverywhere(event);
         this.dispatchAction(this.createAction());
         this.clearPath();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
     onClick(event: MouseEvent): void {
         this.initialiseColor();
         this.localFill(event);
         this.dispatchAction(this.createAction());
         this.clearPath();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     private initialiseColor(): void {

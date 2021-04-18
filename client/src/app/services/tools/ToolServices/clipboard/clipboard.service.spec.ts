@@ -196,4 +196,11 @@ describe('ClipboardService', () => {
         service[fakePath]();
         expect(selectionService.getPathData()).not.toEqual([]);
     });
+
+    it('delete should dispatch saveState Event', () => {
+        selectionService.inSelection = true;
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.delete();
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

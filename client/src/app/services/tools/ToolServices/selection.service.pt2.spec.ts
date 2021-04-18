@@ -297,4 +297,13 @@ describe('SelectionService', () => {
         expect(service[pathData][0]).toEqual({ x: 100, y: 100 });
         expect(service[pathData][2]).toEqual({ x: 200, y: 200 });
     });
+
+    it('onEscape should dispatch saveState Event', () => {
+        service.inSelection = true;
+        service[pathData].push({ x: width, y: height });
+        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onEscape();
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

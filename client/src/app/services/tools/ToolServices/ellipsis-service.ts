@@ -54,6 +54,8 @@ export class EllipsisService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        const eventContinue: CustomEvent = new CustomEvent('saveState');
+        dispatchEvent(eventContinue);
     }
 
     onMouseMove(event: MouseEvent): void {

@@ -89,6 +89,8 @@ export class ClipboardService extends Tool {
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
             this.selection.inSelection = false;
+            const eventContinue: CustomEvent = new CustomEvent('saveState');
+            dispatchEvent(eventContinue);
         }
     }
 

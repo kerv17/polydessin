@@ -117,6 +117,11 @@ describe('DrawingComponent', () => {
         expect((component as any).controller.currentTool.color).toEqual((component as any).colorService.primaryColor);
         expect((component as any).controller.currentTool.color2).toEqual((component as any).colorService.secondaryColor);
     });
+    it(' ngAfterViewInit should call getSavedCanvas', () => {
+        const getSpy = spyOn((component as any).contiueService, 'getSavedCanvas');
+        component.ngAfterViewInit();
+        expect(getSpy).toHaveBeenCalled();
+    });
 
     it(' ngOnChanges does not change the previous canva dimension if view is not initialized and not in mouse down', () => {
         fillNewSpaceSpy = spyOn(drawingStub, 'fillNewSpace');
@@ -245,7 +250,7 @@ describe('DrawingComponent', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        const nymberOfTimesDispatchCalled = 3;
+        const numberOfTimesDispatchCalled = 1;
 
         (component as any).viewInitialized = true;
         (component as any).mouseDown = false;
@@ -253,17 +258,19 @@ describe('DrawingComponent', () => {
         (component as any).allowUndoCall = false;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(1);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
 
+        const numberOfTimesDispatchCalledFull = 3;
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalledFull);
     });
-    it('ngOnChanges should dispatch a grid Event only after view is initialised', () => {
+    it('ngOnChanges should dispatch a grid and saveState Event only after view is initialised', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        const numberOfTimesDispatchCalled = 2;
 
         (component as any).viewInitialized = false;
         (component as any).mouseDown = false;
@@ -273,7 +280,7 @@ describe('DrawingComponent', () => {
 
         (component as any).viewInitialized = true;
         component.ngOnChanges({} as SimpleChanges);
-        expect(spyDispatch).toHaveBeenCalled();
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
     });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
@@ -329,10 +336,14 @@ describe('DrawingComponent', () => {
         expect(loadCanvasSpy).toHaveBeenCalled();
         expect((component as any).carousel.loadImage).not.toBeTrue();
     });
-
     it('calling allowUndoRedoCall should change the allowUndoCall variable', () => {
         const event: CustomEvent = new CustomEvent('allowUndoCall', { detail: false });
         dispatchEvent(event);
         expect((component as any).allowUndoCall).not.toBeTrue();
+    });
+    it('calling beforeunload should change the continueDrawing variable', () => {
+        const event: CustomEvent = new CustomEvent('beforeunload', { detail: false });
+        dispatchEvent(event);
+        expect((component as any).contiueService.canvasContinue()).toBeTrue();
     });
 });

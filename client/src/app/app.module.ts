@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
@@ -29,6 +31,7 @@ import { SprayAmountSliderComponent } from './components/spray-amount-slider/spr
 import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { ResizePoint } from './services/resize-Point/resize-point.service';
 
 @NgModule({
     declarations: [
@@ -56,7 +59,7 @@ import { ColorService } from './services/color/color.service';
         BucketToleranceComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
-    providers: [ColorService],
+    providers: [ColorService, ContinueDrawingService, DrawingService, ResizePoint],
     bootstrap: [AppComponent],
     exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })

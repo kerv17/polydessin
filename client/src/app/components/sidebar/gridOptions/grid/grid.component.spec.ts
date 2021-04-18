@@ -2,6 +2,7 @@
 /* tslint:disable:no-any*/
 import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatSlider, MatSliderModule } from '@angular/material/slider';
 import { MatSliderChange } from '@angular/material/slider/slider';
 import * as Globals from '@app/Constants/constants';
@@ -37,7 +38,7 @@ describe('GridComponent', () => {
         serviceStub = new GridServiceStub();
 
         TestBed.configureTestingModule({
-            imports: [MatSliderModule],
+            imports: [FormsModule, MatSliderModule],
             declarations: [GridComponent, MatSlider],
             providers: [GridComponent, { provide: GridService, useValue: serviceStub as GridServiceStub }],
         }).compileComponents();

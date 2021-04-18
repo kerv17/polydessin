@@ -185,6 +185,8 @@ export class SelectionService extends Tool {
                 );
                 this.toolMode = '';
             }
+            const eventContinue: CustomEvent = new CustomEvent('saveState');
+            dispatchEvent(eventContinue);
         }
     }
 

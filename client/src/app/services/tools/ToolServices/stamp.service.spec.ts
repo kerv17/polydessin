@@ -138,4 +138,10 @@ describe('StampService', () => {
         console.log(image.naturalWidth, image.naturalHeight);
         expect(service.scaleImage(image)).toEqual({ x: 176.5625, y: 250 });
     });
+
+    it('onClick should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        service.onClick(mouseEvent);
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });

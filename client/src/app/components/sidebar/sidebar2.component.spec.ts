@@ -120,4 +120,9 @@ describe('SidebarComponent', () => {
         component.undoAction();
         expect(undoSpy).not.toHaveBeenCalled();
     });
+    it('newCanvas should dispatch saveState Event', () => {
+        const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
+        component.newCanvas();
+        expect(spyDispatch).toHaveBeenCalled();
+    });
 });
