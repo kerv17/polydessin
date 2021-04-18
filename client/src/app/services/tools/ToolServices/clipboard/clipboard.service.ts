@@ -84,6 +84,7 @@ export class ClipboardService extends Tool {
             if (this.selection.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
                 dispatchEvent(new CustomEvent('resetLassoToolMode'));
                 this.pathData = this.selection.lassoPath;
+                this.selection.toolMode = '';
             }
             this.dispatchAction(this.createAction());
             this.selection.clearPath();

@@ -155,8 +155,10 @@ export class SelectionMovementService {
             this.moveSelection(pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateCanvasOnMove(this.drawingService.previewCtx, pathData, lassoPath, toolMode);
-            this.drawingService.previewCtx.putImageData(
-                selectedArea,
+            const canvas: OffscreenCanvas = new OffscreenCanvas(selectedArea.width, selectedArea.height);
+            (canvas.getContext('2d') as OffscreenCanvasRenderingContext2D).putImageData(selectedArea, 0, 0);
+            this.drawingService.previewCtx.drawImage(
+                canvas,
                 pathData[Globals.CURRENT_SELECTION_POSITION].x,
                 pathData[Globals.CURRENT_SELECTION_POSITION].y,
             );

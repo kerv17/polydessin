@@ -35,6 +35,7 @@ export class LassoService extends Tool {
                         detail: { nextTool: [Globals.RECTANGLE_SELECTION_SHORTCUT, Globals.LASSO_SELECTION_SHORTCUT], currentTool: this },
                     }),
                 );
+                this.selectionService.drawBorder(this.drawingService.previewCtx, this.pathData);
                 this.clearPath();
             }
         }

@@ -128,7 +128,7 @@ export class SelectionService extends Tool {
                 );
             } else {
                 this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
-                this.drawBorder(this.drawingService.previewCtx);
+                this.drawBorder(this.drawingService.previewCtx, this.pathData);
                 this.selectArea(this.drawingService.baseCtx);
             }
         }
@@ -251,11 +251,11 @@ export class SelectionService extends Tool {
         );
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D): void {
+    drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (const point of this.pathData) {
+        for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -264,7 +264,7 @@ export class SelectionService extends Tool {
         ctx.strokeStyle = 'black';
         ctx.beginPath();
         ctx.setLineDash([Globals.LINE_DASH, Globals.LINE_DASH]);
-        for (const point of this.pathData) {
+        for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
