@@ -5,6 +5,7 @@ import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -24,6 +25,7 @@ describe('ToolControllerService', () => {
     let selectionServiceSpy: jasmine.SpyObj<SelectionService>;
     let stampServiceSpy: jasmine.SpyObj<StampService>;
     let bucketServiceSpy: jasmine.SpyObj<BucketService>;
+    let lassoServiceSpy: jasmine.SpyObj<LassoService>;
     beforeEach(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['clearPreviewCtx'], { color: 'test' });
         ellipsisServiceSpy = jasmine.createSpyObj('EllipsisService', ['clearPreviewCtx'], { color: 'test' });
@@ -34,6 +36,7 @@ describe('ToolControllerService', () => {
         stampServiceSpy = jasmine.createSpyObj('StampService', ['clearPreviewCtx'], { color: 'test' });
         drawingService = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         bucketServiceSpy = jasmine.createSpyObj('BucketService', ['clearPreviewCtx'], { color: 'test' });
+        lassoServiceSpy = jasmine.createSpyObj('LassoService', ['clearPreviewCtx'], { color: 'test' });
         TestBed.configureTestingModule({
             providers: [
                 { provide: PencilService, useValue: pencilServiceSpy },
@@ -44,6 +47,7 @@ describe('ToolControllerService', () => {
                 { provide: SelectionService, useValue: selectionServiceSpy },
                 { provide: StampService, useValue: stampServiceSpy },
                 { provide: DrawingService, useValue: drawingService },
+                { provide: LassoService, useValue: lassoServiceSpy },
                 { provide: BucketService, useValue: bucketServiceSpy },
             ],
         });
@@ -262,5 +266,23 @@ describe('ToolControllerService', () => {
 
         expect(tester).toBeTrue();
         expect(service.getTool('fake tool name')).toEqual((service as any).pencilService);
+    });
+
+    it('changeTool event', () => {
+        dispatchEvent(
+            new CustomEvent('changeTool', {
+                detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: (service as any).lassoService },
+            }),
+        );
+        expect(service.currentTool).not.toEqual((service as any).lassoService);
+        expect(service.currentTool.toolMode).not.toEqual('selection');
+
+        dispatchEvent(
+            new CustomEvent('changeTool', {
+                detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: service.currentTool },
+            }),
+        );
+        expect(service.currentTool).toEqual((service as any).lassoService);
+        expect(service.currentTool.toolMode).toEqual('selection');
     });
 });

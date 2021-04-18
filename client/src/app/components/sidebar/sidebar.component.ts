@@ -53,6 +53,7 @@ export class SidebarComponent {
         this.initFunctionMap();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.annulerSelection();
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
@@ -63,11 +64,13 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
-        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
+        this.gridService.resetGrid();
         this.toolController.resetWidth();
+        this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
     }
     setTool(tool: string): void {
         this.toolController.setTool(tool);
@@ -106,6 +109,7 @@ export class SidebarComponent {
     annulerSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
+            dispatchEvent(new CustomEvent('resetLassoToolMode'));
         }
     }
     openTool(showWidth: boolean, toolname: string): void {
@@ -128,8 +132,10 @@ export class SidebarComponent {
         this.drawing.newCanvas();
         this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.showSelectionOptions();
         const eventContinue: CustomEvent = new CustomEvent('saveState');
         dispatchEvent(eventContinue);
     }

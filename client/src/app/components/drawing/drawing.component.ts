@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ColorService } from '@app/services/color/color.service';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
@@ -48,6 +49,7 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         private controller: ToolControllerService,
         private carousel: CarouselService,
         public selectionBoxLayout: SelectionBoxService,
+        private continueService: ContinueDrawingService,
     ) {
         this.canvasSize = this.drawingService.initializeCanvas();
         addEventListener('allowUndoCall', (event: CustomEvent) => {
@@ -63,6 +65,9 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.previewCtx = this.previewCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gridCtx = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+
+        this.drawingService.baseCanvas = this.baseCanvas;
+
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y);
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
@@ -73,7 +78,6 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.controller.currentTool.color = this.colorService.primaryColor;
         this.controller.currentTool.color2 = this.colorService.secondaryColor;
-        this.viewInitialized = true;
         const action: DrawingAction = {
             type: 'Drawing',
             drawing: this.baseCtx.getImageData(0, 0, this.drawingService.canvasSize.x, this.drawingService.canvasSize.y),
@@ -81,9 +85,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
             height: this.drawingService.canvasSize.y,
         };
 
+        this.continueService.getSavedCanvas();
         const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
         dispatchEvent(event);
         this.loadCarouselCanvas();
+        this.viewInitialized = true;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -99,16 +105,18 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                 if (this.controller.selectionService.inSelection) {
                     this.controller.selectionService.onEscape();
                 }
+                const newHeight = Math.floor(this.heightPrev);
+                const newWidth = Math.floor(this.widthPrev);
                 this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
-                this.newCanvasSize = { x: this.widthPrev, y: this.heightPrev };
-                const dessin = this.baseCtx.getImageData(0, 0, this.widthPrev, this.heightPrev);
+                this.newCanvasSize = { x: newWidth, y: newHeight };
+                const dessin = this.baseCtx.getImageData(0, 0, newWidth, newHeight);
 
-                this.baseCanvas.nativeElement.width = this.widthPrev;
-                this.baseCanvas.nativeElement.height = this.heightPrev;
-                this.previewCanvas.nativeElement.width = this.widthPrev;
-                this.previewCanvas.nativeElement.height = this.heightPrev;
-                this.gridCtx.canvas.width = this.widthPrev;
-                this.gridCtx.canvas.height = this.heightPrev;
+                this.baseCanvas.nativeElement.width = newWidth;
+                this.baseCanvas.nativeElement.height = newHeight;
+                this.previewCanvas.nativeElement.width = newWidth;
+                this.previewCanvas.nativeElement.height = newHeight;
+                this.gridCtx.canvas.width = newWidth;
+                this.gridCtx.canvas.height = newHeight;
                 const eventGrid: CustomEvent = new CustomEvent('grid');
                 dispatchEvent(eventGrid);
                 this.baseCtx.putImageData(dessin, 0, 0);
@@ -123,8 +131,11 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
                     const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
                     dispatchEvent(event);
                 }
-                const eventContinue: CustomEvent = new CustomEvent('saveState');
-                dispatchEvent(eventContinue);
+                this.baseCanvas.nativeElement.onload = () => {
+                    const eventSave: CustomEvent = new CustomEvent('saveState');
+                    dispatchEvent(eventSave);
+                };
+
                 this.allowUndoCall = true;
             }
         }

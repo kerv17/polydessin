@@ -18,4 +18,10 @@ describe('PopupService', () => {
         expect(service.showModal).toBeTrue();
         expect(service.popupText).toEqual('test');
     });
+
+    it('should close the modal', () => {
+        service.showModal = true;
+        service.close();
+        expect(service.showModal).toBeFalse();
+    });
 });

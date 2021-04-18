@@ -43,9 +43,10 @@ export class ToolControllerService {
         });
 
         addEventListener('changeTool', (event: CustomEvent) => {
-            this.setTool(event.detail[0]);
-            this.currentTool.toolMode = event.detail[1];
-            console.log(event.detail[0], this.currentTool);
+            if (this.currentTool === event.detail.currentTool) {
+                this.setTool(event.detail.nextTool[0]);
+                this.currentTool.toolMode = event.detail.nextTool[1];
+            }
         });
 
         this.initMap();
@@ -84,11 +85,19 @@ export class ToolControllerService {
         this.currentTool.clearPreviewCtx();
         const tempTool: Tool | undefined = this.toolMap.get(shortcut);
         if (tempTool != undefined) this.currentTool = tempTool;
+        this.setSelectionToolMode(shortcut);
     }
 
     shift(eventType: string): void {
         this.currentTool.onShift(eventType === 'keydown');
     }
+
+    setSelectionToolMode(shortcut: string): void {
+        if (shortcut === Globals.RECTANGLE_SELECTION_SHORTCUT) {
+            this.selectionService.toolMode = '';
+        }
+    }
+
     escape(eventType: string): void {
         if (eventType === 'keydown') {
             if (!this.escapeIsDown) {
@@ -140,9 +149,10 @@ export class ToolControllerService {
     getTool(toolShortcut: string): Tool {
         if (this.toolMap.has(toolShortcut)) {
             return this.toolMap.get(toolShortcut) as Tool;
-        } else return this.lassoService;
+        } else return this.pencilService;
     }
     resetToolsMode(): void {
         Array.from(this.toolMap.values()).forEach((value) => (value.toolMode = 'fill'));
+        this.lassoService.toolMode = 'selection';
     }
 }

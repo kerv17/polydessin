@@ -33,7 +33,7 @@ export class SelectionMovementService {
         const deplacement: Vec2 = { x: event.x - this.initialMousePosition.x, y: event.y - this.initialMousePosition.y };
         const position: Vec2 = { x: topLeft.x + deplacement.x, y: topLeft.y + deplacement.y };
         const canvas: OffscreenCanvas = new OffscreenCanvas(selectedArea.width, selectedArea.height);
-        canvas.getContext('2d')?.putImageData(selectedArea, 0, 0);
+        (canvas.getContext('2d') as OffscreenCanvasRenderingContext2D).putImageData(selectedArea, 0, 0);
         ctx.drawImage(canvas, position.x, position.y);
     }
 
@@ -110,28 +110,37 @@ export class SelectionMovementService {
         path.push(topLeft);
     }
 
-    updateCanvasOnMove(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    updateCanvasOnMove(ctx: CanvasRenderingContext2D, selectionPath: Vec2[], lassoPath: Vec2[], toolMode: string): void {
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'white';
-        ctx.fillRect(path[0].x, path[0].y, path[2].x - path[0].x, path[2].y - path[0].y);
+        if (toolMode !== 'v') {
+            ctx.fillRect(selectionPath[0].x, selectionPath[0].y, selectionPath[2].x - selectionPath[0].x, selectionPath[2].y - selectionPath[0].y);
+        } else {
+            const pathList = new Path2D();
+            pathList.moveTo(lassoPath[0].x, lassoPath[0].y);
+            for (let i = 1; i < lassoPath.length; i++) {
+                pathList.lineTo(lassoPath[i].x, lassoPath[i].y);
+            }
+            ctx.fill(pathList);
+        }
         ctx.fillStyle = 'black';
         ctx.strokeStyle = 'black';
     }
 
-    onArrowDown(repeated: boolean, selectedArea: ImageData, pathData: Vec2[]): void {
+    onArrowDown(repeated: boolean, selectedArea: ImageData, pathData: Vec2[], lassoPath: Vec2[], toolMode: string): void {
         if (repeated) {
-            this.setKeyMovementDelays(selectedArea, pathData);
+            this.setKeyMovementDelays(selectedArea, pathData, lassoPath, toolMode);
         } else {
-            this.drawSelection(selectedArea, pathData);
+            this.drawSelection(selectedArea, pathData, lassoPath, toolMode);
         }
     }
 
-    private setKeyMovementDelays(selectedArea: ImageData, pathData: Vec2[]): void {
+    private setKeyMovementDelays(selectedArea: ImageData, pathData: Vec2[], lassoPath: Vec2[], toolMode: string): void {
         if (this.keyDown) {
             if (this.firstTime) {
                 this.firstTime = false;
                 this.interval = window.setInterval(() => {
-                    this.drawSelection(selectedArea, pathData);
+                    this.drawSelection(selectedArea, pathData, lassoPath, toolMode);
                 }, Globals.INTERVAL_MS);
             }
         } else {
@@ -141,13 +150,15 @@ export class SelectionMovementService {
         }
     }
 
-    private drawSelection(selectedArea: ImageData, pathData: Vec2[]): void {
+    private drawSelection(selectedArea: ImageData, pathData: Vec2[], lassoPath: Vec2[], toolMode: string): void {
         if (selectedArea !== undefined) {
             this.moveSelection(pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateCanvasOnMove(this.drawingService.previewCtx, pathData);
-            this.drawingService.previewCtx.putImageData(
-                selectedArea,
+            this.updateCanvasOnMove(this.drawingService.previewCtx, pathData, lassoPath, toolMode);
+            const canvas: OffscreenCanvas = new OffscreenCanvas(selectedArea.width, selectedArea.height);
+            (canvas.getContext('2d') as OffscreenCanvasRenderingContext2D).putImageData(selectedArea, 0, 0);
+            this.drawingService.previewCtx.drawImage(
+                canvas,
                 pathData[Globals.CURRENT_SELECTION_POSITION].x,
                 pathData[Globals.CURRENT_SELECTION_POSITION].y,
             );

@@ -1,12 +1,12 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ExportService } from '@app/services/export/export.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { Message } from '@common/communication/message';
 import { of, throwError } from 'rxjs';
-import { PopupService } from '../modal/popup.service';
-import { ExportService } from './export.service';
 //  tslint:disable: no-any
 describe('ExportService', () => {
     let service: ExportService;
@@ -71,12 +71,12 @@ describe('ExportService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.exportToImgur('png', 'DessinTest', 'none');
 
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image:" + message.body);
+        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image: " + message.body);
     });
 
     it('should export the canvas to Imgur if the image is exportable and  not show the body of the message if there is none', () => {
@@ -85,12 +85,12 @@ describe('ExportService', () => {
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: null });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.exportToImgur('png', 'DessinTest', 'none');
 
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
-        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image:undefined");
+        expect(popupSpy).toHaveBeenCalledWith("Lien de l'image: undefined");
     });
 
     it('should not export the canvas to Imgur if the image is exportable', () => {
@@ -98,7 +98,7 @@ describe('ExportService', () => {
         const message = { title: 'test' } as Message;
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(of(response));
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).not.toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('ExportService', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 0 });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(throwError(errorResponse));
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
@@ -122,7 +122,7 @@ describe('ExportService', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 404, error: 'test' });
 
         const postSpy = spyOn((service as any).serverRequestService, 'basicPost').and.returnValue(throwError(errorResponse));
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.exportToImgur('png', 'test', 'none');
         expect(postSpy).toHaveBeenCalled();
         expect(exportImageSpy).toHaveBeenCalled();
@@ -148,7 +148,7 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).not.toHaveBeenCalled();
         expect(popupSpy).not.toHaveBeenCalled();
@@ -161,7 +161,7 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).toHaveBeenCalled();
         expect(popupSpy).not.toHaveBeenCalled();
@@ -174,7 +174,7 @@ describe('ExportService', () => {
         const filtre = 'none';
         const setExportSpy = spyOn(service, 'setExportCanvas');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const popupSpy = spyOn((service as any).popupService, 'open').and.returnValue({});
+        const popupSpy = spyOn((service as any).popupService, 'openPopup').and.returnValue({});
         service.createExportImage(type, name, filtre);
         expect(setExportSpy).not.toHaveBeenCalled();
         expect(popupSpy).toHaveBeenCalled();

@@ -33,6 +33,7 @@ import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
 import { PopupService } from './services/modal/popup.service';
+import { ResizePoint } from './services/resize-Point/resize-point.service';
 
 @NgModule({
     declarations: [
@@ -61,7 +62,7 @@ import { PopupService } from './services/modal/popup.service';
         PopupComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
-    providers: [ColorService, ContinueDrawingService, DrawingService, PopupService],
+    providers: [ColorService, ContinueDrawingService, DrawingService, ResizePoint, PopupService],
     bootstrap: [AppComponent],
     exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })

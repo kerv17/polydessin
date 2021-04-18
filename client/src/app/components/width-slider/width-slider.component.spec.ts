@@ -9,6 +9,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -34,6 +35,7 @@ describe('WidthSliderComponent', () => {
             {} as AerosolService,
             {} as SelectionService,
             {} as StampService,
+            {} as LassoService,
             {} as BucketService,
         );
 

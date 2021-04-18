@@ -15,6 +15,7 @@ import { ToolControllerService } from '@app/services/tools/ToolController/tool-c
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
@@ -56,6 +57,7 @@ describe('DrawingComponent', () => {
             {} as AerosolService,
             new SelectionService(drawingStub, selectionMoveService, selectionResizeService),
             {} as StampService,
+            {} as LassoService,
             {} as BucketService,
         );
         carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router, {} as PopupService);
@@ -249,7 +251,7 @@ describe('DrawingComponent', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        const nymberOfTimesDispatchCalled = 2;
+        const numberOfTimesDispatchCalled = 1;
 
         (component as any).viewInitialized = true;
         (component as any).mouseDown = false;
@@ -257,19 +259,18 @@ describe('DrawingComponent', () => {
         (component as any).allowUndoCall = false;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
-
-        const nymberOfTimesDispatchCalledFull = 5;
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
+        const numberOfTimesDispatchCalledFull = 3;
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
 
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalledFull);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalledFull);
     });
     it('ngOnChanges should dispatch a grid and saveState Event only after view is initialised', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        const nymberOfTimesDispatchCalled = 3;
+        const numberOfTimesDispatchCalled = 2;
 
         (component as any).viewInitialized = false;
         (component as any).mouseDown = false;
@@ -279,7 +280,7 @@ describe('DrawingComponent', () => {
 
         (component as any).viewInitialized = true;
         component.ngOnChanges({} as SimpleChanges);
-        expect(spyDispatch).toHaveBeenCalledTimes(nymberOfTimesDispatchCalled);
+        expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
     });
 
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
@@ -326,7 +327,7 @@ describe('DrawingComponent', () => {
         expect(component.drawHandlers()).not.toBeTrue();
     });
     it('should load the carousel picture if one is stored', () => {
-        (component as any).carousel = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+        (component as any).carousel = new CarouselService({} as ServerRequestService, drawingStub, {} as Router, {} as PopupService);
 
         (component as any).carousel.loadImage = true;
 

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
-import { ColorService } from '@app/services/color/color.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { CarouselComponent, OwlOptions } from 'ngx-owl-carousel-o';
@@ -15,7 +14,7 @@ const nombreImage = 3;
 export class CarousselComponent implements AfterViewInit {
     @ViewChild('owlCar') owlCar: CarouselComponent;
     customOptions: OwlOptions;
-    constructor(public carouselService: CarouselService, private colorService: ColorService, private toolController: ToolControllerService) {
+    constructor(public carouselService: CarouselService, private toolController: ToolControllerService) {
         this.resetOptions();
     }
 
@@ -57,12 +56,11 @@ export class CarousselComponent implements AfterViewInit {
         this.resetOptions();
     }
     loadCarouselImage(slide: CanvasInformation): void {
+        this.toolController.selectionService.onEscape();
+        this.toolController.lassoService.onEscape();
         if (this.carouselService.loadCanvas(slide)) {
-            this.colorService.resetColorValues();
             this.toolController.lineService.clearPath();
             this.toolController.lassoService.clearPath();
-            this.toolController.selectionService.onEscape();
-            //this.toolController.lassoService.onEscape();
         }
     }
     @HostListener('window:keydown', ['$event'])

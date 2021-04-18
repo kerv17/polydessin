@@ -2,12 +2,13 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
+import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { Message } from '@common/communication/message';
 import { of, throwError } from 'rxjs';
-import { RemoteSaveService } from './remote-save.service';
 
 describe('Service: RemoteSave', () => {
     let service: RemoteSaveService;
@@ -15,10 +16,12 @@ describe('Service: RemoteSave', () => {
     let requestService: ServerRequestService;
     let confirmSpy: jasmine.Spy;
     let basicPostSpy: jasmine.Spy;
-    let alertSpy: jasmine.Spy;
+    let popupSpy: jasmine.Spy;
     let testinformation: CanvasInformation;
     let badTestinformation: CanvasInformation;
+    let popupService: PopupService;
     beforeEach(() => {
+        popupService = new PopupService();
         drawingService = new DrawingService({} as ResizePoint);
         drawingService.canvas = document.createElement('CANVAS') as HTMLCanvasElement;
         requestService = new ServerRequestService({} as HttpClient);
@@ -27,6 +30,7 @@ describe('Service: RemoteSave', () => {
                 RemoteSaveService,
                 { provide: DrawingService, useValue: drawingService },
                 { provide: ServerRequestService, useValue: requestService },
+                { provide: PopupService, useValue: popupService },
             ],
         });
 
@@ -90,44 +94,44 @@ describe('Service: RemoteSave', () => {
         expect(basicPostSpy).not.toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
     });
-    it('should send a window alert if information is valid and comfirm true but no connection to server', () => {
+    it('should open a popup if information is valid and comfirm true but no connection to server', () => {
         const response: HttpErrorResponse = new HttpErrorResponse({ status: 0 });
         basicPostSpy = spyOn(requestService, 'basicPost').and.returnValue(throwError(response));
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn(popupService, 'openPopup');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         service.post(testinformation);
         expect(basicPostSpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
+        expect(popupSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
     });
-    it('should send a window alert if information is valid and comfirm true but something went wrong on server', () => {
+    it('should open Popup if information is valid and comfirm true but something went wrong on server', () => {
         const response: HttpErrorResponse = new HttpErrorResponse({ error: 'une erreure', status: 10 });
         basicPostSpy = spyOn(requestService, 'basicPost').and.returnValue(throwError(response));
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn(popupService, 'openPopup');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         service.post(testinformation);
         expect(basicPostSpy).toHaveBeenCalled();
         expect(confirmSpy).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('une erreure');
+        expect(popupSpy).toHaveBeenCalledWith('une erreure');
     });
-    it('should send a window alert if information name is not valid', () => {
+    it('should open a popup if information name is not valid', () => {
         basicPostSpy = spyOn(requestService, 'basicPost');
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn(popupService, 'openPopup');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         service.post(badTestinformation);
         expect(basicPostSpy).not.toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
+        expect(popupSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
     });
-    it('should send a window alert if information tag is not valid', () => {
+    it('should open a popup if information tag is not valid', () => {
         badTestinformation.tags = ['tagggggggggggggg1', 'tg', 'tag ', 'tag!', 'tag', 'tag1'];
         basicPostSpy = spyOn(requestService, 'basicPost');
-        alertSpy = spyOn(window, 'alert');
+        popupSpy = spyOn(popupService, 'openPopup');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         service.post(badTestinformation);
         expect(basicPostSpy).not.toHaveBeenCalled();
         expect(confirmSpy).not.toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
+        expect(popupSpy).toHaveBeenCalledWith('Il faut respecter les critères pour le tag et le nom');
     });
 
     it('should return an array of tags', () => {
