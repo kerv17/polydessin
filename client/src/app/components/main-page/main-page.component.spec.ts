@@ -10,7 +10,7 @@ import { ServerRequestService } from '@app/services/server-request/server-reques
 import { MainPageComponent } from './main-page.component';
 import SpyObj = jasmine.SpyObj;
 
-describe('MainPageComponent', () => {
+fdescribe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<ServerRequestService>;
