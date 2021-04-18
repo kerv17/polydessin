@@ -137,6 +137,12 @@
             />
         </div>
         <div class="ToolContainer">
+            <div class="infobulle">Ce bouton permet de faire une sélection par lasso polygonal. Le raccourci est 'v'</div>
+            <img src="../../../assets/lasso.png" [ngStyle]="{
+                    backgroundColor: currentTool == 'v' ? 'gainsboro' : 'white'
+                }" (click)="setTool('v')" (click)="this.openTool(false, 'v')" class="function" tabindex="0" />
+        </div>
+        <div class="ToolContainer">
             <div class="infobulle">Ce bouton permet de faire afficher une grille. Le raccourci est 'g'</div>
             <img
                 src="../../../assets/grid.png"

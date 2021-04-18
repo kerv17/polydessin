@@ -17,6 +17,7 @@ export const ESCAPE_SHORTCUT = 'Escape';
 export const BACKSPACE_SHORTCUT = 'Backspace';
 export const EXPORT_SHORTCUT = 'e';
 export const RECTANGLE_SELECTION_SHORTCUT = 'r';
+export const LASSO_SELECTION_SHORTCUT = 'v';
 export const CANVAS_SELECTION_EVENT = 'a';
 export const CANVAS_SAVE_SHORTCUT = 's';
 export const UNDO_SHORTCUT = 'z';
@@ -120,3 +121,7 @@ export const GRID_OPACITY_INIT_VALUE = 40;
 export const GRID_VARIATION_VALUE = 5;
 export const GRID_MAX_BOX_VALUE = 100;
 export const GRID_MIN_BOX_VALUE = 10;
+
+// constante pour lasso
+export const closeRadius = 20;
+export const pathLength = 3;

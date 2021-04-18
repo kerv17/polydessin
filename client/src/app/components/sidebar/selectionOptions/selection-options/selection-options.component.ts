@@ -17,7 +17,6 @@ export class SelectionOptionsComponent {
         });
     }
 
-    // transformer en map
     private checkKeyEvent(event: KeyboardEvent): void {
         if (event.ctrlKey && event.key === Globals.COPY_SHORTCUT) {
             this.clipboardService.copy();
@@ -27,6 +26,8 @@ export class SelectionOptionsComponent {
             this.clipboardService.cut();
         } else if (event.key === Globals.DELETE_SHORTCUT) {
             this.clipboardService.delete();
+        } else if (event.ctrlKey && event.key === Globals.NEW_DRAWING_EVENT) {
+            this.clipboardService.resetClipboard();
         }
     }
 }

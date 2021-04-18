@@ -53,6 +53,7 @@ export class SidebarComponent {
         this.initFunctionMap();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.annulerSelection();
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
@@ -63,11 +64,13 @@ export class SidebarComponent {
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
-        this.gridService.resetGrid();
     }
     resetDrawingAttributes(): void {
         this.colorService.resetColorValues();
+        this.gridService.resetGrid();
         this.toolController.resetWidth();
+        this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
     }
     setTool(tool: string): void {
         this.toolController.setTool(tool);
@@ -99,13 +102,14 @@ export class SidebarComponent {
         this.shapeOptions = this.currentTool === Globals.RECTANGLE_SHORTCUT || this.currentTool === Globals.ELLIPSIS_SHORTCUT;
     }
     showSelectionOptions(): void {
-        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT;
+        this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT || this.currentTool === Globals.LASSO_SELECTION_SHORTCUT;
     }
 
     // TODO : changer le nom en anglais
     annulerSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
+            dispatchEvent(new CustomEvent('resetLassoToolMode'));
         }
     }
     openTool(showWidth: boolean, toolname: string): void {
@@ -124,11 +128,14 @@ export class SidebarComponent {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
+        this.annulerSelection();
         this.drawing.newCanvas();
         this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
+        this.toolController.lassoService.clearPath();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
+        this.showSelectionOptions();
         const eventContinue: CustomEvent = new CustomEvent('saveState');
         dispatchEvent(eventContinue);
     }
@@ -162,6 +169,10 @@ export class SidebarComponent {
             .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,
+            } as ToolParam)
+            .set([false, false, Globals.LASSO_SELECTION_SHORTCUT].join(), {
+                showWidth: false,
+                toolName: Globals.LASSO_SELECTION_SHORTCUT,
             } as ToolParam)
             .set([false, false, Globals.BUCKET_SHORTCUT].join(), {
                 showWidth: false,

@@ -13,20 +13,22 @@ import { RectangleService } from './rectangle-service';
 export class SelectionService extends Tool {
     rectangleService: RectangleService;
     inSelection: boolean = false;
-    private inMovement: boolean = false;
+    inMovement: boolean = false;
     private inResize: boolean = false;
+    lassoPath: Vec2[];
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selectionResize: SelectionResizeService) {
         super(drawingService);
         this.clearPath();
         this.width = 1;
+        this.toolMode = '';
         this.rectangleService = new RectangleService(this.drawingService);
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
                 this.inMovement = true;
                 this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
-                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData);
+                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData, this.lassoPath, this.toolMode);
             }
         });
 
@@ -86,11 +88,15 @@ export class SelectionService extends Tool {
             if (this.selectionResize.onMouseDown(mousePosition)) {
                 this.selectionResize.initializePath(this.pathData);
                 this.selectionResize.setPathDataAfterMovement(this.getActualPosition());
-                // pour annuler l'effet paint qui fait perdre de la résolution de pixels
-                /*if (this.inResize) {
-                    this.selectArea(this.drawingService.baseCtx);
-                }*/
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
+                this.selectionResize.onMouseMove(
+                    this.selectedArea,
+                    this.drawingService.previewCtx,
+                    this.getPositionFromMouse(event),
+                    this.rectangleService.shift,
+                );
                 this.inResize = true;
+                this.inMovement = false;
             } else if (
                 this.selectionMove.onMouseDown(event, mousePosition, this.getActualPosition(), this.getSelectionWidth(), this.getSelectionHeight())
             ) {
@@ -98,7 +104,6 @@ export class SelectionService extends Tool {
                 this.inSelection = false;
             } else {
                 this.onEscape();
-                this.onMouseDown(event);
             }
         } else {
             this.pathData.push(mousePosition);
@@ -112,10 +117,9 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
 
             if (this.inMovement) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
+                this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
                 this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
             } else if (this.inResize) {
-                this.selectionMove.updateCanvasOnMove(this.drawingService.previewCtx, this.pathData);
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
                     this.drawingService.previewCtx,
@@ -124,7 +128,7 @@ export class SelectionService extends Tool {
                 );
             } else {
                 this.pathData = this.rectangleService.getRectanglePoints(this.getPositionFromMouse(event));
-                this.drawBorder(this.drawingService.previewCtx);
+                this.drawBorder(this.drawingService.previewCtx, this.pathData);
                 this.selectArea(this.drawingService.baseCtx);
             }
         }
@@ -175,6 +179,12 @@ export class SelectionService extends Tool {
             this.selectionResize.resetPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
+            if (this.toolMode === Globals.LASSO_SELECTION_SHORTCUT) {
+                dispatchEvent(
+                    new CustomEvent('changeTool', { detail: { nextTool: [Globals.LASSO_SELECTION_SHORTCUT, 'selection'], currentTool: this } }),
+                );
+                this.toolMode = '';
+            }
             const eventContinue: CustomEvent = new CustomEvent('saveState');
             dispatchEvent(eventContinue);
         }
@@ -227,16 +237,27 @@ export class SelectionService extends Tool {
         }
     }
 
-    private confirmSelectionMove(): void {
-        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData);
-        this.drawingService.baseCtx.putImageData(this.selectedArea, this.getActualPosition().x, this.getActualPosition().y);
+    private createCanvasWithSelection(imageData: ImageData): OffscreenCanvas {
+        const canvas = new OffscreenCanvas(imageData.width, imageData.height);
+        (canvas.getContext('2d') as OffscreenCanvasRenderingContext2D).putImageData(imageData, 0, 0);
+        return canvas;
     }
 
-    private drawBorder(ctx: CanvasRenderingContext2D): void {
+    private confirmSelectionMove(): void {
+        this.clearPreviewCtx();
+        this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
+        this.drawingService.baseCtx.drawImage(
+            this.createCanvasWithSelection(this.selectedArea),
+            this.getActualPosition().x,
+            this.getActualPosition().y,
+        );
+    }
+
+    drawBorder(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.strokeStyle = 'white';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (const point of this.pathData) {
+        for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -245,7 +266,7 @@ export class SelectionService extends Tool {
         ctx.strokeStyle = 'black';
         ctx.beginPath();
         ctx.setLineDash([Globals.LINE_DASH, Globals.LINE_DASH]);
-        for (const point of this.pathData) {
+        for (const point of path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.closePath();
@@ -255,7 +276,7 @@ export class SelectionService extends Tool {
 
     // Ajuste le pathData pour permettre la selection à partir de n'importe quel coin
     // donc pour tracer le rectangle de selection dans n'importe quelle direction
-    private setTopLeftHandler(): void {
+    setTopLeftHandler(): void {
         const firstCorner = { x: this.pathData[0].x, y: this.pathData[0].y };
         const oppositeCorner = { x: this.pathData[2].x, y: this.pathData[2].y };
 

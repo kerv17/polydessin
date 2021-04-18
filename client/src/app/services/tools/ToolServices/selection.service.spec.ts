@@ -31,6 +31,7 @@ describe('SelectionService', () => {
     const selectedArea = 'selectedArea';
     const rectangleService = 'rectangleService';
     const inResize = 'inResize';
+    const resizePathData = 'resizePathData';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -188,6 +189,7 @@ describe('SelectionService', () => {
         const selectionResizeSpy2 = spyOn(selectionResizeService, 'initializePath');
         const selectionResizeSpy3 = spyOn(selectionResizeService, 'setPathDataAfterMovement');
         service.inSelection = true;
+        selectionResizeService[resizePathData] = service[pathData];
         service.onMouseDown(mouseDownEvent);
         expect(service[inResize]).toBeTrue();
         expect(selectionResizeSpy2).toHaveBeenCalledWith(service[pathData]);
@@ -233,16 +235,14 @@ describe('SelectionService', () => {
         expect(selectionMovementSpy).toHaveBeenCalled();
     });
 
-    it('onMouseMove should call updateCanvasOnMove and onMouseMove from Resize in in resize is true', () => {
+    it('onMouseMove should call onMouseMove from Resize if inResize is true', () => {
         service.mouseDown = true;
         service[inResize] = true;
         service[inMovement] = false;
         service[pathData].push({ x: width, y: height });
         service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
-        selectionMovementSpy = spyOn<any>(selectionMoveService, 'updateCanvasOnMove').and.callThrough();
         selectionResizeSpy = spyOn(selectionResizeService, 'onMouseMove');
         service.onMouseMove(mouseDownEvent);
-        expect(selectionMovementSpy).toHaveBeenCalled();
         expect(selectionResizeSpy).toHaveBeenCalled();
     });
 
@@ -327,22 +327,17 @@ describe('SelectionService', () => {
         expect(selectionSpy).not.toHaveBeenCalled();
     });
 
-    it('onEscape should call confirmSelectionMove, dispatchAction and reset attributes to their initial values if there is a selection', () => {
+    it('onEscape should return to Lasso if toolMode matches', () => {
+        service.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        let result = false;
+        selectionSpy = spyOn<any>(service, 'confirmSelectionMove');
         service.inSelection = true;
-        selectionSpy = spyOn<any>(service, 'confirmSelectionMove').and.callThrough();
-        const selectionSpy2 = spyOn<any>(service, 'dispatchAction').and.callThrough();
-        const selectionSpy3 = spyOn(service, 'clearPath');
-        selectionResizeSpy = spyOn(selectionResizeService, 'resetPath');
-        service[pathData].push({ x: width, y: height });
-        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
+        service.inMovement = false;
+        addEventListener('changeTool', (event: CustomEvent) => {
+            result = event.detail.nextTool[0] === Globals.LASSO_SELECTION_SHORTCUT && event.detail.nextTool[1] === 'selection';
+        });
         service.onEscape();
-        expect(selectionSpy).toHaveBeenCalled();
-        expect(selectionSpy2).toHaveBeenCalled();
-        expect(service.inSelection).not.toBeTrue();
-        expect(service.mouseDown).not.toBeTrue();
-        expect(service[inMovement]).not.toBeTrue();
-        expect(service[inResize]).not.toBeTrue();
-        expect(selectionSpy3).toHaveBeenCalled();
-        expect(selectionResizeSpy).toHaveBeenCalled();
+        expect(service.toolMode).toEqual('');
+        expect(result).toBeTrue();
     });
 });

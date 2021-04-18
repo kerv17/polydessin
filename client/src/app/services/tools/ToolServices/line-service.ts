@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ServiceCalculator } from '@app/classes/service-calculator';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
@@ -52,7 +53,7 @@ export class LineService extends Tool {
             if (this.pathData.length > 0) {
                 const SNAP_RANGE = 20;
                 const mousePosition = this.getPositionFromMouse(event);
-                if (this.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
+                if (ServiceCalculator.distanceBewteenPoints(this.pathData[0], mousePosition) < SNAP_RANGE) {
                     this.pathData.push(this.pathData[0]);
                 } else {
                     this.pathData.push(this.getPointToPush(event));
@@ -68,7 +69,7 @@ export class LineService extends Tool {
         }
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color || 'black';
         ctx.lineJoin = 'round';
@@ -95,43 +96,6 @@ export class LineService extends Tool {
         }
     }
 
-    private distanceBewteenPoints(a: Vec2, b: Vec2): number {
-        const x = Math.abs(a.x - b.x);
-        const y = Math.abs(a.y - b.y);
-        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        return distance;
-    }
-
-    private getAngle(p1: Vec2, p2: Vec2): number {
-        const HALF_CIRCLE_DEG = 180;
-        const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * HALF_CIRCLE_DEG) / Math.PI;
-        return angleDeg;
-    }
-
-    private getShiftAngle(p1: Vec2, p2: Vec2): Vec2 {
-        const solution: Vec2 = { x: p1.x, y: p1.y };
-
-        const NOT_IN_INDEX = -1;
-
-        // tslint:disable: no-magic-numbers
-        const X_QUADRANTS: number[] = [0, 7];
-        const Y_QUADRANTS: number[] = [3, 4];
-        // tslint:enable: no-magic-numbers
-        const HALF_QUADRANTS = 22.5;
-        const angle = this.getAngle(p1, p2);
-        const octant = Math.floor(Math.abs(angle / HALF_QUADRANTS));
-
-        if (X_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
-            solution.x = p2.x;
-        } else if (Y_QUADRANTS.indexOf(octant) !== NOT_IN_INDEX) {
-            solution.y = p2.y;
-        } else {
-            solution.x = p2.x;
-            solution.y = p2.y > p1.y !== p2.x < p1.x ? p1.y + (p2.x - p1.x) : p1.y - (p2.x - p1.x);
-        }
-        return solution;
-    }
-
     onShift(shifted: boolean): void {
         this.shift = shifted;
         this.onMouseMove(this.lastMoveEvent);
@@ -149,7 +113,7 @@ export class LineService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.pathData.length > 0) {
             const lastPointInPath = this.pathData[this.pathData.length - 1];
-            const shiftAngle = this.getShiftAngle(lastPointInPath, mousePosition);
+            const shiftAngle = ServiceCalculator.getShiftAngle(lastPointInPath, mousePosition);
             return this.shift ? shiftAngle : mousePosition;
         } else {
             return mousePosition;

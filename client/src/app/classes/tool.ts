@@ -16,6 +16,7 @@ export abstract class Tool {
     toolMode: string = 'fill';
     shift: boolean = false;
     selectedArea: ImageData;
+    lassoPath: Vec2[];
     protected pathData: Vec2[];
 
     constructor(public drawingService: DrawingService) {}
@@ -74,6 +75,7 @@ export abstract class Tool {
             shift: this.shift,
             pathData: this.pathData,
             selectedArea: this.selectedArea,
+            lassoPath: this.lassoPath,
         };
         return setting;
     }
@@ -90,6 +92,7 @@ export abstract class Tool {
         this.shift = setting.shift;
         this.pathData = setting.pathData;
         this.selectedArea = setting.selectedArea;
+        this.lassoPath = setting.lassoPath;
     }
 
     protected createAction(): DrawAction {
@@ -120,4 +123,5 @@ export interface Setting {
     shift: boolean;
     pathData: Vec2[];
     selectedArea: ImageData;
+    lassoPath: Vec2[];
 }

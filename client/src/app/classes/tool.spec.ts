@@ -35,6 +35,7 @@ describe('Tool', () => {
             shift: true,
             pathData: [{} as Vec2, {} as Vec2, {} as Vec2],
             selectedArea: new ImageData(HANDLERS_WIDTH, HANDLERS_WIDTH),
+            lassoPath: [{} as Vec2, {} as Vec2, {} as Vec2],
         };
         canvasTestHelper = TestBed.inject(CanvasTestHelper);
         // baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

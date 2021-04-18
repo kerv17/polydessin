@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { ServiceCalculator } from '@app/classes/service-calculator';
 import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -35,7 +36,7 @@ describe('LineService', () => {
         service = TestBed.inject(LineService);
         drawLineSpy = spyOn<any>(service, 'drawLine');
         pointToPushSpy = spyOn<any>(service, 'getPointToPush').and.callThrough();
-        distanceSpy = spyOn<any>(service, 'distanceBewteenPoints').and.callThrough();
+        distanceSpy = spyOn<any>(ServiceCalculator, 'distanceBewteenPoints').and.callThrough();
         dispatchSpy = spyOn<any>(service, 'dispatchAction');
 
         // Configuration du spy du service
@@ -209,65 +210,6 @@ describe('LineService', () => {
         expect((service as any).pathData.length).toEqual(0);
     });
 
-    it(' distanceBetweenPoints should return the right distance ', () => {
-        const expectedValue = 15;
-        const pointA: Vec2 = { x: 25, y: 40 };
-        const pointB: Vec2 = { x: 34, y: 28 };
-        const distance = (service as any).distanceBewteenPoints(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-    });
-
-    it(' getAngle should return the angle from the x-axis', () => {
-        const expectedValue = -135;
-        const pointA: Vec2 = { x: 25, y: 40 };
-        const pointB: Vec2 = { x: 20, y: 35 };
-        const distance = (service as any).getAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-    });
-
-    it(' getShiftAngle should return the angle from the x-axis', () => {
-        let expectedValue: Vec2;
-        const pointA: Vec2 = { x: 0, y: 0 };
-        let pointB: Vec2;
-        let distance;
-
-        // Test 1
-        expectedValue = { x: 0, y: 15 };
-        pointB = { x: 5, y: 15 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-
-        // Test 2
-        expectedValue = { x: 15, y: 0 };
-        pointB = { x: 15, y: 5 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-
-        // Test 3
-        expectedValue = { x: 15, y: 15 };
-        pointB = { x: 15, y: 15 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-
-        // Test 4
-        expectedValue = { x: 15, y: -15 };
-        pointB = { x: 15, y: -15 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-
-        // Test 5
-        expectedValue = { x: -15, y: 15 };
-        pointB = { x: -15, y: 15 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-
-        // Test 6
-        expectedValue = { x: -15, y: -15 };
-        pointB = { x: -15, y: -15 };
-        distance = (service as any).getShiftAngle(pointA, pointB);
-        expect(distance).toEqual(expectedValue);
-    });
-
     it(' onShift should set the value of shift and call onMouseMove', () => {
         const spy = spyOn(service, 'onMouseMove');
         service.onShift(true);
@@ -301,7 +243,7 @@ describe('LineService', () => {
         expect(result).toEqual(expectedResult);
     });
     it('getPointToPush should return mouseposition if shift is not pressed', () => {
-        const spy = spyOn<any>(service, 'getShiftAngle').and.callFake(() => {
+        const spy = spyOn<any>(ServiceCalculator, 'getShiftAngle').and.callFake(() => {
             return { x: 134, y: 125 };
         });
         const expectedResult: Vec2 = { x: 134, y: 125 };
