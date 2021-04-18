@@ -22,7 +22,6 @@ describe('ClipboardService', () => {
     const pathData = 'pathData';
     const createAction = 'createAction';
     const fakePath = 'fakePath';
-    const updatePath = 'updatePath';
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -74,6 +73,21 @@ describe('ClipboardService', () => {
         expect(selectionMovementSpy).toHaveBeenCalled();
     });
 
+    it('doAction should set the lassoPath to the pathData value if the toolMode is v (lasso)', () => {
+        service[pathData] = selectionService[pathData];
+        service.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        const action: DrawAction = service[createAction]();
+        service[pathData] = selectionService[pathData];
+        selectionService.lassoPath = [
+            { x: 50, y: 50 },
+            { x: 150, y: 150 },
+            { x: 50, y: 50 },
+        ];
+        selectionService.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        service.doAction(action);
+        expect(selectionService.lassoPath).toEqual(service[pathData]);
+    });
+
     it('resetClipboard should update clipboard with selectedArea', () => {
         service[clipboard] = selectionService.selectedArea;
         service.resetClipboard();
@@ -100,14 +114,6 @@ describe('ClipboardService', () => {
         expect(selectionService.inSelection).toBeFalse();
     });
 
-    it('paste should call onEscape from selection if there is an active selection and a selection stored', () => {
-        selectionService.inSelection = true;
-        service[clipboard] = selectionService.selectedArea;
-        selectionSpy = spyOn(selectionService, 'onEscape');
-        service.paste();
-        expect(selectionSpy).toHaveBeenCalled();
-    });
-
     it('paste should call putImageData, fakePath and set inSelection to true if there is an image stored in the clipboard', () => {
         selectionService[pathData].push({ x: 50, y: 50 });
         service[pathData] = selectionService[pathData];
@@ -117,6 +123,16 @@ describe('ClipboardService', () => {
         service.paste();
         expect(fakePathSpy).toHaveBeenCalled();
         expect(selectionService.inSelection).toBeTrue();
+    });
+
+    it('paste should dispatch a resetLassoToolMode event if toolMode from selection is v (lasso)', () => {
+        selectionService[pathData].push({ x: 50, y: 50 });
+        service[pathData] = selectionService[pathData];
+        selectionService.inSelection = false;
+        service[clipboard] = selectionService.selectedArea;
+        selectionService.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        service.paste();
+        expect(selectionService.toolMode).toEqual('');
     });
 
     it('cut should do nothing if there is no active selection', () => {
@@ -158,20 +174,20 @@ describe('ClipboardService', () => {
         expect(selectionSpy).toHaveBeenCalled();
     });
 
-    it('updatepath should update the clipboard pathData based on the actual position of the selection if there is a selection saved', () => {
+    it('delete should dispatch a resetLassoToolMode event if toolMode from selection is v (lasso)', () => {
         selectionService[pathData].push({ x: 50, y: 50 });
+        service[pathData] = selectionService[pathData];
+        selectionService.lassoPath = [
+            { x: 50, y: 50 },
+            { x: 150, y: 150 },
+            { x: 50, y: 50 },
+        ];
         service[clipboard] = selectionService.selectedArea;
-        service[updatePath]();
-        expect(service[pathData][0]).toEqual({ x: 50, y: 50 });
-        expect(service[pathData][1]).toEqual({ x: 50, y: width / 2 + width });
-        expect(service[pathData][2]).toEqual({ x: width / 2 + width, y: width / 2 + width });
-        expect(service[pathData][Globals.RIGHT_HANDLER]).toEqual({ x: width / 2 + width, y: 50 });
-    });
-
-    it('updatepath should update the clipboard pathData with the selection pathData if there is no image saved in the clipboard', () => {
-        selectionService[pathData].push({ x: 50, y: 50 });
-        service[updatePath]();
-        expect(service[pathData]).toEqual(selectionService[pathData]);
+        selectionService.inSelection = true;
+        selectionService.toolMode = Globals.LASSO_SELECTION_SHORTCUT;
+        service.delete();
+        expect(selectionService.toolMode).toEqual('');
+        expect(service[pathData]).toEqual(selectionService.lassoPath);
     });
 
     it('fakePath should create a fake path that is outside the current canvas with the width and height of the selection', () => {

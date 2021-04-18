@@ -1,6 +1,7 @@
 import { ServiceCalculator } from './service-calculator';
 import { Vec2 } from './vec2';
 
+// tslint:disable: no-any
 describe('ServiceCalculator', () => {
     const service: ServiceCalculator = ServiceCalculator;
 

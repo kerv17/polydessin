@@ -340,23 +340,4 @@ describe('SelectionService', () => {
         expect(service.toolMode).toEqual('');
         expect(result).toBeTrue();
     });
-
-    it('onEscape should call confirmSelectionMove, dispatchAction and reset attributes to their initial values if there is a selection', () => {
-        service.inSelection = true;
-        selectionSpy = spyOn<any>(service, 'confirmSelectionMove').and.callThrough();
-        const selectionSpy2 = spyOn<any>(service, 'dispatchAction').and.callThrough();
-        const selectionSpy3 = spyOn(service, 'clearPath');
-        selectionResizeSpy = spyOn(selectionResizeService, 'resetPath');
-        service[pathData].push({ x: width, y: height });
-        service[selectedArea] = drawService.baseCtx.getImageData(width, height, width, height);
-        service.onEscape();
-        expect(selectionSpy).toHaveBeenCalled();
-        expect(selectionSpy2).toHaveBeenCalled();
-        expect(service.inSelection).not.toBeTrue();
-        expect(service.mouseDown).not.toBeTrue();
-        expect(service[inMovement]).not.toBeTrue();
-        expect(service[inResize]).not.toBeTrue();
-        expect(selectionSpy3).toHaveBeenCalled();
-        expect(selectionResizeSpy).toHaveBeenCalled();
-    });
 });

@@ -71,10 +71,9 @@ export class LassoService extends Tool {
     }
 
     addPoint(point: Vec2): void {
-        const closeRadius = 20;
         if (
-            this.pathData.length >= 3 && // Enough points to create a shape
-            ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= closeRadius && // Point close enough to close the shape
+            this.pathData.length >= Globals.pathLength && // Enough points to create a shape
+            ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= Globals.closeRadius && // Point close enough to close the shape
             this.checkIsPointValid(this.pathData[0]) // Able to be closed
         ) {
             this.pathData.push(this.pathData[0]);

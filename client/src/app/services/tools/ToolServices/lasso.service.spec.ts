@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LassoService } from './lasso.service';
 import { SelectionService } from './selection.service';
 
+// tslint:disable: no-any
 describe('LassoService', () => {
     let service: LassoService;
     let mouseEvent: MouseEvent;
@@ -14,10 +15,11 @@ describe('LassoService', () => {
     let ctxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
     let selectionSpy: jasmine.SpyObj<SelectionService>;
     let testPath: Vec2[];
+    const width = 50;
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         ctxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['stroke', 'beginPath', 'lineTo', 'getImageData', 'putImageData']);
-        selectionSpy = jasmine.createSpyObj('SelectionService', ['setTopLeftHandler', 'setPathData']);
+        selectionSpy = jasmine.createSpyObj('SelectionService', ['setTopLeftHandler', 'setPathData', 'drawBorder']);
         drawServiceSpy.baseCtx = ctxSpy;
         drawServiceSpy.previewCtx = ctxSpy;
         TestBed.configureTestingModule({
@@ -29,7 +31,7 @@ describe('LassoService', () => {
         service = TestBed.inject(LassoService);
 
         (service as any).selectionService = selectionSpy;
-        mouseEvent = { pageX: Globals.SIDEBAR_WIDTH + 50, pageY: 50, button: Globals.MouseButton.Left } as MouseEvent;
+        mouseEvent = { pageX: Globals.SIDEBAR_WIDTH + width, pageY: 50, button: Globals.MouseButton.Left } as MouseEvent;
         passSpy = spyOn(service, 'passToSelectionService');
         testPath = [
             { x: 0, y: 0 },
@@ -60,7 +62,7 @@ describe('LassoService', () => {
     it('onClick not called when wrong button is pressed', () => {
         const spy = spyOn(service, 'addPoint');
         mouseEvent = {
-            pageX: Globals.SIDEBAR_WIDTH + 50,
+            pageX: Globals.SIDEBAR_WIDTH + width,
             pageY: 50,
             button: Globals.MouseButton.Right,
         } as MouseEvent;
