@@ -144,4 +144,48 @@ describe('LassoService', () => {
         expect(selectionSpy.setTopLeftHandler).toHaveBeenCalled();
         expect(selectionSpy.setPathData).toHaveBeenCalled();
     });
+
+    it('onEscape should clearPath and clear previewCanvas', () => {
+        const spy = spyOn<any>(service, 'clearPath');
+        service.onEscape();
+        expect(spy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('onBackspace should remove a point and call on MouseMove', () => {
+        const spy = spyOn<any>(service, 'onMouseMove');
+        service.onBackspace();
+        expect(spy).toHaveBeenCalledWith(service.lastMoveEvent);
+    });
+
+    it(' onShift should set the value of shift and call onMouseMove', () => {
+        const spy = spyOn(service, 'onMouseMove');
+        service.onShift(true);
+        expect(service.shift).toBeTrue();
+        expect(spy).toHaveBeenCalledWith(service.lastMoveEvent);
+    });
+
+    it('getPointToPush should return mouseposition if pathData is empty', () => {
+        const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
+        (service as any).clearPath();
+        const result = service.getPointToPush(mouseEvent);
+        expect(result).toEqual(expectedResult);
+    });
+
+    it('getPointToPush should return mouseposition if shift is not pressed', () => {
+        const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
+        const result = service.getPointToPush(mouseEvent);
+        expect(result).toEqual(expectedResult);
+    });
+    it('getPointToPush should return mouseposition if shift is not pressed', () => {
+        const spy = spyOn<any>(ServiceCalculator, 'getShiftAngle').and.callFake(() => {
+            return { x: 50, y: 50 };
+        });
+        const expectedResult: Vec2 = { x: 50, y: 50 };
+        service.shift = false;
+        const result = service.getPointToPush(mouseEvent);
+        expect(result).toEqual(expectedResult);
+        expect(spy).not.toHaveBeenCalled();
+    });
+
 });
