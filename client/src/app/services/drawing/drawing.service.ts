@@ -77,6 +77,8 @@ export class DrawingService {
     loadOldCanvas(oldCanvas: CanvasInformation): boolean {
         const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (!this.canvasNotEmpty(data) || confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
+            this.clearCanvas(this.previewCtx);
+            this.clearCanvas(this.gridCtx);
             this.reloadOldCanvas(oldCanvas);
             const action: DrawingAction = {
                 type: 'Drawing',
@@ -122,8 +124,7 @@ export class DrawingService {
         this.gridCanvas.height = size.y;
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.clearCanvas(this.previewCtx);
-        this.clearCanvas(this.gridCtx);
+
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
 

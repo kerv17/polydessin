@@ -11,7 +11,7 @@
                 <ng-container *ngFor="let slide of carouselService.pictures" class="container">
                     <ng-template carouselSlide [id]="slide.codeID">
                         <div>
-                            <img class="carousel" (click)="carouselService.loadCanvas(slide)" [src]="slide.imageData" alt="test" />
+                            <img class="carousel" (click)="loadCarouselImage(slide)" [src]="slide.imageData" alt="test" />
                         </div>
                         <div class="info">
                             <p>Nom: {{ slide.name }} Tags: {{ slide.tags }}</p>

@@ -2,11 +2,11 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import * as Httpstatus from 'http-status-codes';
 import { SlideModel } from 'ngx-owl-carousel-o/lib/models/slide.model';
-import { PopupService } from '../modal/popup.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +21,7 @@ export class CarouselService {
     currentSearch: string = '';
     constructor(
         private requestService: ServerRequestService,
-        private drawingService: DrawingService,
+        public drawingService: DrawingService,
         private router: Router,
         private popupService: PopupService,
     ) {}
@@ -61,14 +61,18 @@ export class CarouselService {
             }
         }
     }
-    loadCanvas(info: CanvasInformation): void {
+    loadCanvas(info: CanvasInformation): boolean {
         if (this.router.url.includes('/editor')) {
-            if (this.drawingService.loadOldCanvas(info)) this.close();
+            if (this.drawingService.loadOldCanvas(info)) {
+                this.close();
+                return true;
+            }
         } else {
             this.router.navigate(['/editor']);
             this.loadImage = true;
             this.imageToLoad = info;
         }
+        return false;
     }
     initialiserCarousel(): void {
         this.currentTags = '';
