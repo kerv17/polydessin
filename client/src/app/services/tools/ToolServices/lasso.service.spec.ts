@@ -32,7 +32,7 @@ describe('LassoService', () => {
 
         (service as any).selectionService = selectionSpy;
         mouseEvent = { pageX: Globals.SIDEBAR_WIDTH + width, pageY: 50, button: Globals.MouseButton.Left } as MouseEvent;
-        passSpy = spyOn(service, 'passToSelectionService');
+        passSpy = spyOn(service as any, 'passToSelectionService');
         testPath = [
             { x: 0, y: 0 },
             { x: 0, y: 100 },
@@ -46,12 +46,12 @@ describe('LassoService', () => {
 
     it('onClick', () => {
         service.toolMode = 'selection';
-        const spy = spyOn(service, 'addPoint');
+        const spy = spyOn(service as any, 'addPoint');
         service.onClick(mouseEvent);
         expect(spy).toHaveBeenCalled();
 
         service.toolMode = 'movement';
-        const selectAreaSpy = spyOn(service, 'selectArea');
+        const selectAreaSpy = spyOn(service as any, 'selectArea');
         service.onClick(mouseEvent);
 
         expect(passSpy).toHaveBeenCalled();
@@ -60,7 +60,7 @@ describe('LassoService', () => {
     });
 
     it('onClick not called when wrong button is pressed', () => {
-        const spy = spyOn(service, 'addPoint');
+        const spy = spyOn(service as any, 'addPoint');
         mouseEvent = {
             pageX: Globals.SIDEBAR_WIDTH + width,
             pageY: 50,
@@ -101,11 +101,32 @@ describe('LassoService', () => {
         expect(ctxSpy.stroke).not.toHaveBeenCalled();
     });
 
+    it('onBackspace should call onMouseMove', () => {
+        const moveSpy = spyOn(service, 'onMouseMove');
+        service.onBackspace();
+        expect(moveSpy).toHaveBeenCalled();
+    });
+
+    it('onEscape should call clearPath and clearCanvas from drawingService', () => {
+        const clearSpy = spyOn(service, 'clearPath');
+        service.onEscape();
+        expect(clearSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('onShift should call onMouseMove', () => {
+        const moveSpy = spyOn(service, 'onMouseMove');
+        const shifted = true;
+        service.onShift(shifted);
+        expect(moveSpy).toHaveBeenCalled();
+        expect(service.shift).toEqual(shifted);
+    });
+
     it('addPoint', () => {
         (service as any).pathData = testPath;
-        service.addPoint({ x: 50, y: 50 });
+        (service as any).addPoint({ x: 50, y: 50 });
         expect((service as any).pathData).toEqual(testPath);
-        service.addPoint({ x: 0, y: 0 });
+        (service as any).addPoint({ x: 0, y: 0 });
         testPath.push({ x: 0, y: 0 });
         expect((service as any).pathData).toEqual(testPath);
 
@@ -114,24 +135,24 @@ describe('LassoService', () => {
             { x: 0, y: 50 },
         ];
         (service as any).pathData = testPath;
-        service.addPoint({ x: 25, y: 35 });
+        (service as any).addPoint({ x: 25, y: 35 });
         testPath.push({ x: 25, y: 35 });
         expect((service as any).pathData).toEqual(testPath);
     });
 
     it('checkIsPointValid', () => {
         (service as any).pathData = testPath;
-        expect(service.checkIsPointValid({ x: 50, y: 50 })).toBeFalse();
-        expect(service.checkIsPointValid({ x: -50, y: -50 })).toBeTrue();
+        expect((service as any).checkIsPointValid({ x: 50, y: 50 })).toBeFalse();
+        expect((service as any).checkIsPointValid({ x: -50, y: -50 })).toBeTrue();
         (service as any).pathData = [];
-        expect(service.checkIsPointValid({ x: -50, y: -50 })).toBeTrue();
+        expect((service as any).checkIsPointValid({ x: -50, y: -50 })).toBeTrue();
     });
 
     it('selectArea', () => {
         ctxSpy.getImageData.and.callFake(() => {
             return new ImageData(1, 1);
         });
-        const result = service.selectArea(testPath);
+        const result = (service as any).selectArea(testPath);
         const expectedSize = ServiceCalculator.maxSize(testPath);
         expect(result.height).toEqual(expectedSize[1].y - expectedSize[0].y);
         expect(result.width).toEqual(expectedSize[1].x - expectedSize[0].x);
@@ -142,8 +163,22 @@ describe('LassoService', () => {
         const image = new ImageData(1, 1);
         (service as any).pathData = testPath;
         passSpy.and.callThrough();
-        service.passToSelectionService(image);
+        (service as any).passToSelectionService(image);
         expect(selectionSpy.setTopLeftHandler).toHaveBeenCalled();
         expect(selectionSpy.setPathData).toHaveBeenCalled();
+    });
+
+    it('getPointToPush should return mousePosition if this.shift is false and if pathData is not empty', () => {
+        (service as any).pathData = testPath;
+        service.shift = false;
+        expect((service as any).getPointToPush(Globals.mouseDownEvent)).toEqual(service.getPositionFromMouse(Globals.mouseDownEvent));
+    });
+
+    it('getPointToPush should return shiftAngle if this.shift is true and if pathData is not empty', () => {
+        (service as any).pathData = testPath;
+        service.shift = true;
+        const mousePosition = service.getPositionFromMouse(Globals.mouseDownEvent);
+        const lastPointInPath = (service as any).pathData[(service as any).pathData.length - 1];
+        expect((service as any).getPointToPush(Globals.mouseDownEvent)).toEqual(ServiceCalculator.getShiftAngle(lastPointInPath, mousePosition));
     });
 });

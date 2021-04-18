@@ -70,7 +70,7 @@ export class LassoService extends Tool {
         this.onMouseMove(this.lastMoveEvent);
     }
 
-    addPoint(point: Vec2): void {
+    private addPoint(point: Vec2): void {
         if (
             this.pathData.length >= Globals.pathLength && // Enough points to create a shape
             ServiceCalculator.distanceBewteenPoints(point, this.pathData[0]) <= Globals.closeRadius && // Point close enough to close the shape
@@ -83,7 +83,7 @@ export class LassoService extends Tool {
         }
     }
 
-    checkIsPointValid(point: Vec2): boolean {
+    private checkIsPointValid(point: Vec2): boolean {
         if (this.pathData.length <= 1) {
             return true;
         } else {
@@ -91,7 +91,7 @@ export class LassoService extends Tool {
         }
     }
 
-    intersect(point: Vec2): boolean {
+    private intersect(point: Vec2): boolean {
         for (let i = 1; i < this.pathData.length - 1; i++) {
             if (ServiceCalculator.intersect([this.pathData[i], this.pathData[i - 1]], [this.pathData[this.pathData.length - 1], point])) {
                 return true;
@@ -101,7 +101,7 @@ export class LassoService extends Tool {
         return false;
     }
 
-    selectArea(points: Vec2[]): ImageData {
+    private selectArea(points: Vec2[]): ImageData {
         const pathList = new Path2D();
         const box = ServiceCalculator.maxSize(points);
         const canvas = new OffscreenCanvas(box[1].x - box[0].x, box[1].y - box[0].y);
@@ -122,7 +122,7 @@ export class LassoService extends Tool {
         return imageData;
     }
 
-    passToSelectionService(data: ImageData): void {
+    private passToSelectionService(data: ImageData): void {
         this.selectionService.inSelection = true;
         this.selectionService.selectedArea = data;
         this.selectionService.lassoPath = this.pathData;
@@ -133,7 +133,7 @@ export class LassoService extends Tool {
         this.selectionService.setTopLeftHandler();
     }
 
-    getPointToPush(event: MouseEvent): Vec2 {
+    private getPointToPush(event: MouseEvent): Vec2 {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.pathData.length > 0) {
             const lastPointInPath = this.pathData[this.pathData.length - 1];
