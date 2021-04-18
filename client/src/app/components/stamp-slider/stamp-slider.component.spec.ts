@@ -15,6 +15,7 @@ import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 
 import { StampSliderComponent } from './stamp-slider.component';
 import { SimpleChange } from '@angular/core';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 
 describe('StampSliderComponent', () => {
     let component: StampSliderComponent;
@@ -22,6 +23,7 @@ describe('StampSliderComponent', () => {
     let toolController: ToolControllerService;
     let tool: StampService;
     let matSliderChange: MatSliderChange;
+    const TEST_MAT_SLIDER_VALUE = 2;
     const defaultToolValue = 5;
     beforeEach(async(() => {
         toolController = new ToolControllerService(
@@ -35,31 +37,33 @@ describe('StampSliderComponent', () => {
             {} as BucketService,
         );
 
-        tool = new StampService({} as DrawingService);
+        tool = new StampService(new DrawingService({} as ResizePoint));
         TestBed.configureTestingModule({
             imports: [FormsModule],
             declarations: [StampSliderComponent, MatSlider],
             providers: [
                 StampSliderComponent,
                 { provide: ToolControllerService, useValue: toolController },
-                { provide: StampService, useValue: tool },
+                { provide: StampService, useValue: tool},
             ],
         }).compileComponents();
     }));
-
+    
     beforeEach(() => {
         matSliderChange = {
-            value: Globals.TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
+            value: TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
         } as MatSliderChange;
 
         tool.width = defaultToolValue;
-
+        toolController.stampService = tool;
         toolController.currentTool = tool;
         fixture = TestBed.createComponent(StampSliderComponent);
         component = fixture.componentInstance;
         component.change = true;
         fixture.detectChanges();
     });
+    
+    
     it('should create toolService', () => {
         expect(tool).toBeTruthy();
     });
@@ -79,32 +83,32 @@ describe('StampSliderComponent', () => {
     it('Verifying that the component sets the right width value', () => {
         component.updateWidthValues(matSliderChange);
 
-        expect(component.width).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(component.width).toEqual(TEST_MAT_SLIDER_VALUE);
     });
 
     it('Verifying that updateWidthValues does nothing if the evt.value is null', () => {
         const previousWidth: number = component.width;
-        const previousToolWidth: number = (toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius;
+        const previousToolWidth: number = (toolController.getTool(Globals.STAMP_SHORTCUT) as any).width;
         matSliderChange.value = null;
         component.updateWidthValues(matSliderChange);
         expect(component.width).toEqual(previousWidth);
-        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius).toEqual(previousToolWidth);
+        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).width).toEqual(previousToolWidth);
     });
 
     it('Verifying that the component sets the right width value for the tool', () => {
         component.updateWidthValues(matSliderChange);
-        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).width).toEqual(TEST_MAT_SLIDER_VALUE);
     });
 
     it('verifying ngOnchanges with the change value changing', () => {
         component.updateWidthValues(matSliderChange);
-        const newValue = 8;
-        (toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius = newValue;
+        const newValue = 2;
+        toolController.stampService.width = newValue;
         // On doit faire comme si le form contenait une nouvelle valeur
-        const temp = (toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius;
+        const temp = toolController.stampService.width;
 
         component.ngOnChanges({ change: new SimpleChange(null, component.change, true) });
-        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius).toEqual(temp);
+        expect(toolController.stampService.width).toEqual(temp);
         expect(component.width).toEqual(newValue);
     });
 
@@ -115,7 +119,7 @@ describe('StampSliderComponent', () => {
         // On doit faire comme si le form contenait une nouvelle valeur
 
         // on change pas la valeur de set
-        expect(component.width).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
-        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).sprayRadius).toEqual(Globals.TEST_MAT_SLIDER_VALUE);
+        expect(component.width).toEqual(TEST_MAT_SLIDER_VALUE);
+        expect((toolController.getTool(Globals.STAMP_SHORTCUT) as any).width).toEqual(TEST_MAT_SLIDER_VALUE);
     });
 });
