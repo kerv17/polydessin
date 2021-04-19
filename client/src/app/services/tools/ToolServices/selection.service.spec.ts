@@ -188,12 +188,16 @@ describe('SelectionService', () => {
         selectionResizeSpy = spyOn(selectionResizeService, 'onMouseDown').and.returnValue(true);
         const selectionResizeSpy2 = spyOn(selectionResizeService, 'initializePath');
         const selectionResizeSpy3 = spyOn(selectionResizeService, 'setPathDataAfterMovement');
+        const selectionResizeSpy4 = spyOn(selectionResizeService, 'onMouseMove').and.callFake(() => {
+            return;
+        });
         service.inSelection = true;
         selectionResizeService[resizePathData] = service[pathData];
         service.onMouseDown(mouseDownEvent);
         expect(service[inResize]).toBeTrue();
         expect(selectionResizeSpy2).toHaveBeenCalledWith(service[pathData]);
         expect(selectionResizeSpy3).toHaveBeenCalled();
+        expect(selectionResizeSpy4).toHaveBeenCalled();
     });
 
     it('onMouseMove should do nothing if mouseDown is false', () => {
