@@ -107,7 +107,7 @@ export const MIRROR_SCALE = -1;
 
 // Constante pour tests de sélection
 export const mouseDownEvent = {
-    pageX: 595,
+    pageX: 525,
     pageY: 125,
     offsetX: 125,
     offsetY: 125,

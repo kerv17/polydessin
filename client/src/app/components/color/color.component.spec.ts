@@ -76,8 +76,8 @@ describe('ColorComponent', () => {
 
     it(' invert should swap primaryColor value with secondaryColor value if color modal is not open', () => {
         colorService.modalVisibility = false;
-        component.primaryColor = 'rgba(23,4,56,1)';
-        component.secondaryColor = 'rgba(5,78,fa,0.5)';
+        colorService.primaryColor = 'rgba(23,4,56,1)';
+        colorService.secondaryColor = 'rgba(5,78,fa,0.5)';
         component.invert();
         expect(component.primaryColor).toEqual('rgba(5,78,fa,0.5)');
         expect(component.secondaryColor).toEqual('rgba(23,4,56,1)');
