@@ -27,7 +27,7 @@ class ToolStub extends Tool {}
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-fdescribe('DrawingComponent', () => {
+describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
@@ -269,7 +269,8 @@ fdescribe('DrawingComponent', () => {
         component.ngOnChanges({} as SimpleChanges);
 
         if (component.baseCanvas.nativeElement.onload) {
-            component.baseCanvas.nativeElement.onload.call(component);
+            // on test la fonction lamda pour voir si elle appelle un dispatch
+            component.baseCanvas.nativeElement.onload({} as Event);
         }
 
         expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalledFull);
