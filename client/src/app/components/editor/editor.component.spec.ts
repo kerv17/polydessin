@@ -43,22 +43,26 @@ describe('EditorComponent', () => {
     }));
 
     beforeEach(() => {
+        const width = 1000;
+        const height = 400;
+       
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.editorSizeX = 1;
-        component.editorSizeY = 1;
-        drawingStub.baseCtx.canvas.width = 1;
-        drawingStub.baseCtx.canvas.height = 1;
-        global.innerWidth = 1;
-        global.innerHeight = 1;
+        component.drawingService.controlSize.x= width;
+        component.drawingService.controlSize.y=height;
+        component.drawingService.resizePoint.posX= width;
+        component.drawingService.resizePoint.posY=height;
+       
+        
+
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('onResize should increase editorSizeX and editorSizeX if canvas is bigger than the window to ensure control points are accessible', () => {
+    it('onResize should increase editorSizeX and editorSizeY if canvas is bigger than the window to ensure control points are accessible', () => {
         const width = 1000;
         const height = 400;
         const posX = 1030;
