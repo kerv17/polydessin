@@ -1,29 +1,33 @@
-<main class='table'>
-    <div class='cells'>
-        <div class='color-div' [ngStyle]="{'background-color': getPrimaryColor() || 'rgba(0,0,0,1)'}" (click)='openModal("Primary")'>
-            <div class='infobulle' *ngIf="!visibility">Modifier la couleur principale</div>
+<main class="table">
+    <div class="cells">
+        <div class="color-div" [ngStyle]="{ 'background-color': getPrimaryColor() || 'rgba(0,0,0,1)' }" (click)="openModal('Primary')">
+            <div class="infobulle" *ngIf="!visibility">Modifier la couleur principale</div>
         </div>
     </div>
-    <div class='button'>
-        <img src="../../../assets/exchange-alt-solid.svg" (click)='invert()' class='image'>
-        <div class='infobulle' *ngIf="!visibility">Inverser les 2 couleurs</div>
+    <div class="button">
+        <img src="../../../assets/exchange-alt-solid.svg" (click)="invert()" class="image" />
+        <div class="infobulle" *ngIf="!visibility">Inverser les 2 couleurs</div>
     </div>
 
-    <div class='cells'>
-        <div class="color-div" [ngStyle]="{'background-color': getSecondaryColor() || 'rgba(255,255,255,1)'}" (click)="openModal('Secondary')">
-            <div class='infobulle' *ngIf="!visibility">Modifier la couleur secondaire</div>
+    <div class="cells">
+        <div class="color-div" [ngStyle]="{ 'background-color': getSecondaryColor() || 'rgba(255,255,255,1)' }" (click)="openModal('Secondary')">
+            <div class="infobulle" *ngIf="!visibility">Modifier la couleur secondaire</div>
         </div>
     </div>
-    <br>
-    <p class='text'>Principale</p>
-    <p class='text'>Secondaire</p>
+    <br />
+    <p class="text">Principale</p>
+    <p class="text">Secondaire</p>
 </main>
 
-<div *ngIf='recentColors.length' class='recentColorsWrapper'>
-    <p class='text-recent'>Couleurs récentes</p>
+<div *ngIf="recentColors.length" class="recentColorsWrapper">
+    <p class="text-recent">Couleurs récentes</p>
 
-    <div class='recentColors' *ngFor="let colors of recentColors">
-        <div class="color-div-recent" [ngStyle]="{'background-color': colors || 'rgba(0,0,0,1)'}" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
+    <div class="recentColors" *ngFor="let colors of recentColors">
+        <div
+            class="color-div-recent"
+            [ngStyle]="{ 'background-color': colors || 'rgba(0,0,0,1)' }"
+            (click)="selectPrimaryColor(colors)"
+            (contextmenu)="selectSecondaryColor(colors, $event)"
+        ></div>
     </div>
-
 </div>

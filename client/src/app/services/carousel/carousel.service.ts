@@ -53,7 +53,7 @@ export class CarouselService {
         }
     }
     // alterne la position du dernier et celui a enlever et ensuite fait simplement un pop
-    removeCanvasInformation(codeID: string): void {
+    private removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
             if (this.pictures[i].codeID === codeID) {
                 this.pictures[i] = this.pictures[this.pictures.length - 1];
@@ -89,7 +89,7 @@ export class CarouselService {
         );
     }
 
-    setSlides(): void {
+    private setSlides(): void {
         for (const element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
         }
@@ -97,7 +97,7 @@ export class CarouselService {
         this.showCarousel = true;
     }
 
-    filterdessin(): void {
+    filterDrawing(): void {
         this.showLoad = true;
 
         this.requestService.getSome(this.currentTags).subscribe(
@@ -113,13 +113,13 @@ export class CarouselService {
             },
         );
     }
-    getImages(response: HttpResponse<CanvasInformation[]>): void {
+    private getImages(response: HttpResponse<CanvasInformation[]>): void {
         if (response.body != null) {
             this.pictures = response.body;
             this.setSlides();
         }
     }
-    handleCarouselErrors(err: HttpErrorResponse): void {
+    private handleCarouselErrors(err: HttpErrorResponse): void {
         if (err.status === Httpstatus.StatusCodes.NOT_FOUND) {
             this.popupService.openPopup(err.error);
         } else if (err.status === 0) {

@@ -58,7 +58,7 @@ describe('CarouselService', () => {
         slideArray[0] = new SlideModel();
         slideArray[0].id = 'test';
 
-        const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
+        const removeCanvasSpy = spyOn(service as any, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         const message = { title: 'test' } as Message;
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
@@ -77,7 +77,7 @@ describe('CarouselService', () => {
         service.pictures = new Array(1);
         slideArray[1] = new SlideModel();
         slideArray[1].id = 'test';
-        const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
+        const removeCanvasSpy = spyOn(service as any, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
 
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: null });
@@ -96,7 +96,7 @@ describe('CarouselService', () => {
         service.pictures = new Array(0);
         slideArray[0] = new SlideModel();
         slideArray[0].id = 'test';
-        const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
+        const removeCanvasSpy = spyOn(service as any, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
         const message = { title: 'test' } as Message;
         const response: HttpResponse<Message> = new HttpResponse<Message>({ body: message });
@@ -114,9 +114,9 @@ describe('CarouselService', () => {
         service.pictures = new Array(0);
         slideArray[0] = new SlideModel();
         slideArray[0].id = 'test';
-        const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
+        const removeCanvasSpy = spyOn(service as any, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const handleSpy = spyOn(service, 'handleCarouselErrors').and.returnValue();
+        const handleSpy = spyOn(service as any, 'handleCarouselErrors').and.returnValue({});
         const response: HttpErrorResponse = new HttpErrorResponse({});
         // tslint:disable-next-line: no-any
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(throwError(response));
@@ -132,9 +132,9 @@ describe('CarouselService', () => {
     it('should do nothing  if slide model is undefined', () => {
         service.pictures = new Array(0);
 
-        const removeCanvasSpy = spyOn(service, 'removeCanvasInformation');
+        const removeCanvasSpy = spyOn(service as any, 'removeCanvasInformation');
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
-        const handleSpy = spyOn(service, 'handleCarouselErrors').and.returnValue();
+        const handleSpy = spyOn(service as any, 'handleCarouselErrors').and.returnValue({});
         const response: HttpErrorResponse = new HttpErrorResponse({});
 
         getSpy = spyOn((service as any).requestService, 'basicDelete').and.returnValue(throwError(response));
@@ -152,7 +152,7 @@ describe('CarouselService', () => {
         for (let i = 0; i < arraySize; i++) {
             service.pictures[i] = { codeID: i.toString() } as CanvasInformation;
         }
-        service.removeCanvasInformation('0');
+        (service as any).removeCanvasInformation('0');
         expect(service.pictures[0].codeID).toEqual((arraySize - 1).toString());
         expect(service.pictures.length).toEqual(arraySize - 1);
     });
@@ -193,7 +193,7 @@ describe('CarouselService', () => {
         service.currentTags = 'test';
         const canvasArray: CanvasInformation[] = new Array(1);
         canvasArray[0] = {} as CanvasInformation;
-        const getImagesSpy = spyOn(service, 'getImages').and.returnValue();
+        const getImagesSpy = spyOn(service as any, 'getImages').and.returnValue({});
         const response: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
         getSpy = spyOn((service as any).requestService, 'basicGet').and.returnValue(of(response));
         service.initialiserCarousel();
@@ -203,11 +203,11 @@ describe('CarouselService', () => {
     });
 
     it('should initialise the carousel and get all the pictures and recieve an erro if one was thrown', () => {
-        const getImagesSpy = spyOn(service, 'getImages').and.returnValue();
+        const getImagesSpy = spyOn(service as any, 'getImages').and.returnValue({});
 
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({});
         getSpy = spyOn((service as any).requestService, 'basicGet').and.returnValue(throwError(errorResponse));
-        const handleSpy = spyOn(service, 'handleCarouselErrors').and.returnValue();
+        const handleSpy = spyOn(service as any, 'handleCarouselErrors').and.returnValue({});
         service.initialiserCarousel();
         expect(getImagesSpy).not.toHaveBeenCalled();
         expect(handleSpy).toHaveBeenCalled();
@@ -219,7 +219,7 @@ describe('CarouselService', () => {
         for (let i = 0; i < arraySize; i++) {
             service.pictures[i] = { codeID: i.toString(), format: 'png' } as CanvasInformation;
         }
-        service.setSlides();
+        (service as any).setSlides();
         for (const element of service.pictures) {
             expect(element.imageData.includes('data:image/png')).toBeTrue();
         }
@@ -230,9 +230,9 @@ describe('CarouselService', () => {
         const canvasArray: CanvasInformation[] = new Array(1);
         canvasArray[0] = {} as CanvasInformation;
         const response: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
-        const getImagesSpy = spyOn(service, 'getImages').and.returnValue();
+        const getImagesSpy = spyOn(service as any, 'getImages').and.returnValue({});
         getSpy = spyOn((service as any).requestService, 'getSome').and.returnValue(of(response));
-        service.filterdessin();
+        service.filterDrawing();
         expect(getImagesSpy).toHaveBeenCalled();
         expect(service.currentTags).toEqual(service.currentSearch);
         expect(getSpy).toHaveBeenCalled();
@@ -243,12 +243,12 @@ describe('CarouselService', () => {
         service.currentSearch = 'test';
         const canvasArray: CanvasInformation[] = new Array(1);
         canvasArray[0] = {} as CanvasInformation;
-        const handleSpy = spyOn(service, 'handleCarouselErrors').and.returnValue();
+        const handleSpy = spyOn(service as any, 'handleCarouselErrors').and.returnValue({});
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({});
         getSpy = spyOn((service as any).requestService, 'getSome').and.returnValue(throwError(errorResponse));
-        const getImagesSpy = spyOn(service, 'getImages').and.returnValue();
+        const getImagesSpy = spyOn(service as any, 'getImages').and.returnValue({});
 
-        service.filterdessin();
+        service.filterDrawing();
         expect(getImagesSpy).not.toHaveBeenCalled();
         expect(service.currentTags).not.toEqual(service.currentSearch);
         expect(getSpy).toHaveBeenCalled();
@@ -258,20 +258,20 @@ describe('CarouselService', () => {
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 404, error: 'test' });
         popupSpy = spyOn((service as any).popupService as any, 'openPopup').and.returnValue({});
-        service.handleCarouselErrors(errorResponse);
+        (service as any).handleCarouselErrors(errorResponse);
         expect(popupSpy).toHaveBeenCalledWith(errorResponse.error);
     });
 
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 0, error: 'test' });
         popupSpy = spyOn((service as any).popupService as any, 'openPopup').and.returnValue({});
-        service.handleCarouselErrors(errorResponse);
+        (service as any).handleCarouselErrors(errorResponse);
         expect(popupSpy).toHaveBeenCalledWith('Aucune connection avec le serveur');
     });
     it('should show the Error Response', () => {
         const errorResponse: HttpErrorResponse = new HttpErrorResponse({ status: 10, error: 'test' });
         popupSpy = spyOn((service as any).popupService as any, 'openPopup').and.returnValue({});
-        service.handleCarouselErrors(errorResponse);
+        (service as any).handleCarouselErrors(errorResponse);
         expect(popupSpy).not.toHaveBeenCalledWith('Aucune connection avec le serveur');
         expect(popupSpy).not.toHaveBeenCalledWith(errorResponse.error);
     });
@@ -279,7 +279,7 @@ describe('CarouselService', () => {
         const canvasArray: CanvasInformation[] = new Array(1);
         canvasArray[0] = {} as CanvasInformation;
         const response: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: canvasArray });
-        service.getImages(response);
+        (service as any).getImages(response);
         expect(service.pictures).toEqual(canvasArray);
     });
     it('shouldnt get the images from the HttpResponse if the body is null', () => {
@@ -287,7 +287,7 @@ describe('CarouselService', () => {
         canvasArray[0] = {} as CanvasInformation;
         service.pictures = canvasArray;
         const response: HttpResponse<CanvasInformation[]> = new HttpResponse<CanvasInformation[]>({ body: null });
-        service.getImages(response);
+        (service as any).getImages(response);
         expect(service.pictures).toEqual(canvasArray);
     });
 });

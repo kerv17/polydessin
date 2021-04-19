@@ -78,8 +78,8 @@ describe('ExportComponent', () => {
     it('should set the right filter', () => {
         drawImageSpy = spyOn(component.ctx, 'drawImage');
         const test = 'none';
-        component.setFiltre(test);
-        expect(component.filtre).toEqual(test);
+        component.setFilter(test);
+        expect(component.filter).toEqual(test);
         expect(component.ctx.filter).toEqual(test);
         expect(drawImageSpy).toHaveBeenCalled();
     });

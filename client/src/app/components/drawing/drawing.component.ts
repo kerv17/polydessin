@@ -15,20 +15,20 @@ import { DrawingAction } from '@app/services/tools/undoRedo/undo-redo.service';
     styleUrls: ['./drawing.component.scss'],
 })
 export class DrawingComponent implements AfterViewInit, OnChanges {
-    @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('baseCanvas', { static: false })
+    baseCanvas: ElementRef<HTMLCanvasElement>;
     // On utilise ce canvas pour dessiner sans affecter le dessin final
-    @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('previewCanvas', { static: false })
+    previewCanvas: ElementRef<HTMLCanvasElement>;
     // on utilise ce canvas pour afficher la grille
-    @ViewChild('gridCanvas', { static: false }) gridCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('gridCanvas', { static: false })
+    gridCanvas: ElementRef<HTMLCanvasElement>;
 
-    @Input()
-    widthPrev: number;
+    @Input() widthPrev: number;
 
-    @Input()
-    heightPrev: number;
+    @Input() heightPrev: number;
 
-    @Input()
-    mouseDown: boolean;
+    @Input() mouseDown: boolean;
 
     mouseOut: boolean = false;
 
@@ -93,51 +93,52 @@ export class DrawingComponent implements AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.viewInitialized) {
-            if (this.mouseDown) {
-                if (changes.widthPrev) {
-                    this.previewCanvas.nativeElement.width = this.widthPrev;
-                }
-                if (changes.heightPrev) {
-                    this.previewCanvas.nativeElement.height = this.heightPrev;
-                }
-            } else {
-                if (this.controller.selectionService.inSelection) {
-                    this.controller.selectionService.onEscape();
-                }
-                const newHeight = Math.floor(this.heightPrev);
-                const newWidth = Math.floor(this.widthPrev);
-                this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
-                this.newCanvasSize = { x: newWidth, y: newHeight };
-                const dessin = this.baseCtx.getImageData(0, 0, newWidth, newHeight);
-
-                this.baseCanvas.nativeElement.width = newWidth;
-                this.baseCanvas.nativeElement.height = newHeight;
-                this.previewCanvas.nativeElement.width = newWidth;
-                this.previewCanvas.nativeElement.height = newHeight;
-                this.gridCtx.canvas.width = newWidth;
-                this.gridCtx.canvas.height = newHeight;
-                const eventGrid: CustomEvent = new CustomEvent('grid');
-                dispatchEvent(eventGrid);
-                this.baseCtx.putImageData(dessin, 0, 0);
-                this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
-                if (this.allowUndoCall) {
-                    const drawingAction: DrawingAction = {
-                        type: 'Drawing',
-                        drawing: this.drawingService.baseCtx.getImageData(0, 0, this.newCanvasSize.x, this.newCanvasSize.y),
-                        width: this.newCanvasSize.x,
-                        height: this.newCanvasSize.y,
-                    };
-                    const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
-                    dispatchEvent(event);
-                }
-                this.baseCanvas.nativeElement.onload = () => {
-                    const eventSave: CustomEvent = new CustomEvent('saveState');
-                    dispatchEvent(eventSave);
-                };
-
-                this.allowUndoCall = true;
+        if (!this.viewInitialized) {
+            return;
+        }
+        if (this.mouseDown) {
+            if (changes.widthPrev) {
+                this.previewCanvas.nativeElement.width = this.widthPrev;
             }
+            if (changes.heightPrev) {
+                this.previewCanvas.nativeElement.height = this.heightPrev;
+            }
+        } else {
+            if (this.controller.selectionService.inSelection) {
+                this.controller.selectionService.onEscape();
+            }
+            const newHeight = Math.floor(this.heightPrev);
+            const newWidth = Math.floor(this.widthPrev);
+            this.previousCanvasSize = { x: this.baseCanvas.nativeElement.width, y: this.baseCanvas.nativeElement.height };
+            this.newCanvasSize = { x: newWidth, y: newHeight };
+            const dessin = this.baseCtx.getImageData(0, 0, newWidth, newHeight);
+
+            this.baseCanvas.nativeElement.width = newWidth;
+            this.baseCanvas.nativeElement.height = newHeight;
+            this.previewCanvas.nativeElement.width = newWidth;
+            this.previewCanvas.nativeElement.height = newHeight;
+            this.gridCtx.canvas.width = newWidth;
+            this.gridCtx.canvas.height = newHeight;
+            const eventGrid: CustomEvent = new CustomEvent('grid');
+            dispatchEvent(eventGrid);
+            this.baseCtx.putImageData(dessin, 0, 0);
+            this.drawingService.fillNewSpace(this.previousCanvasSize, this.newCanvasSize);
+            if (this.allowUndoCall) {
+                const drawingAction: DrawingAction = {
+                    type: 'Drawing',
+                    drawing: this.drawingService.baseCtx.getImageData(0, 0, this.newCanvasSize.x, this.newCanvasSize.y),
+                    width: this.newCanvasSize.x,
+                    height: this.newCanvasSize.y,
+                };
+                const event: CustomEvent = new CustomEvent('action', { detail: drawingAction });
+                dispatchEvent(event);
+            }
+            this.baseCanvas.nativeElement.onload = () => {
+                const eventSave: CustomEvent = new CustomEvent('saveState');
+                dispatchEvent(eventSave);
+            };
+
+            this.allowUndoCall = true;
         }
     }
 

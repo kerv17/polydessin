@@ -51,7 +51,7 @@ export class StampService extends Tool {
         ctx.translate(-this.pathData[0].x, -this.pathData[0].y);
     }
 
-    drawStamp(ctx: CanvasRenderingContext2D): void {
+    private drawStamp(ctx: CanvasRenderingContext2D): void {
         this.setStampRotationScale(ctx, this.pointWidth);
         const image = new Image();
         image.src = path + this.toolMode;
@@ -68,12 +68,12 @@ export class StampService extends Tool {
         this.loadSetting(previousSetting);
     }
 
-    convertDegToRad(deg: number): number {
+    private convertDegToRad(deg: number): number {
         // tslint:disable-next-line: no-magic-numbers
         return (deg * Math.PI) / 180;
     }
 
-    scaleImage(img: HTMLImageElement): Vec2 {
+    private scaleImage(img: HTMLImageElement): Vec2 {
         return { x: (maxImageSize / img.naturalWidth) * img.naturalHeight, y: maxImageSize };
     }
 }

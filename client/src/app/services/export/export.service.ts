@@ -18,15 +18,15 @@ export class ExportService {
     }
     showModalExport: boolean = false;
 
-    setExportCanvas(filtre: string): void {
+    private setExportCanvas(filter: string): void {
         this.canvas.height = this.drawingService.canvas.height;
         this.canvas.width = this.drawingService.canvas.width;
-        this.context.filter = filtre;
+        this.context.filter = filter;
         this.context.drawImage(this.drawingService.canvas, 0, 0);
     }
 
-    exportToImgur(type: string, name: string, filtre: string): void {
-        if (!this.createExportImage(type, name, filtre)) return;
+    exportToImgur(type: string, name: string, filter: string): void {
+        if (!this.createExportImage(type, name, filter)) return;
         const data = this.canvas.toDataURL('image/' + type);
 
         const info = { name, format: type, imageData: data } as CanvasInformation;
@@ -44,8 +44,8 @@ export class ExportService {
         );
     }
 
-    downloadImage(type: string, name: string, filtre: string): void {
-        if (!this.createExportImage(type, name, filtre)) return;
+    downloadImage(type: string, name: string, filter: string): void {
+        if (!this.createExportImage(type, name, filter)) return;
         this.anchor.href = this.canvas.toDataURL('image/' + type);
 
         this.anchor.download = name;
@@ -53,10 +53,10 @@ export class ExportService {
         this.anchor.click();
     }
 
-    createExportImage(type: string, name: string, filtre: string): boolean {
+    private createExportImage(type: string, name: string, filter: string): boolean {
         if (type != undefined && this.checkifNotEmpty(name)) {
             if (confirm('Êtes-vous sûr de vouloir exporter le dessin')) {
-                this.setExportCanvas(filtre);
+                this.setExportCanvas(filter);
                 return true;
             }
         } else {
@@ -64,7 +64,7 @@ export class ExportService {
         }
         return false;
     }
-    checkifNotEmpty(name: string): boolean {
+    private checkifNotEmpty(name: string): boolean {
         if (name === '') return false;
 
         for (const char of name) {

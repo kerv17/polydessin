@@ -12,11 +12,9 @@ import { ColorModalComponent } from './color-modal.component';
     template: './color-palette.component.html',
 })
 class MockColorPaletteComponent {
-    @Input()
-    hue: string;
+    @Input() hue: string;
 
-    @Input()
-    opacity: string;
+    @Input() opacity: string;
 }
 
 describe('ColorModalComponent', () => {

@@ -2,16 +2,17 @@ import { TestBed } from '@angular/core/testing';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
-import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
-import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis.service';
 import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
-import { LineService } from '@app/services/tools/ToolServices/line-service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
-import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { LineService } from '@app/services/tools/ToolServices/line.service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { ToolControllerService } from './tool-controller.service';
+
 // tslint:disable:no-any
 describe('ToolControllerService', () => {
     let service: ToolControllerService;

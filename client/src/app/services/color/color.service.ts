@@ -43,20 +43,16 @@ export class ColorService {
     }
 
     confirmColorSelection(color: string): void {
-        if (this.currentColor === PRIMARY_COLOR) {
-            if (color !== this.primaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
-                    this.saveColor(this.primaryColor);
-                }
-                this.primaryColor = color;
+        if (this.currentColor === PRIMARY_COLOR && color !== this.primaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
+                this.saveColor(this.primaryColor);
             }
-        } else if (this.currentColor === SECONDARY_COLOR) {
-            if (color !== this.secondaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
-                    this.saveColor(this.secondaryColor);
-                }
-                this.secondaryColor = color;
+            this.primaryColor = color;
+        } else if (this.currentColor === SECONDARY_COLOR && color !== this.secondaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
+                this.saveColor(this.secondaryColor);
             }
+            this.secondaryColor = color;
         }
     }
 
@@ -79,7 +75,7 @@ export class ColorService {
         this.modalVisibility = false;
     }
 
-    rgbaToRgb(color: string): string {
+    private rgbaToRgb(color: string): string {
         const values = this.readRGBValues(color);
         return 'rgb(' + values[0] + ',' + values[1] + ',' + values[2] + ')';
     }

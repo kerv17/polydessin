@@ -1,24 +1,53 @@
-<main class='table'>
+<main class="table">
     <div class="color-wrapper">
-        <app-color-palette [hue]="hue" [opacity]='opacity' (color)="color=$event" (mouseup)="setColorInputValue()"></app-color-palette>
-        <app-color-slider (color)="hue=$event" style="margin-left:16px" (mouseup)="setColorInputValue()"></app-color-slider>
+        <app-color-palette [hue]="hue" [opacity]="opacity" (color)="color = $event" (mouseup)="setColorInputValue()"></app-color-palette>
+        <app-color-slider (color)="hue = $event" style="margin-left: 16px" (mouseup)="setColorInputValue()"></app-color-slider>
     </div>
 
-    <div class='input-wrapper'>
-        <div class="color-div" [ngStyle]="{'background-color': color || 'rgba(0,0,0,1)'}"></div>
-        <br>
+    <div class="input-wrapper">
+        <div class="color-div" [ngStyle]="{ 'background-color': color || 'rgba(0,0,0,1)' }"></div>
+        <br />
         <label>R : #</label>
-        <input [(ngModel)]='rValue' size="1" (blur)='verifyIfEmpty()' (keyup)='updateColorFromInput()' (keypress)='omitUnwantedColorValue($event)' maxlength='2'><br>
+        <input
+            [(ngModel)]="rValue"
+            size="1"
+            (blur)="verifyIfEmpty()"
+            (keyup)="updateColorFromInput()"
+            (keypress)="omitUnwantedColorValue($event)"
+            maxlength="2"
+        /><br />
         <label>V : #</label>
-        <input [(ngModel)]='gValue' size="1" (blur)='verifyIfEmpty()' (keyup)='updateColorFromInput()' (keypress)='omitUnwantedColorValue($event)' maxlength='2'><br>
+        <input
+            [(ngModel)]="gValue"
+            size="1"
+            (blur)="verifyIfEmpty()"
+            (keyup)="updateColorFromInput()"
+            (keypress)="omitUnwantedColorValue($event)"
+            maxlength="2"
+        /><br />
         <label>B : #</label>
-        <input [(ngModel)]='bValue' size="1" (blur)='verifyIfEmpty()' (keyup)='updateColorFromInput()' (keypress)='omitUnwantedColorValue($event)' maxlength='2'><br><br>
+        <input
+            [(ngModel)]="bValue"
+            size="1"
+            (blur)="verifyIfEmpty()"
+            (keyup)="updateColorFromInput()"
+            (keypress)="omitUnwantedColorValue($event)"
+            maxlength="2"
+        /><br /><br />
 
         <label>Opacité : </label>
-        <input [(ngModel)]='opacity' size='1' (input)="updateColorFromInput()" (keypress)='omitUnwantedChars($event)' (keyup)='verifyMaxOpacity()' (change)='opacityIsNotEmpty()' maxlength='3'>
+        <input
+            [(ngModel)]="opacity"
+            size="1"
+            (input)="updateColorFromInput()"
+            (keypress)="omitUnwantedChars($event)"
+            (keyup)="verifyMaxOpacity()"
+            (change)="opacityIsNotEmpty()"
+            maxlength="3"
+        />
         <label> % </label>
-        <br><br>
-        <button (click)="confirmColor()"> OK </button>
-        <button (click)="cancel()"> Annuler </button>
+        <br /><br />
+        <button (click)="confirmColor()">OK</button>
+        <button (click)="cancel()">Annuler</button>
     </div>
 </main>

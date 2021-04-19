@@ -86,7 +86,7 @@ export const TEST_MAT_SLIDER_VALUE = 12;
 export const MILS_TO_SEC = 1000;
 
 // constante pour outil sélection
-export const N_PIXELS_DEPLACEMENT = 3;
+export const PIXELS_MOVE_SELECTION = 3;
 export const LINE_DASH = 10;
 export const HANDLERS_POSITION = 5;
 export const CURRENT_SELECTION_POSITION = 4;
@@ -126,3 +126,10 @@ export const GRID_MIN_BOX_VALUE = 10;
 // constante pour lasso
 export const closeRadius = 20;
 export const pathLength = 3;
+// Constante pour Ligne
+export const NOT_IN_INDEX = -1;
+// tslint:disable: no-magic-numbers
+export const X_QUADRANTS: number[] = [0, 7];
+export const Y_QUADRANTS: number[] = [3, 4];
+// tslint:enable: no-magic-numbers
+export const HALF_QUADRANTS = 22.5;

@@ -22,11 +22,9 @@ import {
     Quelques modifications y ont été apportées
 */
 export class ColorSliderComponent implements AfterViewInit {
-    @ViewChild('canvas')
-    canvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
-    @Output()
-    color: EventEmitter<string> = new EventEmitter(true);
+    @Output() color: EventEmitter<string> = new EventEmitter(true);
 
     ctx: CanvasRenderingContext2D;
     mousedown: boolean = false;

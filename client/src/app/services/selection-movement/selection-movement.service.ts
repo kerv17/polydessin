@@ -120,20 +120,20 @@ export class SelectionMovementService {
         }
         const deplacement: Vec2 = { x: 0, y: 0 };
         if (this.leftArrow) {
-            topLeft.x -= Globals.N_PIXELS_DEPLACEMENT;
-            deplacement.x -= Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.x -= Globals.PIXELS_MOVE_SELECTION;
+            deplacement.x -= Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.upArrow) {
-            topLeft.y -= Globals.N_PIXELS_DEPLACEMENT;
-            deplacement.y -= Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.y -= Globals.PIXELS_MOVE_SELECTION;
+            deplacement.y -= Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.rightArrow) {
-            topLeft.x += Globals.N_PIXELS_DEPLACEMENT;
-            deplacement.x += Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.x += Globals.PIXELS_MOVE_SELECTION;
+            deplacement.x += Globals.PIXELS_MOVE_SELECTION;
         }
         if (this.downArrow) {
-            topLeft.y += Globals.N_PIXELS_DEPLACEMENT;
-            deplacement.y += Globals.N_PIXELS_DEPLACEMENT;
+            topLeft.y += Globals.PIXELS_MOVE_SELECTION;
+            deplacement.y += Globals.PIXELS_MOVE_SELECTION;
         }
         this.initializeLassoPath(lassoBorder);
         this.updateLassoBorder({ x: deplacement.x, y: deplacement.y }, toolMode, lassoBorder);

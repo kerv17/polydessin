@@ -28,10 +28,6 @@ describe('EditorComponent', () => {
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
-        //    const width = 1000;
-        //    const height = 400;
-        //   global.innerHeight = height;
-        //   global.innerWidth = width;
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
         drawingStub.resizePoint = resizeStub;
@@ -49,18 +45,12 @@ describe('EditorComponent', () => {
     }));
 
     beforeEach(() => {
-        //   const width = 900;
-        //  const height = 400;
         drawingStub.canvasSize = { x: 250, y: 250 } as Vec2;
         whateverSpy = spyOn(drawingStub, 'initializeCanvas').and.returnValue({ x: 250, y: 250 } as Vec2);
         spyOn(drawingStub.resizePoint, 'resetControlPoints').and.returnValue();
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        //  component.drawingService.controlSize.x = width;
-        // component.drawingService.controlSize.y = height;
-        // component.drawingService.resizePoint.posX = width;
-        // component.drawingService.resizePoint.posY = height;
     });
 
     it('should create', () => {

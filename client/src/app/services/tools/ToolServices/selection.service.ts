@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from './rectangle.service';
 @Injectable({
     providedIn: 'root',
 })

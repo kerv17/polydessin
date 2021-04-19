@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { LineService } from '@app/services/tools/ToolServices/line-service';
+import { LineService } from '@app/services/tools/ToolServices/line.service';
 import { LineOptionsComponent } from './line-options.component';
 describe('LineOptionsComponent', () => {
     let component: LineOptionsComponent;

@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineService } from './line-service';
+import { LineService } from './line.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({

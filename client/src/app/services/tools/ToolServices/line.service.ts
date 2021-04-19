@@ -109,7 +109,7 @@ export class LineService extends Tool {
         this.onMouseMove(this.lastMoveEvent);
     }
 
-    getPointToPush(event: MouseEvent): Vec2 {
+    private getPointToPush(event: MouseEvent): Vec2 {
         const mousePosition = this.getPositionFromMouse(event);
         if (this.pathData.length > 0) {
             const lastPointInPath = this.pathData[this.pathData.length - 1];

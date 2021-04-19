@@ -83,18 +83,14 @@ export class MetadataService {
     }
 
     private validateTags(tags: string[]): boolean {
-        if (tags.length === 0) {
-            // un dessin sans tag est valide
-            return true;
-        } else {
-            return (
-                this.verifyTagsNotNull(tags) &&
+        return (
+            tags.length === 0 ||
+            (this.verifyTagsNotNull(tags) &&
                 this.verifyTagsTooLong(tags) &&
                 this.verifyTagsTooShort(tags) &&
                 this.verifyTagsNoSpecialChracter(tags) &&
-                this.verifyTagsNumber(tags)
-            );
-        }
+                this.verifyTagsNumber(tags))
+        );
     }
 
     private verifyTagsNumber(tags: string[]): boolean {

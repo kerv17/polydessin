@@ -35,12 +35,7 @@ describe('ClipboardService', () => {
         drawService.canvas = canvasTestHelper.canvas;
         drawService.canvas.width = canvasWidth;
         drawService.canvas.height = canvasHeight;
-        selectionService[pathData] = [
-            { x: 100, y: 100 },
-            { x: 200, y: 100 },
-            { x: 200, y: 200 },
-            { x: 100, y: 200 },
-        ];
+        selectionService[pathData] = [{ x: 100, y: 100 }, { x: 200, y: 100 }, { x: 200, y: 200 }, { x: 100, y: 200 }];
         selectionService.selectedArea = drawService.previewCtx.getImageData(width, width, width, width);
     });
 

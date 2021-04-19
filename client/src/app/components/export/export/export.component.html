@@ -27,59 +27,59 @@
             <p>Vous pouvez appliquer un filtre</p>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'none' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'none' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('none')"
+                (click)="setFilter('none')"
             >
                 Aucun Filtre
             </button>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'grayscale(100)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'grayscale(100)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('grayscale(100)')"
+                (click)="setFilter('grayscale(100)')"
             >
                 FiltreGris
             </button>
             <button
                 id="blur"
                 [ngStyle]="{
-                    backgroundColor: filtre == 'blur(4px)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'blur(4px)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('blur(4px)')"
+                (click)="setFilter('blur(4px)')"
             >
                 Embrouiller
             </button>
 
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'sepia(100)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'sepia(100)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('sepia(100)')"
+                (click)="setFilter('sepia(100)')"
             >
                 Sepia
             </button>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'invert(100)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'invert(100)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('invert(100)')"
+                (click)="setFilter('invert(100)')"
             >
                 Inversion de couleur
             </button>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'brightness(50%)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'brightness(50%)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('brightness(50%)')"
+                (click)="setFilter('brightness(50%)')"
             >
                 Baisse de luminosité
             </button>
             <button
                 [ngStyle]="{
-                    backgroundColor: filtre == 'brightness(150%)' ? 'gainsboro' : 'white'
+                    backgroundColor: filter == 'brightness(150%)' ? 'gainsboro' : 'white'
                 }"
-                (click)="setFiltre('brightness(150%)')"
+                (click)="setFilter('brightness(150%)')"
             >
                 Augmentation de luminosité
             </button>

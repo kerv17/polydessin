@@ -97,7 +97,7 @@ export class DrawingService {
         return false;
     }
 
-    reloadOldCanvas(oldCanvas: CanvasInformation): void {
+    private reloadOldCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
         this.setCanvassSize(newSize);
@@ -133,7 +133,7 @@ export class DrawingService {
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
 
-    canvasNotEmpty(image: ImageData): boolean {
+    private canvasNotEmpty(image: ImageData): boolean {
         for (let i = 0; i < image.data.length; i += Globals.PIXEL_SIZE) {
             if (image.data[i] !== Globals.WHITE || image.data[i + 1] !== Globals.WHITE || image.data[i + 2] !== Globals.WHITE) {
                 return true;

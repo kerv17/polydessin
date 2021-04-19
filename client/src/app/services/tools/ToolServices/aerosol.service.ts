@@ -68,11 +68,11 @@ export class AerosolService extends Tool {
         this.drawSpray(this.drawingService.previewCtx, this.pathData);
     }
 
-    sprayPoints(position: Vec2, radius: number): void {
+    private sprayPoints(position: Vec2, radius: number): void {
         this.pathData.push(this.addPoint(position, radius));
     }
 
-    addPoint(position: Vec2, radius: number): Vec2 {
+    private addPoint(position: Vec2, radius: number): Vec2 {
         let pointToAdd: Vec2;
         let xVariation: number;
         let yVariation: number;
@@ -84,7 +84,7 @@ export class AerosolService extends Tool {
         return pointToAdd;
     }
 
-    drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
+    private drawSpray(ctx: CanvasRenderingContext2D, points: Vec2[]): void {
         ctx.strokeStyle = ctx.strokeStyle = this.color || 'black';
         ctx.fillStyle = this.color || 'black';
         for (const point of points) {
@@ -95,9 +95,8 @@ export class AerosolService extends Tool {
         }
     }
 
-    distance(x: number, y: number): number {
-        const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        return distance;
+    private distance(x: number, y: number): number {
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     doAction(action: DrawAction): void {

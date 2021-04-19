@@ -161,7 +161,7 @@ export class EllipsisService extends Tool {
         this.perimerterPathData = list;
     }
 
-    ellipseWidth(a: Vec2, c: Vec2): Vec2 {
+    private ellipseWidth(a: Vec2, c: Vec2): Vec2 {
         const x = c.x - a.x < 0 ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
         const y = c.y - a.y < 0 ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
 

@@ -24,7 +24,7 @@ describe('StampService', () => {
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['translate', 'rotate', 'scale', 'drawImage', 'setTransform']);
         drawingService.baseCtx = baseCtxSpy;
         service = TestBed.inject(StampService);
-        drawStampSpy = spyOn(service, 'drawStamp');
+        drawStampSpy = spyOn(service as any, 'drawStamp');
 
         mouseEvent = {
             pageX: 500,
@@ -98,7 +98,7 @@ describe('StampService', () => {
         service.setStampRotationScale(baseCtxSpy, orientation);
         expect(baseCtxSpy.translate).toHaveBeenCalledWith(250, 250);
         expect(baseCtxSpy.scale).toHaveBeenCalledWith(15 / service.scaleRatio, 15 / service.scaleRatio);
-        expect(baseCtxSpy.rotate).toHaveBeenCalledWith(service.convertDegToRad(orientation));
+        expect(baseCtxSpy.rotate).toHaveBeenCalledWith((service as any).convertDegToRad(orientation));
         expect(baseCtxSpy.translate).toHaveBeenCalledWith(-250, -250);
     });
 
@@ -106,7 +106,7 @@ describe('StampService', () => {
         drawStampSpy.and.callThrough();
         const rotationScaleSpy = spyOn(service, 'setStampRotationScale');
         (service as any).pathData = [{ x: 250, y: 250 }];
-        service.drawStamp(baseCtxSpy);
+        (service as any).drawStamp(baseCtxSpy);
         expect(rotationScaleSpy).toHaveBeenCalledWith(baseCtxSpy, service.pointWidth);
         expect(baseCtxSpy.drawImage).toHaveBeenCalled();
         expect(baseCtxSpy.setTransform).toHaveBeenCalled();
@@ -130,13 +130,13 @@ describe('StampService', () => {
     });
 
     it('convertDegToGrad', () => {
-        expect(service.convertDegToRad(15)).toEqual(Math.PI / 12);
+        expect((service as any).convertDegToRad(15)).toEqual(Math.PI / 12);
     });
 
     it('scaleImage', () => {
         const image: HTMLImageElement = { naturalWidth: 960, naturalHeight: 678 } as HTMLImageElement;
 
-        expect(service.scaleImage(image)).toEqual({ x: 1765.625, y: 2500 });
+        expect((service as any).scaleImage(image)).toEqual({ x: 1765.625, y: 2500 });
     });
 
     it('onClick should dispatch saveState Event', () => {

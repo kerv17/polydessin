@@ -3,6 +3,7 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { SelectionBoxService } from './selection-box.service';
 
+// tslint:disable:no-any
 describe('SelectionBoxService', () => {
     let service: SelectionBoxService;
     let topLeft: Vec2;
@@ -58,7 +59,7 @@ describe('SelectionBoxService', () => {
 
     it('getCursor should return the value of the setCursor method based on the position of the mouse, if no handler was clicked, pos = 10', () => {
         const expectedPos = 10;
-        expect(service.getCursor(mouseEvent)).toEqual(service.setCursor(expectedPos));
+        expect(service.getCursor(mouseEvent)).toEqual((service as any).setCursor(expectedPos));
     });
 
     it('getCursor should return the value of the setCursor method based on the position of the mouse', () => {
@@ -70,32 +71,32 @@ describe('SelectionBoxService', () => {
             y: 100,
             button: 0,
         } as MouseEvent;
-        expect(service.getCursor(mouseEventHandler)).toEqual(service.setCursor(0));
+        expect(service.getCursor(mouseEventHandler)).toEqual((service as any).setCursor(0));
     });
 
     it('setCursor should return all-scroll if the cursor is not on one of the 8 handlers', () => {
         const pos = 12;
-        expect(service.setCursor(pos)).toEqual('all-scroll');
+        expect((service as any).setCursor(pos)).toEqual('all-scroll');
     });
 
     it('setCursor should return nw-resize if the cursor is on the top left or bottom right handler', () => {
-        expect(service.setCursor(Globals.TOP_LEFT_HANDLER)).toEqual('nw-resize');
-        expect(service.setCursor(Globals.BOTTOM_RIGHT_HANDLER)).toEqual('nw-resize');
+        expect((service as any).setCursor(Globals.TOP_LEFT_HANDLER)).toEqual('nw-resize');
+        expect((service as any).setCursor(Globals.BOTTOM_RIGHT_HANDLER)).toEqual('nw-resize');
     });
 
     it('setCursor should return n-resize if the cursor is on the top or bottom handler', () => {
-        expect(service.setCursor(Globals.TOP_HANDLER)).toEqual('n-resize');
-        expect(service.setCursor(Globals.BOTTOM_HANDLER)).toEqual('n-resize');
+        expect((service as any).setCursor(Globals.TOP_HANDLER)).toEqual('n-resize');
+        expect((service as any).setCursor(Globals.BOTTOM_HANDLER)).toEqual('n-resize');
     });
 
     it('setCursor should return ne-resize if the cursor is on the top right or bottom left handler', () => {
-        expect(service.setCursor(Globals.TOP_RIGHT_HANDLER)).toEqual('ne-resize');
-        expect(service.setCursor(Globals.BOTTOM_LEFT_HANDLER)).toEqual('ne-resize');
+        expect((service as any).setCursor(Globals.TOP_RIGHT_HANDLER)).toEqual('ne-resize');
+        expect((service as any).setCursor(Globals.BOTTOM_LEFT_HANDLER)).toEqual('ne-resize');
     });
 
     it('setCursor should return e-resize if the cursor is on the right or left handler', () => {
-        expect(service.setCursor(Globals.RIGHT_HANDLER)).toEqual('e-resize');
-        expect(service.setCursor(Globals.LEFT_HANDLER)).toEqual('e-resize');
+        expect((service as any).setCursor(Globals.RIGHT_HANDLER)).toEqual('e-resize');
+        expect((service as any).setCursor(Globals.LEFT_HANDLER)).toEqual('e-resize');
     });
 
     it('getLeftPosition should return a string with the x value of the corresponding handler', () => {

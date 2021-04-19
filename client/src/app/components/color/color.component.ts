@@ -11,8 +11,7 @@ export class ColorComponent implements AfterViewInit, OnChanges {
     secondaryColor: string;
     recentColors: string[] = [];
 
-    @Input()
-    reset: boolean;
+    @Input() reset: boolean;
 
     constructor(private colorService: ColorService) {}
 

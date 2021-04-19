@@ -30,7 +30,7 @@ export class MainPageComponent {
         this.carouselService.initialiserCarousel();
     }
 
-    verifDessinExistant(): boolean {
+    verifyDrawingExist(): boolean {
         return this.contiueService.canvasExists();
     }
     goContinue(): void {

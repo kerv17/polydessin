@@ -72,7 +72,7 @@ export class ContinueDrawingService {
         return localStorage.getItem(this.drawingSavedName) === 'true';
     }
 
-    canvasContinue(): boolean {
+    private canvasContinue(): boolean {
         return localStorage.getItem(this.continueDrawing) === 'true';
     }
 
