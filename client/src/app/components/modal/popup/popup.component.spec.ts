@@ -14,6 +14,8 @@ describe('PopupComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(PopupComponent);
         component = fixture.componentInstance;
+        fixture.debugElement.nativeElement.style.visibility = 'hidden';
+
         fixture.detectChanges();
     });
 

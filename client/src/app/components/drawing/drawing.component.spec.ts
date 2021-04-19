@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
-import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
@@ -42,11 +41,10 @@ describe('DrawingComponent', () => {
     let selectionMoveService: SelectionMovementService;
     let selectionResizeService: SelectionResizeService;
     let baseCtxTest: jasmine.SpyObj<CanvasRenderingContext2D>;
-    let continueService: ContinueDrawingService;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
-        continueService = new ContinueDrawingService({} as DrawingService);
+
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
@@ -74,7 +72,6 @@ describe('DrawingComponent', () => {
                 { provide: ToolControllerService, useValue: toolController },
                 { provide: CarouselService, useValue: carouselService },
                 { provide: SelectionBoxService, useValue: selectionBoxService },
-                { provide: ContinueDrawingService, useValue: continueService },
             ],
         }).compileComponents();
     }));
