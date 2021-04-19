@@ -165,7 +165,7 @@ export class SidebarComponent {
             .set([false, false, Globals.RECTANGLE_SHORTCUT].join(), { showWidth: true, toolName: Globals.RECTANGLE_SHORTCUT } as ToolParam)
             .set([false, false, Globals.ELLIPSIS_SHORTCUT].join(), { showWidth: true, toolName: Globals.ELLIPSIS_SHORTCUT } as ToolParam)
             .set([false, false, Globals.AEROSOL_SHORTCUT].join(), { showWidth: true, toolName: Globals.AEROSOL_SHORTCUT } as ToolParam)
-            .set([false, false, Globals.STAMP_SHORTCUT].join(), { showWidth: true, toolName: Globals.STAMP_SHORTCUT } as ToolParam)
+            .set([false, false, Globals.STAMP_SHORTCUT].join(), { showWidth: false, toolName: Globals.STAMP_SHORTCUT } as ToolParam)
             .set([false, false, Globals.RECTANGLE_SELECTION_SHORTCUT].join(), {
                 showWidth: false,
                 toolName: Globals.RECTANGLE_SELECTION_SHORTCUT,

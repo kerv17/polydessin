@@ -8,10 +8,11 @@ import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 })
 export class StampComponent implements OnInit {
     constructor(private stampService: StampService) {}
-
-    currentStamp: string;
+    path: string = '../../../assets/Stamp/';
+    stamps: string[] = ['heart.png', 'star.png', 'bird.png', 'coin.png', 'earth.png', 'fire.png'];
+    currentStamp: string = this.stamps[0];
     ngOnInit(): void {
-        this.currentStamp = this.stampService.toolMode;
+        this.stampService.toolMode = this.currentStamp;
     }
 
     setImage(name: string): void {

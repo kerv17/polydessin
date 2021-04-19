@@ -7,7 +7,7 @@ import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 export const path = '../../../../assets/Stamp/';
 export const angleTurnPerRotation = 15;
-export const maxImageSize = 250;
+export const maxImageSize = 2500;
 
 @Injectable({
     providedIn: 'root',
