@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
@@ -23,9 +24,14 @@ describe('EditorComponent', () => {
     let drawingStub: DrawingService;
     let resizeStub: ResizePoint;
     let colorService: ColorService;
+    let whateverSpy: jasmine.Spy;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
+        //    const width = 1000;
+        //    const height = 400;
+        //   global.innerHeight = height;
+        //   global.innerWidth = width;
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
         drawingStub.resizePoint = resizeStub;
@@ -43,22 +49,26 @@ describe('EditorComponent', () => {
     }));
 
     beforeEach(() => {
+        //   const width = 900;
+        //  const height = 400;
+        drawingStub.canvasSize = { x: 250, y: 250 } as Vec2;
+        whateverSpy = spyOn(drawingStub, 'initializeCanvas').and.returnValue({ x: 250, y: 250 } as Vec2);
+        spyOn(drawingStub.resizePoint, 'resetControlPoints').and.returnValue();
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.editorSizeX = 1;
-        component.editorSizeY = 1;
-        drawingStub.baseCtx.canvas.width = 1;
-        drawingStub.baseCtx.canvas.height = 1;
-        global.innerWidth = 1;
-        global.innerHeight = 1;
+        //  component.drawingService.controlSize.x = width;
+        // component.drawingService.controlSize.y = height;
+        // component.drawingService.resizePoint.posX = width;
+        // component.drawingService.resizePoint.posY = height;
     });
 
     it('should create', () => {
+        expect(whateverSpy).toHaveBeenCalled();
         expect(component).toBeTruthy();
     });
 
-    it('onResize should increase editorSizeX and editorSizeX if canvas is bigger than the window to ensure control points are accessible', () => {
+    it('onResize should increase editorSizeX and editorSizeY if canvas is bigger than the window to ensure control points are accessible', () => {
         const width = 1000;
         const height = 400;
         const posX = 1030;

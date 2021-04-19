@@ -268,7 +268,7 @@ describe('DrawingService', () => {
 
     it('should reset the Canvas', () => {
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
-       
+
         service.resetCanvas({ x: 1, y: 1 } as Vec2);
         expect(fillRectSpy).toHaveBeenCalled();
         expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
