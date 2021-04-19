@@ -1,22 +1,22 @@
+import { SimpleChange } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
-import * as Globals from '@app/Constants/constants';
 import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
 import { LineService } from '@app/services/tools/ToolServices/line-service';
 import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
 import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
-
 import { StampSliderComponent } from './stamp-slider.component';
-import { SimpleChange } from '@angular/core';
-import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 
+// tslint:disable: no-any
 describe('StampSliderComponent', () => {
     let component: StampSliderComponent;
     let fixture: ComponentFixture<StampSliderComponent>;
@@ -44,11 +44,11 @@ describe('StampSliderComponent', () => {
             providers: [
                 StampSliderComponent,
                 { provide: ToolControllerService, useValue: toolController },
-                { provide: StampService, useValue: tool},
+                { provide: StampService, useValue: tool },
             ],
         }).compileComponents();
     }));
-    
+
     beforeEach(() => {
         matSliderChange = {
             value: TEST_MAT_SLIDER_VALUE, // valeur uniquement utilisé pour les test
@@ -62,8 +62,7 @@ describe('StampSliderComponent', () => {
         component.change = true;
         fixture.detectChanges();
     });
-    
-    
+
     it('should create toolService', () => {
         expect(tool).toBeTruthy();
     });
