@@ -40,10 +40,14 @@ describe('EditorComponent', () => {
                 { provide: ColorService, useValue: colorService },
             ],
         }).compileComponents();
+        const width = 1000;
+        const height = 400;
+        global.innerHeight = height;
+        global.innerWidth = width;
     }));
 
     beforeEach(() => {
-        const width = 1000;
+        const width = 900;
         const height = 400;
        
         fixture = TestBed.createComponent(EditorComponent);
