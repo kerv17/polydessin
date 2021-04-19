@@ -79,7 +79,6 @@ describe('Service: ContinueDrawing', () => {
     });
 
     it('insertSavedCanvas should charge the image into the canvas and call sendCanvasToUndoredo', () => {
-       
         const setCanvasSpy = spyOn(service.drawingService, 'setCanvassSize');
         (service as any).insertSavedCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
         if ((service as any).img.onload) {
