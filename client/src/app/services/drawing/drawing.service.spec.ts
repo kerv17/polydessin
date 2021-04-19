@@ -34,7 +34,7 @@ describe('DrawingService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('initializeCanvas should set canvasSize to 250 by 250 if drawing vue is inferior to 970 by 500 (500+470)', () => {
+    it('initializeCanvas should set canvasSize to 250 by 250 if drawing vue is inferior to 880 by 500 (500+470)', () => {
         const width = 700;
         const height = 500;
 
@@ -44,17 +44,17 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResult, y: expectedResult };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 970 and height is greater than 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 880 and height is greater than 500', () => {
         const width = 1470;
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('initializeCanvas should set canvasSize to 250 by height/2 if drawing vue width is lesser than 970 and height is greater than 500', () => {
+    it('initializeCanvas should set canvasSize to 250 by height/2 if drawing vue width is lesser than 880 and height is greater than 500', () => {
         const width = 800;
         const height = 600;
         global.innerWidth = width;
@@ -64,12 +64,12 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by 250 if drawing vue width is greater then 970 and height is lesser then 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by 250 if drawing vue width is greater then 880 and height is lesser then 500', () => {
         const width = 1000;
         const height = 400;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 265;
+        const expectedResultX = 310;
         const expectedResultY = 250;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
@@ -79,7 +79,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         service.initializeCanvas();
         expect(service.controlSize.x).toEqual(expectedResultX);
@@ -92,7 +92,7 @@ describe('DrawingService', () => {
 
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         service.initializeCanvas(vec);
         expect(vec.x).toEqual(expectedResultX);
@@ -268,11 +268,9 @@ describe('DrawingService', () => {
 
     it('should reset the Canvas', () => {
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
-        clearCanvasSpy = spyOn(service, 'clearCanvas');
-
+       
         service.resetCanvas({ x: 1, y: 1 } as Vec2);
         expect(fillRectSpy).toHaveBeenCalled();
-        expect(clearCanvasSpy).toHaveBeenCalled();
         expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
     });
 });

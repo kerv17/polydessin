@@ -41,6 +41,8 @@ export class UndoRedoService {
         this.sendUndoButtonState();
         const eventContinue: CustomEvent = new CustomEvent('saveState');
         dispatchEvent(eventContinue);
+        const eventGrid: CustomEvent = new CustomEvent('grid');
+        dispatchEvent(eventGrid);
     }
 
     redo(): void {
@@ -52,6 +54,8 @@ export class UndoRedoService {
         this.sendUndoButtonState();
         const eventContinue: CustomEvent = new CustomEvent('saveState');
         dispatchEvent(eventContinue);
+        const eventGrid: CustomEvent = new CustomEvent('grid');
+        dispatchEvent(eventGrid);
     }
 
     resetPile(info: DrawingAction): void {

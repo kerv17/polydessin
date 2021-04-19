@@ -86,7 +86,6 @@ describe('DrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
     it(' ngAfterViewInit should set baseCtx, previewCtx from the component and from the service', () => {
         component.ngAfterViewInit();
         expect((component as any).drawingService['baseCtx']).toEqual(component.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
@@ -161,7 +160,6 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({ heightPrev: new SimpleChange(1, component.heightPrev, true) });
         expect(component.previewCanvas.nativeElement.height).toEqual(expectedValue);
     });
-
     it(' ngOnChanges should call onEscape from selectionService if there is an active selection and mouseDown is false', () => {
         component['viewInitialized'] = true;
         component.mouseDown = false;
@@ -174,12 +172,10 @@ describe('DrawingComponent', () => {
         expect(escapeSpy).toHaveBeenCalled();
         expect(spyDispatch).toHaveBeenCalled();
     });
-
     it('should get stubTool', () => {
         const currentTool = component.getCurrentTool();
         expect(currentTool).toEqual(toolStub);
     });
-
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'onMouseMove');
@@ -208,7 +204,6 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it(" should call the tool's right click when receiving a contextmenu event", () => {
         const event = new MouseEvent('keyDown');
         const preventDefaultSpy = spyOn(event, 'preventDefault');
@@ -217,7 +212,6 @@ describe('DrawingComponent', () => {
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it(" should call the tool's onWheel when receiving a mouse wheel event", () => {
         const event = {} as WheelEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
@@ -247,7 +241,6 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it('ngOnChanges should dispatch an action Event only when allowed', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
@@ -288,26 +281,21 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({} as SimpleChanges);
         expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
     });
-
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
-
         let actionCalled = false;
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
             actionCalled = true;
         });
-
         component.ngAfterViewInit();
         expect(actionCalled).toBeTrue();
     });
-
     it('cursorChange should call cursorChange method from selectionBox Service', () => {
         const cursorSpy = spyOn(component.selectionBoxLayout, 'cursorChange');
         component.cursorChange(Globals.mouseDownEvent);
         expect(cursorSpy).toHaveBeenCalled();
     });
-
     it('drawSelectionBox should call drawSelectionBox, setHandlers from selectionbox service and return true if there is an active selection', () => {
         toolController.selectionService.inSelection = true;
         const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
@@ -316,7 +304,6 @@ describe('DrawingComponent', () => {
         expect(drawSelectionBoxSpy).toHaveBeenCalled();
         expect(setHandlersSpy).toHaveBeenCalled();
     });
-
     it('drawSelectionBox should not call drawSelectionBox, setHandlers from selectionbox service and should return false if there is no active selection', () => {
         toolController.selectionService.inSelection = false;
         const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
@@ -325,7 +312,6 @@ describe('DrawingComponent', () => {
         expect(drawSelectionBoxSpy).not.toHaveBeenCalled();
         expect(setHandlersSpy).not.toHaveBeenCalled();
     });
-
     it('drawhandlers should return the inSelection value from selectionService', () => {
         toolController.selectionService.inSelection = true;
         expect(component.drawHandlers()).toBeTrue();

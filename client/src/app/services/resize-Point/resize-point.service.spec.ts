@@ -191,9 +191,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerRight should force max size on posX if mouse offsetX is too big', () => {
         service.mouseDown = true;
-        const width = 1470;
+        const width = 1500;
         const height = 800;
-        const expectedResult = 950;
+        const expectedResult = 1064;
         global.innerWidth = width;
         global.innerHeight = height;
         mouseEvent = {
@@ -293,14 +293,14 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too big', () => {
         service.mouseDown = true;
-        const width = 1470;
+        const width = 1500;
         const height = 800;
-        const expectedResultX = 950;
+        const expectedResultX = 1064;
         const expectedResultY = 760;
         global.innerWidth = width;
         global.innerHeight = height;
         mouseEvent = {
-            offsetX: 1050,
+            offsetX: 1450,
             offsetY: 795,
         } as MouseEvent;
         service.mouseMoveHandlerCorner(mouseEvent);

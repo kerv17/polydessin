@@ -50,6 +50,8 @@ describe('EditorComponent', () => {
         component.editorSizeY = 1;
         drawingStub.baseCtx.canvas.width = 1;
         drawingStub.baseCtx.canvas.height = 1;
+        global.innerWidth = 1;
+        global.innerHeight = 1;
     });
 
     it('should create', () => {
@@ -61,7 +63,7 @@ describe('EditorComponent', () => {
         const height = 400;
         const posX = 1030;
         const posY = 800;
-        const expectedWidth = 1650;
+        const expectedWidth = 1551;
         const expectedHeight = 880;
         const event = {} as ResizedEvent;
         global.innerWidth = width;
