@@ -13,7 +13,7 @@ export class ContinueDrawingService {
     private canvasName: string = 'drawing';
     private canvasHeight: string = 'imageHeight';
     private canvasWidth: string = 'imageWidth';
-    private img : HTMLImageElement;
+    private img: HTMLImageElement;
 
     constructor(public drawingService: DrawingService) {
         addEventListener('saveState', (event: CustomEvent) => {

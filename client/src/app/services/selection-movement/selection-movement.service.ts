@@ -26,10 +26,10 @@ export class SelectionMovementService {
         }
     }
 
-    updateLassoBorder(deplacement: Vec2, toolMode: string, lassoBorder: Vec2[]): void {
+    updateLassoBorder(movement: Vec2, toolMode: string, lassoBorder: Vec2[]): void {
         if (toolMode === 'v') {
             for (let i = 0; i < lassoBorder.length; i++) {
-                lassoBorder[i] = { x: this.lassoPath[i].x + deplacement.x, y: this.lassoPath[i].y + deplacement.y };
+                lassoBorder[i] = { x: this.lassoPath[i].x + movement.x, y: this.lassoPath[i].y + movement.y };
             }
         }
     }
@@ -112,7 +112,7 @@ export class SelectionMovementService {
         }
     }
 
-    moveSelection(path: Vec2[], toolMode: string, lassoBorder: Vec2[]): void {
+    private moveSelection(path: Vec2[], toolMode: string, lassoBorder: Vec2[]): void {
         let topLeft = { x: path[0].x, y: path[0].y };
         if (path.length > Globals.CURRENT_SELECTION_POSITION) {
             topLeft = { x: path[Globals.CURRENT_SELECTION_POSITION].x, y: path[Globals.CURRENT_SELECTION_POSITION].y };
