@@ -65,7 +65,6 @@ export class DataAccessService {
                 this.serverSaveService.deleteCanvasInformation(aCode);
             })
             .catch((error: Error) => {
-                console.log(error.message);
                 throw new Error(error.message);
             });
     }

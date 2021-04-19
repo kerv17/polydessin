@@ -135,8 +135,8 @@ describe('StampService', () => {
 
     it('scaleImage', () => {
         const image: HTMLImageElement = { naturalWidth: 960, naturalHeight: 678 } as HTMLImageElement;
-        console.log(image.naturalWidth, image.naturalHeight);
-        expect(service.scaleImage(image)).toEqual({ x: 176.5625, y: 250 });
+
+        expect(service.scaleImage(image)).toEqual({ x: 1765.625, y: 2500 });
     });
 
     it('onClick should dispatch saveState Event', () => {

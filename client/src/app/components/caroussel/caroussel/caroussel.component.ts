@@ -56,11 +56,12 @@ export class CarousselComponent implements AfterViewInit {
         this.resetOptions();
     }
     loadCarouselImage(slide: CanvasInformation): void {
-        this.toolController.selectionService.onEscape();
-        this.toolController.lassoService.onEscape();
-        if (this.carouselService.loadCanvas(slide)) {
-            this.toolController.lineService.clearPath();
-            this.toolController.lassoService.clearPath();
+        const isInEditor = this.carouselService.loadCanvas(slide);
+        if (this.carouselService.drawingService.baseCanvas != undefined) {
+            if (isInEditor) {
+                this.toolController.lineService.clearPath();
+                this.toolController.lassoService.clearPath();
+            }
         }
     }
     @HostListener('window:keydown', ['$event'])

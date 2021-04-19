@@ -168,9 +168,13 @@ describe('SidebarComponent', () => {
         expect(selectionSpy).toHaveBeenCalled();
     });
     it('should open the Carrousel Modal when we click on the button ', () => {
+        const escapeSpy = spyOn(toolController.selectionService, 'onEscape').and.returnValue();
+        const lassoEscapeSpy = spyOn(toolController.lassoService, 'onEscape').and.returnValue();
         const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
         component.openCarousel();
         expect(carouselSpy).toHaveBeenCalled();
+        expect(escapeSpy).toHaveBeenCalled();
+        expect(lassoEscapeSpy).toHaveBeenCalled();
     });
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -35,6 +36,7 @@ describe('CarousselComponent', () => {
     let carouselService: CarouselService;
     let fixture: ComponentFixture<CarousselComponent>;
     let carousel: CarouselStub;
+    const canvasTestHelper: CanvasTestHelper = new CanvasTestHelper();
     const drawingStub = new DrawingService({} as ResizePoint);
 
     const router = jasmine.createSpyObj(Router, ['navigate']);
@@ -125,32 +127,43 @@ describe('CarousselComponent', () => {
     });
 
     it('should load the carousel Image', () => {
-        const onEscapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape').and.returnValue({});
-        const lassoEscapeSpy = spyOn(((component as any).toolController as any).lassoService, 'onEscape').and.returnValue({});
         const loadSpy = spyOn((component as any).carouselService, 'loadCanvas').and.returnValue(true);
         const clearPathSpy = spyOn(((component as any).toolController as any).lineService, 'clearPath').and.returnValue({});
         const lassoClearPathSpy = spyOn(((component as any).toolController as any).lassoService, 'clearPath').and.returnValue({});
+        ((component as any).carouselService as any).drawingService.baseCanvas = canvasTestHelper.canvas;
 
         component.loadCarouselImage({} as CanvasInformation);
-        expect(onEscapeSpy).toHaveBeenCalled();
+
         expect(loadSpy).toHaveBeenCalled();
         expect(clearPathSpy).toHaveBeenCalled();
-        expect(lassoEscapeSpy).toHaveBeenCalled();
+
         expect(lassoClearPathSpy).toHaveBeenCalled();
     });
 
     it('should load the carousel Image if load Carousel returns false', () => {
-        const onEscapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape').and.returnValue({});
-        const lassoEscapeSpy = spyOn(((component as any).toolController as any).lassoService, 'onEscape').and.returnValue({});
         const loadSpy = spyOn((component as any).carouselService, 'loadCanvas').and.returnValue(false);
         const clearPathSpy = spyOn(((component as any).toolController as any).lineService, 'clearPath').and.returnValue({});
         const lassoClearPathSpy = spyOn(((component as any).toolController as any).lassoService, 'clearPath').and.returnValue({});
-
+        ((component as any).carouselService as any).drawingService.baseCanvas = canvasTestHelper.canvas;
         component.loadCarouselImage({} as CanvasInformation);
-        expect(onEscapeSpy).toHaveBeenCalled();
+
         expect(loadSpy).toHaveBeenCalled();
         expect(clearPathSpy).not.toHaveBeenCalled();
-        expect(lassoEscapeSpy).toHaveBeenCalled();
+
+        expect(lassoClearPathSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not load the carousel Image the canvas is undefined', () => {
+        const loadSpy = spyOn((component as any).carouselService, 'loadCanvas').and.returnValue(false);
+        const clearPathSpy = spyOn(((component as any).toolController as any).lineService, 'clearPath').and.returnValue({});
+        const lassoClearPathSpy = spyOn(((component as any).toolController as any).lassoService, 'clearPath').and.returnValue({});
+        ((component as any).carouselService as any).drawingService.baseCanvas = undefined;
+
+        component.loadCarouselImage({} as CanvasInformation);
+
+        expect(loadSpy).toHaveBeenCalled();
+        expect(clearPathSpy).not.toHaveBeenCalled();
+
         expect(lassoClearPathSpy).not.toHaveBeenCalled();
     });
 });
