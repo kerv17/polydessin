@@ -30,7 +30,7 @@ export class EllipsisService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.inUse = true;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.perimerterPathData.push(this.mouseDownCoord);
@@ -45,6 +45,7 @@ export class EllipsisService extends Tool {
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.dispatchAction(this.createAction());
+            this.inUse = false;
         }
         this.mouseDown = false;
         this.clearPath();

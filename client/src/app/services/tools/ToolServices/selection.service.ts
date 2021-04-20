@@ -88,6 +88,7 @@ export class SelectionService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         const mousePosition = this.getPositionFromMouse(event);
         if (this.inSelection) {
+            this.inUse = true;
             if (this.selectionResize.onMouseDown(mousePosition)) {
                 this.selectionResize.initializePath(this.pathData);
                 this.selectionResize.setPathDataAfterMovement(this.getActualPosition());
@@ -201,6 +202,7 @@ export class SelectionService extends Tool {
             }
             const eventContinue: CustomEvent = new CustomEvent('saveState');
             dispatchEvent(eventContinue);
+            this.inUse = false;
         }
     }
 

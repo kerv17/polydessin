@@ -204,13 +204,13 @@ export class SidebarComponent {
     }
 
     undoAction(): void {
-        if (!this.toolController.selectionService.inSelection) {
+        if (!this.toolController.selectionService.inSelection && !this.toolController.currentTool.inUse) {
             this.undoRedoService.undo();
         }
     }
 
     redoAction(): void {
-        if (!this.toolController.selectionService.inSelection) {
+        if (!this.toolController.selectionService.inSelection && !this.toolController.currentTool.inUse) {
             this.undoRedoService.redo();
         }
     }
