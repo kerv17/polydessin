@@ -5,6 +5,7 @@ import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import { DrawingService } from './drawing.service';
 
+// tslint:disable:no-any
 describe('DrawingService', () => {
     let service: DrawingService;
     let canvasTestHelper: CanvasTestHelper;
@@ -34,7 +35,7 @@ describe('DrawingService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('initializeCanvas should set canvasSize to 250 by 250 if drawing vue is inferior to 970 by 500 (500+470)', () => {
+    it('initializeCanvas should set canvasSize to 250 by 250 if drawing vue is inferior to 880 by 500 (500+470)', () => {
         const width = 700;
         const height = 500;
 
@@ -44,17 +45,17 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResult, y: expectedResult };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 970 and height is greater than 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by height/2 if drawing vue width is greater than 880 and height is greater than 500', () => {
         const width = 1470;
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('initializeCanvas should set canvasSize to 250 by height/2 if drawing vue width is lesser than 970 and height is greater than 500', () => {
+    it('initializeCanvas should set canvasSize to 250 by height/2 if drawing vue width is lesser than 880 and height is greater than 500', () => {
         const width = 800;
         const height = 600;
         global.innerWidth = width;
@@ -64,12 +65,12 @@ describe('DrawingService', () => {
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
     });
-    it('should set canvasSize to (width-sidebar)/2 by 250 if drawing vue width is greater then 970 and height is lesser then 500', () => {
+    it('should set canvasSize to (width-sidebar)/2 by 250 if drawing vue width is greater then 880 and height is lesser then 500', () => {
         const width = 1000;
         const height = 400;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 265;
+        const expectedResultX = 310;
         const expectedResultY = 250;
         const expectedVect = { x: expectedResultX, y: expectedResultY };
         expect(service.initializeCanvas()).toEqual(expectedVect);
@@ -79,7 +80,7 @@ describe('DrawingService', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         service.initializeCanvas();
         expect(service.controlSize.x).toEqual(expectedResultX);
@@ -92,7 +93,7 @@ describe('DrawingService', () => {
 
         global.innerWidth = width;
         global.innerHeight = height;
-        const expectedResultX = 500;
+        const expectedResultX = 545;
         const expectedResultY = 400;
         service.initializeCanvas(vec);
         expect(vec.x).toEqual(expectedResultX);
@@ -147,7 +148,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -170,7 +171,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -193,7 +194,7 @@ describe('DrawingService', () => {
         confirmSpy = spyOn(window, 'confirm');
         // juste pour voir s'il ya un changement
         const vec: Vec2 = { x: 1, y: 1 };
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(false);
         clearCanvasSpy = spyOn(service, 'clearCanvas');
         setSizeSpy = spyOn(service, 'initializeCanvas').and.returnValue(vec);
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
@@ -215,10 +216,10 @@ describe('DrawingService', () => {
     });
 
     it('should load the saved canvas', () => {
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(false);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(false);
         confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
 
-        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const reloadSpy = spyOn(service as any, 'reloadOldCanvas');
         const dispatchSpy = spyOn(window, 'dispatchEvent');
         service.loadOldCanvas({} as CanvasInformation);
         expect(reloadSpy).toHaveBeenCalled();
@@ -228,9 +229,9 @@ describe('DrawingService', () => {
     });
 
     it('shouldnt load the saved canvas if the user doesnt confirm', () => {
-        canvasNotEmptySpy = spyOn(service, 'canvasNotEmpty').and.returnValue(true);
+        canvasNotEmptySpy = spyOn(service as any, 'canvasNotEmpty').and.returnValue(true);
         confirmSpy = spyOn(window, 'confirm').and.returnValue(false);
-        const reloadSpy = spyOn(service, 'reloadOldCanvas');
+        const reloadSpy = spyOn(service as any, 'reloadOldCanvas');
         const dispatchSpy = spyOn(window, 'dispatchEvent');
         service.loadOldCanvas({} as CanvasInformation);
         expect(reloadSpy).not.toHaveBeenCalled();
@@ -242,13 +243,13 @@ describe('DrawingService', () => {
     it('should charge the image into the canvas', () => {
         const setCanvasSpy = spyOn(service, 'setCanvassSize');
         const ctxSpy = spyOn(service.baseCtx, 'drawImage');
-        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        (service as any).reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
         expect(setCanvasSpy).toHaveBeenCalled();
         expect(ctxSpy).toHaveBeenCalled();
     });
     it('reloadOldCanvas should dispatch saveState Event', () => {
         const spyDispatch = spyOn(global, 'dispatchEvent').and.returnValue(true);
-        service.reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
+        (service as any).reloadOldCanvas({ width: 1, height: 1, imageData: '' } as CanvasInformation);
         expect(spyDispatch).toHaveBeenCalled();
     });
 
@@ -256,23 +257,21 @@ describe('DrawingService', () => {
         service.baseCtx.fillStyle = 'black';
         service.baseCtx.fillRect(0, 0, 2, 2);
         const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
-        expect(service.canvasNotEmpty(image)).toBeTrue();
+        expect((service as any).canvasNotEmpty(image)).toBeTrue();
     });
 
     it('should return false if the canvas is empty', () => {
         service.baseCtx.fillStyle = 'white';
         service.baseCtx.fillRect(0, 0, service.canvas.width, service.canvas.height);
         const image: ImageData = service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height);
-        expect(service.canvasNotEmpty(image)).not.toBeTrue();
+        expect((service as any).canvasNotEmpty(image)).not.toBeTrue();
     });
 
     it('should reset the Canvas', () => {
         fillRectSpy = spyOn(service.baseCtx, 'fillRect');
-        clearCanvasSpy = spyOn(service, 'clearCanvas');
 
         service.resetCanvas({ x: 1, y: 1 } as Vec2);
         expect(fillRectSpy).toHaveBeenCalled();
-        expect(clearCanvasSpy).toHaveBeenCalled();
         expect(resizePointSpy.resetControlPoints).toHaveBeenCalled();
     });
 });

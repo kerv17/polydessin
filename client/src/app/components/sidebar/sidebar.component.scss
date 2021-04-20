@@ -3,31 +3,32 @@
     height: 100%;
     position: relative;
     //min-height: 100vh;
-    width: 470px;
+    width: 375px;
     //padding: 0 5px 0 5px;
 }
 
 .services {
     flex-direction: column;
-    margin-left: 50px;
     margin-right: 3px;
-    width: 350px;
+    width: 305px;
 }
 
 .function {
     display: flex;
-    width: 50px;
-    height: 3.8vh;
+    width: 40px;
+    height: 3.5vh;
     border-radius: 4px;
     background-color: white;
     max-height: 100px;
-    align-self: center;
+
+    margin-left: auto;
+    margin-right: auto;
     border-color: black;
     flex-grow: 0.1;
 }
 
 .function:focus {
-    background-color: gainsboro;
+    background-color: #7bf6da;
 }
 
 .infobulle {
@@ -52,6 +53,7 @@
 .ToolContainer {
     align-self: center;
     margin: 0.5em;
+    padding-left: 2px;
 }
 
 .BackgroundServices {
@@ -59,7 +61,7 @@
     background-size: cover;
     border: 1px solid black;
     flex-shrink: 0;
-    width: 400px;
+    width: 305px;
 }
 
 //J'utilise ca pour faire la rangé de bouton a gauche
@@ -70,4 +72,14 @@
     background-image: url(../../../assets/b151576e-c5cd-4703-bac1-3ae2462d7d16.png);
     background-color: black;
     justify-content: center;
+}
+
+.sidebar-block {
+    border-top: black solid 2px;
+}
+
+.attributes-block {
+    padding-bottom: 10px;
+    border-bottom: black solid 2px;
+    text-align: center;
 }

@@ -3,7 +3,7 @@ import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
 // tslint:disable: no-any
@@ -40,7 +40,7 @@ describe('AerosolService', () => {
         service['drawingService'].previewCtx = previewCtxStub;
 
         timeoutSpy = spyOn(service, 'onTimeout');
-        drawSpraySpy = spyOn(service, 'drawSpray');
+        drawSpraySpy = spyOn(service as any, 'drawSpray');
         dispatchSpy = spyOn<any>(service, 'dispatchAction');
 
         mouseEvent = {
@@ -131,25 +131,12 @@ describe('AerosolService', () => {
     });
 
     it('sprayPoints adds x points in defined radius', () => {
-        const addpointSpy = spyOn(service, 'addPoint');
+        const addpointSpy = spyOn(service as any, 'addPoint');
         const radius = 10;
-        service.sprayPoints(pos, radius);
+        (service as any).sprayPoints(pos, radius);
         expect((service as any).pathData.length).toEqual(1);
         expect(addpointSpy).toHaveBeenCalledTimes(1);
     });
-
-    // TODO : FIX LE TEST : service.rng n'existe pas
-    /*it('addPoint Creates a random point within the bounds', () => {
-        const radius = 10;
-        pos = { x: 0, y: 0 };
-        // const rngSpy = spyOn(service, 'rng').and.callThrough();
-        const distanceSpy = spyOn(service, 'distance').and.callThrough();
-        const point = service.addPoint(pos, radius);
-
-        // expect(rngSpy).toHaveBeenCalled();
-        expect(distanceSpy).toHaveBeenCalled();
-        expect(service.distance(point.x, point.y)).toBeLessThanOrEqual(radius);
-    });*/
 
     it('drawSpray', () => {
         drawSpraySpy.and.callThrough();
@@ -161,20 +148,20 @@ describe('AerosolService', () => {
         const ellipseSpy = spyOn(previewCtxStub, 'ellipse');
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
 
-        service.drawSpray(previewCtxStub, points);
+        (service as any).drawSpray(previewCtxStub, points);
         expect(ellipseSpy).toHaveBeenCalledTimes(numberOfPointsToTest);
         expect(strokeSpy).toHaveBeenCalledTimes(numberOfPointsToTest);
     });
 
     it('distance', () => {
         // tslint:disable-next-line: no-magic-numbers
-        expect(service.distance(3, 4)).toEqual(5);
+        expect((service as any).distance(3, 4)).toEqual(5);
     });
 
     it('doAction', () => {
         const numberOfPointsToTest = 5;
         for (let i = 0; i < numberOfPointsToTest; i++) {
-            service.sprayPoints({ x: 25, y: 25 }, numberOfPointsToTest);
+            (service as any).sprayPoints({ x: 25, y: 25 }, numberOfPointsToTest);
         }
 
         const action: DrawAction = (service as any).createAction();

@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { PencilService } from './pencil-service';
+import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
 // tslint:disable:no-string-literal
@@ -235,26 +235,26 @@ describe('PencilService', () => {
     it(' applyAttributes should set the pencil width to the correct selected value if the value is valid ', () => {
         const validPencilWidth = 20;
         service.width = validPencilWidth;
-        service.applyAttributes(baseCtxStub);
+        (service as any).applyAttributes(baseCtxStub);
         expect(baseCtxStub.lineWidth).toEqual(service.width);
     });
 
     it(' applyAttributes should not set the pencil width if the selected value is not valid', () => {
         const invalidPencilWidth = -10;
         service.width = invalidPencilWidth;
-        service.applyAttributes(baseCtxStub);
+        (service as any).applyAttributes(baseCtxStub);
         expect(baseCtxStub.lineWidth).not.toEqual(service.width);
     });
 
     it(' applyAttributes should set the pencil color to the correct selected color if it is valid', () => {
         service.color = '#00ff00';
-        service.applyAttributes(drawServiceSpy.previewCtx);
+        (service as any).applyAttributes(drawServiceSpy.previewCtx);
         expect(drawServiceSpy.previewCtx.strokeStyle).toEqual(service.color);
     });
 
     it(' applyAttributes should not set the pencil color if the value selected is not valid', () => {
         service.color = '#0';
-        service.applyAttributes(drawServiceSpy.baseCtx);
+        (service as any).applyAttributes(drawServiceSpy.baseCtx);
         expect(drawServiceSpy.baseCtx.strokeStyle).not.toEqual(service.color);
     });
 
@@ -295,7 +295,7 @@ describe('PencilService', () => {
             { x: -5, y: -2 },
             { x: 3, y: 3 },
         ];
-        const result = service.separatePathLists(vec);
+        const result = (service as any).separatePathLists(vec);
         const expectedResult = [
             [
                 { x: 1, y: 1 },
@@ -320,7 +320,7 @@ describe('PencilService', () => {
         const expectedResult = [true, false, false, false, false];
         const result: boolean[] = [];
         for (const point of points) {
-            result.push(service.isPointInRange(point));
+            result.push((service as any).isPointInRange(point));
         }
         expect(result).toEqual(expectedResult);
     });

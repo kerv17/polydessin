@@ -5,12 +5,6 @@ import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-
-// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
-// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
-// Vous êtes encouragés de modifier et compléter le code.
-// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 @Injectable({
     providedIn: 'root',
 })
@@ -36,7 +30,7 @@ export class EllipsisService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.inUse = true;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.perimerterPathData.push(this.mouseDownCoord);
@@ -51,6 +45,7 @@ export class EllipsisService extends Tool {
             this.drawEllipse(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.dispatchAction(this.createAction());
+            this.inUse = false;
         }
         this.mouseDown = false;
         this.clearPath();
@@ -161,7 +156,7 @@ export class EllipsisService extends Tool {
         this.perimerterPathData = list;
     }
 
-    ellipseWidth(a: Vec2, c: Vec2): Vec2 {
+    private ellipseWidth(a: Vec2, c: Vec2): Vec2 {
         const x = c.x - a.x < 0 ? Math.abs(c.x - a.x + this.width / 2) : Math.abs(c.x - a.x - this.width / 2);
         const y = c.y - a.y < 0 ? Math.abs(c.y - a.y + this.width / 2) : Math.abs(c.y - a.y - this.width / 2);
 

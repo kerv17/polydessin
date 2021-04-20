@@ -19,6 +19,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportComponent } from './components/export/export/export.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { PopupComponent } from './components/modal/popup/popup.component';
 import { PointWidthSliderComponent } from './components/point-width-slider/point-width-slider/point-width-slider.component';
 import { RadiusSliderComponent } from './components/radius-slider/radius-slider/radius-slider.component';
 import { RemoteSaveComponent } from './components/remote-save/remote-save.component';
@@ -32,6 +33,7 @@ import { StampSliderComponent } from './components/stamp-slider/stamp-slider.com
 import { StampComponent } from './components/stamp/stamp.component';
 import { WidthSliderComponent } from './components/width-slider/width-slider.component';
 import { ColorService } from './services/color/color.service';
+import { PopupService } from './services/modal/popup.service';
 import { ResizePoint } from './services/resize-Point/resize-point.service';
 
 @NgModule({
@@ -58,10 +60,11 @@ import { ResizePoint } from './services/resize-Point/resize-point.service';
         GridComponent,
         StampComponent,
         BucketToleranceComponent,
+        PopupComponent,
         StampSliderComponent,
     ],
     imports: [BrowserModule, HttpClientModule, AppRoutingModule, MatSliderModule, FormsModule, BrowserAnimationsModule, CarouselModule],
-    providers: [ColorService, ContinueDrawingService, DrawingService, ResizePoint],
+    providers: [ColorService, ContinueDrawingService, DrawingService, ResizePoint, PopupService],
     bootstrap: [AppComponent],
     exports: [RadiusSliderComponent, SprayAmountSliderComponent],
 })

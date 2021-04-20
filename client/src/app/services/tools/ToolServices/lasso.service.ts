@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineService } from './line-service';
+import { LineService } from './line.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -19,6 +19,7 @@ export class LassoService extends Tool {
         this.clearPath();
         addEventListener('resetLassoToolMode', () => {
             this.toolMode = 'selection';
+            this.inUse = false;
         });
     }
 
@@ -26,8 +27,10 @@ export class LassoService extends Tool {
         if (event.button === Globals.MouseButton.Left) {
             if (this.toolMode === 'selection') {
                 this.addPoint(this.getPointToPush(event));
+                this.inUse = true;
             }
             if (this.toolMode === 'movement') {
+                this.inUse = false;
                 this.clearPreviewCtx();
                 this.passToSelectionService(this.selectArea(this.pathData));
                 dispatchEvent(
@@ -64,6 +67,7 @@ export class LassoService extends Tool {
     onEscape(): void {
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.inUse = false;
     }
     onShift(shifted: boolean): void {
         this.shift = shifted;
@@ -78,6 +82,7 @@ export class LassoService extends Tool {
         ) {
             this.pathData.push(this.pathData[0]);
             this.toolMode = 'movement';
+            // this.inUse = false;
         } else if (this.checkIsPointValid(point)) {
             this.pathData.push(point);
         }

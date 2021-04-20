@@ -7,8 +7,11 @@
     <div class="selection-box" *ngIf="drawSelectionBox()" [ngStyle]="selectionBoxLayout.selectionBox"></div>
 
     <div *ngFor="let handler of selectionBoxLayout.getHandlersPositions(); let pos = index" [attr.data-index]="pos">
-        <div class="handlers" *ngIf="drawHandlers()" [style.left]="selectionBoxLayout.getLeftPosition(pos)" [style.top]="selectionBoxLayout.getTopPosition(pos)">
-        </div>
+        <div
+            class="handlers"
+            *ngIf="drawHandlers()"
+            [style.left]="selectionBoxLayout.getLeftPosition(pos)"
+            [style.top]="selectionBoxLayout.getTopPosition(pos)"
+        ></div>
     </div>
-
 </div>

@@ -12,6 +12,7 @@ import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
 import { GridService } from '@app/services/grid/grid.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { RemoteSaveService } from '@app/services/remote-save/remote-save.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
@@ -19,13 +20,13 @@ import { SelectionMovementService } from '@app/services/selection-movement/selec
 import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
-import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis.service';
 import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
-import { LineService } from '@app/services/tools/ToolServices/line-service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
-import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { LineService } from '@app/services/tools/ToolServices/line.service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { SidebarComponent } from './sidebar.component';
@@ -65,8 +66,8 @@ describe('SidebarComponent', () => {
     const router = jasmine.createSpyObj(Router, ['navigate']);
     beforeEach(async(() => {
         drawingStub = new DrawingServiceStub({} as ResizePoint);
-        exportService = new ExportService(drawingStub, {} as ServerRequestService);
-        remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService);
+        exportService = new ExportService(drawingStub, {} as ServerRequestService, {} as PopupService);
+        remoteSaveServiceStub = new RemoteSaveService(drawingStub, {} as ServerRequestService, {} as PopupService);
         selectionMoveService = new SelectionMovementService(drawingStub, selectionResizeService);
         selectionBoxService = new SelectionBoxService();
         selectionResizeService = new SelectionResizeService(selectionBoxService);
@@ -87,7 +88,7 @@ describe('SidebarComponent', () => {
             new BucketService(drawingStub),
         );
         colorService = new ColorService();
-        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, router, {} as PopupService);
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule],
             declarations: [SidebarComponent, ColorComponent, MatSlider, WidthSliderComponent],
@@ -167,9 +168,13 @@ describe('SidebarComponent', () => {
         expect(selectionSpy).toHaveBeenCalled();
     });
     it('should open the Carrousel Modal when we click on the button ', () => {
+        const escapeSpy = spyOn(toolController.selectionService, 'onEscape').and.returnValue();
+        const lassoEscapeSpy = spyOn(toolController.lassoService, 'onEscape').and.returnValue();
         const carouselSpy = spyOn(component.carouselService, 'initialiserCarousel');
         component.openCarousel();
         expect(carouselSpy).toHaveBeenCalled();
+        expect(escapeSpy).toHaveBeenCalled();
+        expect(lassoEscapeSpy).toHaveBeenCalled();
     });
     it('should open the Save Modal when we click on the button ', () => {
         component.remoteSaveService.showModalSave = false;
@@ -225,13 +230,13 @@ describe('SidebarComponent', () => {
     it('should cancel the selection on toolSwap if theres something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = true;
-        component.annulerSelection();
+        (component as any).cancelSelection();
         expect(escapeSpy).toHaveBeenCalled();
     });
     it('should not cancel the selection on toolSwap if theres not something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = false;
-        component.annulerSelection();
+        (component as any).cancelSelection();
         expect(escapeSpy).not.toHaveBeenCalled();
     });
     it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {

@@ -21,7 +21,7 @@ export class DrawingService {
     constructor(public resizePoint: ResizePoint) {}
 
     controlSize: Vec2 = { x: 0, y: 0 };
-    // A voir
+
     width: number = 1;
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -77,15 +77,19 @@ export class DrawingService {
         dispatchEvent(event);
     }
     loadOldCanvas(oldCanvas: CanvasInformation): boolean {
-        const data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        let data: ImageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         if (!this.canvasNotEmpty(data) || confirm('Etes vous sur de vouloir remplacer votre dessin courant')) {
+            this.clearCanvas(this.previewCtx);
+            this.clearCanvas(this.gridCtx);
             this.reloadOldCanvas(oldCanvas);
+            data = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
             const action: DrawingAction = {
                 type: 'Drawing',
                 drawing: data,
                 width: this.canvas.width,
                 height: this.canvas.height,
             };
+
             const event: CustomEvent = new CustomEvent('undoRedoWipe', { detail: action });
             dispatchEvent(event);
             return true;
@@ -93,7 +97,7 @@ export class DrawingService {
         return false;
     }
 
-    reloadOldCanvas(oldCanvas: CanvasInformation): void {
+    private reloadOldCanvas(oldCanvas: CanvasInformation): void {
         const newSize: Vec2 = { x: oldCanvas.width, y: oldCanvas.height };
 
         this.setCanvassSize(newSize);
@@ -129,7 +133,7 @@ export class DrawingService {
         this.resizePoint.resetControlPoints(this.canvas.width, this.canvas.height);
     }
 
-    canvasNotEmpty(image: ImageData): boolean {
+    private canvasNotEmpty(image: ImageData): boolean {
         for (let i = 0; i < image.data.length; i += Globals.PIXEL_SIZE) {
             if (image.data[i] !== Globals.WHITE || image.data[i + 1] !== Globals.WHITE || image.data[i + 2] !== Globals.WHITE) {
                 return true;

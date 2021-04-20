@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 import * as Httpstatus from 'http-status-codes';
@@ -18,7 +19,12 @@ export class CarouselService {
     imageToLoad: CanvasInformation = {} as CanvasInformation;
     showLoad: boolean = false;
     currentSearch: string = '';
-    constructor(private requestService: ServerRequestService, private drawingService: DrawingService, private router: Router) {}
+    constructor(
+        private requestService: ServerRequestService,
+        public drawingService: DrawingService,
+        private router: Router,
+        private popupService: PopupService,
+    ) {}
 
     close(): void {
         this.showCarousel = false;
@@ -33,11 +39,11 @@ export class CarouselService {
         if (confirm('Voulez-vous supprimez ce dessin')) {
             this.requestService.basicDelete(selectedSlide.id).subscribe(
                 (response) => {
-                    window.alert(response.body?.title);
+                    if (response.body) this.popupService.openPopup(response.body.title);
 
                     this.removeCanvasInformation(selectedSlide.id);
                     if (this.pictures.length === 0) {
-                        window.alert('Il ne reste plus de dessin avec ces critères');
+                        this.popupService.openPopup('Il ne reste plus de dessin avec ces critères');
                     }
                 },
                 (err: HttpErrorResponse) => {
@@ -47,7 +53,7 @@ export class CarouselService {
         }
     }
     // alterne la position du dernier et celui a enlever et ensuite fait simplement un pop
-    removeCanvasInformation(codeID: string): void {
+    private removeCanvasInformation(codeID: string): void {
         for (let i = 0; i < this.pictures.length; i++) {
             if (this.pictures[i].codeID === codeID) {
                 this.pictures[i] = this.pictures[this.pictures.length - 1];
@@ -55,14 +61,18 @@ export class CarouselService {
             }
         }
     }
-    loadCanvas(info: CanvasInformation): void {
+    loadCanvas(info: CanvasInformation): boolean {
         if (this.router.url.includes('/editor')) {
-            if (this.drawingService.loadOldCanvas(info)) this.close();
+            if (this.drawingService.loadOldCanvas(info)) {
+                this.close();
+                return true;
+            }
         } else {
             this.router.navigate(['/editor']);
             this.loadImage = true;
             this.imageToLoad = info;
         }
+        return false;
     }
     initialiserCarousel(): void {
         this.currentTags = '';
@@ -79,7 +89,7 @@ export class CarouselService {
         );
     }
 
-    setSlides(): void {
+    private setSlides(): void {
         for (const element of this.pictures) {
             element.imageData = 'data:image/' + element.format + ';base64,' + element.imageData;
         }
@@ -87,7 +97,7 @@ export class CarouselService {
         this.showCarousel = true;
     }
 
-    filterdessin(): void {
+    filterDrawing(): void {
         this.showLoad = true;
 
         this.requestService.getSome(this.currentTags).subscribe(
@@ -103,17 +113,17 @@ export class CarouselService {
             },
         );
     }
-    getImages(response: HttpResponse<CanvasInformation[]>): void {
+    private getImages(response: HttpResponse<CanvasInformation[]>): void {
         if (response.body != null) {
             this.pictures = response.body;
             this.setSlides();
         }
     }
-    handleCarouselErrors(err: HttpErrorResponse): void {
+    private handleCarouselErrors(err: HttpErrorResponse): void {
         if (err.status === Httpstatus.StatusCodes.NOT_FOUND) {
-            window.alert(err.error);
+            this.popupService.openPopup(err.error);
         } else if (err.status === 0) {
-            window.alert('Aucune connection avec le serveur');
+            this.popupService.openPopup('Aucune connection avec le serveur');
             this.close();
         }
     }

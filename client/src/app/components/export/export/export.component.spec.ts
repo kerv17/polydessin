@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportService } from '@app/services/export/export.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ExportComponent } from './export.component';
@@ -19,7 +20,7 @@ describe('ExportComponent', () => {
         drawingService = new DrawingService({} as ResizePoint);
         drawingService.canvas = document.createElement('CANVAS') as HTMLCanvasElement;
 
-        exportService = new ExportService(drawingService, serverRequestService);
+        exportService = new ExportService(drawingService, serverRequestService, {} as PopupService);
         exportService.showModalExport = false;
         TestBed.configureTestingModule({
             imports: [FormsModule],
@@ -77,8 +78,8 @@ describe('ExportComponent', () => {
     it('should set the right filter', () => {
         drawImageSpy = spyOn(component.ctx, 'drawImage');
         const test = 'none';
-        component.setFiltre(test);
-        expect(component.filtre).toEqual(test);
+        component.setFilter(test);
+        expect(component.filter).toEqual(test);
         expect(component.ctx.filter).toEqual(test);
         expect(drawImageSpy).toHaveBeenCalled();
     });

@@ -31,9 +31,7 @@ export class DataAccessService {
         return this.metadataService
             .getMetadataByTags(tagsToFind)
             .then((metadata: Metadata[]) => {
-                const information = this.serverSaveService.createCanvasInformation(metadata);
-
-                return information;
+                return this.serverSaveService.createCanvasInformation(metadata);
             })
             .catch((error: Error) => {
                 throw new Error(error.message);
@@ -65,7 +63,6 @@ export class DataAccessService {
                 this.serverSaveService.deleteCanvasInformation(aCode);
             })
             .catch((error: Error) => {
-                console.log(error.message);
                 throw new Error(error.message);
             });
     }

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { CanvasInformation } from '@common/communication/canvas-information';
 
@@ -13,47 +14,42 @@ const MAX_NUMBER_TAG = 5;
     providedIn: 'root',
 })
 export class RemoteSaveService {
-    constructor(public drawingService: DrawingService, private requestService: ServerRequestService) {}
+    constructor(public drawingService: DrawingService, private requestService: ServerRequestService, private popupService: PopupService) {}
     showModalSave: boolean = false;
 
     post(information: CanvasInformation): void {
         if (!this.validateMetadata(information)) {
-            window.alert('Il faut respecter les critères pour le tag et le nom');
+            this.popupService.openPopup('Il faut respecter les critères pour le tag et le nom');
             return;
         }
 
         if (confirm('Êtes-vous sûr de vouloir sauvegarder le dessin')) {
             const data: string = this.drawingService.canvas.toDataURL('image/' + information.format);
-            console.log(data);
+
             information.imageData = data;
             information.height = this.drawingService.canvas.height;
             information.width = this.drawingService.canvas.width;
 
             this.requestService.basicPost(information).subscribe(
                 (response) => {
-                    window.alert(response.body?.title);
+                    if (response.body) this.popupService.openPopup(response.body.title);
                 },
                 (err: HttpErrorResponse) => {
-                    if (err.status === 0) window.alert('Aucune connection avec le serveur');
+                    if (err.status === 0) this.popupService.openPopup('Aucune connection avec le serveur');
                     else {
-                        window.alert(err.error);
+                        this.popupService.openPopup(err.error);
                     }
                 },
             );
         }
     }
-    validateMetadata(information: CanvasInformation): boolean {
+    private validateMetadata(information: CanvasInformation): boolean {
         return this.validateName(information.name) && this.validateTags(information.tags) && this.verifySaveMode(information.format);
     }
 
     tagsHandler(tags: string): string[] {
-        if (tags === '') {
-            const emptyArray: string[] = [];
-            return emptyArray;
-        } else {
-            const tagInArray: string[] = tags.split(',');
-            return tagInArray;
-        }
+        const emptyArray: string[] = [];
+        return tags === '' ? emptyArray : tags.split(',');
     }
 
     private validateName(name: string): boolean {
@@ -67,14 +63,10 @@ export class RemoteSaveService {
     }
 
     private validateTags(tags: string[]): boolean {
-        if (tags.length === 0) {
-            // il est accepter qu'un dessin peut ne pas avoir de tag
-            return true;
-        } else {
-            return (
-                this.verifyTagsNotNull(tags) && this.verifyTagsLength(tags) && this.verifyTagsNoSpecialChracter(tags) && this.verifyTagsNumber(tags)
-            );
-        }
+        return (
+            tags.length === 0 ||
+            (this.verifyTagsNotNull(tags) && this.verifyTagsLength(tags) && this.verifyTagsNoSpecialChracter(tags) && this.verifyTagsNumber(tags))
+        );
     }
     private verifyTagsNumber(tags: string[]): boolean {
         return tags.length <= MAX_NUMBER_TAG;

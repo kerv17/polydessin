@@ -5,9 +5,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { MainPageComponent } from './main-page.component';
-
 import SpyObj = jasmine.SpyObj;
 
 describe('MainPageComponent', () => {
@@ -20,7 +20,7 @@ describe('MainPageComponent', () => {
     };
 
     beforeEach(async(() => {
-        carouselService = new CarouselService({} as ServerRequestService, {} as DrawingService, {} as Router);
+        carouselService = new CarouselService({} as ServerRequestService, {} as DrawingService, {} as Router, {} as PopupService);
         indexServiceSpy = jasmine.createSpyObj<ServerRequestService>('ServerRequestService', ['basicGet']);
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
@@ -81,7 +81,7 @@ describe('MainPageComponent', () => {
     });
     it('should return the value of canvasExists', () => {
         localStorage.setItem('thereIsSavedDrawing', 'false');
-        const result = component.verifDessinExistant();
+        const result = component.verifyDrawingExist();
         expect(result).toEqual(false);
     });
 });

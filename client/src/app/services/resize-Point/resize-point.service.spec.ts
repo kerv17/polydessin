@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ResizePoint } from './resize-point.service';
 
-// tslint: disable: no - any;
+// tslint:disable:no-any
 describe('ResizePoint', () => {
     let service: ResizePoint;
     let setResizerBottomLineSpy: jasmine.Spy;
@@ -23,9 +23,9 @@ describe('ResizePoint', () => {
     });
     it('resetControlPoints should call setResizers', () => {
         const entree = 40;
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.resetControlPoints(entree, entree);
         expect(setResizerBottomLineSpy).toHaveBeenCalled();
         expect(setResizerRightLineSpy).toHaveBeenCalled();
@@ -52,8 +52,8 @@ describe('ResizePoint', () => {
         };
         service.posX = entreeX;
         service.posY = entreeY;
-        service.setResizerRightLine();
-        expect(service.resizerRightLine).toEqual(expectedNGStyle);
+        (service as any).setResizerRightLine();
+        expect((service as any).resizerRightLine).toEqual(expectedNGStyle);
     });
     it('setResizerBottomLine should set bottom line control point', () => {
         const entreeX = 1000;
@@ -69,7 +69,7 @@ describe('ResizePoint', () => {
         };
         service.posX = entreeX;
         service.posY = entreeY;
-        service.setResizerBottomLine();
+        (service as any).setResizerBottomLine();
         expect(service.resizerBottomLine).toEqual(expectedNGStyle);
     });
     it('setResizerBottomRight should set bottom right control point', () => {
@@ -86,14 +86,14 @@ describe('ResizePoint', () => {
         };
         service.posX = entreeX;
         service.posY = entreeY;
-        service.setResizerBottomRight();
+        (service as any).setResizerBottomRight();
         expect(service.resizerBottomRight).toEqual(expectedNGStyle);
     });
     it('mouseMoveHandlerRight should do nothing if mousedown is false', () => {
         service.mouseDown = false;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerRight(mouseEvent);
         expect(setResizerBottomLineSpy).not.toHaveBeenCalled();
         expect(setResizerRightLineSpy).not.toHaveBeenCalled();
@@ -101,9 +101,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerRight should call the setResizers if mousedown is true', () => {
         service.mouseDown = true;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerRight(mouseEvent);
         expect(setResizerBottomLineSpy).toHaveBeenCalled();
         expect(setResizerRightLineSpy).toHaveBeenCalled();
@@ -111,9 +111,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerBottom should do nothing if mousedown is false', () => {
         service.mouseDown = false;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerBottom(mouseEvent);
         expect(setResizerBottomLineSpy).not.toHaveBeenCalled();
         expect(setResizerRightLineSpy).not.toHaveBeenCalled();
@@ -121,9 +121,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerBottom should call the setResizers if mousedown is true', () => {
         service.mouseDown = true;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerBottom(mouseEvent);
         expect(setResizerBottomLineSpy).toHaveBeenCalled();
         expect(setResizerRightLineSpy).toHaveBeenCalled();
@@ -131,9 +131,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerCorner should do nothing if mousedown is false', () => {
         service.mouseDown = false;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerCorner(mouseEvent);
         expect(setResizerBottomLineSpy).not.toHaveBeenCalled();
         expect(setResizerRightLineSpy).not.toHaveBeenCalled();
@@ -141,9 +141,9 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerCorner should call the setResizers if mousedown is true', () => {
         service.mouseDown = true;
-        setResizerRightLineSpy = spyOn(service, 'setResizerRightLine');
-        setResizerBottomLineSpy = spyOn(service, 'setResizerBottomLine');
-        setResizerBottomRightSpy = spyOn(service, 'setResizerBottomRight');
+        setResizerRightLineSpy = spyOn(service as any, 'setResizerRightLine');
+        setResizerBottomLineSpy = spyOn(service as any, 'setResizerBottomLine');
+        setResizerBottomRightSpy = spyOn(service as any, 'setResizerBottomRight');
         service.mouseMoveHandlerCorner(mouseEvent);
         expect(setResizerBottomLineSpy).toHaveBeenCalled();
         expect(setResizerRightLineSpy).toHaveBeenCalled();
@@ -154,7 +154,7 @@ describe('ResizePoint', () => {
         const height = 800;
         global.innerWidth = width;
         global.innerHeight = height;
-        expect(service.forceMaxWidth(mouseEvent)).toEqual(false);
+        expect((service as any).forceMaxWidth(mouseEvent)).toEqual(false);
     });
     it('forceMaxHeight should return false if offsetY is smaller than the max value', () => {
         const width = 1470;
@@ -165,7 +165,7 @@ describe('ResizePoint', () => {
             offsetX: 450,
             offsetY: 650,
         } as MouseEvent;
-        expect(service.forceMaxHeight(mouseEvent)).toEqual(false);
+        expect((service as any).forceMaxHeight(mouseEvent)).toEqual(false);
     });
     it('forceMaxWidth should return true if offsetX is greater than the max value', () => {
         const width = 1470;
@@ -176,7 +176,7 @@ describe('ResizePoint', () => {
             offsetX: 1450,
             offsetY: 250,
         } as MouseEvent;
-        expect(service.forceMaxWidth(mouseEvent)).toEqual(true);
+        expect((service as any).forceMaxWidth(mouseEvent)).toEqual(true);
     });
     it('forceMaxHeight should return true if offsetY is greater than the max value', () => {
         const width = 1470;
@@ -187,13 +187,13 @@ describe('ResizePoint', () => {
             offsetX: 450,
             offsetY: 780,
         } as MouseEvent;
-        expect(service.forceMaxHeight(mouseEvent)).toEqual(true);
+        expect((service as any).forceMaxHeight(mouseEvent)).toEqual(true);
     });
     it('mouseMoveHandlerRight should force max size on posX if mouse offsetX is too big', () => {
         service.mouseDown = true;
-        const width = 1470;
+        const width = 1500;
         const height = 800;
-        const expectedResult = 950;
+        const expectedResult = 1064;
         global.innerWidth = width;
         global.innerHeight = height;
         mouseEvent = {
@@ -293,14 +293,14 @@ describe('ResizePoint', () => {
     });
     it('mouseMoveHandlerCorner should force max on posX and posY if mouse offsetX and offsetY are too big', () => {
         service.mouseDown = true;
-        const width = 1470;
+        const width = 1500;
         const height = 800;
-        const expectedResultX = 950;
+        const expectedResultX = 1064;
         const expectedResultY = 760;
         global.innerWidth = width;
         global.innerHeight = height;
         mouseEvent = {
-            offsetX: 1050,
+            offsetX: 1450,
             offsetY: 795,
         } as MouseEvent;
         service.mouseMoveHandlerCorner(mouseEvent);

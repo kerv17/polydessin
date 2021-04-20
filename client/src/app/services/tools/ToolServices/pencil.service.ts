@@ -21,7 +21,7 @@ export class PencilService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.inUse = true;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -41,6 +41,7 @@ export class PencilService extends Tool {
             this.dispatchAction(action);
         }
         this.mouseDown = false;
+        this.inUse = false;
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const eventContinue: CustomEvent = new CustomEvent('saveState');
@@ -88,7 +89,7 @@ export class PencilService extends Tool {
         }
     }
 
-    separatePathLists(path: Vec2[]): Vec2[][] {
+    private separatePathLists(path: Vec2[]): Vec2[][] {
         const pathList: Vec2[][] = [[]];
         for (const point of path) {
             if (this.isPointInRange(point)) {
@@ -101,14 +102,14 @@ export class PencilService extends Tool {
         return pathList;
     }
 
-    isPointInRange(point: Vec2): boolean {
+    private isPointInRange(point: Vec2): boolean {
         const x = point.x > 0 && point.x < this.drawingService.canvas.width;
         const y = point.y > 0 && point.y < this.drawingService.canvas.height;
         return x && y;
     }
 
     // fonction ayant pour but de valider les valeurs de couleur et de largeur avant de les appliquer
-    applyAttributes(ctx: CanvasRenderingContext2D): void {
+    private applyAttributes(ctx: CanvasRenderingContext2D): void {
         ctx.lineCap = 'round';
         const width = this.width;
 

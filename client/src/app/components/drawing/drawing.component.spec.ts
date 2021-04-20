@@ -5,19 +5,20 @@ import { Tool } from '@app/classes/tool';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { SelectionBoxService } from '@app/services/selection-box/selection-box.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { ServerRequestService } from '@app/services/server-request/server-request.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
-import { AerosolService } from '@app/services/tools/ToolServices/aerosol-service.service';
+import { AerosolService } from '@app/services/tools/ToolServices/aerosol.service';
 import { BucketService } from '@app/services/tools/ToolServices/bucket.service';
-import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis-service';
+import { EllipsisService } from '@app/services/tools/ToolServices/ellipsis.service';
 import { LassoService } from '@app/services/tools/ToolServices/lasso.service';
-import { LineService } from '@app/services/tools/ToolServices/line-service';
-import { PencilService } from '@app/services/tools/ToolServices/pencil-service';
-import { RectangleService } from '@app/services/tools/ToolServices/rectangle-service';
+import { LineService } from '@app/services/tools/ToolServices/line.service';
+import { PencilService } from '@app/services/tools/ToolServices/pencil.service';
+import { RectangleService } from '@app/services/tools/ToolServices/rectangle.service';
 import { SelectionService } from '@app/services/tools/ToolServices/selection.service';
 import { StampService } from '@app/services/tools/ToolServices/stamp.service';
 import { DrawingComponent } from './drawing.component';
@@ -43,6 +44,7 @@ describe('DrawingComponent', () => {
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
+
         drawingStub = new DrawingService(resizePointStub);
         baseCtxTest = jasmine.createSpyObj('CanvasRenderingContext2D', ['getImageData']);
         drawingStub.baseCtx = baseCtxTest;
@@ -59,7 +61,7 @@ describe('DrawingComponent', () => {
             {} as LassoService,
             {} as BucketService,
         );
-        carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+        carouselService = new CarouselService({} as ServerRequestService, drawingStub, {} as Router, {} as PopupService);
 
         selectionBoxService = new SelectionBoxService();
         TestBed.configureTestingModule({
@@ -84,7 +86,6 @@ describe('DrawingComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
     it(' ngAfterViewInit should set baseCtx, previewCtx from the component and from the service', () => {
         component.ngAfterViewInit();
         expect((component as any).drawingService['baseCtx']).toEqual(component.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D);
@@ -118,7 +119,7 @@ describe('DrawingComponent', () => {
         expect((component as any).controller.currentTool.color2).toEqual((component as any).colorService.secondaryColor);
     });
     it(' ngAfterViewInit should call getSavedCanvas', () => {
-        const getSpy = spyOn((component as any).contiueService, 'getSavedCanvas');
+        const getSpy = spyOn((component as any).continueService, 'getSavedCanvas');
         component.ngAfterViewInit();
         expect(getSpy).toHaveBeenCalled();
     });
@@ -159,7 +160,6 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({ heightPrev: new SimpleChange(1, component.heightPrev, true) });
         expect(component.previewCanvas.nativeElement.height).toEqual(expectedValue);
     });
-
     it(' ngOnChanges should call onEscape from selectionService if there is an active selection and mouseDown is false', () => {
         component['viewInitialized'] = true;
         component.mouseDown = false;
@@ -172,12 +172,10 @@ describe('DrawingComponent', () => {
         expect(escapeSpy).toHaveBeenCalled();
         expect(spyDispatch).toHaveBeenCalled();
     });
-
     it('should get stubTool', () => {
         const currentTool = component.getCurrentTool();
         expect(currentTool).toEqual(toolStub);
     });
-
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
         const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'onMouseMove');
@@ -206,7 +204,6 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it(" should call the tool's right click when receiving a contextmenu event", () => {
         const event = new MouseEvent('keyDown');
         const preventDefaultSpy = spyOn(event, 'preventDefault');
@@ -215,7 +212,6 @@ describe('DrawingComponent', () => {
         expect(preventDefaultSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it(" should call the tool's onWheel when receiving a mouse wheel event", () => {
         const event = {} as WheelEvent;
         const mouseEventSpy = spyOn(toolController.currentTool, 'onWheel');
@@ -245,7 +241,6 @@ describe('DrawingComponent', () => {
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
     });
-
     it('ngOnChanges should dispatch an action Event only when allowed', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
@@ -259,10 +254,14 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({} as SimpleChanges);
 
         expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
-
-        const numberOfTimesDispatchCalledFull = 3;
+        const numberOfTimesDispatchCalledFull = 4;
         (component as any).allowUndoCall = true;
         component.ngOnChanges({} as SimpleChanges);
+
+        if (component.baseCanvas.nativeElement.onload) {
+            // on test la fonction lamda pour voir si elle appelle un dispatch
+            component.baseCanvas.nativeElement.onload({} as Event);
+        }
 
         expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalledFull);
     });
@@ -282,26 +281,21 @@ describe('DrawingComponent', () => {
         component.ngOnChanges({} as SimpleChanges);
         expect(spyDispatch).toHaveBeenCalledTimes(numberOfTimesDispatchCalled);
     });
-
     it('ngOnInit should dispatch a undoRedoWipe event', () => {
         (component as any).heightPrev = 2;
         (component as any).widthPrev = 2;
-
         let actionCalled = false;
         addEventListener('undoRedoWipe', (event: CustomEvent) => {
             actionCalled = true;
         });
-
         component.ngAfterViewInit();
         expect(actionCalled).toBeTrue();
     });
-
     it('cursorChange should call cursorChange method from selectionBox Service', () => {
         const cursorSpy = spyOn(component.selectionBoxLayout, 'cursorChange');
         component.cursorChange(Globals.mouseDownEvent);
         expect(cursorSpy).toHaveBeenCalled();
     });
-
     it('drawSelectionBox should call drawSelectionBox, setHandlers from selectionbox service and return true if there is an active selection', () => {
         toolController.selectionService.inSelection = true;
         const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
@@ -310,7 +304,6 @@ describe('DrawingComponent', () => {
         expect(drawSelectionBoxSpy).toHaveBeenCalled();
         expect(setHandlersSpy).toHaveBeenCalled();
     });
-
     it('drawSelectionBox should not call drawSelectionBox, setHandlers from selectionbox service and should return false if there is no active selection', () => {
         toolController.selectionService.inSelection = false;
         const drawSelectionBoxSpy = spyOn(component.selectionBoxLayout, 'drawSelectionBox');
@@ -319,7 +312,6 @@ describe('DrawingComponent', () => {
         expect(drawSelectionBoxSpy).not.toHaveBeenCalled();
         expect(setHandlersSpy).not.toHaveBeenCalled();
     });
-
     it('drawhandlers should return the inSelection value from selectionService', () => {
         toolController.selectionService.inSelection = true;
         expect(component.drawHandlers()).toBeTrue();
@@ -327,7 +319,7 @@ describe('DrawingComponent', () => {
         expect(component.drawHandlers()).not.toBeTrue();
     });
     it('should load the carousel picture if one is stored', () => {
-        (component as any).carousel = new CarouselService({} as ServerRequestService, drawingStub, {} as Router);
+        (component as any).carousel = new CarouselService({} as ServerRequestService, drawingStub, {} as Router, {} as PopupService);
 
         (component as any).carousel.loadImage = true;
 
@@ -344,6 +336,6 @@ describe('DrawingComponent', () => {
     it('calling beforeunload should change the continueDrawing variable', () => {
         const event: CustomEvent = new CustomEvent('beforeunload', { detail: false });
         dispatchEvent(event);
-        expect((component as any).contiueService.canvasContinue()).toBeTrue();
+        expect((component as any).continueService.canvasContinue()).toBeTrue();
     });
 });

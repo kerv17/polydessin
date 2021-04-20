@@ -15,11 +15,9 @@ export class ColorModalComponent implements AfterViewInit {
     bValue: string = '0';
     opacity: string = MAX_OPACITY.toString();
 
-    @Output()
-    isVisible: EventEmitter<boolean> = new EventEmitter(true);
+    @Output() isVisible: EventEmitter<boolean> = new EventEmitter(true);
 
-    @Output()
-    colorModified: EventEmitter<string> = new EventEmitter(true);
+    @Output() colorModified: EventEmitter<string> = new EventEmitter(true);
 
     constructor(private colorService: ColorService) {}
 

@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SelectionMovementService } from '@app/services/selection-movement/selection-movement.service';
 import { SelectionResizeService } from '@app/services/selection-resize/selection-resize.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from './rectangle.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -16,6 +16,7 @@ export class SelectionService extends Tool {
     inMovement: boolean = false;
     private inResize: boolean = false;
     lassoPath: Vec2[];
+    lassoBorder: Vec2[] = [];
 
     constructor(drawingService: DrawingService, private selectionMove: SelectionMovementService, private selectionResize: SelectionResizeService) {
         super(drawingService);
@@ -26,14 +27,16 @@ export class SelectionService extends Tool {
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
+                this.initializeLassoBorder();
                 this.inMovement = true;
                 this.pathData[Globals.CURRENT_SELECTION_POSITION] = this.getActualPosition();
-                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData, this.lassoPath, this.toolMode);
+                this.selectionMove.onArrowDown(event.repeat, this.selectedArea, this.pathData, this.lassoPath, this.toolMode, this.lassoBorder);
             }
         });
 
         document.addEventListener('keyup', (event: KeyboardEvent) => {
             if (this.inSelection && this.selectionMove.isArrowKeyDown(event)) {
+                this.drawLassoBorder();
                 this.inMovement = false;
                 this.selectionMove.onArrowKeyUp(event);
             }
@@ -85,6 +88,7 @@ export class SelectionService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         const mousePosition = this.getPositionFromMouse(event);
         if (this.inSelection) {
+            this.inUse = true;
             if (this.selectionResize.onMouseDown(mousePosition)) {
                 this.selectionResize.initializePath(this.pathData);
                 this.selectionResize.setPathDataAfterMovement(this.getActualPosition());
@@ -97,11 +101,13 @@ export class SelectionService extends Tool {
                 );
                 this.inResize = true;
                 this.inMovement = false;
+                this.lassoBorder = [{ x: 0, y: 0 }];
             } else if (
                 this.selectionMove.onMouseDown(event, mousePosition, this.getActualPosition(), this.getSelectionWidth(), this.getSelectionHeight())
             ) {
                 this.inMovement = true;
                 this.inSelection = false;
+                this.initializeLassoBorder();
             } else {
                 this.onEscape();
             }
@@ -118,7 +124,15 @@ export class SelectionService extends Tool {
 
             if (this.inMovement) {
                 this.selectionMove.updateCanvasOnMove(this.drawingService.baseCtx, this.pathData, this.lassoPath, this.toolMode);
-                this.selectionMove.onMouseMove(event, this.drawingService.previewCtx, this.getActualPosition(), this.selectedArea);
+                this.selectionMove.onMouseMove(
+                    event,
+                    this.drawingService.previewCtx,
+                    this.getActualPosition(),
+                    this.selectedArea,
+                    this.toolMode,
+                    this.lassoBorder,
+                );
+                this.drawLassoBorder();
             } else if (this.inResize) {
                 this.selectionResize.onMouseMove(
                     this.selectedArea,
@@ -176,6 +190,7 @@ export class SelectionService extends Tool {
             this.mouseDown = false;
             this.inMovement = false;
             this.inResize = false;
+            this.lassoBorder = [];
             this.selectionResize.resetPath();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.clearPath();
@@ -187,6 +202,7 @@ export class SelectionService extends Tool {
             }
             const eventContinue: CustomEvent = new CustomEvent('saveState');
             dispatchEvent(eventContinue);
+            this.inUse = false;
         }
     }
 
@@ -297,5 +313,23 @@ export class SelectionService extends Tool {
             this.pathData = this.rectangleService.getRectanglePoints({ x: firstCorner.x, y: oppositeCorner.y });
         }
         this.pathData.push({ x: this.pathData[0].x, y: this.pathData[0].y });
+    }
+
+    private initializeLassoBorder(): void {
+        if (this.toolMode === 'v') {
+            if (this.lassoBorder.length === 0) {
+                for (let i = 0; i < this.lassoPath.length; i++) {
+                    this.lassoBorder[i] = { x: this.lassoPath[i].x, y: this.lassoPath[i].y };
+                }
+            }
+            this.selectionMove.initializeLassoPath(this.lassoBorder);
+            this.drawBorder(this.drawingService.previewCtx, this.lassoBorder);
+        }
+    }
+
+    private drawLassoBorder(): void {
+        if (this.toolMode === 'v') {
+            this.drawBorder(this.drawingService.previewCtx, this.lassoBorder);
+        }
     }
 }

@@ -1,11 +1,14 @@
 <div class="StampList">
-  <app-stamp-slider></app-stamp-slider>
-  <div class="ToolContainer" *ngFor="let stamp of stamps">
-    <img src="{{path+stamp}}" class="function" (click)="setImage(stamp)"
-    [ngStyle]="{
-        backgroundColor: currentStamp == stamp ? 'gainsboro' : 'white'
-  }"
-  tabindex="0" />
-  </div>
-
+    <app-stamp-slider></app-stamp-slider>
+    <div class="ToolContainer" *ngFor="let stamp of stamps">
+        <img
+            src="{{ path + stamp }}"
+            class="function"
+            (click)="setImage(stamp)"
+            [ngStyle]="{
+                backgroundColor: currentStamp == stamp ? '#7bf6da' : 'white'
+            }"
+            tabindex="0"
+        />
+    </div>
 </div>

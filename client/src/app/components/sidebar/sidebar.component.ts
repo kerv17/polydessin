@@ -53,14 +53,14 @@ export class SidebarComponent {
         this.initFunctionMap();
         this.currentTool = Globals.CRAYON_SHORTCUT;
         this.setTool(Globals.CRAYON_SHORTCUT);
-        this.annulerSelection();
+        this.cancelSelection();
 
         addEventListener('undoRedoState', (event: CustomEvent) => {
             this.undo = event.detail[0] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
             this.redo = event.detail[1] ? Globals.BACKGROUND_WHITE : Globals.BACKGROUND_DARKGREY;
         });
     }
-    // TODO REFACTOR ALL TOOLS
+
     goBack(): void {
         this.router.navigate(['..']);
         this.resetDrawingAttributes();
@@ -84,6 +84,8 @@ export class SidebarComponent {
     }
     openCarousel(): void {
         this.carouselService.initialiserCarousel();
+        this.toolController.selectionService.onEscape();
+        this.toolController.lassoService.onEscape();
     }
     openSave(): void {
         this.remoteSaveService.showModalSave = true;
@@ -105,8 +107,7 @@ export class SidebarComponent {
         this.selectionOptions = this.currentTool === Globals.RECTANGLE_SELECTION_SHORTCUT || this.currentTool === Globals.LASSO_SELECTION_SHORTCUT;
     }
 
-    // TODO : changer le nom en anglais
-    annulerSelection(): void {
+    private cancelSelection(): void {
         if (this.toolController.selectionService.inSelection) {
             this.toolController.selectionService.onEscape();
             dispatchEvent(new CustomEvent('resetLassoToolMode'));
@@ -121,14 +122,14 @@ export class SidebarComponent {
         this.showLineOptions();
         this.showAerosolInterface();
         this.showShapeOptions();
-        this.annulerSelection();
+        this.cancelSelection();
     }
 
     newCanvas(): void {
         this.colorService.resetColorValues();
         this.toolController.resetWidth();
         this.toolController.resetToolsMode();
-        this.annulerSelection();
+        this.cancelSelection();
         this.drawing.newCanvas();
         this.gridService.resetGrid();
         this.toolController.lineService.clearPath();
@@ -203,13 +204,13 @@ export class SidebarComponent {
     }
 
     undoAction(): void {
-        if (!this.toolController.selectionService.inSelection) {
+        if (!this.toolController.selectionService.inSelection && !this.toolController.currentTool.inUse) {
             this.undoRedoService.undo();
         }
     }
 
     redoAction(): void {
-        if (!this.toolController.selectionService.inSelection) {
+        if (!this.toolController.selectionService.inSelection && !this.toolController.currentTool.inUse) {
             this.undoRedoService.redo();
         }
     }

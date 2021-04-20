@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as Globals from '@app/Constants/constants';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { BehaviorSubject } from 'rxjs';
 @Component({
     selector: 'app-main-page',
@@ -13,7 +14,12 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private router: Router, public carouselService: CarouselService, public contiueService: ContinueDrawingService) {}
+    constructor(
+        private router: Router,
+        public carouselService: CarouselService,
+        public contiueService: ContinueDrawingService,
+        public popupService: PopupService,
+    ) {}
 
     goToEditor(): void {
         const eventContinue: CustomEvent = new CustomEvent('newCanvas');
@@ -24,7 +30,7 @@ export class MainPageComponent {
         this.carouselService.initialiserCarousel();
     }
 
-    verifDessinExistant(): boolean {
+    verifyDrawingExist(): boolean {
         return this.contiueService.canvasExists();
     }
     goContinue(): void {

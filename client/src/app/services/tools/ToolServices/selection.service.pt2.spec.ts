@@ -306,4 +306,40 @@ describe('SelectionService', () => {
         service.onEscape();
         expect(spyDispatch).toHaveBeenCalled();
     });
+
+    it('initializeLassoBorder should call drawBorder and initializeLassoPath if toolMode is v', () => {
+        (service as any).toolMode = 'v';
+        const drawBorderSpy = spyOn(service, 'drawBorder');
+        (service as any).initializeLassoBorder();
+        expect(drawBorderSpy).toHaveBeenCalled();
+    });
+
+    it('initializeLassoBorder should not update lassoBorder path, call drawBorder and initializeLassoPath if toolMode is v', () => {
+        (service as any).toolMode = 'v';
+        (service as any).lassoBorder = [{ x: 0, y: 0 }];
+        const drawBorderSpy = spyOn(service, 'drawBorder');
+        (service as any).initializeLassoBorder();
+        expect(drawBorderSpy).toHaveBeenCalled();
+    });
+
+    it('initializeLassoBorder should not call drawBorder and initializeLassoPath if toolMode is not v', () => {
+        (service as any).toolMode = '';
+        const drawBorderSpy = spyOn(service, 'drawBorder');
+        (service as any).initializeLassoBorder();
+        expect(drawBorderSpy).not.toHaveBeenCalled();
+    });
+
+    it('drawLassoBorder should call drawBorder if toolMode is v (lasso)', () => {
+        (service as any).toolMode = 'v';
+        const drawBorderSpy = spyOn(service, 'drawBorder');
+        (service as any).drawLassoBorder();
+        expect(drawBorderSpy).toHaveBeenCalled();
+    });
+
+    it('drawLassoBorder should not call drawBorder if toolMode is not v (lasso)', () => {
+        (service as any).toolMode = '';
+        const drawBorderSpy = spyOn(service, 'drawBorder');
+        (service as any).drawLassoBorder();
+        expect(drawBorderSpy).not.toHaveBeenCalled();
+    });
 });

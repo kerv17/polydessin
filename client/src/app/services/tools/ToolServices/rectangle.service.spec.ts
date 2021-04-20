@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { RectangleService } from './rectangle-service';
+import { RectangleService } from './rectangle.service';
 
 // tslint:disable:no-any
 describe('RectangleService', () => {
@@ -84,7 +84,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: Globals.MouseButton.Right, // TODO: Avoir ceci dans un enum accessible
+            button: Globals.MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);

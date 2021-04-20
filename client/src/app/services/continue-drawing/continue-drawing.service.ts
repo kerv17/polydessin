@@ -13,6 +13,7 @@ export class ContinueDrawingService {
     private canvasName: string = 'drawing';
     private canvasHeight: string = 'imageHeight';
     private canvasWidth: string = 'imageWidth';
+    private img: HTMLImageElement;
 
     constructor(public drawingService: DrawingService) {
         addEventListener('saveState', (event: CustomEvent) => {
@@ -71,7 +72,7 @@ export class ContinueDrawingService {
         return localStorage.getItem(this.drawingSavedName) === 'true';
     }
 
-    canvasContinue(): boolean {
+    private canvasContinue(): boolean {
         return localStorage.getItem(this.continueDrawing) === 'true';
     }
 
@@ -80,11 +81,11 @@ export class ContinueDrawingService {
 
         this.drawingService.setCanvassSize(newSize);
 
-        const image = new Image();
-        image.src = oldCanvas.imageData;
-        image.onload = () => {
-            this.drawingService.baseCtx.drawImage(image, 0, 0);
-            this.sendCanvasToUndoRedo(image, newSize);
+        this.img = new Image();
+        this.img.src = oldCanvas.imageData;
+        this.img.onload = () => {
+            this.drawingService.baseCtx.drawImage(this.img, 0, 0);
+            this.sendCanvasToUndoRedo(this.img, newSize);
         };
     }
 

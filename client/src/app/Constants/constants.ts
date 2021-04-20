@@ -1,5 +1,5 @@
 // Buttons in sidebar
-export const BACKGROUND_GAINSBORO = { backgroundColor: 'gainsboro' };
+export const BACKGROUND_GAINSBORO = { backgroundColor: '#7bf6da' };
 export const BACKGROUND_WHITE = { backgroundColor: 'white' };
 export const BACKGROUND_DARKGREY = { backgroundColor: 'DimGray' };
 
@@ -51,6 +51,7 @@ export const GRADIENT_LEVEL_3 = 0.51;
 export const GRADIENT_LEVEL_4 = 0.68;
 export const GRADIENT_LEVEL_5 = 0.81;
 export const DEFAULT_COLOR = 'rgba(0,0,0,1)';
+export const DEFAULT_COLOR_S = 'rgba(255,255,255,1)';
 export const PRIMARY_COLOR = 'Primary';
 export const SECONDARY_COLOR = 'Secondary';
 export const MAX_SIZE_RECENT_COLORS = 10;
@@ -74,7 +75,7 @@ export class Metadata {
 // Constante affichage éditeur et canvas
 export const CORRECTION_CONTROL_MARGIN = 2.5;
 export const CANVAS_SIZE_MIN = 250;
-export const SIDEBAR_WIDTH = 470;
+export const SIDEBAR_WIDTH = 380;
 export const CANVAS_MAX_VW_MULTIPLIER = 0.95;
 export const CANVAS_MAX_VH_MULTIPLIER = 0.95;
 
@@ -85,7 +86,7 @@ export const TEST_MAT_SLIDER_VALUE = 12;
 export const MILS_TO_SEC = 1000;
 
 // constante pour outil sélection
-export const N_PIXELS_DEPLACEMENT = 3;
+export const PIXELS_MOVE_SELECTION = 3;
 export const LINE_DASH = 10;
 export const HANDLERS_POSITION = 5;
 export const CURRENT_SELECTION_POSITION = 4;
@@ -106,7 +107,7 @@ export const MIRROR_SCALE = -1;
 
 // Constante pour tests de sélection
 export const mouseDownEvent = {
-    pageX: 595,
+    pageX: 525,
     pageY: 125,
     offsetX: 125,
     offsetY: 125,
@@ -125,3 +126,10 @@ export const GRID_MIN_BOX_VALUE = 10;
 // constante pour lasso
 export const closeRadius = 20;
 export const pathLength = 3;
+// Constante pour Ligne
+export const NOT_IN_INDEX = -1;
+// tslint:disable: no-magic-numbers
+export const X_QUADRANTS: number[] = [0, 7];
+export const Y_QUADRANTS: number[] = [3, 4];
+// tslint:enable: no-magic-numbers
+export const HALF_QUADRANTS = 22.5;

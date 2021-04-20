@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { EllipsisService } from './ellipsis-service';
+import { EllipsisService } from './ellipsis.service';
 
 // tslint:disable:no-any
 describe('EllipsisService', () => {
@@ -62,7 +62,7 @@ describe('EllipsisService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: 1,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -114,28 +114,28 @@ describe('EllipsisService', () => {
         // Bottom right
         {
             const b: Vec2 = { x: 50, y: 50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Bottom left
         {
             const b: Vec2 = { x: -50, y: 50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Top right
         {
             const b: Vec2 = { x: 50, y: -50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }
         // Top left
         {
             const b: Vec2 = { x: -50, y: -50 };
-            const s = service.ellipseWidth(a, b);
+            const s = (service as any).ellipseWidth(a, b);
             const expectedResult: Vec2 = { x: 45, y: 45 };
             expect(s).toEqual(expectedResult);
         }

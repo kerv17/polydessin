@@ -54,7 +54,7 @@ export class SelectionBoxService {
         return this.setCursor(pos);
     }
 
-    setCursor(pos: number): string {
+    private setCursor(pos: number): string {
         if (pos === Globals.TOP_LEFT_HANDLER || pos === Globals.BOTTOM_RIGHT_HANDLER) return 'nw-resize';
         if (pos === Globals.TOP_HANDLER || pos === Globals.BOTTOM_HANDLER) return 'n-resize';
         if (pos === Globals.TOP_RIGHT_HANDLER || pos === Globals.BOTTOM_LEFT_HANDLER) return 'ne-resize';

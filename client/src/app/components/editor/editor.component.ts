@@ -3,6 +3,7 @@ import { Vec2 } from '@app/classes/vec2';
 import * as Globals from '@app/Constants/constants';
 import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { PopupService } from '@app/services/modal/popup.service';
 import { ToolControllerService } from '@app/services/tools/ToolController/tool-controller.service';
 import { ResizedEvent } from 'angular-resize-event';
 @Component({
@@ -16,7 +17,12 @@ export class EditorComponent {
     editorSizeY: number;
     editorSizeX: number;
 
-    constructor(public drawingService: DrawingService, public controller: ToolControllerService, public colorService: ColorService) {
+    constructor(
+        public drawingService: DrawingService,
+        public controller: ToolControllerService,
+        public colorService: ColorService,
+        public popupService: PopupService,
+    ) {
         this.sizeCanvasOnReset = this.drawingService.initializeCanvas();
         this.drawingService.resizePoint.resetControlPoints(this.sizeCanvasOnReset.x, this.sizeCanvasOnReset.y);
     }
@@ -70,5 +76,13 @@ export class EditorComponent {
 
     hideResizer(): boolean {
         return !this.drawingService.resizePoint.mouseDown;
+    }
+
+    get visibility(): boolean {
+        return this.colorService.modalVisibility;
+    }
+
+    closeModal(): void {
+        this.colorService.modalVisibility = false;
     }
 }

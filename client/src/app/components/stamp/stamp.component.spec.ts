@@ -1,4 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatSlider, MatSliderModule } from '@angular/material/slider';
+import { StampSliderComponent } from '@app/components/stamp-slider/stamp-slider.component';
 import { StampComponent } from './stamp.component';
 // tslint:disable: no-any
 describe('StampComponent', () => {
@@ -7,7 +10,8 @@ describe('StampComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [StampComponent],
+            imports: [MatSliderModule, FormsModule],
+            declarations: [StampComponent, StampSliderComponent, MatSlider],
         }).compileComponents();
     }));
 

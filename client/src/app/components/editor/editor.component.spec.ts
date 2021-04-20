@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { ColorComponent } from '@app/components/color/color.component';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { WidthSliderComponent } from '@app/components/width-slider/width-slider.component';
+import { ColorService } from '@app/services/color/color.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizePoint } from '@app/services/resize-Point/resize-point.service';
 import { ResizedEvent } from 'angular-resize-event';
@@ -21,12 +23,15 @@ describe('EditorComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let resizeStub: ResizePoint;
+    let colorService: ColorService;
+    let whateverSpy: jasmine.Spy;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService(resizeStub);
         resizeStub = new ResizePoint();
         drawingStub.resizePoint = resizeStub;
+        colorService = new ColorService();
         TestBed.configureTestingModule({
             imports: [FormsModule, RouterTestingModule, HttpClientTestingModule],
             declarations: [EditorComponent, SidebarComponent, DrawingComponent, ColorComponent, WidthSliderComponent, MatSlider],
@@ -34,30 +39,31 @@ describe('EditorComponent', () => {
                 { provide: Tool, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ResizePoint, useValue: resizeStub },
+                { provide: ColorService, useValue: colorService },
             ],
         }).compileComponents();
     }));
 
     beforeEach(() => {
+        drawingStub.canvasSize = { x: 250, y: 250 } as Vec2;
+        whateverSpy = spyOn(drawingStub, 'initializeCanvas').and.returnValue({ x: 250, y: 250 } as Vec2);
+        spyOn(drawingStub.resizePoint, 'resetControlPoints').and.returnValue();
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        component.editorSizeX = 1;
-        component.editorSizeY = 1;
-        drawingStub.baseCtx.canvas.width = 1;
-        drawingStub.baseCtx.canvas.height = 1;
     });
 
     it('should create', () => {
+        expect(whateverSpy).toHaveBeenCalled();
         expect(component).toBeTruthy();
     });
 
-    it('onResize should increase editorSizeX and editorSizeX if canvas is bigger than the window to ensure control points are accessible', () => {
+    it('onResize should increase editorSizeX and editorSizeY if canvas is bigger than the window to ensure control points are accessible', () => {
         const width = 1000;
         const height = 400;
         const posX = 1030;
         const posY = 800;
-        const expectedWidth = 1650;
+        const expectedWidth = 1551;
         const expectedHeight = 880;
         const event = {} as ResizedEvent;
         global.innerWidth = width;
@@ -132,5 +138,18 @@ describe('EditorComponent', () => {
     it('hideResizer should return opposite of ResizePoint.mouseDown', () => {
         component.drawingService.resizePoint.mouseDown = false;
         expect(component.hideResizer()).toEqual(true);
+    });
+
+    it('get visibility should return the visibility value from the colorService', () => {
+        colorService.modalVisibility = true;
+        expect(component.visibility).toEqual(true);
+        colorService.modalVisibility = false;
+        expect(component.visibility).toEqual(false);
+    });
+
+    it(' closeModal should toggle visibility attribute to false ', () => {
+        component.closeModal();
+        expect(component.visibility).toEqual(false);
+        expect(colorService.modalVisibility).toEqual(false);
     });
 });

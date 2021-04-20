@@ -5,7 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { SIDEBAR_WIDTH } from '@app/Constants/constants';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawAction } from '@app/services/tools/undoRedo/undo-redo.service';
-import { LineService } from './line-service';
+import { LineService } from './line.service';
 
 // tslint:disable:no-any
 describe('LineService', () => {
@@ -233,13 +233,13 @@ describe('LineService', () => {
     it('getPointToPush should return mouseposition if pathData is empty', () => {
         const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
         (service as any).clearPath();
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
     });
 
     it('getPointToPush should return mouseposition if shift is not pressed', () => {
         const expectedResult = (service as any).getPositionFromMouse(mouseEvent);
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
     });
     it('getPointToPush should return mouseposition if shift is not pressed', () => {
@@ -248,7 +248,7 @@ describe('LineService', () => {
         });
         const expectedResult: Vec2 = { x: 134, y: 125 };
         service.shift = true;
-        const result = service.getPointToPush(mouseEvent);
+        const result = (service as any).getPointToPush(mouseEvent);
         expect(result).toEqual(expectedResult);
         expect(spy).toHaveBeenCalled();
     });

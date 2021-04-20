@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     DEFAULT_COLOR,
+    DEFAULT_COLOR_S,
     MAX_OPACITY,
     MAX_RGB_VALUE,
     MAX_SIZE_RECENT_COLORS,
@@ -8,13 +9,12 @@ import {
     RGB_STRING_VALUE_POSITION,
     SECONDARY_COLOR,
 } from '@app/Constants/constants';
-
 @Injectable({
     providedIn: 'root',
 })
 export class ColorService {
     primaryColor: string = DEFAULT_COLOR;
-    secondaryColor: string = DEFAULT_COLOR;
+    secondaryColor: string = DEFAULT_COLOR_S;
     currentColor: string;
     modalVisibility: boolean = false;
     recentColors: string[] = [];
@@ -43,20 +43,16 @@ export class ColorService {
     }
 
     confirmColorSelection(color: string): void {
-        if (this.currentColor === PRIMARY_COLOR) {
-            if (color !== this.primaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
-                    this.saveColor(this.primaryColor);
-                }
-                this.primaryColor = color;
+        if (this.currentColor === PRIMARY_COLOR && color !== this.primaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.primaryColor)) {
+                this.saveColor(this.primaryColor);
             }
-        } else if (this.currentColor === SECONDARY_COLOR) {
-            if (color !== this.secondaryColor) {
-                if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
-                    this.saveColor(this.secondaryColor);
-                }
-                this.secondaryColor = color;
+            this.primaryColor = color;
+        } else if (this.currentColor === SECONDARY_COLOR && color !== this.secondaryColor) {
+            if (this.rgbaToRgb(color) !== this.rgbaToRgb(this.secondaryColor)) {
+                this.saveColor(this.secondaryColor);
             }
+            this.secondaryColor = color;
         }
     }
 
@@ -79,7 +75,7 @@ export class ColorService {
         this.modalVisibility = false;
     }
 
-    rgbaToRgb(color: string): string {
+    private rgbaToRgb(color: string): string {
         const values = this.readRGBValues(color);
         return 'rgb(' + values[0] + ',' + values[1] + ',' + values[2] + ')';
     }
