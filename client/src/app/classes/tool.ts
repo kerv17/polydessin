@@ -17,6 +17,7 @@ export abstract class Tool {
     shift: boolean = false;
     selectedArea: ImageData;
     lassoPath: Vec2[];
+    inUse: boolean = false;
     protected pathData: Vec2[];
 
     constructor(public drawingService: DrawingService) {}

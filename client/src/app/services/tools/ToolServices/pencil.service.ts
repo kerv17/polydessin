@@ -21,7 +21,7 @@ export class PencilService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.inUse = true;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -41,6 +41,7 @@ export class PencilService extends Tool {
             this.dispatchAction(action);
         }
         this.mouseDown = false;
+        this.inUse = false;
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const eventContinue: CustomEvent = new CustomEvent('saveState');

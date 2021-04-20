@@ -26,6 +26,7 @@ export class LassoService extends Tool {
         if (event.button === Globals.MouseButton.Left) {
             if (this.toolMode === 'selection') {
                 this.addPoint(this.getPointToPush(event));
+                // this.inUse = true;
             }
             if (this.toolMode === 'movement') {
                 this.clearPreviewCtx();
@@ -78,6 +79,7 @@ export class LassoService extends Tool {
         ) {
             this.pathData.push(this.pathData[0]);
             this.toolMode = 'movement';
+            // this.inUse = false;
         } else if (this.checkIsPointValid(point)) {
             this.pathData.push(point);
         }
