@@ -19,7 +19,6 @@ export class LassoService extends Tool {
         this.clearPath();
         addEventListener('resetLassoToolMode', () => {
             this.toolMode = 'selection';
-            this.inUse = false;
         });
     }
 
@@ -80,6 +79,7 @@ export class LassoService extends Tool {
         ) {
             this.pathData.push(this.pathData[0]);
             this.toolMode = 'movement';
+            this.inUse = false;
         } else if (this.checkIsPointValid(point)) {
             this.pathData.push(point);
         }
