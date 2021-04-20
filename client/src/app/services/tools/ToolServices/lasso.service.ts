@@ -19,6 +19,7 @@ export class LassoService extends Tool {
         this.clearPath();
         addEventListener('resetLassoToolMode', () => {
             this.toolMode = 'selection';
+            this.inUse = false;
         });
     }
 
@@ -66,6 +67,7 @@ export class LassoService extends Tool {
     onEscape(): void {
         this.clearPath();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.inUse = false;
     }
     onShift(shifted: boolean): void {
         this.shift = shifted;
