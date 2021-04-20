@@ -19,7 +19,7 @@ export class LassoService extends Tool {
         this.clearPath();
         addEventListener('resetLassoToolMode', () => {
             this.toolMode = 'selection';
-            this.inUse=  false;
+            this.inUse = false;
         });
     }
 

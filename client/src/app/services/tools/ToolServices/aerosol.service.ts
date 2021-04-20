@@ -41,7 +41,7 @@ export class AerosolService extends Tool {
         if (this.mouseDown) {
             this.sprayPoints(this.lastPosition, this.sprayRadius);
             this.drawSpray(this.drawingService.previewCtx, this.pathData);
-            this.inUse= true;
+            this.inUse = true;
         }
     }
 
@@ -58,7 +58,7 @@ export class AerosolService extends Tool {
             this.onMouseMove(event);
             const eventContinue: CustomEvent = new CustomEvent('saveState');
             dispatchEvent(eventContinue);
-            this.inUse= false;
+            this.inUse = false;
         }
     }
 
