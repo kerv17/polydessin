@@ -29,7 +29,11 @@ describe('UndoRedoService', () => {
             width: 10,
             height: 10,
         };
-        (testTool as any).pathData = [{ x: 5, y: 5 }, { x: 50, y: 5 }, { x: 5, y: 50 }];
+        (testTool as any).pathData = [
+            { x: 5, y: 5 },
+            { x: 50, y: 5 },
+            { x: 5, y: 50 },
+        ];
         toolAction = (testTool as any).createAction();
 
         TestBed.configureTestingModule({
