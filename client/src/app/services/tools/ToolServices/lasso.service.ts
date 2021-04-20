@@ -26,9 +26,10 @@ export class LassoService extends Tool {
         if (event.button === Globals.MouseButton.Left) {
             if (this.toolMode === 'selection') {
                 this.addPoint(this.getPointToPush(event));
-                // this.inUse = true;
+                this.inUse = true;
             }
             if (this.toolMode === 'movement') {
+                this.inUse = false;
                 this.clearPreviewCtx();
                 this.passToSelectionService(this.selectArea(this.pathData));
                 dispatchEvent(
