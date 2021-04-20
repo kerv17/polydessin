@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="button">
-        <img src="../../../assets/exchange-alt-solid.svg" (click)="invert()" class="image" />
+        <img src="../../../assets/exchange.svg" (click)="invert()" class="image" />
         <div class="infobulle" *ngIf="!visibility">Inverser les 2 couleurs</div>
     </div>
 
@@ -23,11 +23,6 @@
     <p class="text-recent">Couleurs récentes</p>
 
     <div class="recentColors" *ngFor="let colors of recentColors">
-        <div
-            class="color-div-recent"
-            [ngStyle]="{ 'background-color': colors || 'rgba(0,0,0,1)' }"
-            (click)="selectPrimaryColor(colors)"
-            (contextmenu)="selectSecondaryColor(colors, $event)"
-        ></div>
+        <div class="color-div-recent" [ngStyle]="{ 'background-color': colors || 'rgba(0,0,0,1)' }" (click)="selectPrimaryColor(colors)" (contextmenu)="selectSecondaryColor(colors, $event)"></div>
     </div>
 </div>
