@@ -55,7 +55,12 @@ describe('RectangleService', () => {
             button: 0,
         } as MouseEvent;
 
-        testPath = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
+        testPath = [
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 1, y: 1 },
+            { x: 0, y: 1 },
+        ];
     });
 
     it('should be created', () => {
@@ -79,7 +84,7 @@ describe('RectangleService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: Globals.MouseButton.Right, // TODO: Avoir ceci dans un enum accessible
+            button: Globals.MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -201,7 +206,11 @@ describe('RectangleService', () => {
     });
 
     it('doAction', () => {
-        (service as any).pathData = [{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 110, y: 110 }];
+        (service as any).pathData = [
+            { x: 0, y: 0 },
+            { x: 10, y: 10 },
+            { x: 110, y: 110 },
+        ];
         const action: DrawAction = (service as any).createAction();
         service.clearPath();
         service.doAction(action);

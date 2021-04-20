@@ -230,13 +230,13 @@ describe('SidebarComponent', () => {
     it('should cancel the selection on toolSwap if theres something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = true;
-        component.annulerSelection();
+        (component as any).cancelSelection();
         expect(escapeSpy).toHaveBeenCalled();
     });
     it('should not cancel the selection on toolSwap if theres not something selected', () => {
         const escapeSpy = spyOn(((component as any).toolController as any).selectionService, 'onEscape');
         ((component as any).toolController as any).selectionService.inSelection = false;
-        component.annulerSelection();
+        (component as any).cancelSelection();
         expect(escapeSpy).not.toHaveBeenCalled();
     });
     it('OpenTool should flip the slider status variable and set showWidth and FillBorder', () => {
