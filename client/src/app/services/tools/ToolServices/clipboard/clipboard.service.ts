@@ -85,6 +85,7 @@ export class ClipboardService extends Tool {
                 dispatchEvent(new CustomEvent('resetLassoToolMode'));
                 this.pathData = this.selection.lassoPath;
                 this.selection.toolMode = '';
+                this.selection.lassoBorder = [];
             }
             this.dispatchAction(this.createAction());
             this.selection.clearPath();
