@@ -2,7 +2,7 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <div class="currentTags" *ngIf="carouselService.currentSearch != ''">
-            <p>Les tags sélectionné sont: {{ carouselService.currentSearch }}</p>
+            <p>Les tags sélectionnés sont: {{ carouselService.currentSearch }}</p>
         </div>
         <div class="close" (click)="carouselService.close()">&times;</div>
 
@@ -27,11 +27,11 @@
         </div>
         <div *ngIf="carouselService.showLoad"><img class="loading" src="../../../../assets/loading.gif" /></div>
         <div class="carouselActions">
-            <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Supprimer Canvas Sélectionné</button>
+            <button class="delete" (click)="carouselService.delete(owlCar.slidesOutputData.slides)">Supprimer canvas sélectionné</button>
             <div class="tags">
-                <p style="display: inline-block">Veuillez entrez les tags recherché(séparé par une virgule)</p>
+                <p style="display: inline-block">Veuillez entrer les tags recherchés (séparés par une virgule)</p>
                 <input style="display: inline-block" [(ngModel)]="carouselService.currentTags" />
-                <button style="display: inline-block" (click)="carouselService.filterDrawing()">Enregistrer Tags</button>
+                <button style="display: inline-block" (click)="carouselService.filterDrawing()">Filtrer par tags</button>
             </div>
         </div>
     </div>
