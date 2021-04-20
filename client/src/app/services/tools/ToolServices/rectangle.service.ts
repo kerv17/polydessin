@@ -27,7 +27,7 @@ export class RectangleService extends Tool {
         this.mouseDown = event.button === Globals.MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
+            this.inUse = true;
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
         }
@@ -47,6 +47,7 @@ export class RectangleService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         const eventContinue: CustomEvent = new CustomEvent('saveState');
         dispatchEvent(eventContinue);
+        this.inUse = false;
     }
 
     onMouseMove(event: MouseEvent): void {

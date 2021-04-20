@@ -35,6 +35,7 @@ export class LineService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.pathData.push(this.getPointToPush(event));
             this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.inUse = true;
         }
     }
 
@@ -42,6 +43,7 @@ export class LineService extends Tool {
         // Removes the last 2 points, one for each added by solo click of the dbClick
 
         if (event.button === Globals.MouseButton.Left) {
+            this.inUse = false;
             this.pathData.pop();
             this.pathData.pop();
             if (this.pathData.length > 0) {
